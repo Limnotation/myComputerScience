@@ -27,7 +27,7 @@
       - [题目示例12 `leetcode 111 二叉树的最小深度`](#题目示例12-leetcode-111-二叉树的最小深度)
       - [题目示例13 `leetcode 404 左叶子之和`](#题目示例13-leetcode-404-左叶子之和)
       - [题目示例14 `leetcode 687 最长同值路径`](#题目示例14-leetcode-687-最长同值路径)
-      - [题目示例15 leetcode 671 二叉树中第二小的节点](#题目示例15-leetcode-671-二叉树中第二小的节点)
+      - [题目示例15 `leetcode 671 二叉树中第二小的节点`](#题目示例15-leetcode-671-二叉树中第二小的节点)
     - [`BFS层次应用`](#bfs层次应用)
       - [题目示例1： `leetcode 102 二叉树的层序遍历`](#题目示例1-leetcode-102-二叉树的层序遍历)
       - [题目示例2 ：`leetcode 107 二叉树的层次遍历II`](#题目示例2-leetcode-107-二叉树的层次遍历ii)
@@ -951,7 +951,7 @@ private int arrowLength(TreeNode root)
 
 ----
 
-##### 题目示例15 leetcode 671 二叉树中第二小的节点
+##### 题目示例15 `leetcode 671 二叉树中第二小的节点`
 
 ```java
 public int findSecondMinimumValue(TreeNode root) 

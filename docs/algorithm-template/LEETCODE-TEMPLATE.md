@@ -474,7 +474,7 @@ func traversal( root *TreeNode ) ResultType {
 }
 ```
 
-##### **典型示例1：**通过分治法遍历二叉树
+##### 典型示例1：通过分治法遍历二叉树
 
 ```java
 public List<Integer> preOrderTraversal( TreeNode root )

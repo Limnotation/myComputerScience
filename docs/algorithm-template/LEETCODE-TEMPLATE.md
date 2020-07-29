@@ -29,6 +29,7 @@
       - [题目示例14 `leetcode 687 最长同值路径`](#题目示例14-leetcode-687-最长同值路径)
       - [题目示例15 `leetcode 671 二叉树中第二小的节点`](#题目示例15-leetcode-671-二叉树中第二小的节点)
       - [题目示例16 `leetcode 106 从中序遍历和后序遍历构造二叉树`](#题目示例16-leetcode-106-从中序遍历和后序遍历构造二叉树)
+      - [题目示例17 `leetcode 105 从前序遍历和中序遍历序列构造二叉树`](#题目示例17-leetcode-105-从前序遍历和中序遍历序列构造二叉树)
     - [`BFS层次应用`](#bfs层次应用)
       - [题目示例1： `leetcode 102 二叉树的层序遍历`](#题目示例1-leetcode-102-二叉树的层序遍历)
       - [题目示例2 ：`leetcode 107 二叉树的层次遍历II`](#题目示例2-leetcode-107-二叉树的层次遍历ii)
@@ -984,6 +985,8 @@ private void inOrderTraverse( TreeNode root, ArrayList<Integer> list )
 
 ##### 题目示例16 `leetcode 106 从中序遍历和后序遍历构造二叉树`
 
+**重点：划分左右子树区间**
+
 ```java
 private int[] postorder;
 private Map<Integer, Integer> hashMap;
@@ -1021,6 +1024,53 @@ private TreeNode buildTree(int inLeft, int inRight, int postLeft, int postRight)
     TreeNode root = new TreeNode(rootVal);
     root.left = buildTree(inLeft, rootIndex - 1, postLeft, postRight - inRight + rootIndex - 1);
     root.right = buildTree(rootIndex + 1, inRight, postRight - inRight + rootIndex, postRight - 1);
+    return root;
+}
+```
+
+---
+
+##### 题目示例17 `leetcode 105 从前序遍历和中序遍历序列构造二叉树`
+
+**重点：划分左右子树区间**
+
+```java
+private int[] preorder;
+private Map<Integer, Integer> hashMap;
+public TreeNode buildTree(int[] preorder, int[] inorder)
+{
+    if(inorder == null || preorder == null)
+        return null;
+    
+    int inLen = inorder.length, preLen = preorder.length;
+    if(inLen == 0  || preLen == 0 || inLen != preLen)
+        return null;
+    
+    this.preorder = preorder;
+    hashMap = new HashMap<>();
+    for(int i = 0; i < inLen; i++)
+        hashMap.put(inorder[i], i);
+    return buildTree(0, preLen - 1, 0, inLen - 1);
+}
+
+/**
+* 使用前序遍历序列和中序遍历序列构建二叉树
+* @param preLeft	前序遍历序列的左边界
+* @param preRight	前序遍历序列的右边界
+* @param inLeft		中序遍历序列的左边界
+* @param inRight 	中序遍历序列的右边界	
+* @return 二叉树的根节点
+*/
+private TreeNode buildTree(int preLeft, int preRight, int inLeft, int inRight)
+{
+    if(inLeft > inRight || preLeft > preRight)
+        return null;
+    
+    int rootVal = preorder[preRight];
+    int rootIndex = hashMap.get(rootVal);
+    TreeNode root = new TreeNode(rootVal);
+    root.left = buildTree(preLeft + 1, rootIndex - inLeft + preLeft, inLeft, rootIndex - 1);
+    root.right = buildTree(rootIndex - inLeft + preLeft + 1, preRight, rootIndex + 1, inRight);
     return root;
 }
 ```

@@ -10,7 +10,7 @@
       - [**`DFS`深度搜索**](#dfs深度搜索)
       - [`BFS层次遍历`](#bfs层次遍历)
     - [分治法应用](#分治法应用)
-      - [**典型示例1：**通过分治法遍历二叉树](#典型示例1通过分治法遍历二叉树)
+      - [典型示例1：通过分治法遍历二叉树](#典型示例1通过分治法遍历二叉树)
       - [典型示例2：归并排序](#典型示例2归并排序)
       - [典型示例3：快速排序](#典型示例3快速排序)
       - [题目示例1 `leetcode 104 :二叉树的最大深度`](#题目示例1-leetcode-104-二叉树的最大深度)
@@ -189,7 +189,7 @@
     - [题目示例2 `leetcode 560 和为K的子数组`](#题目示例2-leetcode-560-和为k的子数组)
     - [题目示例3 `leetcode 1248 统计优美子数组`](#题目示例3-leetcode-1248-统计优美子数组)
     - [题目示例4 `leetcode 974 和可被K整除的子数组`](#题目示例4-leetcode-974-和可被k整除的子数组)
-    - [题目示例5 `leetcode` 1074 元素和为目标值的子矩阵数量](#题目示例5-leetcode-1074-元素和为目标值的子矩阵数量)
+    - [题目示例5 `leetcode 1074 元素和为目标值的子矩阵数量`](#题目示例5-leetcode-1074-元素和为目标值的子矩阵数量)
     - [题目示例6 `leetcode 930 和相同的二元子数组`](#题目示例6-leetcode-930-和相同的二元子数组)
     - [题目示例7 `leetcode 303 区域和检索-数组不可变`](#题目示例7-leetcode-303-区域和检索-数组不可变)
     - [题目示例8 `leetcode 304二维区域和检索-矩阵不可变`](#题目示例8-leetcode-304二维区域和检索-矩阵不可变)
@@ -475,7 +475,7 @@ func traversal( root *TreeNode ) ResultType {
 }
 ```
 
-##### **典型示例1：**通过分治法遍历二叉树
+##### 典型示例1：通过分治法遍历二叉树
 
 ```java
 public List<Integer> preOrderTraversal( TreeNode root )
@@ -5278,32 +5278,32 @@ private int subarrayDivByK( int[] A, int K )
 
 ---
 
-#### 题目示例5 `leetcode` 1074 元素和为目标值的子矩阵数量
+#### 题目示例5 `leetcode 1074 元素和为目标值的子矩阵数量`
 
 ```java
-private int numSubmatrixSumTarget( int[][] matrix, int target )
+private int numSubmatrixSumTarget(int[][] matrix, int target)
 {
     int n = matrix.length;
     int m = matrix[0].length;
     // 计算原矩阵每一行的前缀和
-    for( int i = 0; i < n; i++ )
-        for( int j = 1; j < m; j++ )
+    for(int i = 0; i < n; i++)
+        for(int j = 1; j < m; j++)
             matrix[i][j] += matrix[i][j-1];
     
     int res = 0;
-    for( int i = 0; i < m; i++ )
+    for(int i = 0; i < m; i++)
     {
-        for( int j = i; j < m; j++ )
+        for(int j = i; j < m; j++)
         {
             // 在列方向上计算前缀和
             HashMap<Integer, Integer> preSum = new HashMap<>();
-            preSum.put( 0, 1 );
+            preSum.put(0, 1);
             int curSum = 0;
-            for( int k = 0; k < n; k++ )
+            for(int k = 0; k < n; k++)
             {
-                curSum += matrix[k][j] - ( i > 0 ? matrix[k][i-1]:0 );
-                res += preSum.getOrDefault( curSum - target, 0 );
-                preSum.put( curSum, preSum.getOrDefault( curSum, 0 ) + 1 );
+                curSum += matrix[k][j] - (i > 0 ? matrix[k][i-1]:0);
+                res += preSum.getOrDefault(curSum - target, 0);
+                preSum.put(curSum, preSum.getOrDefault(curSum, 0) + 1);
             }
         }
     }

@@ -1318,23 +1318,25 @@ private TreeNode constructTreee( int[] nums, int start, int end )
 ```java
 public TreeNode sortedListToBST(ListNode head) 
 {
-	if( head == null )		return null;
-    if( head.next == null )	 return new TreeNode( head.val );
-    ListNode preMid = preMid( head );
+    if(head == null)		
+        return null;
+    if(head.next == null)	
+        return new TreeNode(head.val);
+    ListNode preMid = preMid(head);
     ListNode mid = preMid.next;
     preMid.next = null;
-    TreeNode root = new TreeNode( mid.val );
-    root.left = sortedListToBST( head );
-    root.right = sortedListToBST( mid.next );
+    TreeNode root = new TreeNode(mid.val);
+    root.left = sortedListToBST(head);
+    root.right = sortedListToBST(mid.next);
     return root;
 }
 
-private ListNode preMid( ListNode head )
+private ListNode preMid(ListNode head)
 {
     ListNode slow = head;
     ListNode fast = head.next;
     ListNode pre = head;
-    while( fast != null && fast.next != null )
+    while(fast != null && fast.next != null)
     {
         pre = slow;
         slow = slow.next;

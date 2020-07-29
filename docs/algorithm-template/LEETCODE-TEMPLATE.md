@@ -231,7 +231,7 @@ public class TreeNode
 
 
 
-###### **递归遍历**
+###### 递归遍历
 
 ```java
 private void Traversal( TreeNode root )
@@ -246,7 +246,7 @@ private void Traversal( TreeNode root )
 }
 ```
 
-###### **前序非递归**
+###### 前序非递归
 
 ```java
 // v1
@@ -295,7 +295,7 @@ private List<Integer> preOrderTraversal( TreeNode root )
 }
 ```
 
-###### **中序非递归**
+###### 中序非递归
 
 ```java
 private List<Integer> inOrderTraversal(TreeNode root)
@@ -321,7 +321,7 @@ private List<Integer> inOrderTraversal(TreeNode root)
 }
 ```
 
-###### **后序非递归**
+###### 后序非递归
 
 ```java
 private List<Integer> postOrderTraversal( TreeNode root )
@@ -355,7 +355,7 @@ private List<Integer> postOrderTraversal( TreeNode root )
 }
 ```
 
-##### **`DFS`深度搜索**
+##### `DFS`深度搜索
 
 UP-TO-DOWN
 

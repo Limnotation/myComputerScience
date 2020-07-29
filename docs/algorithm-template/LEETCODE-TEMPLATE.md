@@ -1,3 +1,4 @@
+- 
 - [数据结构](#数据结构)
   - [二叉树](#二叉树)
     - [相关概念和知识点](#相关概念和知识点)
@@ -981,7 +982,50 @@ private void inOrderTraverse( TreeNode root, ArrayList<Integer> list )
 
 -----
 
------
+##### 题目示例16 `leetcode 106 从中序遍历和后序遍历构造二叉树`
+
+```java
+private int[] postorder;
+private Map<Integer, Integer> hashMap;
+public TreeNode buildTree(int[] inorder, int[] postorder)
+{
+    if(inorder == null || postorder == null)
+        return null;
+    
+    int inLen = inorder.length, postLen = postorder.length;
+    if(inLen == 0  || postLen == 0 || inLen != postLen)
+        return null;
+    
+    this.postorder = postorder;
+    hashMap = new HashMap<>();
+    for(int i = 0; i < inLen; i++)
+        hashMap.put(inorder[i], i);
+    
+}
+
+/**
+* 使用中序遍历序列和后序遍历序列构建二叉树
+* @param inLeft		中序遍历序列的左边界
+* @param inRight 	中序遍历序列的右边界	
+* @param postLeft	后序遍历序列的左边界
+* @param postRight	后序遍历序列的右边界
+* @return 二叉树的根节点
+*/
+private TreeNode buildTree(int inLeft, int inRight, int postLeft, int postRight)
+{
+    if(inLeft > inRight || postLeft > postRight)
+        return null;
+    
+    int rootVal = postorder[postRight];
+    int rootIndex = hashMap.get(rootVal);
+    TreeNode root = new TreeNode(rootVal);
+    root.left = buildTree(inLeft, rootIndex - 1, postLeft, postRight - inRight + rootIndex - 1);
+    root.right = buildTree(rootIndex + 1, inRight, postRight - inRight + rootIndex, postRight - 1);
+    return root;
+}
+```
+
+
 
 #### `BFS层次应用`
 

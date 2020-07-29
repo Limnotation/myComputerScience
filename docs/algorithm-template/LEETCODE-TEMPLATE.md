@@ -4971,20 +4971,20 @@ private int lengthOfLongestSubstring( String s )
 ##### 题目示例5 `leetcode 209 长度最小的子数组`
 
 ```java
-private int minSubArrayLen( int s, int[] nums )
+private int minSubArrayLen(int s, int[] nums)
 {
-    if( nums == null || nums.length == 0 )
+    if(nums == null || nums.length == 0)
         return 0;
     
     int left = 0, right = 0;
     int curVal = 0, minLen = Integer.MAX_VALUE;
-    while( right < nums.length )
+    while(right < nums.length)
     {
         curVal += nums[right];
         right++;
-        while( curVal >= s )
+        while(curVal >= s)
         {
-            minLen = Math.min( right - left, minLen );
+            minLen = Math.min(right - left, minLen);
             curVal -= nums[left];
             left++;
         }
@@ -4998,35 +4998,35 @@ private int minSubArrayLen( int s, int[] nums )
 ##### 题目示例6 `leetcode 904 水果成篮`
 
 ```java
-private int totalFruit( int[] tree )
+private int totalFruit(int[] tree)
 {
     int res = 0, len = tree.length;
     int left = 0, right = 0;
     int kindOne = tree[0], kindTwo = 0;
     
     // 树上只有一种水果的情况
-    while( right < len && tree[right] == kindOne )
+    while(right < len && tree[right] == kindOne)
         right++;
-    if( len == right )
+    if(len == right)
         return len;
     
     // 不只有一种水果
     kindTwo = tree[right++];
-    while( right < len )
+    while(right < len)
     {
         // 碰到了第三种水果，先保存当前结果，并统计统计新值
-        if( tree[right] != kindOne && tree[right] != kindTwo )
+        if(tree[right] != kindOne && tree[right] != kindTwo)
         {
             res = Math.max( res, right - left );
             kindOne = tree[right-1];
             kindTwo = tree[right];
             left = right - 1;
-            while( tree[left-1] == kindOne )
+            while(tree[left-1] == kindOne)
                 left--;
         }
         right++;
     }
-    return Math.max( res, right - left );
+    return Math.max(res, right - left);
 }
 ```
 
@@ -5035,9 +5035,9 @@ private int totalFruit( int[] tree )
 ##### 题目示例7 `leetcode 424 替换后的最长重复字符串`
 
 ```java
-private int characterReplacement( String s, int k )
+private int characterReplacement(String s, int k)
 {
-    if( s == null || s.length() <= 0 )
+    if(s == null || s.length() <= 0)
         return 0;
     
     int[] map = new int[26];
@@ -5046,18 +5046,18 @@ private int characterReplacement( String s, int k )
     int occurMost = 0;
     char[] chars = s.toCharArray();
     
-    while( right < s.length() )
+    while(right < s.length())
     {
         int index = chars[right] - 'A';
         map[index]++;
-        occurMost = Math.max( occurMost, map[index] );
-        if( right - left + 1 > occurMost + k )
+        occurMost = Math.max(occurMost, map[index]);
+        if(right - left + 1 > occurMost + k)
         {
             map[chars[left] - 'A']--;
             left++;
         }
         
-        maxLen = Math.max( maxLen, right - left + 1 );
+        maxLen = Math.max(maxLen, right - left + 1);
         right++;
     }
     return maxLen;
@@ -5069,22 +5069,22 @@ private int characterReplacement( String s, int k )
 ##### 题目示例8 `leetcode 239 滑动窗口最大值`
 
 ```java
-private int[] maxSlidingWindow( int[] nums, int k )
+private int[] maxSlidingWindow(int[] nums, int k)
 {
-    if( nums == null || k < 1 || nums.length < k )
+    if(nums == null || k < 1 || nums.length < k)
         return new int[0];
     
     LinkedList<Integer> window = new LinkedList<>();
     int[] res = new int[nums.length - k + 1];
     int index = 0;
-    for( int i = 0; i < nums.length; i++ )
+    for(int i = 0; i < nums.length; i++)
     {
-        while( !window.isEmpty() && nums[i] >= nums[window.peekLast()] )
+        while(!window.isEmpty() && nums[i] >= nums[window.peekLast()])
             window.pollLast();
-        window.addLast( i );
-        if( window.peek() <= i - k )
+        window.addLast(i);
+        if(window.peek() <= i - k)
             window.poll();
-        if( i >= k - 1 )
+        if(i >= k - 1)
             res[index++] = nums[window.peekFirst()];
     }
     return res;
@@ -5100,26 +5100,26 @@ private int[] maxSlidingWindow( int[] nums, int k )
 ##### 题目示例10 `leetcode 1004 最大连续1的个数III`
 
 ```java
-private int longestOnes( int[] A, int K )
+private int longestOnes(int[] A, int K)
 {
-    if( A == null || A.length < K )
+    if(A == null || A.length < K)
         return 0;
     
     int left = 0, right = 0;
     int usedZero = 0;
     int res = 0;
-    while( right < A.length )
+    while(right < A.length)
     {
-        if( A[right] == 0 )
+        if(A[right] == 0)
             usedZero++;
         right++; 
-        while( usedZero > K )
+        while(usedZero > K)
         {
-            if( A[left] == 0 )
+            if(A[left] == 0)
                 usedZero--;
             left++;
         }
-        res = Math.max( res, right - left );
+        res = Math.max(res, right - left);
     }
     return res;
 }
@@ -5158,27 +5158,29 @@ private int longestOnes( int[] A, int K )
 * 窗口大小固定
 * 从前往后不断移动窗口，获得窗口可以包含的最大值
 */
-private int maxSatisfied( int[] customers, int[] grumpy, int X )
+private int maxSatisfied(int[] customers, int[] grumpy, int X)
 {
     int n = customers.length;
     int res = 0;
     int window = 0, maxWindow = 0;
     
-    for( int i = 0; i < customers.length; i++ )
+    for(int i = 0; i < customers.length; i++)
     {
-        if( grumpy[i] == 0 )
+        if(grumpy[i] == 0)
             res += customers[i];
         else
             window += grumpy[i] == 1? customers[i]:0;
-        if( i >= X )
+        if(i >= X)
             window -= grumpy[i-X] == 1? customers[i-X]:0;
-        maxWindow = Math.max( window, maxWindow );
+        maxWindow = Math.max(window, maxWindow);
     }
     return res + maxWindow;
 }
 ```
 
 ---
+
+-----
 
 
 
@@ -5190,7 +5192,7 @@ private int maxSatisfied( int[] customers, int[] grumpy, int X )
 int n = nums.length;
 int[] preSum = new int[n+1];
 preSum[0] = 0;
-for( int i = 0; i < n; i++ )
+for(int i = 0; i < n; i++)
     preSum[i+1] = preSum[i] + nums[i];
 // preSum[i]表示nums[0..i-1]的和
 // nums[i..j]的和可以表示为preSum[j+1] - preSum[i]
@@ -5201,17 +5203,17 @@ for( int i = 0; i < n; i++ )
 #### 题目示例1 `leetcode 1 两数之和`
 
 ```java
-private int[] towSum( int[] nums, int target )
+private int[] towSum(int[] nums, int target)
 {
     int n = nums.length;
     HashMap<Integer, Integer> hashmap = new HashMap<>();
     
-    for( int i = 0; i < n; i++ )
+    for(int i = 0; i < n; i++)
     {
         int cur = nums[i];
-        if( hashmap.containsKey( target - cur ) )
-            return new int[]{ hashmap.get( target - cur ), i };
-        hashmap.put( nums[i], i );
+        if(hashmap.containsKey(target - cur))
+            return new int[]{ hashmap.get(target - cur), i };
+        hashmap.put(nums[i], i);
     }
     return new int[2];
 }
@@ -5222,20 +5224,20 @@ private int[] towSum( int[] nums, int target )
 #### 题目示例2 `leetcode 560 和为K的子数组`
 
 ```java
-private int subarraySum( int[] nums, int k )
+private int subarraySum(int[] nums, int k)
 {
     int n = nums.length;
     int res = 0;
     HashMap<Integer, Integer> preSum = new HashMap<>();
-    preSum.put( 0, 1 );
+    preSum.put(0, 1);
     int curSum = 0;
     
-    for( int i = 0; i < n; i++ )
+    for(int i = 0; i < n; i++)
     {
         curSum += nums[i];
-        if( preSum.containsKey( curSum - k ) )
-            res += preSum.get( curSum - k );
-        preSum.put( curSum, preSum.getOrDefault( curSum, 0 ) + 1 );
+        if(preSum.containsKey(curSum - k))
+            res += preSum.get(curSum - k);
+        preSum.put(curSum, preSum.getOrDefault(curSum, 0) + 1);
     }
     return res;
 }
@@ -5250,18 +5252,18 @@ private int subarraySum( int[] nums, int k )
 * 使用了前缀和数组preSum[],下标是前缀和（即当前奇数的个数），值是前缀和的个数 
 * 还是要好好理解
 */
-private int numberOfSubArrays( int[] nums, int k )
+private int numberOfSubArrays(int[] nums, int k)
 {
     int n = nums.length;
     int[] preSum = new int[n+1];
     preSum[0] = 1;
     int res = 0, curSum = 0;
     
-    for( int num:nums )
+    for(int num:nums)
     {
         curSum += num & 1;
         preSum[curSum]++;
-        if( curSum >= k )
+        if(curSum >= k)
             res += preSum[curSum-k];
     }
     return res;
@@ -5281,17 +5283,17 @@ private int numberOfSubArrays( int[] nums, int k )
 * 2.遍历数组A的每一项，重复步骤1，统计累计结果到res,最终返回res
 *
 */
-private int subarrayDivByK( int[] A, int K )
+private int subarrayDivByK(int[] A, int K)
 {
     int[] preSum = new int[K];
     preSum[0] = 1;
     int curSumModK = 0;
     int res = 0;
     
-    for( int i = 0; i < A.length; i++ )
+    for(int i = 0; i < A.length; i++)
     {
-    	curSumModK = ( curSumModK + A[i] ) % K;
-        if( curSumModK < 0 )
+    	curSumModK = (curSumModK + A[i]) % K;
+        if(curSumModK < 0)
             curSumModK += K;
         res += preSum[curSumModK];
         preSum[curSumModK]++;
@@ -5340,20 +5342,20 @@ private int numSubmatrixSumTarget(int[][] matrix, int target)
 #### 题目示例6 `leetcode 930 和相同的二元子数组`
 
 ```java
-private int numSubarraysWithSum( int[] A, int S )
+private int numSubarraysWithSum(int[] A, int S)
 {
-    if( A == null || A.length == 0 )
+    if(A == null || A.length == 0)
         return 0;
     
     int res = 0, curSum = 0;
     HashMap<Integer, Integer> preSum = new HashMap<>();
-    preSum.put( 0, 1 );
-    for( int a:A )
+    preSum.put(0, 1);
+    for(int a:A)
     {
         curSum += a;
-        if( preSum.containsKey( curSum - S ) )
-            res += preSum.get( curSum - S );
-        preSum.put( curSum, preSum.getOrDefault( curSum, 0 ) + 1 );
+        if( preSum.containsKey(curSum - S))
+            res += preSum.get(curSum - S);
+        preSum.put(curSum, preSum.getOrDefault(curSum, 0) + 1);
     }
     return res;
 }
@@ -5365,14 +5367,14 @@ private int numSubarraysWithSum( int[] A, int S )
 
 ```java
 private int[] preSum;
-public NumArray( int[] nums )
+public NumArray(int[] nums)
 {
     this.preSum = new int[nums.length+1];
-    for( int i = 0; i < nums.length; i++ )
+    for(int i = 0; i < nums.length; i++)
         preSum[i+1] = preSum[i] + nums[i];
 }
 
-public int sumRange( int i, int j )
+public int sumRange(int i, int j)
 {
     return preSum[j+1] - preSum[i];
 }

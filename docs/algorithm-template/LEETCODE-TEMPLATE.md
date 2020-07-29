@@ -30,6 +30,7 @@
       - [题目示例15 `leetcode 671 二叉树中第二小的节点`](#题目示例15-leetcode-671-二叉树中第二小的节点)
       - [题目示例16 `leetcode 106 从中序遍历和后序遍历构造二叉树`](#题目示例16-leetcode-106-从中序遍历和后序遍历构造二叉树)
       - [题目示例17 `leetcode 105 从前序遍历和中序遍历序列构造二叉树`](#题目示例17-leetcode-105-从前序遍历和中序遍历序列构造二叉树)
+      - [题目示例18 `leetcode 116 填充每个节点的下一个右侧节点指针`](#题目示例18-leetcode-116-填充每个节点的下一个右侧节点指针)
     - [`BFS层次应用`](#bfs层次应用)
       - [题目示例1： `leetcode 102 二叉树的层序遍历`](#题目示例1-leetcode-102-二叉树的层序遍历)
       - [题目示例2 ：`leetcode 107 二叉树的层次遍历II`](#题目示例2-leetcode-107-二叉树的层次遍历ii)
@@ -1073,6 +1074,40 @@ private TreeNode buildTree(int preLeft, int preRight, int inLeft, int inRight)
     root.right = buildTree(rootIndex - inLeft + preLeft + 1, preRight, rootIndex + 1, inRight);
     return root;
 }
+```
+
+----
+
+##### 题目示例18 `leetcode 116 填充每个节点的下一个右侧节点指针`
+
+**建议在纸上跑一遍算法流程**
+
+```java
+private Node connect(Node root)
+{
+    if(root == null)
+        return null;
+    Node left = root.left;
+    Node right = root.right;
+    while(left != null)
+    {
+        left.next = right;
+        left = left.right;
+        right = right.left;
+    }
+    
+    connect(root.left);
+    connect(root.right);
+    return root;
+}
+```
+
+-----
+
+##### 题目示例19 `leetcode 117 填充每个节点的下一个右侧节点指针 II`
+
+```java
+
 ```
 
 

@@ -54,7 +54,7 @@
       - [题目示例3  `leetcode 206 反转链表`](#题目示例3-leetcode-206-反转链表)
       - [题目示例4 `leetcode 92 反转链表II`](#题目示例4-leetcode-92-反转链表ii)
       - [题目示例 5 `leetcode 21 合并两个有序链表`](#题目示例-5-leetcode-21-合并两个有序链表)
-      - [题目示例 6 leetcode 86 分隔链表](#题目示例-6-leetcode-86-分隔链表)
+      - [题目示例 6 `leetcode 86 分隔链表`](#题目示例-6-leetcode-86-分隔链表)
       - [题目示例6 `leetcode 148 排序链表`](#题目示例6-leetcode-148-排序链表)
       - [题目示例7 `leetcode 143 重排链表`](#题目示例7-leetcode-143-重排链表)
       - [题目示例8 `leetcode 141 环形链表`](#题目示例8-leetcode-141-环形链表)
@@ -1645,7 +1645,7 @@ private ListNode mergeTwoLists( ListNode l1, ListNode l2 )
 }
 ```
 
-##### 题目示例 6 leetcode 86 分隔链表
+##### 题目示例 6 `leetcode 86 分隔链表`
 
 思路：将大于 x 的节点，放到另外一个链表，最后连接这两个链表
 

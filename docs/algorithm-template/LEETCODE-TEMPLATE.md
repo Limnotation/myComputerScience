@@ -4247,149 +4247,153 @@ private void backTracking(int[] nums, boolean[] used, LinkedList<Integer> runner
 
 ```
 
----
-
-
+----
 
 ##### 题目示例6 `leetcode 77 组合`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
-public List<List<Integer>> combine( int n, int k )
+public List<List<Integer>> combine(int n, int k)
 {
-    if( n < 1 || n < k )
+    if(n < 1 || n < k)
         return res;
     
-    backTracking( n, k, 1, new LinkedList<Integer>() );
+    backTracking(n, k, 1, new LinkedList<Integer>());
     return res;
 }
 
-private void backTracking( int n, int k, int start, LinkedList<Integer> runner )
+private void backTracking(int n, int k, int start, LinkedList<Integer> runner)
 {
-    if( runner.size() == k )
+    if(runner.size() == k)
     {
-        res.add( new LinkedList( runner ) );
+        res.add(new LinkedList(runner));
         return;
     }
     
-    for( int i = start; i <= n; i++ )
+    for(int i = start; i <= n; i++)
     {
         // 做选择
-        runner.add( i );
+        runner.add(i);
         // 进入下一层决策树
-        backTracking( n, k, i + 1, runner );
+        backTracking(n, k, i + 1, runner);
         // 撤销选择
         runner.removeLast();
     }
 }
 ```
+
+-----
 
 ##### 题目示例7 `leetcode 39 组合总和`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
-public List<List<Integer>> combinationSum( int[] candidates, int target )
+public List<List<Integer>> combinationSum(int[] candidates, int target)
 {
-    if( candidates == null || candidates.length == 0 )
+    if(candidates == null || candidates.length == 0)
         return res;
     
-    Arrays.sort( candidates );
-    backTracking( candidates, target, 0, new LinkedList<Integer>() );
+    Arrays.sort(candidates);
+    backTracking(candidates, target, 0, new LinkedList<Integer>());
     return res;
 }
 
-private void backTracking( int[] candidates, int target, int start, LinkedList<Integer> runner )
+private void backTracking(int[] candidates, int target, int start, LinkedList<Integer> runner)
 {
-    if( target == 0 )
+    if(target == 0)
     {
-        res.add( new LinkedList( runner ) );
+        res.add(new LinkedList( runner ));
         return;
     }
     
-    for( int i = start; i < candidates.length; i++ )
+    for(int i = start; i < candidates.length; i++)
     {
-        if( target - candidates[i] < 0 )
+        if(target - candidates[i] < 0)
             break;
         
         // 做选择、
-        runner.add( candidates[i] );
+        runner.add(candidates[i]);
        	// 进入下一层决策树
-        backTracking( candidates, target - candidates[i], i, runner );
+        backTracking(candidates, target - candidates[i], i, runner);
         // 撤销选择
         runner.removeLast();
     }
 }
 ```
+
+-----
 
 ##### 题目示例8`leetcode 40 组合总和II`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
-public List<List<Integer>> combinationSum2( int[] candidates, int target )
+public List<List<Integer>> combinationSum2(int[] candidates, int target)
 {
-    if( candidates == null || candidates.length == 0 )
+    if(candidates == null || candidates.length == 0)
         return res;
     
-    Arrays.sort( candidates );
-    backTracking( candidates, target, 0, new LinkedList<Integer>() );
+    Arrays.sort(candidates);
+    backTracking(candidates, target, 0, new LinkedList<Integer>());
     return res;
 }
 
-private void backTracking( int[] candidates, int target, int start, LinkedList<Integer> runner )
+private void backTracking(int[] candidates, int target, int start, LinkedList<Integer> runner)
 {
-    if( target == 0 )
+    if(target == 0)
     {
-        res.add( new LinkedList( runner ) );
+        res.add(new LinkedList(runner));
         return;
     }
     
-    for( int i = start; i < candidates.length; i++ )
+    for(int i = start; i < candidates.length; i++)
     {
-        if( target - candidates[i] < 0 )
+        if(target - candidates[i] < 0)
             break;
-        if( i > start && candidates[i] == candidates[i-1] )
+        if(i > start && candidates[i] == candidates[i-1])
             continue;
         
         // 做选择
-        runner.add( candidates[i] );
+        runner.add(candidates[i]);
         // 进入下一层决策树
-        backTracking( candidates, target - candidates[i], i + 1, runner );
+        backTracking(candidates, target - candidates[i], i + 1, runner);
         // 撤销选择
         runner.removeLast();
     }
 }
 ```
 
+----
+
 ##### 题目示例9 `leetcode 216 组合总和III`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
-public List<List<Integer>> combinationSum3( int k, int n )
+public List<List<Integer>> combinationSum3(int k, int n)
 {
-    if( n <= 0 || k <= 0 )
+    if(n <= 0 || k <= 0)
         return res;
     
-    backTracking( k, n, 1, new LinkedList<Integer>() );
+    backTracking(k, n, 1, new LinkedList<Integer>());
     return res;
 }
 
-private void backTracking( int k, int n, int start, LinkedList<Integer> runner)
+private void backTracking(int k, int n, int start, LinkedList<Integer> runner)
 {
     // 终止条件
-    if( k == 0 )
+    if(k == 0)
     {
-        if( n == 0 )
-            res.add( new LinkedList( runner ) );
+        if(n == 0)
+            res.add(new LinkedList(runner));
     	return;       
     }
 
     
-    for( int i = start; i < 10; i++ )
+    for(int i = start; i < 10; i++)
     {
         // 做选择
-        runner.add( i );
+        runner.add(i);
         // 进入下一层决策树
-        backTracking( k - 1, n - i, i + 1, runner );
+        backTracking(k - 1, n - i, i + 1, runner);
         // 撤销选择
         runner.removeLast();
     }
@@ -4402,39 +4406,39 @@ private void backTracking( int k, int n, int start, LinkedList<Integer> runner)
 
 ```java
 List<List<String>> res = new LinkedList<>();
-public List<List<String>> partition( String s )
+public List<List<String>> partition( String s)
 {
-    backTracking( s, 0, new LinkedList<String> runner );
+    backTracking(s, 0, new LinkedList<String> runner);
     return res;
 }
 
-private void backTracking( String s, int start, LinkedList<String> runner )
+private void backTracking(String s, int start, LinkedList<String> runner)
 {
-    if( start == s.length() )
+    if(start == s.length())
     {
-        res.add( new LinkedList( runner ) );
+        res.add(new LinkedList(runner));
         return;
     }
     
-    for( int i = start; i < s.length(); i++ )
+    for(int i = start; i < s.length(); i++)
     {
-        if( !isPalindrome( s, start, i ) )
+        if(!isPalindrome(s, start, i))
             continue;
         
         // 选择
-        runner.add( s.substring( start, i + 1 ) );
+        runner.add( s.substring(start, i + 1));
         // 进入下一层决策树
-        backTracking( s, i + 1, runner );
+        backTracking(s, i + 1, runner);
         // 撤销选择
         runner.removeLast();
     }
 }
 
-private boolean isPalindrome( String s, int left, int right )
+private boolean isPalindrome(String s, int left, int right)
 {
-    while( left < right )
+    while(left < right)
     {
-        if( s.charAt( left ) != s.charAt( right ) )
+        if(s.charAt(left) != s.charAt(right))
             return false;
         left++;
         right--;
@@ -4449,12 +4453,12 @@ private boolean isPalindrome( String s, int left, int right )
 
 ```java
 List<String> res = new LinkedList<>();
-public List<String> restoreIpAddresses( String s )
+public List<String> restoreIpAddresses(String s)
 {
-    if( s == null || s.length() == 0 )
+    if(s == null || s.length() == 0)
         return res;
     
-    backTracking( s, 0, new LinkedList<>() );
+    backTracking(s, 0, new LinkedList<>());
     return res;
 }
 
@@ -4464,36 +4468,36 @@ public List<String> restoreIpAddresses( String s )
 * @param	pos 	当前在s中遍历到的位置
 * @param	runner	已经确定好的ip段
 */
-private void backTracking( String s, int pos, List<String> runner )
+private void backTracking(String s, int pos, List<String> runner)
 {
-     if( runner.size() ==  4 )
+     if(runner.size() ==  4)
      {
-         if( pos == s.length() )
-             res.add( String.join( ".", runner ) );
+         if(pos == s.length())
+             res.add(String.join(".", runner));
          return;
      }
     
-    for( int i = 1; i <= 3; i++ )
+    for(int i = 1; i <= 3; i++)
     {
-     	if( pos + i > s.length() )
+     	if(pos + i > s.length())
             break;
         
-        String segment = s.substring( pos, pos + i );
+        String segment = s.substring(pos, pos + i);
         // 剪枝条件：长度大于一的分段不能以0为起始；任何段的数值结果不能大于255
-        if( segment.length() > 1 && segment.startsWith( "0" ) || ( i == 3 && Integer.parseInt( segment ) > 255 ) )
+        if(segment.length() > 1 && segment.startsWith("0") || ( i == 3 && Integer.parseInt(segment) > 255))
             continue;
         
         // 做选择
-        runner.add( segment );
+        runner.add(segment);
         // 进入下一层决策树
-        backTracking( s, pos + i, runner );
+        backTracking(s, pos + i, runner);
         // 撤销选择
         runner.removeLast();
     }
 }
 ```
 
-
+----
 
 ##### 题目示例12 `leetcode37 解数独`
 

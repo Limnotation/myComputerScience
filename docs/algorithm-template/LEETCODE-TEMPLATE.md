@@ -4041,9 +4041,19 @@ class Solution
 }
 ```
 
+-----
+
+------
+
+-------
+
 
 
 ## 算法思维
+
+----
+
+----
 
 ### 回溯法
 
@@ -4065,31 +4075,35 @@ func backTrack( 选择列表， 路径 ) {
 }
 ```
 
+-----
+
+-----
+
 #### 典型题目一：排列、组合、子集问题
 
 ##### 题目示例1 `leetcode78 子集 `
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
-public List<List<Integer>> subsets( int[] nums )
+public List<List<Integer>> subsets(int[] nums)
 {
-    if( nums == null || nums.length == 0 )
+    if(nums == null || nums.length == 0)
         return res;
     
-    backTracking( nums, 0, new LinkedList<Integer>() );
+    backTracking(nums, 0, new LinkedList<Integer>());
     return res;
 }
 
-private void backTracking( int[] nums, int start, LinkedList<Integer> runner )
+private void backTracking(int[] nums, int start, LinkedList<Integer> runner)
 {
-    res.add( new LinkedList( runner ) );
+    res.add(new LinkedList(runner));
     
-    for( int i = start; i < nums.length; i++ )
+    for(int i = start; i < nums.length; i++)
     {
         // 做选择
-        runner.add( nums[i] );
+        runner.add(nums[i]);
         // 进入下一层决策树
-        backTracking( nums, i + 1, runner );
+        backTracking(nums, i + 1, runner);
         // 撤销选择
         runner.removeLast();
     }
@@ -4106,114 +4120,118 @@ private void backTracking( int[] nums, int start, LinkedList<Integer> runner )
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
-public List<List<Integer>> subsetsWithDup( int[] nums )
+public List<List<Integer>> subsetsWithDup(int[] nums)
 {
-    if( nums == null || nums.length == 0 )
+    if(nums == null || nums.length == 0)
         return res;
     
-    Arrays.sort( nums );
-    backTracking( nums, 0 , new LinkedList<Integer>() );
+    Arrays.sort(nums);
+    backTracking(nums, 0 , new LinkedList<Integer>());
     return res;
 }
 
-private void backTracking( int[] nums, int start, LinkedList<Integer> runner )
+private void backTracking(int[] nums, int start, LinkedList<Integer> runner)
 {
-    res.add( new LinkedList( runner ) );
+    res.add(new LinkedList(runner));
     
-    for( int i = start; i < nums.length; i++ )
+    for(int i = start; i < nums.length; i++)
     {
         /*
         * 注意：nums[i]==nums[i-1]是作用在同一层决策树上的
         * 避免出现相同的两条路径
         */
-        if( i > start && nums[i] == nums[i-1] )
+        if(i > start && nums[i] == nums[i-1])
             continue;
         // 做选择
-        runner.add( nums[i] );
+        runner.add(nums[i]);
         // 进入下一层决策树
-        backTracking( nums, i + 1, runner );
+        backTracking(nums, i + 1, runner);
         // 撤销选择
         runner.removeLast();
     }
 }
 ```
+
+-----
 
 ##### 题目示例3 `leetcode 46 全排列`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
-public List<List<Integer>> permute( int[] nums )
+public List<List<Integer>> permute(int[] nums)
 {
-    if( nums == null || nums.length == 0 )
+    if(nums == null || nums.length == 0)
         return res;
     
-    backTracking( nums, new LinkedList<Integer>() );
+    backTracking(nums, new LinkedList<Integer>());
     return res;
 }
 
-private void backTracking( int[] nums, LinkedList<Integer> runner )
+private void backTracking(int[] nums, LinkedList<Integer> runner)
 {
-    if( runner.size() == nums.length )
+    if(runner.size() == nums.length)
     {
-        res.add( new LinkedList( runner ) );
+        res.add(new LinkedList(runner));
         return;
     }
     
-    for( int i = 0; i < nums.length; i++ )
+    for(int i = 0; i < nums.length; i++)
     {
-        if( runner.contains( nums[i] ) )
+        if(runner.contains(nums[i]))
             continue;
         
         // 做选择
-        runner.add( nums[i] );
+        runner.add(nums[i]);
         // 进入下一层决策树
-        backTracking( nums, runner );
+        backTracking(nums, runner);
         // 撤销选择
         runner.removeLast();
     }
 }
 ```
 
+-----
+
 ##### 题目示例4 `leetcode 47 全排列II `
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
-public List<List<Integer>> permuteUnique( int[] nums )
+public List<List<Integer>> permuteUnique(int[] nums)
 {
-    if( nums == null || nums.length == 0 )
+    if(nums == null || nums.length == 0)
         return res;
     
     boolean[] used = new boolean[nums.length];
-    Arrays.sort( nums );
-    backTracking( nums, used, new LinkedList<Integer>() );
+    Arrays.sort(nums);
+    backTracking(nums, used, new LinkedList<Integer>());
     return res;
 }
 
-private void backTracking( int[] nums, boolean[] used, LinkedList<Integer> runner )
+private void backTracking(int[] nums, boolean[] used, LinkedList<Integer> runner)
 {
-    if( runner.size() == nums.length )
+    if(runner.size() == nums.length)
     {
-        res.add( new LinkedList( runner ) );
+        res.add(new LinkedList(runner));
         return;
     }
     
-    for( int i = 0; i < nums.length; i++ )
+    for(int i = 0; i < nums.length; i++)
     {
         /**
         * 在这里的一个思想是：如果当前元素存在重复元素，且其前一个元素未被使用
         * 那么在决策树的下一层就会有重复的可选项，则会出现错误的重复情况。
         * 所以剪枝条件为index > 0 && nums[i]==nums[i-1] && !used[index-1]
         */
-        if( used[i] )
+        if(used[i])
             continue;
-        if( i > 0 && nums[i] == nums[i-1] && !used[i-1] )
+        if(i > 0 && nums[i] == nums[i-1] && !used[i-1])
             continue;
         
         // 做选择
-        runner.add( nums[i] );
+        runner.add(nums[i]);
         used[i] = true;
         // 进入下一层决策树
-        backTracking( nums, used, runner );
+        backTracking(nums, used, runner);
         // 撤销选择
         used[i] = false;
         runner.removeLast();

@@ -1000,7 +1000,7 @@ public TreeNode buildTree(int[] inorder, int[] postorder)
     hashMap = new HashMap<>();
     for(int i = 0; i < inLen; i++)
         hashMap.put(inorder[i], i);
-    
+    return buildTree(0, inLen - 1, 0, postLen - 1);
 }
 
 /**

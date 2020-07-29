@@ -5424,10 +5424,10 @@ public int sumRegion(int row1, int col1, int row2, int col2)
 private int[] preSum;
 public NumArray(int[] nums) 
 {
-	if( nums == null || nums.length == 0 )
+	if(nums == null || nums.length == 0)
         return;
     preSum = new int[nums.length+1];
-    for( int i = 0; i < nums.length; i++ )
+    for(int i = 0; i < nums.length; i++)
         preSum[i+1] = preSum[i] + nums[i];
 }
 
@@ -5435,7 +5435,7 @@ public void update(int i, int val)
 {
 	int oldVal = preSum[i+1] - preSum[i];
     int diff = val - oldVal;
-    for( int j = i + 1; j < preSum.length; j++ )
+    for(int j = i + 1; j < preSum.length; j++)
         preSum[j] += diff;
 }
 
@@ -5450,23 +5450,23 @@ public int sumRange(int i, int j)
 #### 题目示例10 `leetcode 554砖墙`
 
 ```java
-private int leastBricks( List<List<Integer>> wall )
+private int leastBricks(List<List<Integer>> wall)
 {
     HashMap<Integer, Integer> preSum = new HashMap<>();
-    for( List<Integer> row:wall )
+    for(List<Integer> row:wall)
     {
         int sum = 0;
-        for( int i = 0; i < row.size() - 1; i++  )
+        for(int i = 0; i < row.size() - 1; i++)
         {
             sum += row.get(i);
-            preSum.put( sum, preSum.getOrDefault( sum, 0 ) + 1 );
+            preSum.put(sum, preSum.getOrDefault( sum, 0 ) + 1);
         }
     }
     
     int res = wall.size();
     int size = wall.size();
-    for( int key:preSum.keySet() )
-        res = Math.min( res, size - preSum.get( key ) );
+    for(int key:preSum.keySet())
+        res = Math.min(res, size - preSum.get(key));
     return res;
 }
 ```
@@ -5476,28 +5476,30 @@ private int leastBricks( List<List<Integer>> wall )
 #### 题目示例11 `leetcode 1124 表现良好的最长时间段`
 
 ```java
-private int longestWPI( int[] hours )
+private int longestWPI(int[] hours)
 {
     // 计算前缀和
     int[] preSum = new int[hours.length+1];
-    for( int i = 0; i < hours.length; i++ )
+    for(int i = 0; i < hours.length; i++)
     {
-        if( housr[i] > 8 )	preSum[i+1] = preSum[i] + 1;
-        else			   preSum[i+1] = preSum[i] - 1;
+        if(housr[i] > 8)	
+            preSum[i+1] = preSum[i] + 1;
+        else			   
+            preSum[i+1] = preSum[i] - 1;
     }
     
     // 构建单调递减栈
     Deque<Integer> stack = new LinkedList<>();
-    stack.addLast( 0 );
-    for( int i = 1; i < preSum.length; i++ )
-        if( preSum[i] < preSum[stack.peekLast()] )
-            stack.addLast( i );
+    stack.addLast(0);
+    for(int i = 1; i < preSum.length; i++)
+        if(preSum[i] < preSum[stack.peekLast()])
+            stack.addLast(i);
     
     // 从右向左利用贪心策略求最大跨度
     int maxL = 0;
-    for( int i = preSum.length - 1; i >= 0; i-- )
-    	while( !stack.isEmpty() && preSum[i] > preSum[stack.peekLast()] )
-            maxL = Math.max( maxL, i - stack.removeLast() );
+    for(int i = preSum.length - 1; i >= 0; i--)
+    	while(!stack.isEmpty() && preSum[i] > preSum[stack.peekLast()])
+            maxL = Math.max(maxL, i - stack.removeLast());
     return maxL;
 }
 ```
@@ -5507,23 +5509,23 @@ private int longestWPI( int[] hours )
 #### 题目示例12  `leetcode 1109 航班预定`
 
 ```java
-private int[] corpFlightBookings( int[][] bookings, int n )
+private int[] corpFlightBookings(int[][] bookings, int n)
 {
     int len = bookings.length;
     int[] res = new int[n];
     int left, right, seats;
-    for( int i = 0; i < len; i++ )
+    for(int i = 0; i < len; i++)
     {
         left = bookings[i][0] - 1;
         right = bookings[i][0] - 1;
         seats = bookings[i][2];
         
         res[left] += seats;
-        if( r < n - 1 )	res[r+1] -= seats;
+        if(r < n - 1)	res[r+1] -= seats;
     }
     
     // 计算前缀和
-    for( int i = 1; i < n; i++ )
+    for(int i = 1; i < n; i++)
         res[i] += res[i-1];
     return res;
 }
@@ -5534,21 +5536,21 @@ private int[] corpFlightBookings( int[][] bookings, int n )
 #### 题目示例13 `leetcode 1094 拼车`
 
 ```java
-private boolean carPooling( int[][] trips, int capacity )
+private boolean carPooling(int[][] trips, int capacity)
 {
     int[] counts = new int[1000+1];
-    for( int[] trip:trips )
+    for(int[] trip:trips)
     {
         counts[trip[1]] += trip[0];
         counts[trip[2]] -= trip[0];
     }
     
-    if( counts[0] > capacity )
+    if(counts[0] > capacity)
         return false;
-    for( int i = 1; i < 1001; i++ )
+    for(int i = 1; i < 1001; i++)
     {
         counts[i] += counts[i-1];
-        if( counts[i] > capacity )
+        if(counts[i] > capacity)
             return false;
     }
     return true;

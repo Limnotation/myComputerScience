@@ -4561,45 +4561,45 @@ private boolean isValid( char[][] board, int row, int col, char c )
 // 1.一个合法的括号组合的左括号数量一定等于右括号数量
 // 2.对于一个“合法”的括号字符串组合p,必然对于任何 0 <= i < p.length(),都有：子串p[0..i]中左括号的数量都大于等于右括号的数量
 List<String> res = new LinkedList<>();
-public List<String> generateParenthesis( int n )
+public List<String> generateParenthesis(int n)
 {
-    if( n <= 0 )
+    if(n <= 0)
         return res;
     
-    backTracking( n, n, new StringBuffer() );
+    backTracking(n, n, new StringBuffer());
     return res;
 }
 
-private void backTracking( int left, int right, StringBuffer s )
+private void backTracking(int left, int right, StringBuffer s)
 {
     // 剩下的左括号更多，说明不合法
-    if( left > right )
+    if(left > right)
         return;
     // 数量小于0，不合法
-    if( left < 0 || right < 0 )
+    if(left < 0 || right < 0)
         return;
     // 所有括号都能用完，得到一个合法的括号组合
-    if( left == 0 && right == 0 )
+    if(left == 0 && right == 0)
     {
-        res.add( s.toString() );
+        res.add(s.toString());
         return;
     }
     
     // 尝试放置一个左括号
     // 选择
-    s.append( '(' );
+    s.append('(');
     // 进入下一层决策树
-    backTracking( left - 1, right, s );
+    backTracking(left - 1, right, s);
     // 撤销选择
-    s.deleteCharAt( s.length() - 1 );
+    s.deleteCharAt(s.length() - 1);
     
     // 尝试放置一个右括号
     // 选择
-    s.append( ')' );
+    s.append(')');
     // 进入下一层决策树
-    backTracking( left, right - 1, s );
+    backTracking(left, right - 1, s);
     // 撤销选择
-    s.deleteCharAt( s.length() - 1 );
+    s.deleteCharAt(s.length() - 1);
 }
 ```
 
@@ -4611,43 +4611,43 @@ private void backTracking( int left, int right, StringBuffer s )
 List<String> res = new LinkedList<>();
 HashMap<Character, String> map = new HashMap<>(){
     {
-        put( '2', "abc" );
-        put( '3', "def" );
-        put( '4', "ghi" );
-        put( '5', "jkl" );
-        put( '6', "mno" );
-        put( '7', "pqrs" );
-        put( '8', "tuv" );
-        put( '9', "wyxz" );
+        put('2', "abc");
+        put('3', "def");
+        put('4', "ghi");
+        put('5', "jkl");
+        put('6', "mno");
+        put('7', "pqrs");
+        put('8', "tuv");
+        put('9', "wyxz");
     }
 };
-public List<String> letterCombinations( String digits )
+public List<String> letterCombinations(String digits)
 {
-    if( digits == null || digits.length() == 0 )
+    if(digits == null || digits.length() == 0)
         return res;
     
-    backTracking( digits, 0, new StringBuffer() );
+    backTracking(digits, 0, new StringBuffer());
     return res;
 }
 
-private void backTracking( String digits, int index, StringBuffer runner )
+private void backTracking(String digits, int index, StringBuffer runner)
 {
-    if( index == digits.length() )
+    if(index == digits.length())
     {
-        res.add( runner.toString() );
+        res.add(runner.toString());
         return;
     }
     
-    char curC = digits.charAt( index );
-    String tempS = map.get( curC );
-    for( char c:tempS.toCharArray() )
+    char curC = digits.charAt(index);
+    String tempS = map.get(curC);
+    for(char c:tempS.toCharArray())
     {
         // 做选择
         runner.append( c );
         // 进入下一层决策树
-        backTracking( digits, index + 1, runner );
+        backTracking(digits, index + 1, runner);
         // 撤销选择
-        runner.deleteCharAt( runner.length() - 1 );
+        runner.deleteCharAt(runner.length() - 1);
     }
 }
 ```
@@ -4658,67 +4658,69 @@ private void backTracking( String digits, int index, StringBuffer runner )
 
 ```java
 List<List<String>> res = new LinkedList<>();
-public List<List<String>> solveNQueens( int n )
+public List<List<String>> solveNQueens(int n)
 {
-    if( n <= 0 )
+    if(n <= 0)
         return res;
     
     char[][] board = new char[n][n];
-    for( int i = 0; i < n; i++ )
-        for( int j = 0; j < n; j++ )
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < n; j++)
             board[i][j] = '.';
-    backTracking( board, 0 );
+    backTracking(board, 0);
     return res;
 }
 
-private void backTracking( char[][] board, int row )
+private void backTracking(char[][] board, int row)
 {
-    if( row == board.length )
+    if(row == board.length)
     {
         List<String> runner = new LinkedList<>();
-        for( char[] line:board )
-            runner.add( new String( line ) );
-        res.add( runner );
+        for(char[] line:board)
+            runner.add(new String(line));
+        res.add(runner);
         return;
     }
     
     int lineLength = board[0].length;
-    for( int i = 0; i < lineLength; i++ )
+    for(int i = 0; i < lineLength; i++)
     {
-        if( !isValid( board, row, i ) )
+        if(!isValid(board, row, i))
             continue;
         
         // 做选择
         board[row][i] = 'Q';
         // 进入下一层决策树
-        backTracking( board, row + 1 );
+        backTracking(board, row + 1);
         // 撤销选择
         board[row][i] = '.';
     }
 }
 
-private boolean isValid( char[][] board, int row, int col )
+private boolean isValid(char[][] board, int row, int col)
 {
     int n = board.length;
     // 检查同一列是否有冲突
-    for( int i = 0; i < n; i++ )
-        if( board[i][col] == 'Q' )
+    for(int i = 0; i < n; i++)
+        if(board[i][col] == 'Q')
             return false;
     
     // 检查右上角是否有冲突
-    for( int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++ )
-        if( board[i][j] == 'Q' )
+    for(int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++)
+        if(board[i][j] == 'Q')
             return false;
     
     // 检查左上角是否有冲突
-    for( int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j-- )
-        if( board[i][j] == 'Q' )
+    for(int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--)
+        if(board[i][j] == 'Q')
             return false;
     return true;
 }
 ```
 
+----
 
+------
 
 ### 滑动窗口技巧
 

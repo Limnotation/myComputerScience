@@ -1066,7 +1066,7 @@ private TreeNode buildTree(int preLeft, int preRight, int inLeft, int inRight)
     if(inLeft > inRight || preLeft > preRight)
         return null;
     
-    int rootVal = preorder[preRight];
+    int rootVal = preorder[preLeft];
     int rootIndex = hashMap.get(rootVal);
     TreeNode root = new TreeNode(rootVal);
     root.left = buildTree(preLeft + 1, rootIndex - inLeft + preLeft, inLeft, rootIndex - 1);

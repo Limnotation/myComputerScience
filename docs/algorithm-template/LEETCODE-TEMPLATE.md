@@ -49,6 +49,9 @@
       - [题目示例10 `leetcode 653两数之和IV 输入BST`](#题目示例10-leetcode-653两数之和iv-输入bst)
       - [题目示例 11 `leetcode 530 二叉搜索树的最小绝对差`](#题目示例-11-leetcode-530-二叉搜索树的最小绝对差)
       - [题目示例12 `leetcode 333  最大BST子树`](#题目示例12-leetcode-333-最大bst子树)
+      - [题目示例13 `leetcode 776拆分二叉搜索树`](#题目示例13-leetcode-776拆分二叉搜索树)
+      - [题目示例14 `leetcode 1214 查找两棵二叉搜索树之和`](#题目示例14-leetcode-1214-查找两棵二叉搜索树之和)
+      - [题目示例15 `leetcode 285 二叉搜索树中的顺序后继`](#题目示例15-leetcode-285-二叉搜索树中的顺序后继)
     - [Tire树](#tire树)
       - [题目示例1 `leetcode 208 实现Tire(前缀树)`](#题目示例1-leetcode-208-实现tire前缀树)
   - [链表](#链表)
@@ -1593,6 +1596,58 @@ private TreeNode[] splitBST(TreeNode root, int V)
     }
     return res;
 } 
+```
+
+------
+
+##### 题目示例14 `leetcode 1214 查找两棵二叉搜索树之和`
+
+```java
+public boolean twoSumBSTs(TreeNode root1, TreeNode root2, int target)
+{
+    if(root1 == null)
+        return false;
+    return findNode(root2, target - root1.val) || twoSumBSTs(root1.left, root2, target) || 
+        twoSumBSTs(root1.right, root2, target);
+}
+
+/**
+* 在BST中找到有特定值的结点
+*/
+private boolean findNode(TreeNode root, int target)
+{
+    if(root == null)
+        return false;
+
+    if(root.val == target)
+        return true;
+    else if(root.val < target)
+        return findNode(root.right, target);
+    else
+        return findNode(root.left, target);
+}
+```
+
+----
+
+##### 题目示例15 `leetcode 285 二叉搜索树中的顺序后继`
+
+```java
+private TreeNode inorderSuccessor(TreeNode root, TreeNode p)
+{
+    TreeNode res = null;
+    while(root != null)
+    {
+        if(p.val < root.val)
+        {
+            res = root;
+            root = root.left;
+        }
+        else
+            root = root.right;
+    }
+    return res;
+}
 ```
 
 

@@ -48,6 +48,7 @@
       - [题目示例9 `leetcode 109 有序链表转换二叉搜索树`](#题目示例9-leetcode-109-有序链表转换二叉搜索树)
       - [题目示例10 `leetcode 653两数之和IV 输入BST`](#题目示例10-leetcode-653两数之和iv-输入bst)
       - [题目示例 11 `leetcode 530 二叉搜索树的最小绝对差`](#题目示例-11-leetcode-530-二叉搜索树的最小绝对差)
+      - [题目示例12 `leetcode 333  最大BST子树`](#题目示例12-leetcode-333-最大bst子树)
     - [Tire树](#tire树)
       - [题目示例1 `leetcode 208 实现Tire(前缀树)`](#题目示例1-leetcode-208-实现tire前缀树)
   - [链表](#链表)
@@ -1533,13 +1534,26 @@ private void traversal( TreeNode root )
 ##### 题目示例12 `leetcode 333  最大BST子树`
 
 ```java
+public int largestBSTSubtree(TreeNode root)
+{
+    if(root == null)
+        return 0;
+    if(isBST(root, Integer.MIN_VALUE, Integer.MAX_VALUE))
+        return countNodes(root);
+    return Math.max(largestBSTSubtree(root.left), largestBSTSubtree(root.right));
+}
 
 /**
 * 验证二叉树是否为BST
 */
-private isBST(TreeNode root)
+private boolean isBST(TreeNode root, int min, int max)
 {
+    if(root == null)
+        return true;
     
+    if(root.val <= min || root.val >= max)
+        return false;
+    return isBST(root.left, min, root.val) && isBST(root.right, root.val, max);
 }
 /**
 * 统计BST节点数量
@@ -1550,6 +1564,35 @@ private int countNodes(TreeNode root)
         return 0;
     return countNodes(root.left) + countNodes(root.right) + 1;
 }
+```
+
+-----
+
+##### 题目示例13 `leetcode 776拆分二叉搜索树`
+
+```java
+private TreeNode[] splitBST(TreeNode root, int V)
+{
+    if(root == null)
+        return new TreeNode[]{null, null};
+
+    TreeNode[] res = new TreeNode[2];
+    if(root.val <= V)
+    {
+        res = splitBST(root.right, V);
+        root.right = res[0];
+        res[0] = root;
+        return res;
+    }
+    else if(root.val > V)
+    {
+        res = splitBST(root.left, V);
+        root.left = res[1];
+        res[1] = root;
+        return res;
+    }
+    return res;
+} 
 ```
 
 

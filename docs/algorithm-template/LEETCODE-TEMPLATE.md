@@ -1650,6 +1650,29 @@ private TreeNode inorderSuccessor(TreeNode root, TreeNode p)
 }
 ```
 
+-----
+
+##### 题目示例16 `leetcode 510 二叉搜索树中的中序后继`
+
+```java
+private Node inorderSuccessor(Node node)
+{
+    if(node.left != null)
+    {
+        node = node.right;
+        while(node.left != null)
+            node = node.left;
+        return node;
+    }
+    else
+    {
+        while(node.parent != null && node.parent.val < node.val)
+            node = node.parent;
+        return node.parent;
+    }
+}
+```
+
 
 
 ----

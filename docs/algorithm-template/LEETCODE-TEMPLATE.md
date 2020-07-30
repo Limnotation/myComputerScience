@@ -1676,7 +1676,37 @@ private Node inorderSuccessor(Node node)
 
 ----
 
-##### 题目示例17 `leetcode 426 将二叉搜索树转化为排序的双向链表`
+##### 题目示例17  `leetcode 426 将二叉搜索树转化为排序的双向链表`
+
+```java
+private Node curNode;
+public Node treeToDoublyList(Node root)
+{
+    Node dummyHead = new Node(-1, null, null);
+    curNode = dummyHead;
+    if(root != null)
+    {
+        inorderTraversal(root);
+        curNode.right = dummyHead.right;
+        dummyHead.right.left = curNode;
+    }
+    return dummyHead.right;
+}
+
+private void inorderTraversal(Node root)
+{
+    if(root != null)
+    {
+        inorderTraversal(root.left);
+        curNode.right = root;
+        root.left = curNode;
+        curNode = root;
+        inorderTraversal(root.right);
+    }
+}
+```
+
+
 
 ----
 
@@ -5461,11 +5491,50 @@ private int maxSatisfied(int[] customers, int[] grumpy, int X)
 }
 ```
 
----
+-----
+
+##### 题目示例18 `leetcode 1100 长度为K的无重复字符子串`
+
+```java
+private int numKLenSubstrNoRepeats(String S, int K)
+{
+    if(S == null || S.length() == 0)
+        return 0;
+    
+    int len = S.length();
+    if(len < K)
+        return 0;
+    
+    int res = 0;
+    int[] window = new int[26];
+    int left = 0, right = 0;
+    while(right < len)
+    {
+        int index = S.charAt(right) - 'a';
+        window[index]++;
+        
+        while(window[index] > 1)
+        {
+            window[S.charAt(left) - 'a']--;
+            left++;
+        }
+        if(right - left + 1 == K)
+        {
+            res++;
+            window[S.charAt(left) - 'a']--;
+            left++;
+        }
+        right++;
+    }
+    return res;
+}
+```
+
+
 
 -----
 
-
+-----
 
 ### 前缀和技巧
 

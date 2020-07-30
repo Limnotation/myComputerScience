@@ -1674,7 +1674,9 @@ private Node inorderSuccessor(Node node)
 }
 ```
 
+----
 
+##### 题目示例17 `leetcode 426 将二叉搜索树转化为排序的双向链表`
 
 ----
 

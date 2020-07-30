@@ -1229,44 +1229,44 @@ private List<List<Integer>> zigzagLevelOrder( TreeNode root )
 ```java
 List<Integer> res = new LinkedList<>();
  
-public boolean isValidBST( TreeNode root )
+public boolean isValidBST(TreeNode root)
 {
-    inOrderTraversal( root );
-    for( int i = 0; i < res.size() - 1; i++ )
-        if( res.get(i) >= res.get(i+1) )
+    inOrderTraversal(root);
+    for(int i = 0; i < res.size() - 1; i++)
+        if(res.get(i) >= res.get(i+1))
             return false;
     return true;
 }
 
-private void inOrderTraversal( TreeNode root )
+private void inOrderTraversal(TreeNode root)
 {
-    if( root == null )
+    if(root == null)
         return;
     
-    inOrderTraversal( root.left );
-    res.add( root.val );
-    inOrderTraversal( root.right );
+    inOrderTraversal(root.left);
+    res.add(root.val);
+    inOrderTraversal(root.right);
 }
 ```
 
 **思路2：分治法，判断左MAX <  根  < 右MIN**
 
 ```java
-public boolean isValidBST( TreeNode root )
+public boolean isValidBST(TreeNode root)
 {
-    return isValidBST( root, null, null );
+    return isValidBST(root, null, null);
 }
 
-private boolean isValidBST( TreeNode root, TreeNode min, TreeNode max )
+private boolean isValidBST(TreeNode root, TreeNode min, TreeNode max)
 {
-    if( root == null )
+    if(root == null)
         return true;
-    if( min != null && root.val <= min.val )
+    if(min != null && root.val <= min.val)
         return false;
-    if( max != null && root.val >= max.val )
+    if(max != null && root.val >= max.val)
         return false;
     
-    return isValidBST( root.left, min, root ) && isValidBST( root.right, root, max ); 
+    return isValidBST(root.left, min, root) && isValidBST(root.right, root, max); 
 }
 ```
 
@@ -1528,9 +1528,35 @@ private void traversal( TreeNode root )
 }
 ```
 
------
+----
+
+##### 题目示例12 `leetcode 333  最大BST子树`
+
+```java
+
+/**
+* 验证二叉树是否为BST
+*/
+private isBST(TreeNode root)
+{
+    
+}
+/**
+* 统计BST节点数量
+*/
+private int countNodes(TreeNode root)
+{
+    if(root == null)
+        return 0;
+    return countNodes(root.left) + countNodes(root.right) + 1;
+}
+```
+
+
 
 ----
+
+-----
 
 #### Tire树
 

@@ -52,6 +52,7 @@
       - [题目示例13 `leetcode 776拆分二叉搜索树`](#题目示例13-leetcode-776拆分二叉搜索树)
       - [题目示例14 `leetcode 1214 查找两棵二叉搜索树之和`](#题目示例14-leetcode-1214-查找两棵二叉搜索树之和)
       - [题目示例15 `leetcode 285 二叉搜索树中的顺序后继`](#题目示例15-leetcode-285-二叉搜索树中的顺序后继)
+      - [题目示例16 `leetcode 510 二叉搜索树中的中序后继`](#题目示例16-leetcode-510-二叉搜索树中的中序后继)
     - [Tire树](#tire树)
       - [题目示例1 `leetcode 208 实现Tire(前缀树)`](#题目示例1-leetcode-208-实现tire前缀树)
   - [链表](#链表)
@@ -1657,7 +1658,7 @@ private TreeNode inorderSuccessor(TreeNode root, TreeNode p)
 ```java
 private Node inorderSuccessor(Node node)
 {
-    if(node.left != null)
+    if(node.right != null)
     {
         node = node.right;
         while(node.left != null)

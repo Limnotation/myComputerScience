@@ -371,107 +371,13 @@ private List<Integer> postOrderTraversal( TreeNode root )
 }
 ```
 
-##### `DFS`深度搜索
+------
 
-UP-TO-DOWN
-
-```java
-public List<Integer> preOrderTraversal( TreeNode root )
-{
-    List<Integer> res = new LinkedList<>();
-    dfs( root, res );
-    return res;
-}
-
-// v1:深度遍历
-private void dfs( TreeNode root, LinkedList<Integer> res )
-{
-    if( root == null )	
-        return;
-    res.add( root.val );
-    dfs( root.left, res );
-    dfs( root.right, res );
-}
-```
-
-BOTTOMUP( DIVIDE AND CONQUER)
-
-```java
-public List<Integer> preOrderTraversal( TreeNode root )
-{
-    List<Integer> res = divideAndConquer( root );
-    return res;
-}
-
-// 分治法
-private List<Integer> divideAndConquer( TreeNode root )
-{
-    List<Integer> res = new LinkedList<>();
-    if( root == null )
-        return res;
-    
-    // divide
-    List<Integer> left = divideAndConquer( root.left );
-    List<Integer> right = divideAndConquer( root.right );
-    
-    // conquer
-    res.add( root.val );
-    res.addAll( new LinkedList( left ) );
-    res.addAll( new LinkedList( right ) );
-    return res;
-}
-```
-
-注意点
-
-<u>`DFS`深度搜索（从上到下）和分治法区别：前者一般将最终结果通过指针参数传入，后者一般递归返回结果最后合并</u>
-
-##### `BFS层次遍历`
-
-```java
-private List<List<Integer>> levelOrder(TreeNode root)
-{
-    List<List<Integer>> res = new LinkedList<>();
-    if(root == null)
-        return res;
-    
-    Queue<TreeNode> queue = new LinkedList<>();
-    queue.offer(root);
-    while(!queue.isEmpty())
-    {
-        List<Integer> runner = new LinkedList<>();
-        int len = queue.size();
-        while(len > 0)
-        {
-            TreeNode node = queue.poll();
-            runner.add(node.val);
-            if(node.left != null)
-                queue.offer(node.left);
-            if(node.right != null)
-                queue.offer(node.right);
-            len--;
-        }
-        res.add(new LinkedList(runner));
-    }
-    return res;
-}
-```
+------
 
 
 
-#### 分治法应用
-
-适用场景
-
-- 快速排序
-- 归并排序
-- 二叉树相关问题
-
-分治法模板
-
-- 递归返回条件
-- 分段处理
-- 合并结果
+#### 普通二叉树问题
 
 ```go
 func traversal( root *TreeNode ) ResultType {
@@ -488,161 +394,6 @@ func traversal( root *TreeNode ) ResultType {
     ResultType result = Merge from left to right 
     
     return result
-}
-```
-
-##### 典型示例1：通过分治法遍历二叉树
-
-```java
-public List<Integer> preOrderTraversal( TreeNode root )
-{
-    List<Integer> res = divideAndConquer( root );
-    return res;
-}
-
-// 分治法
-private List<Integer> divideAndConquer( TreeNode root )
-{
-    List<Integer> res = new LinkedList<>();
-    if( root == null )
-        return res;
-    List<Integer> left = divideAndConquer( root.left );
-    List<Integer> right = divideAndConquer( root.right );
-    res.add( root.val );
-    res.addAll( new LinkedList( left ) );
-    res.addAll( new LinkedList( right ) );
-    return res;
-}
-```
-
-##### 典型示例2：归并排序
-
-```java
-public int[] MergeSort( int[] nums )
-{
-    return mergeSort( nums, 0, nums.length - 1 );
-}
-
-private int[] mergeSort( int[] nums, int start, int end )
-{
-    if( nums.length <= 1 )
-        return nums;
-    
-    // divide 
-    int mid = start + ( end - start ) / 2;
-    int[] left = mergeSort( nums, start, mid );
-    int[] right = mergeSort( nums, mid + 1, end );
-    int[] res = merge( left, right );
-    return res;
-}
-
-private int[] merge( int[] left, int[] right )
-{
-    int[] res = new int[left.length + right.length];
-    int leftIndex = 0, rightIndex = 0;
-    int index = 0;
-    while( leftIndex < left.length && rightIndex < right.length )
-    {
-        if( left[leftIndex] <= right[rightIndex] )
-        {
-            res[index++] = left[leftIndex];
-            leftIndex++;
-        }
-        else
-        {
-            res[index++] = right[rightIndex];
-            rightIndex++;
-        }
-    }
-    
-    while( leftIndex < left.length )
-        res[index++] = left[leftIndex++];
-    while( rightIndex < right.length )
-        res[index++] = right[rightIndex++]
-    return res;
-}
-```
-
-这里给出官方的`go`代码参考，上面的`java`代码未经过测试
-
-```go
-func MergeSort( nums []int ) []int {
-    return mergeSort( nums )
-}
-
-func mergeSort( nums []int ) []int {
-    if( len(nums) < 1 ){
-        return nums
-    }
-    
-    // 分治法
-    mid := len(nums) / 2
-    left := mergeSort( nums[:mid] )
-    right := mergeSort( nums[mid:] )
-    // 合并两段数据
-    result := merge( left, right )
-    return result
-}
-
-func merge( left, right []int ) ( result []int ) {
-    // 游标
-    l := 0
-    r := 0
-    // 注意不能越界
-    for l < len(left) && r < len(right) {
-        if left[l] > right[r] {
-            result = append( result, right[r] )
-            r++
-        } else {
-            result = append( result, left[l] )
-            l++
-        }
-    }
-    // 剩余部分合并
-    result = append( result, left[l:]... )
-    result = append( result, right[r:]... )
-    return 
-}
-```
-
-##### 典型示例3：快速排序
-
-```java
-public int[] QuickSort( int[] nums )
-{
-    quickSort( nums, 0, nums.length - 1 );
-    return nums;
-}
-
-private void quickSort( int[] nums, int start, int end )
-{
-    if( start < end )
-    {
-        int pivot = partition( nums, start, end );
-        quickSort( nums, 0, pivot - 1 );
-        quickSort( nums, pivot + 1, end );
-    }
-}
-
-// 单边循环法实现partition()方法
-private int partition( int[] nums, int start, int end )
-{
-    int pivot = nums[start];
-    int mark = start;
-    for( int i = start + 1; i <= end; i++ )
-    {
-        if( nums[i] < pivot )
-        {
-            mark++;
-            int temp = nums[i];
-            num[i] = nums[mark];
-            nums[mark] = temp;
-        }
-    }
-    
-    nums[start] = nums[mark];
-    nums[mark] = pivot;
-    return mark;
 }
 ```
 
@@ -1126,11 +877,9 @@ private Node connect(Node root)
 }
 ```
 
+------
 
-
-#### `BFS层次应用`
-
-##### 题目示例1： `leetcode 102 二叉树的层序遍历`
+##### 题目示例20： `leetcode 102 二叉树的层序遍历`
 
 ```java
 private List<List<Integer>> levelOrder( TreeNode root )
@@ -1161,7 +910,9 @@ private List<List<Integer>> levelOrder( TreeNode root )
 }
 ```
 
-##### 题目示例2 ：`leetcode 107 二叉树的层次遍历II`
+------
+
+##### 题目示例21 ：`leetcode 107 二叉树的层次遍历II`
 
 ```java
 private List<List<Integer>> levelOrderBottom( TreeNode root )
@@ -1192,7 +943,9 @@ private List<List<Integer>> levelOrderBottom( TreeNode root )
 }
 ```
 
-##### 题目示例3：`leetcode 103 二叉树的锯齿形层次遍历`
+-------
+
+##### 题目示例22：`leetcode 103 二叉树的锯齿形层次遍历`
 
 ```java
 private List<List<Integer>> zigzagLevelOrder( TreeNode root )
@@ -1229,6 +982,10 @@ private List<List<Integer>> zigzagLevelOrder( TreeNode root )
     return res;
 }
 ```
+
+------
+
+------
 
 #### 二叉搜索树
 
@@ -6036,5 +5793,23 @@ private boolean carPooling(int[][] trips, int capacity)
     }
     return true;
 }
+```
+
+
+
+
+
+------
+
+------
+
+------
+
+## 未分类题解
+
+### 题目1 `leetcode 329 矩阵中的最长递增路径`
+
+```java
+
 ```
 

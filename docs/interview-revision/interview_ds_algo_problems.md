@@ -4,13 +4,9 @@
 
 #### 1.1 、笔试
 
-------
-
-##### 1、剑指Offer 10-II  青蛙跳台阶问题
-
-https://leetcode-cn.com/problems/qing-wa-tiao-tai-jie-wen-ti-lcof/
-
-
+- [ ] `leetcode 179 最大数`
+- [ ] `leetcode 329 矩阵中的最长递增路径`
+- [x] `剑指Offer 10-II 青蛙跳台阶` 
 
 #### 1.2、面试
 

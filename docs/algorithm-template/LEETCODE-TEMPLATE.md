@@ -2300,6 +2300,30 @@ private ListNode middleNode( ListNode head )
 }
 ```
 
+-----
+
+##### 题目示例13 `leetcode 328 奇偶链表`
+
+```java
+private ListNode oddEvenList(ListNode head)
+{
+    if(head == null)
+        return null;
+    
+    ListNode oddRunner = head, evenRunner = head.next;
+    ListNode evenHead = evenRunner;
+    while(evenRunner != null && evenRunner.next != null)
+    {
+        oddRunner.next = evenRunner.next;
+        oddRunner = oddRunner.next;
+        evenRunner.next = oddRunner.next;
+        evenRunner = evenRunner.next;
+    }
+    oddRunner.next = evenHead;
+    return head;
+}
+```
+
 
 
 ### 栈和队列
@@ -5056,7 +5080,9 @@ private boolean isValid(char[][] board, int row, int col)
  
 ```
 
+-----
 
+题目示例
 
 ------
 
@@ -5608,7 +5634,7 @@ private String minWindow(String S, String T)
         }
         sIndex++;
     }
-    return end - start == S.length()? "":S.substring(start, end - start + 2);
+    return end - start == S.length()? "":S.substring(start, end - start + 1);
 }
 ```
 

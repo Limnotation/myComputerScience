@@ -5571,6 +5571,47 @@ private int numKLenSubstrNoRepeats(String S, int K)
 }
 ```
 
+----
+
+##### 题目示例19 `leetcode 727 最小窗口子序列`
+
+```java
+// 注意这个版本目前是错误答案
+private String minWindow(String S, String T)
+{
+    if(S == null || S.length() < T.length())
+        return "";
+    
+    int start = 0, end = S.length();
+    int sIndex = 0, tIndex = 0;
+    while(sIndex < S.length())
+    {
+        if(S.charAt(sIndex) == T.charAt(tIndex))
+            tIndex++;
+        if(tIndex == T.length())
+        {
+            int right = sIndex;
+            tIndex--;
+            while(tIndex >= 0)
+            {
+                if(S.charAt(sIndex) == T.charAt(tIndex))
+                    tIndex--;
+                sIndex--;
+            }
+            sIndex++;
+            if(right - sIndex + 1 < end - start + 1)
+            {
+                start = sIndex;
+                end = right;
+            }
+            tIndex = 0;
+        }
+        sIndex++;
+    }
+    return end - start == S.length()? "":S.substring(start, end - start + 2);
+}
+```
+
 
 
 -----

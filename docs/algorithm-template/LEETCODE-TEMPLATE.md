@@ -2324,6 +2324,25 @@ private ListNode oddEvenList(ListNode head)
 }
 ```
 
+##### 题目示例14 `leetcode 203 移除链表元素`
+
+```java
+private ListNode removeElements(ListNode head, int val)
+{
+    ListNode dummyHead = new ListNode(-1);
+    dummyHead.next = head;
+    ListNode runner = dummyHead;
+    while(runner.next != null)
+    {
+        if(runner.next.val == val)
+            runner.next = runner.next.next;
+        else
+            runner = runner.next;
+    }
+    return dummyHead.next;
+}
+```
+
 
 
 ### 栈和队列
@@ -3017,7 +3036,7 @@ private int[][] updateMatrix( int[][] matrix )
 
 #### 二分搜索模板
 
-###### 零、二分查找框架
+##### 零、二分查找框架
 
 ```java
 private int binarySearch(int[] nums, int target)
@@ -3041,7 +3060,7 @@ private int binarySearch(int[] nums, int target)
 // 关键点二：为了防止计算mid时发生溢出，应使用 mid = left + (right - left) / 2来代替mid = (right + left) / 2
 ```
 
-###### 一、寻找一个数（基本的二分搜索）
+##### 一、寻找一个数（基本的二分搜索）
 
 搜索一个数，如果存在，返回其索引，否则返回-1
 
@@ -3083,7 +3102,7 @@ private int binarySearch(int[] nums, int target)
 
 
 
-###### 二、寻找左侧边界的二分搜索
+##### 二、寻找左侧边界的二分搜索
 
 ```java
 private int leftBound(int[] nums, int target)
@@ -3161,7 +3180,7 @@ if(nums[mid] == target)
 
 
 
-###### 三、寻找右侧边界的二分查找
+##### 三、寻找右侧边界的二分查找
 
 ```java
 private int rightBound(int[] nums, int target)
@@ -3222,7 +3241,7 @@ return nums[left - 1] == target ? (left - 1):-1;
 
 
 
-###### 四、逻辑统一
+##### 四、逻辑统一
 
 在之前的分析中，普通的二分搜索与左右边界的二分搜索在形式上有所区别，在这里对其进行统一，规定使用两端封闭的搜索区间来实现
 

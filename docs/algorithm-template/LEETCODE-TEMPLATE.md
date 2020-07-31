@@ -215,7 +215,7 @@
   - [题目1 `leetcode 329 矩阵中的最长递增路径`](#题目1-leetcode-329-矩阵中的最长递增路径)
 ## 数据结构
 
-### 二叉树
+### 树
 
 #### 相关概念和知识点
 
@@ -376,7 +376,7 @@ private List<Integer> postOrderTraversal( TreeNode root )
 
 
 
-#### 普通二叉树问题
+#### 普通二叉树问题（未仔细分类）
 
 ```go
 func traversal( root *TreeNode ) ResultType {

@@ -5391,7 +5391,7 @@ private String minWindow(String S, String T)
             tIndex++;
         if(tIndex == T.length())
         {
-            int right = sIndex;
+            int right = sIndex + 1;
             tIndex--;
             while(tIndex >= 0)
             {
@@ -5410,6 +5410,61 @@ private String minWindow(String S, String T)
         sIndex++;
     }
     return end - start == S.length()? "":S.substring(start, end - start + 1);
+}
+
+private String minWindow(String S, String T)
+{
+    
+}
+```
+
+------
+
+##### 题目示例20 `《程序员面试金典》面试题17.18 最短超串`
+
+```java
+private int[] shortestSeq(int[] big, int[] small)
+{
+    if(big == null || big.length <= 0 || big.length < small.length)
+        return new int[0];
+    
+    int left = 0, right = 0;
+    int minLen = Integer.MAX_VALUE, start = 0;
+    HashMap<Integer, Integer> window = new HashMap<>();
+    HashMap<Integer, Integer> need = new HashMap<>();
+    for(int item:small)
+        need.put(item, need.getOrDefault(item, 0) + 1);
+    
+    int match = 0;
+    while(right < big.length)
+    {
+        int item1 = big[right];
+        if(need.containsKey(item1))
+        {
+            window.put(item1, window.getOrDefault(item1, 0) + 1);
+            if(window.get(item1).equals(need.get(item1)))
+                match++;
+        }
+        
+        while(match == need.size())
+        {
+            if(right - left < minLen)
+            {
+                minLen = right - left;
+                start = left;
+            }
+            int item2 = big[left];
+            if(need.containsKey(item2))
+            {
+                window.put(item2, window.get(item2) - 1);
+                if(window.get(item2) < need.get(item2))
+                    match--;
+            }
+            left++;
+        }
+        right++;
+    }
+    return minLen == Integer.MAX_VALUE? new int[0]:new int[]{start, start + minLen};
 }
 ```
 

@@ -4916,8 +4916,6 @@ private void slidingWindow( String s, String t )
     {
         // c是移入窗口的字符
         char c = s.charAt( right  );
-        // 右移窗口
-        right++;
         // 进行窗口内数据的一系列更新
         ...;
         
@@ -4934,6 +4932,8 @@ private void slidingWindow( String s, String t )
             // 进行窗口内数据的一系列更新
             ...;
         }
+        // 右移窗口
+        right++;
     }
 }
 ```
@@ -5461,7 +5461,9 @@ private int[] shortestSeq(int[] big, int[] small)
 }
 ```
 
+-----
 
+##### 题目示例21 `leetcode `
 
 -----
 
@@ -5850,13 +5852,5 @@ private boolean carPooling(int[][] trips, int capacity)
 
 ------
 
-------
-
-## 未分类题解
-
-### 题目1 `leetcode 329 矩阵中的最长递增路径`
-
-```java
-
-```
+## 
 

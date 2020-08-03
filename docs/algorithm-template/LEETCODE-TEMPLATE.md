@@ -4211,6 +4211,12 @@ public List<List<Integer>> subsets(int[] nums)
     return res;
 }
 
+/**
+* 回溯法找到所有子集
+* @param nums 	不含重复元素的整数数组
+* @param start	需要处理的子数组的起点
+* @param runner 存储临时结果的链表
+*/
 private void backTracking(int[] nums, int start, LinkedList<Integer> runner)
 {
     res.add(new LinkedList(runner));

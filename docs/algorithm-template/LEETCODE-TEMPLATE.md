@@ -67,6 +67,10 @@
       - [题目示例 12 `leetcode 876 链表的中间结点`](#题目示例-12-leetcode-876-链表的中间结点)
       - [题目示例13 `leetcode 328 奇偶链表`](#题目示例13-leetcode-328-奇偶链表)
       - [题目示例14 `leetcode 203 移除链表元素`](#题目示例14-leetcode-203-移除链表元素)
+      - [题目示例15 `leetcode 1171 从链表中删去总和值为零的连续节点`](#题目示例15-leetcode-1171-从链表中删去总和值为零的连续节点)
+      - [题目示例16 `leetcode 708 循环有序链表的插入`](#题目示例16-leetcode-708-循环有序链表的插入)
+      - [题目示例17 `leetcode 1474 删链表M个节点之后的N个节点`](#题目示例17-leetcode-1474-删链表m个节点之后的n个节点)
+      - [题目示例18 `leetcode 369 给单链表加一`](#题目示例18-leetcode-369-给单链表加一)
   - [栈和队列](#栈和队列)
     - [栈](#栈)
       - [题目示例1 `leetcode 155 最小栈`](#题目示例1-leetcode-155-最小栈)
@@ -1563,12 +1567,29 @@ class Trie
 链表相关的核心点
 
 - null/nil异常处理
+
 - dummy node 哑巴节点
+
+    ```java
+    ListNode dummyHead = new ListNode(0);
+    dummyHead.next = head;
+    ListNode cur = dummyHead;
+    /**
+    * lots of codes
+    */
+    return dummyHead.next;
+    ```
+
 - 快慢指针
+
 - 插入一个节点到排序链表
+
 - 从一个链表中移除一个节点
+
 - 翻转链表
+
 - 合并两个链表
+
 - 找到链表的中间节点
 
 #### 常见题型
@@ -2094,6 +2115,142 @@ private ListNode removeElements(ListNode head, int val)
             runner = runner.next;
     }
     return dummyHead.next;
+}
+```
+
+-----
+
+##### 题目示例15 `leetcode 1171 从链表中删去总和值为零的连续节点`
+
+**前缀和思想的一个应用，其实可以把链表看成一个数组，相当于求和为K的子数组（这里K=0）**
+
+**参考前缀和题目示例2**
+
+```java
+private ListNode removeZeroSumSublists(ListNode head) {
+    ListNode dummyHead = new ListNode(0);
+    dummyHead.next = head;
+    
+    HashMap<Integer, ListNode> preSum = new HashMap<>();
+    
+    // 首次遍历建立 （节点处链表和，节点）的哈希表
+    // 若同一和出现多次会覆盖，则会记录该和出现的最后一次节点
+    int sum = 0;
+    for(ListNode node = dummyHead; node != null; node = node.next) {
+        sum += node.val;
+        preSum.put(sum, node);
+    }
+    
+    // 第二遍遍历，设从首节点到当前节点的前缀和为sum,若其后某个节点
+    // 前缀和也为sum,则将所有中间节点删除
+    sum = 0;
+    for(ListNode node = dummyHead; node != null; node = node.next) {
+        sum += val;
+        node.next = preSum.get(sum).next;
+    }
+    return dummyHead.next;
+}
+```
+
+------
+
+##### 题目示例16 `leetcode 708 循环有序链表的插入`
+
+```java
+// 参考题解
+// 1、https://leetcode-cn.com/problems/insert-into-a-sorted-circular-linked-list/solution/xun-huan-you-xu-lie-biao-de-cha-ru-by-leetcode/
+
+private Node insert(Node head, int insertVal) {
+    if(head == null) {
+        head = new Node(insertVal, null);
+        head.next = head;
+        return head;
+    }
+	
+    Node pre = head, cur = head.next;
+    boolean canInsert = false;
+    do {
+        if(pre.val <= insertVal && insertVal <= cur.val) {
+            canInsert = true;
+        } else if (pre.val > cur.val) {
+            if(insertVal >= pre.val || insertVal <= cur.val) {
+                canInsert = true;
+            }
+        }
+        
+        if(canInsert) {
+            pre.next = new Node(insertVal, cur);
+            return head;
+        }
+        
+        pre = cur;
+        cur = cur.next;
+    } while(pre != head);
+    
+    pre.next = new Node(insertVal, cur);
+    return head;
+}
+```
+
+-----
+
+##### 题目示例17 `leetcode 1474 删链表M个节点之后的N个节点`
+
+```java
+// 参考题解
+// 1、https://leetcode-cn.com/problems/delete-n-nodes-after-m-nodes-of-a-linked-list/solution/c-dummy-head-jie-fa-by-huan-le-ma-140/
+private ListNode deleteNodes(ListNode head, int m, int n) {
+    ListNode dummyHead = new ListNode(0);
+    dummyHead.next = head;
+    ListNode cur = dummyHead;
+    while(cur.next != null) {
+        for(int i = 0; i < m; i++) {
+            if(cur != null)
+                cur = cur.next;
+            else
+                break;
+        }
+        
+        if(cur == null)
+            break;
+        for(int i = 0; i < n; i++) {
+            if(cur.next != null)
+                cur.next = cur.next.next;
+            else
+                break;
+        }
+    }
+    return dummyHead.next;
+}
+```
+
+------
+
+##### 题目示例18 `leetcode 369 给单链表加一`
+
+```java
+
+// 双指针
+// dummyHead
+private ListNode plusOne(ListNode head) {
+    ListNode slow = new ListNode(0);
+    ListNode fast =  head;
+    slow.next = head;
+    
+    while(fast != null) {
+        if(fast.val != 9)
+            slow = fast;
+        fast = fast.next;
+    }
+    
+    slow.val += 1;
+    ListNode runner = slow.next;
+    while(runner != null) {
+        runner.val = 0;
+        runner = runner.next;
+    }
+    
+    return slow.next == head? slow:head;
 }
 ```
 

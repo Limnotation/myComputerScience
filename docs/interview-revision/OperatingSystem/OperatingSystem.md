@@ -188,3 +188,93 @@ ps -ef | grep java | xargs echo
 
 ## 2、IO
 
+### 2.1 IO多路复用
+
+进程可以通过select、poll、epoll发起I/O多路复用的系统调用，这些系统调用都是同步阻塞的：**如果传入的多个文件描述符中，有描述符就绪，则返回就绪的描述符；否则如果所有文件描述符都未就绪，就阻塞调用进程，直到某个描述符就绪，或者阻塞时长超过设置的timeout后返回。**
+
+I/O 多路复用引入了一些额外的操作和开销，性能更差。但是好处是用户可以在一个线程内同时处理多个 I/O 请求。如果不采用 I/O 多路复用，则必须通过多线程的方式，每个线程处理一个 I/O 请求。后者线程切换也是有一定的开销的。
+
+-------
+
+#### 2.1.1 select
+
+- 函数签名与参数
+
+    ```c
+    int select(int nfds,
+              fd_set *restrict readfds,
+              fd_set *restrict writefds,
+              fd_set *restrict errorfds,
+              struct timeval *restrict timeout);
+    ```
+
+    1. `readfds`、`writefds` 、`errorfds`是三个文件描述符集合。`select`会遍历每个集合的前 `nfds`个描述符，分别找到可以读、可以写、发生错误的描述符，这些描述符统称为 `就绪`的描述符
+    2. `timeout`参数表示调用 `select`时的阻塞时长。如果所有文件描述符都未就绪，就阻塞调用进程，直到某个描述符就绪，或者阻塞超过设置的 timeout 后，返回。如果 `timeout` 参数设为 NULL，会无限阻塞直到某个描述符就绪；如果 `timeout` 参数设为 0，会立即返回，不阻塞
+
+- 关于fd_set文件描述符集合
+
+    参数中的 `fd_set` 类型表示文件描述符的集合。
+
+    由于文件描述符 `fd` 是一个从 0 开始的无符号整数，所以可以使用 `fd_set` 的**二进制每一位**来表示一个文件描述符。某一位为 1，表示对应的文件描述符已就绪。比如比如设 `fd_set` 长度为 1 字节，则一个 `fd_set` 变量最大可以表示 8 个文件描述符。当 `select` 返回 `fd_set = 00010011` 时，表示文件描述符 `1`、`2`、`5` 已经就绪。
+
+    `fd_set` 的使用涉及以下几个 API：
+
+    ```c
+    #include <sys/select.h>   
+    int FD_ZERO(int fd, fd_set *fdset);  // 将 fd_set 所有位置 0
+    int FD_CLR(int fd, fd_set *fdset);   // 将 fd_set 某一位置 0
+    int FD_SET(int fd, fd_set *fd_set);  // 将 fd_set 某一位置 1
+    int FD_ISSET(int fd, fd_set *fdset); // 检测 fd_set 某一位是否为 1
+    ```
+
+- select使用示例
+
+    ```c
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <sys/time.h>
+    #include <sys/types.h>
+    #include <unist.h>
+    
+    int main(void) {
+        // open and set up a bunch of sockets(not shown)
+        // main loop
+        while (1) {
+            // initialize the fd_set to all zero
+            fd_set readFDs;
+            FD_ZERO(&readFDs);
+            
+            // now set the bits for the descriptors
+            // this server is interested in
+            // (for simplicity, all of them from min to max)
+            int fd;
+            for(fd = minFD; fd < maxFD; fd++)
+                FD_SET(fd, &readFDs);
+            
+            // do the select
+            int rc = select(maxFD + 1, &readFDs, NULL, NULL, NULL);
+            
+            // check which actually have data using FD_ISSET()
+            int fd;
+            for(fd = minFD; fd < maxFD; fd++)
+                if(FD_ISSET(fd, &readFDs))
+                    processFD(fd);
+            
+        }
+    }
+    ```
+
+    代码流程说明：
+
+    1. 先声明一个 `fd_set` 类型的变量 `readFDs`
+    2. 调用 `FD_ZERO`，将 `readFDs` 所有位置 0
+    3. 调用 `FD_SET`，将 `readFDs` 感兴趣的位置 1，表示要监听这几个文件描述符
+    4. 将 `readFDs` 传给 `select`，调用 `select`
+    5. `select` 会将 `readFDs` 中就绪的位置 1，未就绪的位置 0，返回就绪的文件描述符的数量
+    6. 当 `select` 返回后，调用 `FD_ISSET` 检测给定位是否为 1，表示对应文件描述符是否就绪
+
+    比如想监听1、2、5这三个文件描述符，就将 `readFDs`设置为 `00010011`，然后调用 `select`.
+
+    如果 `fd=1`、`fd=2`就绪而 `fd=5`未就绪，select会将 `readFDs`设置为 `00000011`并返回2
+
+    如果每个文件描述符都未就绪， `select`会阻塞 `timeout`时长再返回。这期间，如果 `readFDs` 监听的某个文件描述符上发生可读事件，则 `select` 会将对应位置 1，并立即返回

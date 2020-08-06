@@ -61,21 +61,27 @@
         - [题目示例6 `leetcode 24 两两交换链表中的节点`](#题目示例6-leetcode-24-两两交换链表中的节点)
         - [题目示例7 `leetcode 61 旋转链表`](#题目示例7-leetcode-61-旋转链表)
         - [题目示例8 `leetcode 143 重排链表`](#题目示例8-leetcode-143-重排链表)
-      - [题目示例1 `leetcode 83 删除排序链表中的重复元素`](#题目示例1-leetcode-83-删除排序链表中的重复元素)
-      - [题目示例2 `leetcode 82 删除排序链表中的重复元素II`](#题目示例2-leetcode-82-删除排序链表中的重复元素ii)
-      - [题目示例3  `leetcode 206 反转链表`](#题目示例3-leetcode-206-反转链表)
-      - [题目示例4 `leetcode 92 反转链表II`](#题目示例4-leetcode-92-反转链表ii)
-      - [题目示例6 `leetcode 148 排序链表`](#题目示例6-leetcode-148-排序链表)
-      - [题目示例8 `leetcode 141 环形链表`](#题目示例8-leetcode-141-环形链表)
-      - [题目示例9 `leetcode 142 环形链表II`](#题目示例9-leetcode-142-环形链表ii)
-      - [题目示例 10 `leetcode 234 回文链表`](#题目示例-10-leetcode-234-回文链表)
-      - [题目示例11 `leetcode 138 复制带随机指针的链表`](#题目示例11-leetcode-138-复制带随机指针的链表)
-      - [题目示例 12 `leetcode 876 链表的中间结点`](#题目示例-12-leetcode-876-链表的中间结点)
-      - [题目示例13 `leetcode 328 奇偶链表`](#题目示例13-leetcode-328-奇偶链表)
-      - [题目示例15 `leetcode 1171 从链表中删去总和值为零的连续节点`](#题目示例15-leetcode-1171-从链表中删去总和值为零的连续节点)
-      - [题目示例16 `leetcode 708 循环有序链表的插入`](#题目示例16-leetcode-708-循环有序链表的插入)
-      - [题目示例17 `leetcode 1474 删链表M个节点之后的N个节点`](#题目示例17-leetcode-1474-删链表m个节点之后的n个节点)
-      - [题目示例18 `leetcode 369 给单链表加一`](#题目示例18-leetcode-369-给单链表加一)
+        - [题目示例9 `leetcode 147 对链表进行插入排序`](#题目示例9-leetcode-147-对链表进行插入排序)
+        - [题目示例10 `leetcode 148 排序链表`](#题目示例10-leetcode-148-排序链表)
+      - [反转类题目](#反转类题目)
+        - [题目示例1 `leetcode 206 反转链表`](#题目示例1-leetcode-206-反转链表)
+        - [题目示例2 `leetcode 92 反转链表II`](#题目示例2-leetcode-92-反转链表ii)
+        - [题目示例3 `leetcode 25 K个一组翻转链表`](#题目示例3-leetcode-25-k个一组翻转链表)
+      - [链表中的双指针问题](#链表中的双指针问题)
+        - [题目示例1  `leetcode 19 删除链表的倒数第N个节点`](#题目示例1-leetcode-19-删除链表的倒数第n个节点)
+        - [题目示例 2 `leetcode 83 删除排序链表中的重复严肃`](#题目示例-2-leetcode-83-删除排序链表中的重复严肃)
+        - [题目示例3  `leetcode 82 删除排序链表中的重复元素II`](#题目示例3-leetcode-82-删除排序链表中的重复元素ii)
+        - [题目示例4 `leetcode 141 环形链表`](#题目示例4-leetcode-141-环形链表)
+        - [题目示例5  `leetcode 142 环形链表II`](#题目示例5-leetcode-142-环形链表ii)
+        - [题目示例6 `leetcode 234 回文链表`](#题目示例6-leetcode-234-回文链表)
+        - [题目示例7 `leetcode 328 奇偶链表`](#题目示例7-leetcode-328-奇偶链表)
+      - [其他题目](#其他题目)
+        - [题目示例11 `leetcode 138 复制带随机指针的链表`](#题目示例11-leetcode-138-复制带随机指针的链表)
+        - [题目示例 12 `leetcode 876 链表的中间结点`](#题目示例-12-leetcode-876-链表的中间结点)
+        - [题目示例15 `leetcode 1171 从链表中删去总和值为零的连续节点`](#题目示例15-leetcode-1171-从链表中删去总和值为零的连续节点)
+        - [题目示例16 `leetcode 708 循环有序链表的插入`](#题目示例16-leetcode-708-循环有序链表的插入)
+        - [题目示例17 `leetcode 1474 删链表M个节点之后的N个节点`](#题目示例17-leetcode-1474-删链表m个节点之后的n个节点)
+        - [题目示例18 `leetcode 369 给单链表加一`](#题目示例18-leetcode-369-给单链表加一)
   - [栈和队列](#栈和队列)
     - [栈](#栈)
       - [题目示例1 `leetcode 155 最小栈`](#题目示例1-leetcode-155-最小栈)
@@ -177,7 +183,7 @@
       - [题目示例15 `leetcode51 N皇后`](#题目示例15-leetcode51-n皇后)
   - [双指针](#双指针)
     - [快慢指针（同向指针）](#快慢指针同向指针)
-      - [题目示例1  `leetcode 19 删除链表的倒数第N个节点`](#题目示例1-leetcode-19-删除链表的倒数第n个节点)
+      - [题目示例1  `leetcode 19 删除链表的倒数第N个节点`](#题目示例1-leetcode-19-删除链表的倒数第n个节点-1)
     - [左右指针（对撞指针）](#左右指针对撞指针)
     - [其他双指针](#其他双指针)
   - [滑动窗口技巧](#滑动窗口技巧)
@@ -205,7 +211,8 @@
       - [题目示例18 `leetcode 1100 长度为K的无重复字符子串`](#题目示例18-leetcode-1100-长度为k的无重复字符子串)
       - [题目示例19 `leetcode 727 最小窗口子序列`](#题目示例19-leetcode-727-最小窗口子序列)
       - [题目示例20 `《程序员面试金典》面试题17.18 最短超串`](#题目示例20-程序员面试金典面试题1718-最短超串)
-      - [题目示例21 `leetcode `](#题目示例21-leetcode-)
+      - [题目示例21 `leetcode 159 至多包含两个不同字符的最长子串`](#题目示例21-leetcode-159-至多包含两个不同字符的最长子串)
+      - [题目示例 340 `leetcode 340 至多包含K个不同字符的最长子串`](#题目示例-340-leetcode-340-至多包含k个不同字符的最长子串)
   - [前缀和技巧](#前缀和技巧)
     - [前缀和简单定义](#前缀和简单定义)
     - [题目示例1 `leetcode 1 两数之和`](#题目示例1-leetcode-1-两数之和)
@@ -1827,129 +1834,36 @@ private ListNode reverseList(ListNode head) {
 }
 ```
 
-
-
 -----
 
-
-
-##### 题目示例1 `leetcode 83 删除排序链表中的重复元素`
-
-给定一个排序链表，删除所有重复元素，使得每个元素只出现一次
+###### 题目示例9 `leetcode 147 对链表进行插入排序`
 
 ```java
-private ListNode deleteDuplicates( ListNode head )
-{
-    ListNode current = head;
-    while( current != null )
-    {
-        while( current.next != null && current.val == current.next.val )
-            current.next = current.next.next;
-        current = current.next;
-    }
-    return head;
-}
-```
-
-***
-
-##### 题目示例2 `leetcode 82 删除排序链表中的重复元素II`
-
-给定一个排序链表，删除所有含有重复数字的节点，只保留原始链表中 没有重复出现的数字。
-
-```java
-private ListNode deleteDuplicates( ListNode head )
-{
-    if( head == null )
-        return head;
-    
-    ListNode dummy = new ListNode( 0 );
-    dummy.next = head;
-    head = dummy;
-    
-    // head指向的结点意义：满足题目条件的链表（的一部分）的尾结点
-    int removeVal;
-    while( head.next != null && head.next.next != null )
-    {
-        if( head.next.val == head.next.next.val )
-        {
-            removeVal = head.next.val;
-            while( head.next != null && head.next.val == removeVal )
-                head.next = head.next.next;
-        }
-        else
-            head = head.next;
-    }
-    return dummy.next;
-}
-```
-
----
-
-##### 题目示例3  `leetcode 206 反转链表`
-
-```java
-private ListNode reverseList( ListNode head )
-{
-    ListNode pre = null;
+private ListNode insertionSortList(ListNode head) {
+    ListNode dummyHead = new ListNode(-1);
+    ListNode pre = dummyHead;
     ListNode cur = head;
-    while( cur != null )
-    {
+
+    while(cur != null) {
         ListNode next = cur.next;
-        cur.next = pre;
-        pre = cur;
+        // 确定插入位置
+        while(pre.next != null && pre.next.val < cur.val) {
+            pre = pre.next;
+        }
+        // 插入新节点
+        cur.next = pre.next;
+        pre.next = cur;
+        // 重置指针
         cur = next;
+        pre = dummyHead;
     }
-    return pre;
+    return dummyHead.next;
 }
 ```
 
-##### 题目示例4 `leetcode 92 反转链表II`
+-------
 
-**递归版本**
-
-```java
-
-```
-
-
-
-```java
-private ListNode reverseBetween( ListNode head, int m, int n )
-{
-    if( head == null )
-        return head;
-    
-    ListNode dummy = new ListNode( 0 );
-    dummy.next = head;
-    head = dummy;
-    ListNode pre = null;						// pre固定指向被反转部分最左侧边界外第一个结点
-    for( int i = 0; i < m; i++ )
-    {
-        pre = head;
-        head = head.next;
-    }
-    
-    ListNode next = null;
-    ListNode mid = head;						// mid固定指向被反转部分最左侧结点
-    for( int j = i; head != null && j <= n ; j++ )
-    {
-        ListNode temp = head.next;
-        head.next = next;
-        next = head;
-        head = temp;							// head固定指向已被反转部分最右侧边界外第一个结点
-    }
-    pre.next = next;
-    mid.next = head;
-    return dummy.next;
-}
-```
-
-**哑巴结点使用场景：当头结点不确定的时候，使用哑巴结点**
-
-##### 题目示例6 `leetcode 148 排序链表`
-
-思路：归并排序，找中点和合并操作
+###### 题目示例10 `leetcode 148 排序链表`
 
 ```java
 public ListNode sortList( ListNode head )
@@ -2013,84 +1927,245 @@ private ListNode mergeSort( ListNode head )
 }
 ```
 
-##### 题目示例8 `leetcode 141 环形链表`
 
-快慢指针
+
+-----
+
+##### 反转类题目
+
+###### 题目示例1 `leetcode 206 反转链表`
 
 ```java
-private boolean hasCycle( ListNode head )
+private ListNode reverseList(ListNode head) {
+    ListNode pre = null;
+    ListNode cur = head;
+    while(cur != null)
+    {
+        ListNode next = cur.next;
+        cur.next = pre;
+        pre = cur;
+        cur = next;
+    }
+    return pre;
+}
+```
+
+-----
+
+###### 题目示例2 `leetcode 92 反转链表II`
+
+```java
+public ListNode reverseBetween(ListNode head, int m, int n) {
+    ListNode pre = null, cur = head;
+    for(int i = 1; i < m; i++) {
+        pre = cur;
+        cur = cur.next;
+        n--;
+    }
+    ListNode tail = cur, con = pre;
+    while(n > 0) {
+        ListNode temp = cur.next;
+        cur.next = pre;
+        pre = cur;
+        cur = temp;
+        n--;
+    }
+
+    if(con != null)
+        con.next = pre;
+    else 
+        head = pre;
+    tail.next = cur;
+    return head;
+}
+```
+
+----
+
+###### 题目示例3 `leetcode 25 K个一组翻转链表`
+
+```java
+public ListNode reverseKGroup(ListNode head, int k) 
 {
     if( head == null )
-        return false;
-   
-    ListNode slow = head;
-    ListNode fast = head.next;
-    while( fast != null && fast.next.next != null )
+        return null;
+    ListNode a = head, b = head;
+    for( int i = 0; i < k; i++ )
     {
-        if( fast == slow )
-            return true
+        if( b == null )
+            return a;
+        b = b.next;
+    }
+
+    ListNode newHead = reverseWithinRange( a, b );
+    a.next = reverseKGroup( b, k );
+    return newHead;
+}
+
+private ListNode reverseWithinRange( ListNode a, ListNode b )
+{
+    ListNode pre = null, cur = a, next = a;
+    while( cur != b )
+    {
+        next = cur.next;
+        cur.next = pre;
+        pre = cur;
+        cur = next;
+    }
+    return pre;
+}
+```
+
+-----
+
+##### 链表中的双指针问题
+
+**链表中涉及的双指针问题一般为快慢指针问题**
+
+###### 题目示例1  `leetcode 19 删除链表的倒数第N个节点`
+
+```java
+private ListNode removeNthFromEnd(ListNode head, int n) {
+    ListNode dummyHead = new ListNode(0);
+    dummyHead.next = head;
+    ListNode slow = dummyHead, fast = dummyHead;
+    for(int i = 0; i <= n; i++) {
+        fast = fast.next;
+    }
+    while(fast != null) {
+        slow = slow.next;
+        fast = fast.next;
+    }
+    slow.next = slow.next.next;
+    return dummyHead.next;
+}
+```
+
+-----
+
+###### 题目示例 2 `leetcode 83 删除排序链表中的重复严肃`
+
+```java
+private ListNode deleteDuplicates(ListNode head) {
+    ListNode runner = head;
+    while(runner != null && runner.next != null) {
+        if(runner.next.val == runner.val) {
+            runner.next = runner.next.next;
+        } else {
+            runner = runner.next;
+        }
+    }
+    return head;
+}
+```
+
+-----
+
+###### 题目示例3  `leetcode 82 删除排序链表中的重复元素II`
+
+```java
+private ListNode deleteDuplicates(ListNode head) {
+    if(head == null)
+        return null;
+
+    ListNode dummyHead = new ListNode(0);
+    ListNode pre = dummyHead;
+
+    ListNode cur = head;
+    boolean isDuplicate = false;
+    while(cur != null && cur.next != null) {
+        if(cur.val == cur.next.val) {
+            cur = cur.next;
+            isDuplicate = true;
+        } else {
+            if(isDuplicate) {
+                cur = cur.next;
+                isDuplicate = false;
+            } else {
+                pre.next = new ListNode(cur.val);
+                pre = pre.next;
+                cur = cur.next;
+            }
+        }
+    }
+    // 处理链表最后一个节点
+    if(!isDuplicate) {
+        pre.next = new ListNode(cur.val);
+        pre = pre.next;
+    }
+    return dummyHead.next;
+}
+```
+
+----
+
+###### 题目示例4 `leetcode 141 环形链表`
+
+```java
+private boolean hasCycle(ListNode head) {
+    ListNode dummyHead = new ListNode(0);
+    dummyHead.next = head;
+    ListNode slow = dummyHead, fast = dummyHead;
+
+    while(fast.next != null && fast.next.next != null) {
         slow = slow.next;
         fast = fast.next.next;
+        if(slow == fast)
+            return true;
     }
     return false;
 }
 ```
 
-##### 题目示例9 `leetcode 142 环形链表II`
+-----
 
-思路：快慢指针，相遇之后，慢指针回到链表头部，快慢指针以同样步调移动，相遇点即为入环第一个结点
+###### 题目示例5  `leetcode 142 环形链表II`
 
 ```java
-private ListNode detectCycle( ListNode head )
-{
-    if( head == null )
-        return head;
-    
-    ListNode slow = head;
-    ListNode fast = head;
-    while( fast != null && fast.next != null )
-    {
-        if( fast == slow )
-        {
-            slow = head;
-            fast = fast.next;
-            while( fast != slow )
-            {
-                fast = fast.next;
-                slow = slow.next;
-            }
-            return slow;
+private ListNode detectCycle(ListNode head) {
+    ListNode dummyHead = new ListNode(0);
+    dummyHead.next = head;
+    ListNode slow = dummyHead, fast = dummyHead;
+    while(true) {
+        if(fast.next == null || fast.next.next == null) {
+            return null;
         }
-        fast = fast.next.next;
         slow = slow.next;
+        fast = fast.next.next;
+        if(fast == slow)
+            break;
     }
-    return null;
+    slow = dummyHead;
+    while(fast != slow) {
+        slow = slow.next;
+        fast = fast.next;
+    }
+    return slow;
 }
 ```
 
-##### 题目示例 10 `leetcode 234 回文链表`
+-----
+
+###### 题目示例6 `leetcode 234 回文链表`
 
 ```java
-private boolean isPalindrome( ListNode head )
-{
-    if( head == null )
+private boolean isPalindrome(ListNode head) {
+    if(head == null)
         return true;
     
     ListNode slow = head;
     // fast 如果初始化为head.next,则中点在slow.next
     // fast 初始化为head,则中点在slow
     ListNode fast = head.next;
-    while( fast != null && fast.next != null )
-    {
+    while(fast != null && fast.next != null) {
         slow = slow.next;
         fast = fast.next.next;
     }
     
-    ListNode tail = reverseList( slow.next );
+    ListNode tail = reverseList(slow.next);
     slow.next = null;
-    while( head != null && tail != null )
-    {
-        if( head.val != tail.val )
+    while(head != null && tail != null) {
+        if(head.val != tail.val)
             return false;
         head = head.next;
         tail = tail.next;
@@ -2098,14 +2173,12 @@ private boolean isPalindrome( ListNode head )
     return true;
 }
 
-private ListNode reverseList( ListNode head )
-{
-    if( head == null )
+private ListNode reverseList(ListNode head) {
+    if(head == null)
         return head;
     
     ListNode pre = null;
-    while( head != null )
-    {
+    while(head != null) {
         ListNode next = head.next;
         head.next = pre;
         pre = head;
@@ -2115,9 +2188,35 @@ private ListNode reverseList( ListNode head )
 }
 ```
 
+-----
+
+###### 题目示例7 `leetcode 328 奇偶链表`
+
+```java
+private ListNode oddEvenList(ListNode head) {
+    if(head == null)
+        return null;
+    
+    ListNode oddRunner = head, evenRunner = head.next;
+    ListNode evenHead = evenRunner;
+    while(evenRunner != null && evenRunner.next != null) {
+        oddRunner.next = evenRunner.next;
+        oddRunner = oddRunner.next;
+        evenRunner.next = oddRunner.next;
+        evenRunner = evenRunner.next;
+    }
+    oddRunner.next = evenHead;
+    return head;
+}
+```
+
+------
+
+##### 其他题目
+
 ---
 
-##### 题目示例11 `leetcode 138 复制带随机指针的链表`
+###### 题目示例11 `leetcode 138 复制带随机指针的链表`
 
 ```java
 private Node copyRandomList( Node head )
@@ -2159,7 +2258,7 @@ private Node copyRandomList( Node head )
 
 ---
 
-##### 题目示例 12 `leetcode 876 链表的中间结点`
+###### 题目示例 12 `leetcode 876 链表的中间结点`
 
 ```java
 private ListNode middleNode( ListNode head )
@@ -2179,31 +2278,7 @@ private ListNode middleNode( ListNode head )
 
 -----
 
-##### 题目示例13 `leetcode 328 奇偶链表`
-
-```java
-private ListNode oddEvenList(ListNode head)
-{
-    if(head == null)
-        return null;
-    
-    ListNode oddRunner = head, evenRunner = head.next;
-    ListNode evenHead = evenRunner;
-    while(evenRunner != null && evenRunner.next != null)
-    {
-        oddRunner.next = evenRunner.next;
-        oddRunner = oddRunner.next;
-        evenRunner.next = oddRunner.next;
-        evenRunner = evenRunner.next;
-    }
-    oddRunner.next = evenHead;
-    return head;
-}
-```
-
------
-
-##### 题目示例15 `leetcode 1171 从链表中删去总和值为零的连续节点`
+###### 题目示例15 `leetcode 1171 从链表中删去总和值为零的连续节点`
 
 **前缀和思想的一个应用，其实可以把链表看成一个数组，相当于求和为K的子数组（这里K=0）**
 
@@ -2237,7 +2312,7 @@ private ListNode removeZeroSumSublists(ListNode head) {
 
 ------
 
-##### 题目示例16 `leetcode 708 循环有序链表的插入`
+###### 题目示例16 `leetcode 708 循环有序链表的插入`
 
 ```java
 // 参考题解
@@ -2277,7 +2352,7 @@ private Node insert(Node head, int insertVal) {
 
 -----
 
-##### 题目示例17 `leetcode 1474 删链表M个节点之后的N个节点`
+###### 题目示例17 `leetcode 1474 删链表M个节点之后的N个节点`
 
 ```java
 // 参考题解
@@ -2309,7 +2384,7 @@ private ListNode deleteNodes(ListNode head, int m, int n) {
 
 ------
 
-##### 题目示例18 `leetcode 369 给单链表加一`
+###### 题目示例18 `leetcode 369 给单链表加一`
 
 ```java
 

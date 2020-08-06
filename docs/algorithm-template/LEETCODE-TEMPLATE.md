@@ -5220,31 +5220,28 @@ private boolean isValid(char[][] board, int row, int col)
 #### 简单的滑动窗口模板
 
 ```java
-private void slidingWindow( String s, String t )
-{
+private void slidingWindow(String s, String t) {
     HashMap<Character, Integer> need = new HashMap<>();
     HashMap<Character, Integer> window = new HashMap<>();
     
-    for( char c: t.toCharArray() )
-        need.put( c, need.getOrDefault( c, 0 ) + 1 );
+    for(char c: t.toCharArray())
+        need.put(c, need.getOrDefault(c, 0) + 1);
     
     int left = 0, right = 0;
     int valid = 0;
-    while( right < s.length() )
-    {
+    while(right < s.length()) {
         // c是移入窗口的字符
-        char c = s.charAt( right  );
+        char c = s.charAt(right);
         // 进行窗口内数据的一系列更新
         ...;
         
         /*** debug的输出位置 ***/
-        System.out.println( "window:[%d, %d ]", left, right );
+        System.out.println("window:[%d, %d ]", left, right);
         
         // 判断左侧窗口是否需要收缩
-        while( window needs shrink )
-        {
+        while(window needs shrink) {
             // d是将被移出窗口的字符
-            char d = s.charAt( left );
+            char d = s.charAt(left);
             // 窗口左侧右移
             left++;
             // 进行窗口内数据的一系列更新

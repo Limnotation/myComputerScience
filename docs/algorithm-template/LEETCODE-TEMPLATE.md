@@ -5220,6 +5220,8 @@ private boolean isValid(char[][] board, int row, int col)
 
 #### 简单的滑动窗口模板
 
+##### 1、可变窗口模板
+
 ```java
 private void slidingWindow(String s, String t) {
     HashMap<Character, Integer> need = new HashMap<>();
@@ -5253,6 +5255,16 @@ private void slidingWindow(String s, String t) {
     }
 }
 ```
+
+----
+
+##### 2、固定窗口模板
+
+```java
+
+```
+
+
 
 #### 典型题目
 

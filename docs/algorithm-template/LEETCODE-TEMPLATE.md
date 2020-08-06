@@ -212,7 +212,8 @@
       - [题目示例19 `leetcode 727 最小窗口子序列`](#题目示例19-leetcode-727-最小窗口子序列)
       - [题目示例20 `《程序员面试金典》面试题17.18 最短超串`](#题目示例20-程序员面试金典面试题1718-最短超串)
       - [题目示例21 `leetcode 159 至多包含两个不同字符的最长子串`](#题目示例21-leetcode-159-至多包含两个不同字符的最长子串)
-      - [题目示例 340 `leetcode 340 至多包含K个不同字符的最长子串`](#题目示例-340-leetcode-340-至多包含k个不同字符的最长子串)
+      - [题目示例 22 `leetcode 340 至多包含K个不同字符的最长子串`](#题目示例-22-leetcode-340-至多包含k个不同字符的最长子串)
+      - [题目示例23 `leetcode 1456 定长子串中元音的最大数目`](#题目示例23-leetcode-1456-定长子串中元音的最大数目)
   - [前缀和技巧](#前缀和技巧)
     - [前缀和简单定义](#前缀和简单定义)
     - [题目示例1 `leetcode 1 两数之和`](#题目示例1-leetcode-1-两数之和)
@@ -5814,7 +5815,7 @@ private int lengthOfLongestSubstringTwoDistinct(String s) {
 
 -----
 
-##### 题目示例 340 `leetcode 340 至多包含K个不同字符的最长子串`
+##### 题目示例 22 `leetcode 340 至多包含K个不同字符的最长子串`
 
 ```java
 private int lengthOfLongestSubstringKDistinct(String s, int k) {
@@ -5843,6 +5844,34 @@ private int lengthOfLongestSubstringKDistinct(String s, int k) {
         maxLen = Math.max(maxLen, right - left);
     }
     return maxLen;
+}
+```
+
+-----
+
+##### 题目示例23 `leetcode 1456 定长子串中元音的最大数目`
+
+**固定窗口大小题目**
+
+```java
+public int maxVowels(String s, int k) {
+    if(s == null || s.length() == 0)
+        return 0;
+
+    int curCnt = 0, res = 0;
+    for(int i = 0; i < s.length(); i++) {
+        curCnt += isVowel(s.charAt(i));
+        if(i >= k)
+            curCnt -= isVowel(s.charAt(i-k));
+        res = Math.max(curCnt, res);
+    }
+    return res;
+}
+
+private int isVowel(char c) {
+    if(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u')
+        return 1;
+    return 0;
 }
 ```
 

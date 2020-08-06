@@ -5706,7 +5706,75 @@ private int[] shortestSeq(int[] big, int[] small)
 
 -----
 
-##### 题目示例21 `leetcode `
+##### 题目示例21 `leetcode 159 至多包含两个不同字符的最长子串`
+
+```java
+private int lengthOfLongestSubstringTwoDistinct(String s) {
+    if(s == null)
+        return 0;
+    if(s.length() <= 2)
+        return s.length();
+
+    HashMap<Character, Integer> window = new HashMap<>();
+    int left = 0, right = 0;
+    int maxLen = Integer.MIN_VALUE;
+    int match = 0;
+    while(right < s.length())
+    {
+        char c1 = s.charAt(right);
+        if(!window.containsKey(c1) || window.get(c1) == 0)
+            match++;
+        window.put(c1, window.getOrDefault(c1, 0) + 1);
+        right++;
+        while(match > 2) {
+            char c2 = s.charAt(left);
+            if(window.get(c2) == 1) {
+                match--;
+            }
+            window.put(c2, window.get(c2) -1);
+            left++;
+        }
+        maxLen = Math.max(maxLen, right - left);
+    }
+    return maxLen;
+}
+```
+
+-----
+
+##### 题目示例 340 `leetcode 340 至多包含K个不同字符的最长子串`
+
+```java
+private int lengthOfLongestSubstringKDistinct(String s, int k) {
+    if(s == null)
+        return 0;
+    if(s.length() <= k)
+        return s.length();
+
+    HashMap<Character, Integer> window = new HashMap<>();
+    int left = 0, right = 0;
+    int maxLen = Integer.MIN_VALUE;
+    int match = 0;
+    while(right < s.length()) {
+        char c1 = s.charAt(right);
+        if(!window.containsKey(c1) || window.get(c1) == 0)
+            match++;
+        window.put(c1, window.getOrDefault(c1, 0) + 1);
+        right++;
+        while(match > k) {
+            char c2 = s.charAt(left);
+            if(window.get(c2) == 1)
+                match--;
+            window.put(c2, window.get(c2) - 1);
+            left++;
+        }
+        maxLen = Math.max(maxLen, right - left);
+    }
+    return maxLen;
+}
+```
+
+
 
 -----
 

@@ -193,29 +193,32 @@
       - [1、可变窗口模板](#1可变窗口模板)
       - [2、固定窗口模板](#2固定窗口模板)
     - [典型题目](#典型题目-2)
-      - [题目示例1 `leetcode 76 最小覆盖子串`](#题目示例1-leetcode-76-最小覆盖子串)
-      - [题目示例2 `leetcode 567 字符串的排列`](#题目示例2-leetcode-567-字符串的排列)
-      - [题目示例3 `leetcode 438找到所有的字母异位词`](#题目示例3-leetcode-438找到所有的字母异位词)
-      - [题目示例4 `leetcode 3 无重复字符的最长子串`](#题目示例4-leetcode-3-无重复字符的最长子串)
-      - [题目示例5 `leetcode 209 长度最小的子数组`](#题目示例5-leetcode-209-长度最小的子数组)
-      - [题目示例6 `leetcode 904 水果成篮`](#题目示例6-leetcode-904-水果成篮)
-      - [题目示例7 `leetcode 424 替换后的最长重复字符串`](#题目示例7-leetcode-424-替换后的最长重复字符串)
-      - [题目示例8 `leetcode 239 滑动窗口最大值`](#题目示例8-leetcode-239-滑动窗口最大值)
-      - [题目示例9 `leetcode 992 K个不同整数的子数组`](#题目示例9-leetcode-992-k个不同整数的子数组)
-      - [题目示例10 `leetcode 1004 最大连续1的个数III`](#题目示例10-leetcode-1004-最大连续1的个数iii)
-      - [题目示例11 `leetcode 1234 替换子串得到平衡字符串`](#题目示例11-leetcode-1234-替换子串得到平衡字符串)
-      - [题目示例12 `leetcode 395 至少有K个重复字符的最长子串`](#题目示例12-leetcode-395-至少有k个重复字符的最长子串)
-      - [题目示例13 `leetcode 1208 尽可能使字符串相等`](#题目示例13-leetcode-1208-尽可能使字符串相等)
-      - [题目示例14  `leetcode 978 最长湍流子数组`](#题目示例14-leetcode-978-最长湍流子数组)
-      - [题目示例15 `leetcode 995 K连续位的最小翻转次数`](#题目示例15-leetcode-995-k连续位的最小翻转次数)
-      - [题目示例16 `leetcode 1040 移动石子直到连续`](#题目示例16-leetcode-1040-移动石子直到连续)
-      - [题目示例17 `leetcode 1052 爱生气的书店老板`](#题目示例17-leetcode-1052-爱生气的书店老板)
-      - [题目示例18 `leetcode 1100 长度为K的无重复字符子串`](#题目示例18-leetcode-1100-长度为k的无重复字符子串)
-      - [题目示例19 `leetcode 727 最小窗口子序列`](#题目示例19-leetcode-727-最小窗口子序列)
-      - [题目示例20 `《程序员面试金典》面试题17.18 最短超串`](#题目示例20-程序员面试金典面试题1718-最短超串)
-      - [题目示例21 `leetcode 159 至多包含两个不同字符的最长子串`](#题目示例21-leetcode-159-至多包含两个不同字符的最长子串)
-      - [题目示例 22 `leetcode 340 至多包含K个不同字符的最长子串`](#题目示例-22-leetcode-340-至多包含k个不同字符的最长子串)
-      - [题目示例23 `leetcode 1456 定长子串中元音的最大数目`](#题目示例23-leetcode-1456-定长子串中元音的最大数目)
+      - [可变窗口题目](#可变窗口题目)
+        - [题目示例1 `leetcode 76 最小覆盖子串`](#题目示例1-leetcode-76-最小覆盖子串)
+        - [题目示例2 `leetcode 567 字符串的排列`](#题目示例2-leetcode-567-字符串的排列)
+        - [题目示例3 `leetcode 438 找到字符串中所有字母异位词`](#题目示例3-leetcode-438-找到字符串中所有字母异位词)
+        - [题目示例4 `leetcode 3 无重复字符的最长子串`](#题目示例4-leetcode-3-无重复字符的最长子串)
+        - [题目示例5 `leetcode 209 长度最小的子数组`](#题目示例5-leetcode-209-长度最小的子数组)
+        - [题目示例6 `leetcode 424 替换后的最长字符串`](#题目示例6-leetcode-424-替换后的最长字符串)
+        - [题目示例7 `leetcode 1004 最大连续1的个数III`](#题目示例7-leetcode-1004-最大连续1的个数iii)
+        - [题目示例8 `leetcode 1100 长度为K的无重复字符子串`](#题目示例8-leetcode-1100-长度为k的无重复字符子串)
+        - [题目示例9 `面试题17.18 最短超串`](#题目示例9-面试题1718-最短超串)
+        - [题目示例10 `leetcode 159 至多包含两个不同字符的最长子串`](#题目示例10-leetcode-159-至多包含两个不同字符的最长子串)
+        - [题目示例11 `leetcode 340 至多包含K个不同字符的最长子串`](#题目示例11-leetcode-340-至多包含k个不同字符的最长子串)
+      - [固定窗口题目](#固定窗口题目)
+        - [题目示例1 `leetcode 239 滑动窗口最大值`](#题目示例1-leetcode-239-滑动窗口最大值)
+        - [题目示例2 `leetcode 1456 定长子串中原因的最大数目`](#题目示例2-leetcode-1456-定长子串中原因的最大数目)
+      - [未分类题目](#未分类题目)
+        - [题目示例6 `leetcode 904 水果成篮`](#题目示例6-leetcode-904-水果成篮)
+        - [题目示例9 `leetcode 992 K个不同整数的子数组`](#题目示例9-leetcode-992-k个不同整数的子数组)
+        - [题目示例11 `leetcode 1234 替换子串得到平衡字符串`](#题目示例11-leetcode-1234-替换子串得到平衡字符串)
+        - [题目示例12 `leetcode 395 至少有K个重复字符的最长子串`](#题目示例12-leetcode-395-至少有k个重复字符的最长子串)
+        - [题目示例13 `leetcode 1208 尽可能使字符串相等`](#题目示例13-leetcode-1208-尽可能使字符串相等)
+        - [题目示例14  `leetcode 978 最长湍流子数组`](#题目示例14-leetcode-978-最长湍流子数组)
+        - [题目示例15 `leetcode 995 K连续位的最小翻转次数`](#题目示例15-leetcode-995-k连续位的最小翻转次数)
+        - [题目示例16 `leetcode 1040 移动石子直到连续`](#题目示例16-leetcode-1040-移动石子直到连续)
+        - [题目示例17 `leetcode 1052 爱生气的书店老板`](#题目示例17-leetcode-1052-爱生气的书店老板)
+        - [题目示例19 `leetcode 727 最小窗口子序列`](#题目示例19-leetcode-727-最小窗口子序列)
   - [前缀和技巧](#前缀和技巧)
     - [前缀和简单定义](#前缀和简单定义)
     - [题目示例1 `leetcode 1 两数之和`](#题目示例1-leetcode-1-两数之和)
@@ -5272,8 +5275,6 @@ private void slidingWindow(String s, String t) {
 
 #### 典型题目
 
-##### 固定窗口题目
-
 ------
 
 ##### 可变窗口题目
@@ -5477,7 +5478,179 @@ private int characterReplacement(String s, int k) {
 }
 ```
 
-------
+-----
+
+###### 题目示例7 `leetcode 1004 最大连续1的个数III`
+
+```java
+private int longestOnes(int[] A, int K) {
+    if(A == null)
+        return 0;
+    if(A.length <= K)
+        return A.length;
+    
+    int left = 0, right = 0;
+    int len = A.length, maxLen = Integer.MIN_VALUE;
+    int usedZero = 0;
+    while(right < len) {
+        if(A[right] == 0)
+            usedZero++;
+        while(usedZero > K) {
+            if(A[left] == 0)
+                usedZero--;
+            left++;
+        }
+        maxLen = Math.max(maxLen, right - left + 1);
+        right++;
+    }
+    return maxLen == Integer.MIN_VALUE? 0:maxLen;
+}
+```
+
+-----
+
+###### 题目示例8 `leetcode 1100 长度为K的无重复字符子串`
+
+```java
+private int numKLenSubstrNoRepeats(String S, int K) {
+    if(S == null || K <= 0 || S.length() < K)
+        return 0;
+    int left = 0, right = 0;
+    int[] window = new int[26];
+    int res = 0;
+    int len = S.length();
+    while(right < len) {
+        int index1 = S.charAt(right) - 'a';
+        window[index1]++;
+        while(window[index1] > 1) {
+            int index2 = S.charAt(left) - 'a';
+            window[index2]--;
+            left++;
+        }
+        if((right - left + 1) == K) {
+            res++;
+            int index2 = S.charAt(left) - 'a';
+            window[index2]--;
+            left++;
+        }
+        right++;
+    }
+    return res;
+}
+```
+
+-----
+
+###### 题目示例9 `面试题17.18 最短超串`
+
+```java
+private int[] shortestSeq(int[] big, int[] small) {
+    if(big == null || small == null || big.length < small.length)
+        return new int[0];
+
+    int left = 0, right = 0;
+    int start = 0, minLen = Integer.MAX_VALUE;
+    int match = 0;
+    HashMap<Integer, Integer> need = new HashMap<>();
+    HashMap<Integer, Integer> window = new HashMap<>();
+    for(int item:small)
+        need.put(item, need.getOrDefault(item, 0) + 1);
+
+    int len1 = big.length;
+    while(right < len1) {
+        int item1 = big[right];
+        window.put(item1, window.getOrDefault(item1, 0) + 1);
+        if(need.containsKey(item1) && window.get(item1) == 1)
+            match++;
+
+        while(match == need.size()) {
+            int item2 = big[left];
+            if(right - left < minLen) {
+                minLen = right - left;
+                start = left;
+            }
+            if(need.containsKey(item2) && window.get(item2) == 1)
+                match--;
+            window.put(item2, window.get(item2) - 1);
+            left++;
+        }
+        right++;
+    }
+    return minLen == Integer.MAX_VALUE? new int[0]:new int[]{start, start + minLen};
+}
+```
+
+-----
+
+###### 题目示例10 `leetcode 159 至多包含两个不同字符的最长子串`
+
+```java
+private int lengthOfLongestSubstringTwoDistinct(String s) {
+    if(s == null)
+        return 0;
+    if(s.length() <= 2)
+        return s.length();
+    
+    int left = 0, right = 0;
+    int maxLen = Integer.MIN_VALUE;
+    int len = s.length(), match = 0;
+    HashMap<Character, Integer> window = new HashMap<>();
+    while(right < len) {
+        char c1 = s.charAt(right);
+        if(!window.containsKey(c1) || window.get(c1) == 0)
+            match++;
+        window.put(c1, window.getOrDefault(c1, 0) + 1);
+        while(match > 2) {
+            char c2 = s.charAt(left);
+            if(window.get(c2) == 1)
+                match--;
+            window.put(c2, window.get(c2) - 1);
+            left++;
+        }
+        maxLen = Math.max(maxLen, right - left + 1);
+        right++;
+    }
+    return maxLen;
+}
+```
+
+-----
+
+###### 题目示例11 `leetcode 340 至多包含K个不同字符的最长子串`
+
+```java
+private int lengthOfLongestSubstringKDistinct(String s, int k) {
+    if(s == null || k <= 0)
+        return 0;
+    if(s.length() <= k)
+        return s.length();
+
+    int left = 0, right = 0;
+    int match = 0, maxLen = Integer.MIN_VALUE;
+    int len = s.length();
+    HashMap<Character, Integer> window = new HashMap<>();
+    while(right < len) {
+        char c1 = s.charAt(right);
+        if(!window.containsKey(c1) || window.get(c1) == 0)
+            match++;
+        window.put(c1, window.getOrDefault(c1, 0) + 1);
+        while(match > k) {
+            char c2 = s.charAt(left);
+            if(window.get(c2) == 1)
+                match--;
+            window.put(c2, window.get(c2) - 1);
+            left++;
+        }
+        maxLen = Math.max(maxLen, right - left + 1);
+        right++;
+    }
+    return maxLen == Integer.MIN_VALUE? 0:maxLen;
+}
+```
+
+
+
+-----
 
 ##### 固定窗口题目
 
@@ -5505,11 +5678,39 @@ private int[] maxSlidingWindow(int[] nums, int k) {
 }
 ```
 
+------
 
+###### 题目示例2 `leetcode 1456 定长子串中原因的最大数目`
+
+```java
+public int maxVowels(String s, int k) {
+    if(s == null || s.length() <= 0 || k < 1)
+        return 0;
+
+    int curVal = 0, res = 0;
+    for(int i = 0; i < s.length(); i++) {
+        curVal += isVowel(s.charAt(i));
+        if(i >= k)
+            curVal -= isVowel(s.charAt(i - k));
+        res = Math.max(res, curVal);
+    }
+    return res;
+}
+
+private int isVowel(char c) {
+    if(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u')
+        return 1;
+    return 0;
+}
+```
+
+----
+
+##### 未分类题目
 
 ---
 
-##### 题目示例6 `leetcode 904 水果成篮`
+###### 题目示例6 `leetcode 904 水果成篮`
 
 ```java
 private int totalFruit(int[] tree)
@@ -5546,65 +5747,35 @@ private int totalFruit(int[] tree)
 
 ---
 
-##### 题目示例9 `leetcode 992 K个不同整数的子数组`
-
----
-
-##### 题目示例10 `leetcode 1004 最大连续1的个数III`
-
-```java
-private int longestOnes(int[] A, int K)
-{
-    if(A == null || A.length < K)
-        return 0;
-    
-    int left = 0, right = 0;
-    int usedZero = 0;
-    int res = 0;
-    while(right < A.length)
-    {
-        if(A[right] == 0)
-            usedZero++;
-        right++; 
-        while(usedZero > K)
-        {
-            if(A[left] == 0)
-                usedZero--;
-            left++;
-        }
-        res = Math.max(res, right - left);
-    }
-    return res;
-}
-```
+###### 题目示例9 `leetcode 992 K个不同整数的子数组`
 
 ----
 
-##### 题目示例11 `leetcode 1234 替换子串得到平衡字符串`
+###### 题目示例11 `leetcode 1234 替换子串得到平衡字符串`
 
 ---
 
-##### 题目示例12 `leetcode 395 至少有K个重复字符的最长子串`
+###### 题目示例12 `leetcode 395 至少有K个重复字符的最长子串`
 
 ---
 
-##### 题目示例13 `leetcode 1208 尽可能使字符串相等`
+###### 题目示例13 `leetcode 1208 尽可能使字符串相等`
 
 ----
 
-##### 题目示例14  `leetcode 978 最长湍流子数组`
+###### 题目示例14  `leetcode 978 最长湍流子数组`
 
 ---
 
-##### 题目示例15 `leetcode 995 K连续位的最小翻转次数`
+###### 题目示例15 `leetcode 995 K连续位的最小翻转次数`
 
 ---
 
-##### 题目示例16 `leetcode 1040 移动石子直到连续`
+###### 题目示例16 `leetcode 1040 移动石子直到连续`
 
 ---
 
-##### 题目示例17 `leetcode 1052 爱生气的书店老板`
+###### 题目示例17 `leetcode 1052 爱生气的书店老板`
 
 ```java
 /**
@@ -5631,48 +5802,9 @@ private int maxSatisfied(int[] customers, int[] grumpy, int X)
 }
 ```
 
------
-
-##### 题目示例18 `leetcode 1100 长度为K的无重复字符子串`
-
-```java
-private int numKLenSubstrNoRepeats(String S, int K)
-{
-    if(S == null || S.length() == 0)
-        return 0;
-    
-    int len = S.length();
-    if(len < K)
-        return 0;
-    
-    int res = 0;
-    int[] window = new int[26];
-    int left = 0, right = 0;
-    while(right < len)
-    {
-        int index = S.charAt(right) - 'a';
-        window[index]++;
-        
-        while(window[index] > 1)
-        {
-            window[S.charAt(left) - 'a']--;
-            left++;
-        }
-        if(right - left + 1 == K)
-        {
-            res++;
-            window[S.charAt(left) - 'a']--;
-            left++;
-        }
-        right++;
-    }
-    return res;
-}
-```
-
 ----
 
-##### 题目示例19 `leetcode 727 最小窗口子序列`
+###### 题目示例19 `leetcode 727 最小窗口子序列`
 
 ```java
 private String minWindow(String S, String T)
@@ -5705,154 +5837,6 @@ private String minWindow(String S, String T)
         }
         sIndex++;
     }
-}
-```
-
-------
-
-##### 题目示例20 `《程序员面试金典》面试题17.18 最短超串`
-
-```java
-private int[] shortestSeq(int[] big, int[] small)
-{
-    if(big == null || big.length <= 0 || big.length < small.length)
-        return new int[0];
-    
-    int left = 0, right = 0;
-    int minLen = Integer.MAX_VALUE, start = 0;
-    HashMap<Integer, Integer> window = new HashMap<>();
-    HashMap<Integer, Integer> need = new HashMap<>();
-    for(int item:small)
-        need.put(item, need.getOrDefault(item, 0) + 1);
-    
-    int match = 0;
-    while(right < big.length)
-    {
-        int item1 = big[right];
-        if(need.containsKey(item1))
-        {
-            window.put(item1, window.getOrDefault(item1, 0) + 1);
-            if(window.get(item1).equals(need.get(item1)))
-                match++;
-        }
-        
-        while(match == need.size())
-        {
-            if(right - left < minLen)
-            {
-                minLen = right - left;
-                start = left;
-            }
-            int item2 = big[left];
-            if(need.containsKey(item2))
-            {
-                window.put(item2, window.get(item2) - 1);
-                if(window.get(item2) < need.get(item2))
-                    match--;
-            }
-            left++;
-        }
-        right++;
-    }
-    return minLen == Integer.MAX_VALUE? new int[0]:new int[]{start, start + minLen};
-}
-```
-
------
-
-##### 题目示例21 `leetcode 159 至多包含两个不同字符的最长子串`
-
-```java
-private int lengthOfLongestSubstringTwoDistinct(String s) {
-    if(s == null)
-        return 0;
-    if(s.length() <= 2)
-        return s.length();
-
-    HashMap<Character, Integer> window = new HashMap<>();
-    int left = 0, right = 0;
-    int maxLen = Integer.MIN_VALUE;
-    int match = 0;
-    while(right < s.length())
-    {
-        char c1 = s.charAt(right);
-        if(!window.containsKey(c1) || window.get(c1) == 0)
-            match++;
-        window.put(c1, window.getOrDefault(c1, 0) + 1);
-        right++;
-        while(match > 2) {
-            char c2 = s.charAt(left);
-            if(window.get(c2) == 1) {
-                match--;
-            }
-            window.put(c2, window.get(c2) -1);
-            left++;
-        }
-        maxLen = Math.max(maxLen, right - left);
-    }
-    return maxLen;
-}
-```
-
------
-
-##### 题目示例 22 `leetcode 340 至多包含K个不同字符的最长子串`
-
-```java
-private int lengthOfLongestSubstringKDistinct(String s, int k) {
-    if(s == null)
-        return 0;
-    if(s.length() <= k)
-        return s.length();
-
-    HashMap<Character, Integer> window = new HashMap<>();
-    int left = 0, right = 0;
-    int maxLen = Integer.MIN_VALUE;
-    int match = 0;
-    while(right < s.length()) {
-        char c1 = s.charAt(right);
-        if(!window.containsKey(c1) || window.get(c1) == 0)
-            match++;
-        window.put(c1, window.getOrDefault(c1, 0) + 1);
-        right++;
-        while(match > k) {
-            char c2 = s.charAt(left);
-            if(window.get(c2) == 1)
-                match--;
-            window.put(c2, window.get(c2) - 1);
-            left++;
-        }
-        maxLen = Math.max(maxLen, right - left);
-    }
-    return maxLen;
-}
-```
-
------
-
-##### 题目示例23 `leetcode 1456 定长子串中元音的最大数目`
-
-**固定窗口大小题目**
-
-```java
-public int maxVowels(String s, int k) {
-    if(s == null || s.length() == 0)
-        return 0;
-
-    int curCnt = 0, res = 0;
-    for(int i = 0; i < s.length(); i++) {
-        curCnt += isVowel(s.charAt(i));
-        if(i >= k)
-            curCnt -= isVowel(s.charAt(i-k));
-        res = Math.max(curCnt, res);
-    }
-    return res;
-}
-
-private int isVowel(char c) {
-    if(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u')
-        return 1;
-    return 0;
 }
 ```
 

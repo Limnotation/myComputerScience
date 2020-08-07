@@ -5268,218 +5268,244 @@ private void slidingWindow(String s, String t) {
 
 ```
 
-
+-----
 
 #### 典型题目
 
-##### 题目示例1 `leetcode 76 最小覆盖子串`
+##### 固定窗口题目
+
+------
+
+##### 可变窗口题目
+
+###### 题目示例1 `leetcode 76 最小覆盖子串`
 
 ```java
-private String minWindow( String s, String t )
-{
-    if( s == null || t == null || s.length() < t.length() )
+private String minWindow(String s, String t) {
+    if(s == null || t == null || s.length() < t.length())
         return "";
     
     HashMap<Character, Integer> need = new HashMap<>();
-    HashMap<Character, Integer> window= new HashMap<>();
-    for( char c : t.toCharArray() )
-        need.put( c, need.getOrDefault( c, 0 ) + 1 );
+    HashMap<Character, Integer> window = new HashMap<>();
+    for(char c:t.toCharArray())
+        need.put(c, need.getOrDefault(c, 0) + 1);
     
     int left = 0, right = 0;
-    int valid = 0;
-    // 记录最小覆盖子串的起始索引及长度
-    int start = 0, len = Integer.MAX_VALUE;
-    while( right < s.length() )
-    {
-        // c是移入窗口的字符
-        char c = s.charAt( right );
-        // 右移窗口
-        right++;
-        // 进行窗口内数据的一系列更新
-        if( need.containsKey( c ) )
-        {
-            window.put( c, window.getOrDefault( c, 0 ) + 1 );
-            if( window.get( c ).equals( need.get( c ) ) )
-                valid++;
-        }
-        
-        // 判断左侧窗口是否要收缩
-        while( valid == need.size() )
-        {
-            // 更新最小覆盖子串
-            if( right - left < len )
-            {
+    int match = 0, start = 0;
+    int minLen = Integer.MAX_VALUE;
+    int len = s.length();
+    while(right < len) {
+        char c1 = s.charAt(right);
+        window.put(c1, window.getOrDefault(c1, 0) + 1);
+        if(window.get(c1).equals(need.get(c1)))
+            match++;
+        while(match == need.size()) {
+            if(right - left + 1 < minLen) {
                 start = left;
-                len = right - left; 
+                minLen = right - left + 1;
             }
-            // d是将被移出窗口的字符
-            char d = s.charAt( left );
-            // 右移窗口左侧
+            char c2 = s.charAt(left);
+            if(window.get(c2).equals(need.get(c2)))
+                match--;
+            window.put(c2, window.get(c2) - 1);
             left++;
-            // 进行窗口内数据的一系列更新
-            if( need.containsKey( d ) )
-            {
-                if( window.get( d ).equals( need.get( d ) ) )
-                    valid--;
-                window.put( d, window.get(d) - 1 );
-            }
         }
+        right++;
     }
-    return len == Integer.MAX_VALUE? "":s.substring( start, start + len );
+    return minLen == Integer.MAX_VALUE? "":s.substring(start,start + minLen);
 }
 ```
 
----
+------
 
-##### 题目示例2 `leetcode 567 字符串的排列`
+###### 题目示例2 `leetcode 567 字符串的排列`
 
 ```java
-private boolean checkInclusion( String s1, String s2 )
-{
-    if( s2.length() < s1.length )
+private boolean checkInclusion(String s1, String s2) {
+    if(s1 == null || s2 == null || s2.length() < s1.length())
         return false;
     
     HashMap<Character, Integer> need = new HashMap<>();
     HashMap<Character, Integer> window = new HashMap<>();
-    for( char c:s1.toCharArray() )
-        need.put( c, need.getOrDefault( c, 0 ) + 1 );
+    for(char c:s1.toCharArray())
+        need.put(c, need.getOrDefault(c, 0) + 1);
     
     int left = 0, right = 0;
-    int valid = 0;
-    while( right < s2.length() )
-    {
-        char c = s2.charAt( right );
-        right++;
-        if( need.containsKey(c) )
-        {
-            window.put( c, window.getOrDefault( c, 0 ) + 1 );
-            if( window.get( c ).equals( need.get( c ) ) )
-                valid++;
-        }
-        
-        while( (right - left) >= s1.length() )
-        {
-            // 在这里判断是否找到了合法的子串
-            if( valid == need.size() )
+    int match = 0;
+    int len1 = s1.length(), len2 = s2.length();
+    while(right < len2) {
+        char c1 = s2.charAt(right);
+        window.put(c1, window.getOrDefault(c1, 0) + 1);
+        if(window.get(c1).equals(need.get(c1)))
+            match++;
+        while((right - left + 1) >= len1) {
+            if(match == need.size())
                 return true;
-            
-            char d = s2.charAt( left );
+            char c2 = s2.charAt(left);
+            if(window.get(c2).equals(need.get(c2)))
+                match--;
+            window.put(c2, window.get(c2) - 1);
             left++;
-            if( need.containsKey( d ) ) 
-            {
-                if( window.get( d ).equals( need.get( d ) ) )
-                    valid--;
-                window.put( d, window.get(d) - 1 );
-            }
         }
+        right++;
     }
     return false;
 }
 ```
 
----
+------
 
-##### 题目示例3 `leetcode 438找到所有的字母异位词`
+###### 题目示例3 `leetcode 438 找到字符串中所有字母异位词`
 
 ```java
-private List<Integer> findAnagrams( String s, String p )
-{
+private List<Integer> findAnagrams(String s, String p) {
     List<Integer> res = new LinkedList<>();
-    if( s.length() < p.length() )
+    if(s == null || p == null || s.length() < p.length())
         return res;
     
     HashMap<Character, Integer> need = new HashMap<>();
     HashMap<Character, Integer> window = new HashMap<>();
-    for( char c:p.toCharArray() )
-        need.put( c, need.getOrDefault( c, 0 ) + 1 );
+    for(char c:p.toCharArray())
+        need.put(c, need.getOrDefault(c, 0) + 1);
     
     int left = 0, right = 0;
-    int valid = 0;
-    while( right < s.length() )
-    {
-        char c = s.charAt( right );
-        right++;
-        if( need.containsKey( c ) )
-        {
-            window.put( c, window.getOrDefault( c, 0 ) + 1 );
-            if( window.get(c).equals( need.get(c) ) )
-                valid++;
-        }
-        
-        while( right - left >= p.length() )
-        {
-            if( valid == need.size() )
-                res.add( left );
-            char d = s.charAt( left );
+    int match = 0;
+    int len1 = s.length(), len2 = p.length();
+    while(right < len1) {
+        char c1 = s.charAt(right);
+        window.put(c1, window.getOrDefault(c1, 0) + 1);
+        if(window.get(c1).equals(need.get(c1)))
+            match++;
+        while((right - left + 1) >= len2) {
+            if(match == need.size())
+                res.add(left);
+            char c2 = s.charAt(left);
+            if(window.get(c2).equals(need.get(c2)))
+                match--;
+            window.put(c2, window.get(c2) - 1);
             left++;
-            if( need.containsKey( d ) )
-            {
-                if( window.get(d).equals( need.get(d) ) ) 
-                    valid--;
-                window.put( d, window.get(d) - 1 );
-            }
         }
+        right++;
     }
     return res;
 }
 ```
 
----
+------
 
-##### 题目示例4 `leetcode 3 无重复字符的最长子串`
+###### 题目示例4 `leetcode 3 无重复字符的最长子串`
 
 ```java
-private int lengthOfLongestSubstring(String s)
-{
-    if(s == null || s.length() == 0)
+private int lengthOfLongestSubstring(String s) {
+    if(s == null)
         return 0;
+    if(s.length() <= 1)
+        return s.length();
     
     HashMap<Character, Integer> window = new HashMap<>();
     int left = 0, right = 0;
-    int res = 0;
-    while(right < s.length())
-    {
-        char c = s.charAt(right);
-        right ++;
-        window.put(c, window.getOrDefault( c, 0 ) + 1);
-        while(window.get(c) > 1)
-        {
-            char d = s.charAt(left);
+    int maxLen = Integer.MIN_VALUE;
+    int len = s.length();
+    while(right < len) {
+        char c1 = s.charAt(right);
+        window.put(c1, window.getOrDefault(c1, 0) + 1);
+        while(window.get(c1) > 1) {
+            char c2 = s.charAt(left);
+            window.put(c2, window.get(c2) - 1);
             left++;
-            window.put(d, window.get(d) - 1);
         }
-        res = Math.max(res, right - left);
+        maxLen = Math.max(maxLen, right - left + 1);
+        right++;
     }
-    return res;
+    return maxLen;
 }
 ```
 
----
+-----
 
-##### 题目示例5 `leetcode 209 长度最小的子数组`
+###### 题目示例5 `leetcode 209 长度最小的子数组`
 
 ```java
-private int minSubArrayLen(int s, int[] nums)
-{
-    if(nums == null || nums.length == 0)
+private int minSubArrayLen(int s, int[] nums) {
+    if(nums == null || nums.length == 0 || s <= 0)
         return 0;
     
     int left = 0, right = 0;
     int curVal = 0, minLen = Integer.MAX_VALUE;
-    while(right < nums.length)
-    {
+    int len = nums.length;
+    while(right < len) {
         curVal += nums[right];
-        right++;
-        while(curVal >= s)
-        {
-            minLen = Math.min(right - left, minLen);
+        while(curVal >= s) {
+            minLen = Math.min(minLen, right - left + 1);
             curVal -= nums[left];
             left++;
         }
+        right++;
     }
     return minLen == Integer.MAX_VALUE? 0:minLen;
 }
 ```
+
+-------
+
+###### 题目示例6 `leetcode 424 替换后的最长字符串`
+
+```java
+private int characterReplacement(String s, int k) {
+    if(s == null)
+        return 0;
+    if(s.length() <= k)
+        return s.length();
+    
+    int left = 0, right = 0;
+    int occurMost = 0, maxLen = Integer.MIN_VALUE;
+    int[] window = new int[26];
+    int len = s.length();
+    while(right < len) {
+        int index1 = s.charAt(right) - 'A';
+        window[index1]++;
+        occurMost = Math.max(occurMost, window[index1]);
+        while((right - left + 1) > occurMost + k) {
+            int index2 = s.charAt(left) - 'A';
+            window[index2]--;
+            left++;
+        }
+        maxLen = Math.max(maxLen, right - left + 1);
+        right++;
+    }
+    return maxLen == Integer.MIN_VALUE? 0:maxLen;
+}
+```
+
+------
+
+##### 固定窗口题目
+
+###### 题目示例1 `leetcode 239 滑动窗口最大值`
+
+```java
+private int[] maxSlidingWindow(int[] nums, int k) {
+    if(nums == null || k < 1 || nums.length < k)
+        return new int[0];
+    
+    int len = nums.length;
+    int[] res = new int[len - k + 1];
+    Deque<Integer> window = new LinkedList<>();
+    int index = 0;
+   	for(int i = 0; i < len; i++) {
+        while(!window.isEmpty() && nums[i] >= nums[window.peekLast()])
+            window.pollLast();
+        window.offerLast(i);
+        if(i - k >= window.peekFirst())
+            window.pollFirst();
+        if(i >= k - 1)
+            res[index++] = nums[window.peekFirst()];
+    }
+    return res;
+}
+```
+
+
 
 ---
 
@@ -5515,67 +5541,6 @@ private int totalFruit(int[] tree)
         right++;
     }
     return Math.max(res, right - left);
-}
-```
-
----
-
-##### 题目示例7 `leetcode 424 替换后的最长重复字符串`
-
-```java
-private int characterReplacement(String s, int k)
-{
-    if(s == null || s.length() <= 0)
-        return 0;
-    
-    int[] map = new int[26];
-    int maxLen = 0;
-    int left = 0, right = 0;
-    int occurMost = 0;
-    char[] chars = s.toCharArray();
-    
-    while(right < s.length())
-    {
-        int index = chars[right] - 'A';
-        map[index]++;
-        occurMost = Math.max(occurMost, map[index]);
-        if(right - left + 1 > occurMost + k)
-        {
-            map[chars[left] - 'A']--;
-            left++;
-        }
-        
-        maxLen = Math.max(maxLen, right - left + 1);
-        right++;
-    }
-    return maxLen;
-}
-```
-
----
-
-##### 题目示例8 `leetcode 239 滑动窗口最大值`
-
-```java
-private int[] maxSlidingWindow(int[] nums, int k)
-{
-    if(nums == null || k < 1 || nums.length < k)
-        return new int[0];
-    
-    LinkedList<Integer> window = new LinkedList<>();
-    int[] res = new int[nums.length - k + 1];
-    int index = 0;
-    for(int i = 0; i < nums.length; i++)
-    {
-        while(!window.isEmpty() && nums[i] >= nums[window.peekLast()])
-            window.pollLast();
-        window.addLast(i);
-        if(window.peek() <= i - k)
-            window.poll();
-        if(i >= k - 1)
-            res[index++] = nums[window.peekFirst()];
-    }
-    return res;
 }
 ```
 

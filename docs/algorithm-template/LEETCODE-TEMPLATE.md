@@ -191,7 +191,7 @@
   - [滑动窗口技巧](#滑动窗口技巧)
     - [滑动窗口类型](#滑动窗口类型)
       - [固定窗口：窗口的大小是固定的](#固定窗口窗口的大小是固定的)
-      - [**可变窗口：窗口的大小不固定**](#可变窗口窗口的大小不固定)
+      - [可变窗口：窗口的大小不固定](#可变窗口窗口的大小不固定)
     - [简单的滑动窗口模板](#简单的滑动窗口模板)
       - [1、可变窗口模板](#1可变窗口模板)
       - [2、固定窗口模板](#2固定窗口模板)
@@ -240,6 +240,7 @@
 - [leetcode 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
   - [设计](#设计)
     - [题目1 `leetcode 146 LRU缓存机制`](#题目1-leetcode-146-lru缓存机制)
+    - [题目2 `leetcode 1206 设计跳表`](#题目2-leetcode-1206-设计跳表)
 ## 数据结构
 
 ### 树
@@ -5241,7 +5242,7 @@ private boolean isValid(char[][] board, int row, int col)
 
 **固定窗口常用于求解窗口中的特殊值**
 
-##### **可变窗口：窗口的大小不固定**
+##### 可变窗口：窗口的大小不固定
 
 **可变窗口常用于求解满足条件的最大或者最小的窗口**
 
@@ -6337,4 +6338,74 @@ class LRUCache {
 ```
 
 -----
+
+#### 题目2 `leetcode 1206 设计跳表`
+
+```java
+class Skiplist {   
+    private Node head;
+    
+    public Skiplist() {
+		this.head = new Node(0, null, null);
+    }
+    
+    public boolean search(int target) {
+		for(Node node = head; node != null; node = node.down) {
+            while(node.right != null && node.right.val < target) {
+                node = node.right;
+            }
+            if(node.right != null && node.right.val == target)
+                return true;
+        }
+    }
+    
+    Random rand = new Random();
+    Node[] stack = new Node[64];
+    public void add(int num) {
+        int level = -1;
+        // 这个循环会插入位置之前的节点的所有层指针都保存到stack数组中
+        for(Node node = head; node != null; node = node.down) {
+            while(node.right != null && node.right.val < num) {
+                node = node.right;
+            }
+            stack[++level] = node;
+        }
+        
+        boolean insertUp = true;
+        Node downNode = null;
+        while(insertUp && level >= 0) {
+            Node insert = stack[level--];
+            insert.right = new Node(num, insert.right, down);
+            downNode = insert.right;
+            insertUp = (rand.nextInt() & 1) == 0;
+        }
+        if(insertUp) {
+            head = new Node(new Node(null, downNode, num), head, 0);
+        }
+    }
+    
+    public boolean erase(int num) {
+
+    }
+    
+    static class Node {
+        int val;
+        Node right, down;
+
+        public Node(int val, Node right, Node down) {
+            this.val = val;
+            this.right = right;
+            this.down = down;
+        }
+    }
+}
+
+/**
+ * Your Skiplist object will be instantiated and called as such:
+ * Skiplist obj = new Skiplist();
+ * boolean param_1 = obj.search(target);
+ * obj.add(num);
+ * boolean param_3 = obj.erase(num);
+ */
+```
 

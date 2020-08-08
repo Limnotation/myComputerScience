@@ -276,9 +276,9 @@ private void Traversal(TreeNode root) {
         return;
     System.out.println(root.val);		// 前序
     preOrderTraverse(root.left);
-    // System.out.println( root.val );   // 中序
+    // System.out.println(root.val);   // 中序
     preOrderTraverse(root.right);
-    // System.out.println( root.val );   // 后序
+    // System.out.println(root.val);   // 后序
 }
 ```
 
@@ -288,31 +288,30 @@ private void Traversal(TreeNode root) {
 
 ```java
 // v1
-private List<Integer> preOrderTraversal( TreeNode root )
-{
+private List<Integer> preorderTraversal(TreeNode root) {
     List<Integer> res = new LinkedList<>();
-    if( root == null )
+    if(root == null)
         return res;
     
     Deque<TreeNode> stack = new LinkedList<>();
-    while( root != null || !stack.isEmpty() )
-    {
-        while( root != null )
-        {
+    while(root != null || !stack.isEmpty()) {
+        while(root != null) {
             // 前序遍历，先保存结果
-            res.add( root.val );
-            stack.addLast( root );
+            res.add(root.val);
+            // 被存入栈的节点是已经被访问过的节点
+            stack.addLast(root);
+            // 由先序遍历的规则可知
             root = root.left;
         }
         // pop
-        TreeNode node = stack.removeLast();
-        root = node.right;
+        root = stack.removeLast();
+        root = root.right;
     }
     return res;
 }
 
 // v2
-private List<Integer> preOrderTraversal( TreeNode root )
+private List<Integer> preorderTraversal( TreeNode root )
 {
     List<Integer> res = new LinkedList<>();
     if( root == null )
@@ -333,61 +332,58 @@ private List<Integer> preOrderTraversal( TreeNode root )
 }
 ```
 
+------
+
 ###### 中序非递归
 
 ```java
-private List<Integer> inOrderTraversal(TreeNode root)
-{
+private List<Integer> inorderTraversal(TreeNode root) {
     List<Integer> res = new LinkedList<>();
     if(root == null)
         return res;
     
     Deque<TreeNode> stack = new LinkedList<>();
-    while(!stack.isEmpty() || root != null)
-    {
-        while(root != null)
-        {
+    while(!stack.isEmpty() || root != null) {
+        while(root != null) {
             stack.addLast(root);
             root = root.left;
         }
         // pop
-        TreeNode node = stack.removeLast();
-        res.add(node.val);
-        root = node.right;
+        root = stack.removeLast();
+        res.add(root.val);
+        root = root.right;
     }
     return res;
 }
 ```
 
+-----
+
 ###### 后序非递归
 
 ```java
-private List<Integer> postOrderTraversal( TreeNode root )
-{
+private List<Integer> postorderTraversal(TreeNode root) {
     List<Integer> res = new LinkedList<>();
     if(root == null)
         return res;
     
     Deque<TreeNode> stack = new LinkedList<>();
     TreeNode lastVisit = null;
-    while(root != null || !stack.isEmpty())
-    {
-        while(root != null)
-        {
+    while(root != null || !stack.isEmpty()) {
+        while(root != null) {
             stack.addLast(root);
             root = root.left;
         }
         
         TreeNode node = stack.peekLast();
-        if(node.right == null || node.right == lastVisit)
-        {
+        if(node.right == null || node.right == lastVisit) {
             // 根节点必须在其右子节点弹出之后再弹出
             stack.removeLast();
             res.add(node.val);
             lastVisit = node;
-        }
-        else
+        } else {
             root = node.right;
+        }
     }
     return res;
 }
@@ -1043,21 +1039,18 @@ private void inOrderTraversal(TreeNode root)
 **思路2：分治法，判断左MAX <  根  < 右MIN**
 
 ```java
-public boolean isValidBST(TreeNode root)
-{
+public boolean isValidBST(TreeNode root) {
     return isValidBST(root, null, null);
 }
 
-private boolean isValidBST(TreeNode root, TreeNode min, TreeNode max)
-{
+private boolean isValidBST(TreeNode root, TreeNode min, TreeNode max) {
     if(root == null)
         return true;
     if(min != null && root.val <= min.val)
         return false;
     if(max != null && root.val >= max.val)
         return false;
-    
-    return isValidBST(root.left, min, root) && isValidBST(root.right, root, max); 
+    return isValidBST(root.left, min, root) && isValidBST(root.right, root, max);
 }
 ```
 
@@ -1489,6 +1482,20 @@ private void inorderTraversal(Node root)
         curNode = root;
         inorderTraversal(root.right);
     }
+}
+```
+
+-----
+
+##### 题目示例18 `leetcode 99 恢复二叉搜索树`
+
+```java
+private void recoverTree(TreeNode root) {
+    Deque<TreeNode> stack = new LinkedList<>();
+    TreeNode firstNode = null, secondNode = null;
+    TreeNode pre = new TreeNode(Integer.MIN_VALUE);
+    TreeNode cur = root;
+    
 }
 ```
 
@@ -5207,7 +5214,7 @@ private boolean isValid(char[][] board, int row, int col)
 
 ### 滑动窗口技巧
 
-#### 滑动窗口类型固定窗口：窗口的大小是固定的**
+#### 滑动窗口类型固定窗口：窗口的大小是固定的
 
 **固定窗口常用于求解窗口中的特殊值**
 

@@ -237,7 +237,9 @@
     - [题目示例11 `leetcode 1124 表现良好的最长时间段`](#题目示例11-leetcode-1124-表现良好的最长时间段)
     - [题目示例12  `leetcode 1109 航班预定`](#题目示例12-leetcode-1109-航班预定)
     - [题目示例13 `leetcode 1094 拼车`](#题目示例13-leetcode-1094-拼车)
-- [](#)
+- [leetcode 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
+  - [设计](#设计)
+    - [题目1 `leetcode 146 LRU缓存机制`](#题目1-leetcode-146-lru缓存机制)
 ## 数据结构
 
 ### 树
@@ -6241,11 +6243,98 @@ private boolean carPooling(int[][] trips, int capacity)
 
 
 
+-----
 
+-----
+
+## leetcode 未归纳题解（按tag分类）
 
 ------
 
-------
+### 设计
 
-## 
+#### 题目1 `leetcode 146 LRU缓存机制`
+
+```java
+class LRUCache {
+    // 内部类,双向链表结点
+    private class LinkedListNode {
+        public LinkedListNode next, pre;
+        public int key;
+        public int val;
+        public LinkedListNode(int key, int val) {
+            this.key = key;
+            this.val = val;
+            this.pre = null;
+            this.next = null;
+        }
+    }
+
+    // 字段
+    private int capacity;
+    private HashMap<Integer, LinkedListNode> map;
+    private LinkedListNode listHead;
+    private LinkedListNode listTail;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        this.map = new HashMap<>();
+        this.listHead = new LinkedListNode(-1, -1); // 哑头结点
+        this.listTail = new LinkedListNode(-1, -1); // 哑尾结点
+        listHead.next = listTail;
+        listTail.pre = listHead;
+    }
+    
+    public int get(int key) {
+        if(!map.containsKey(key))
+            return -1;
+        // 先把查找到的节点从链表中删除，之后放到尾部（头、尾可以自己决定）
+        // map中的映射可以不用删除
+        LinkedListNode node = map.get(key);
+        node.next.pre = node.pre;
+        node.pre.next = node.next;
+        moveToTail(node);
+
+        return node.val;
+    }
+    
+    public void put(int key, int val) {
+        // 直接调用get方法，如果键已经存在，对应节点会被移动到链表尾部，再直接更新value即可
+        if(this.get(key) != -1) {
+            map.get(key).val = val;
+            return;
+        }
+
+        // 创建对应的新节点
+        LinkedListNode node = new LinkedListNode(key, val);
+        // 现在map中加入相应的映射
+        map.put(key, node);
+        // 更新链表，将新节点设置为 recently used
+        moveToTail(node);
+
+        // 如果超出容量，删除双链表头结点,同时删除map中的映射
+        if(map.size() > capacity) {
+            map.remove(listHead.next.key);
+            listHead.next = listHead.next.next;
+            listHead.next.pre = listHead;
+        }
+    }
+
+    private void moveToTail(LinkedListNode node) {
+        node.pre = listTail.pre;
+        listTail.pre = node;
+        node.pre.next = node;
+        node.next = listTail;
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
+```
+
+-----
 

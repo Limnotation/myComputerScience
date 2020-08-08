@@ -2,7 +2,8 @@
   - [树](#树)
     - [二叉树遍历问题](#二叉树遍历问题)
       - [树结点定义](#树结点定义)
-      - [递归遍历](#递归遍历)
+      - [树的遍历](#树的遍历)
+        - [递归遍历](#递归遍历)
         - [前序非递归](#前序非递归)
         - [中序非递归](#中序非递归)
         - [后序非递归](#后序非递归)
@@ -47,6 +48,7 @@
       - [题目示例15 `leetcode 285 二叉搜索树中的顺序后继`](#题目示例15-leetcode-285-二叉搜索树中的顺序后继)
       - [题目示例16 `leetcode 510 二叉搜索树中的中序后继`](#题目示例16-leetcode-510-二叉搜索树中的中序后继)
       - [题目示例17  `leetcode 426 将二叉搜索树转化为排序的双向链表`](#题目示例17-leetcode-426-将二叉搜索树转化为排序的双向链表)
+      - [题目示例18 `leetcode 99 恢复二叉搜索树`](#题目示例18-leetcode-99-恢复二叉搜索树)
     - [Tire树](#tire树)
       - [题目示例1 `leetcode 208 实现Tire(前缀树)`](#题目示例1-leetcode-208-实现tire前缀树)
   - [链表](#链表)
@@ -188,7 +190,8 @@
     - [其他双指针](#其他双指针)
   - [滑动窗口技巧](#滑动窗口技巧)
     - [滑动窗口类型](#滑动窗口类型)
-      - [固定窗口大小](#固定窗口大小)
+      - [固定窗口：窗口的大小是固定的](#固定窗口窗口的大小是固定的)
+      - [**可变窗口：窗口的大小不固定**](#可变窗口窗口的大小不固定)
     - [简单的滑动窗口模板](#简单的滑动窗口模板)
       - [1、可变窗口模板](#1可变窗口模板)
       - [2、固定窗口模板](#2固定窗口模板)
@@ -1496,6 +1499,22 @@ private void recoverTree(TreeNode root) {
     TreeNode pre = new TreeNode(Integer.MIN_VALUE);
     TreeNode cur = root;
     
+    while(cur != null || !stack.isEmpty()) {
+        while(cur != null) {
+            stack.addLast(cur);
+            cur = cur.left;
+        }
+        cur = stack.removeLast();
+        if(firstNode == null && pre.val > cur.val)
+            firstNode = pre;
+        if(firstNode != null && pre.val > cur.val)
+            secondNode = cur;
+        pre = cur;
+        cur = cur.right;
+    }
+    int temp = firstNode.val;
+    firstNode.val = secondNode.val;
+    secondNode.val = temp;
 }
 ```
 
@@ -5214,24 +5233,15 @@ private boolean isValid(char[][] board, int row, int col)
 
 ### 滑动窗口技巧
 
-#### 滑动窗口类型固定窗口：窗口的大小是固定的
+#### 滑动窗口类型
+
+##### 固定窗口：窗口的大小是固定的
 
 **固定窗口常用于求解窗口中的特殊值**
 
-- **可变窗口：窗口的大小不固定**
+##### **可变窗口：窗口的大小不固定**
 
-    **可变窗口常用于求解满足条件的最大或者最小的窗口**
-
-##### 固定窗口大小
-
-**对于固定窗口，只需要固定初始化左右指针left 和right,分别表示窗口的左右顶点，并保证：**
-
-1. **left初始化为0**
-2. **初始化r使得 `window.size() == right - left + 1`**
-3. **同时移动left和right**
-4. **判断窗口内的所有元素是否满足题目条件**
-    - **4.1 如果满足，判断是否需要更新最优解，如果需要则更新最优解**
-    - **4.2 如果不满足，则返回3**
+**可变窗口常用于求解满足条件的最大或者最小的窗口**
 
 #### 简单的滑动窗口模板
 
@@ -5260,10 +5270,10 @@ private void slidingWindow(String s, String t) {
         while(window needs shrink) {
             // d是将被移出窗口的字符
             char d = s.charAt(left);
-            // 窗口左侧右移
-            left++;
             // 进行窗口内数据的一系列更新
             ...;
+            // 窗口左侧右移
+            left++;
         }
         // 右移窗口
         right++;

@@ -107,7 +107,6 @@
     - [`利用栈进行DFS递归搜索模板`](#利用栈进行dfs递归搜索模板)
       - [题目示例5`leetcode 94 二叉树的中序遍历`](#题目示例5leetcode-94-二叉树的中序遍历)
       - [题目示例6 `leetcode 133 克隆图`](#题目示例6-leetcode-133-克隆图)
-      - [题目示例7`leetcode 200 岛屿数量`](#题目示例7leetcode-200-岛屿数量)
     - [队列](#队列)
       - [题目示例8 `leetcode 232 用栈实现队列`](#题目示例8-leetcode-232-用栈实现队列)
       - [题目示例9 `leetcode 542 01矩阵`](#题目示例9-leetcode-542-01矩阵)
@@ -172,7 +171,7 @@
       - [题目示例2 `leetcode 90 子集II`](#题目示例2-leetcode-90-子集ii)
       - [题目示例3 `leetcode 46 全排列`](#题目示例3-leetcode-46-全排列)
       - [题目示例4 `leetcode 47 全排列II `](#题目示例4-leetcode-47-全排列ii-)
-      - [题目示例5 `leetcode 996正方形数组的数目`](#题目示例5-leetcode-996正方形数组的数目)
+      - [题目示例5 `leetcode 996 正方形数组的数目`](#题目示例5-leetcode-996-正方形数组的数目)
       - [题目示例6 `leetcode 77 组合`](#题目示例6-leetcode-77-组合)
       - [题目示例7 `leetcode 39 组合总和`](#题目示例7-leetcode-39-组合总和)
       - [题目示例8`leetcode 40 组合总和II`](#题目示例8leetcode-40-组合总和ii)
@@ -180,9 +179,11 @@
       - [题目示例10`leetcode131 分割回文串`](#题目示例10leetcode131-分割回文串)
       - [题目示例11  `leetcode93 复原IP地址`](#题目示例11-leetcode93-复原ip地址)
       - [题目示例12 `leetcode37 解数独`](#题目示例12-leetcode37-解数独)
-      - [题目示例13 `leetcode22 括号生成`](#题目示例13-leetcode22-括号生成)
+      - [题目示例13 `leetcode 22 括号生成`](#题目示例13-leetcode-22-括号生成)
       - [题目示例14`leetcode17 电话号码的字母组合`](#题目示例14leetcode17-电话号码的字母组合)
       - [题目示例15 `leetcode51 N皇后`](#题目示例15-leetcode51-n皇后)
+      - [题目示例16 `leetcode 784 字母大小写全排列`](#题目示例16-leetcode-784-字母大小写全排列)
+      - [题目示例17 `leetcode 79 单词搜索`](#题目示例17-leetcode-79-单词搜索)
   - [双指针](#双指针)
     - [快慢指针（同向指针）](#快慢指针同向指针)
       - [题目示例1  `leetcode 19 删除链表的倒数第N个节点`](#题目示例1-leetcode-19-删除链表的倒数第n个节点-1)
@@ -2023,28 +2024,24 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
 ###### 题目示例3 `leetcode 25 K个一组翻转链表`
 
 ```java
-public ListNode reverseKGroup(ListNode head, int k) 
-{
+public ListNode reverseKGroup(ListNode head, int k) {
     if( head == null )
         return null;
     ListNode a = head, b = head;
-    for( int i = 0; i < k; i++ )
-    {
-        if( b == null )
+    for(int i = 0; i < k; i++) {
+        if(b == null)
             return a;
         b = b.next;
     }
 
-    ListNode newHead = reverseWithinRange( a, b );
-    a.next = reverseKGroup( b, k );
+    ListNode newHead = reverseWithinRange(a, b);
+    a.next = reverseKGroup(b, k);
     return newHead;
 }
 
-private ListNode reverseWithinRange( ListNode a, ListNode b )
-{
+private ListNode reverseWithinRange(ListNode a, ListNode b) {
     ListNode pre = null, cur = a, next = a;
-    while( cur != b )
-    {
+    while(cur != b) {
         next = cur.next;
         cur.next = pre;
         pre = cur;
@@ -3026,32 +3023,6 @@ private Node clone( Node node, HashMap<Node, Node> visited )
     for( int i = 0; i < node.neighbors.size(); i++ )
         newNode.neighbors.add( i, clone( node.neighbors.get(i), visited ) );
     return newNode;
-}
-```
-
-##### 题目示例7`leetcode 200 岛屿数量`
-
-```java
-public int numIslands( char[][] grid )
-{
-    int counter = 0;
-    for( int i = 0; i < grid.length; i++ )
-        for( int j = 0; j < grid[0].length; j++ )
-            if( grid[i][j] == '1' && dfs( grid, i, j ) >= 1 )
-                counter++;
-    return counter
-}
-
-private int dfs( char[][] grid, int i, int j )
-{
-    if( i < 0 || i >= grid.length || j < 0 || j >= grid[0].length )
-        return 0;
-    if( grid[i][j] == '1' )
-    {
-        grid[i][j] = '0';
-        return dfs( grid, i - 1, j ) + dfs( grid, i, j - 1 ) + dfs( grid, i + 1, j ) + dfs( grid, i, j + 1 ) + 1;
-    }
-    return 0;
 }
 ```
 
@@ -4040,26 +4011,29 @@ private int minCut( String s )
 }
 ```
 
+------
+
 ###### 题目示例5 `leetcode 300最长上升子序列`
 
 ```java
-private int lengthOfLIS( int[] nums )
-{
-    if( nums == null || nums.length == 0 )
+private int lengthOfLIS(int[] nums) {
+    if(nums == null || nums.length == 0)
         return 0;
     
     int[] dp = new int[nums.length];
-    Arrays.fill( dp, 1 );
-    for( int i = 0; i < nums.length; i++ )
-        for( int j = 0; j < i; j++ )
-            if( nums[i] > nums[j] )
-                dp[i] = Math.max( dp[i], dp[j] + 1 );
+    Arrays.fill(dp, 1);
+    for(int i = 0; i < nums.length; i++)
+        for(int j = 0; j < i; j++)
+            if(nums[i] > nums[j])
+                dp[i] = Math.max(dp[i], dp[j] + 1);
     int res = 0;
-    for( int re:dp )
+    for(int re:dp)
         res = Math.max( res, re );
     return res;
 }
 ```
+
+-----
 
 ###### 题目示例6 `leetcode 139 单词拆分`
 
@@ -4634,8 +4608,7 @@ private void backTracking(int[] nums, int start, LinkedList<Integer> runner)
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
-public List<List<Integer>> permute(int[] nums)
-{
+public List<List<Integer>> permute(int[] nums) {
     if(nums == null || nums.length == 0)
         return res;
     
@@ -4643,16 +4616,13 @@ public List<List<Integer>> permute(int[] nums)
     return res;
 }
 
-private void backTracking(int[] nums, LinkedList<Integer> runner)
-{
-    if(runner.size() == nums.length)
-    {
+private void backTracking(int[] nums, LinkedList<Integer> runner) {
+    if(runner.size() == nums.length) {
         res.add(new LinkedList(runner));
         return;
     }
     
-    for(int i = 0; i < nums.length; i++)
-    {
+    for(int i = 0; i < nums.length; i++) {
         if(runner.contains(nums[i]))
             continue;
         
@@ -4717,7 +4687,7 @@ private void backTracking(int[] nums, boolean[] used, LinkedList<Integer> runner
 
 ---
 
-##### 题目示例5 `leetcode 996正方形数组的数目`
+##### 题目示例5 `leetcode 996 正方形数组的数目`
 
 ```java
 
@@ -5030,15 +5000,14 @@ private boolean isValid( char[][] board, int row, int col, char c )
 }
 ```
 
-##### 题目示例13 `leetcode22 括号生成`
+##### 题目示例13 `leetcode 22 括号生成`
 
 ```java
 // 这个题目有两个关键性质
 // 1.一个合法的括号组合的左括号数量一定等于右括号数量
 // 2.对于一个“合法”的括号字符串组合p,必然对于任何 0 <= i < p.length(),都有：子串p[0..i]中左括号的数量都大于等于右括号的数量
 List<String> res = new LinkedList<>();
-public List<String> generateParenthesis(int n)
-{
+public List<String> generateParenthesis(int n) {
     if(n <= 0)
         return res;
     
@@ -5046,8 +5015,7 @@ public List<String> generateParenthesis(int n)
     return res;
 }
 
-private void backTracking(int left, int right, StringBuffer s)
-{
+private void backTracking(int left, int right, StringBuffer s) {
     // 剩下的左括号更多，说明不合法
     if(left > right)
         return;
@@ -5055,8 +5023,7 @@ private void backTracking(int left, int right, StringBuffer s)
     if(left < 0 || right < 0)
         return;
     // 所有括号都能用完，得到一个合法的括号组合
-    if(left == 0 && right == 0)
-    {
+    if(left == 0 && right == 0) {
         res.add(s.toString());
         return;
     }
@@ -5097,8 +5064,7 @@ HashMap<Character, String> map = new HashMap<>(){
         put('9', "wyxz");
     }
 };
-public List<String> letterCombinations(String digits)
-{
+public List<String> letterCombinations(String digits) {
     if(digits == null || digits.length() == 0)
         return res;
     
@@ -5106,20 +5072,17 @@ public List<String> letterCombinations(String digits)
     return res;
 }
 
-private void backTracking(String digits, int index, StringBuffer runner)
-{
-    if(index == digits.length())
-    {
+private void backTracking(String digits, int index, StringBuffer runner) {
+    if(index == digits.length()) {
         res.add(runner.toString());
         return;
     }
     
     char curC = digits.charAt(index);
     String tempS = map.get(curC);
-    for(char c:tempS.toCharArray())
-    {
+    for(char c:tempS.toCharArray()) {
         // 做选择
-        runner.append( c );
+        runner.append(c);
         // 进入下一层决策树
         backTracking(digits, index + 1, runner);
         // 撤销选择
@@ -5130,12 +5093,11 @@ private void backTracking(String digits, int index, StringBuffer runner)
 
 ----
 
-##### 题目示例15 `leetcode51 N皇后`
+##### 题目示例15 `leetcode 51 N皇后`
 
 ```java
 List<List<String>> res = new LinkedList<>();
-public List<List<String>> solveNQueens(int n)
-{
+public List<List<String>> solveNQueens(int n) {
     if(n <= 0)
         return res;
     
@@ -5147,10 +5109,8 @@ public List<List<String>> solveNQueens(int n)
     return res;
 }
 
-private void backTracking(char[][] board, int row)
-{
-    if(row == board.length)
-    {
+private void backTracking(char[][] board, int row) {
+    if(row == board.length) {
         List<String> runner = new LinkedList<>();
         for(char[] line:board)
             runner.add(new String(line));
@@ -5159,8 +5119,7 @@ private void backTracking(char[][] board, int row)
     }
     
     int lineLength = board[0].length;
-    for(int i = 0; i < lineLength; i++)
-    {
+    for(int i = 0; i < lineLength; i++) {
         if(!isValid(board, row, i))
             continue;
         
@@ -5173,8 +5132,7 @@ private void backTracking(char[][] board, int row)
     }
 }
 
-private boolean isValid(char[][] board, int row, int col)
-{
+private boolean isValid(char[][] board, int row, int col) {
     int n = board.length;
     // 检查同一列是否有冲突
     for(int i = 0; i < n; i++)
@@ -5194,7 +5152,201 @@ private boolean isValid(char[][] board, int row, int col)
 }
 ```
 
-----
+------
+
+##### 题目示例16 `leetcode 784 字母大小写全排列`
+
+```java
+List<String> res = new LinkedList<>();
+public List<String> letterCasePermutation(String S) {
+    if(S == null || S.length() == 0)
+        return res;
+
+    backTracking(S, 0, S.toCharArray());
+    return res;
+}
+
+private void backTracking(String S, int start, char[] charArray) {
+    if(start == S.length()) {
+        res.add(new String(charArray));
+        return;
+    }
+
+    // 做选择（把当前字符放入路径中）
+    charArray[start] = S.charAt(start);
+    // 进入下一层决策树
+    backTracking(S, start + 1, charArray);
+    // 在当前字符为字母时创建新分支
+    if(Character.isLetter(S.charAt(start))) {
+        // 修改字母大小写属性，相当于回溯，这里注意理解（你只有重新回到决策树当前层才能修改）
+        charArray[start] ^= (1 << 5);
+        backTracking(S, start + 1, charArray);
+    }
+}
+```
+
+-----
+
+##### 题目示例17 `leetcode 79 单词搜索`
+
+```java
+private boolean[][] visited;
+public boolean exist(char[][] board, String word) {
+    if(board == null || word == null || board.length == 0 || board[0].length == 0)
+        return false;
+
+    int pathLength = 0;
+    int m = board.length, n = board[0].length;
+    visited = new boolean[m][n];
+    for(int i = 0; i < m; i++)
+        for(int j = 0; j < n; j++)
+            if(backTracking(board, word, i, j, pathLength))
+                return true;
+    return false;
+}
+
+/**
+    *@parameter board       字符二维网格
+    *@parameter word        目标单词
+    *@parameter row         方法当前所访问的行索引
+    *@parameter col         方法当前所访问的列索引
+    *@parameter pathLength  当前已经匹配的路径长度
+    *@return                路径的匹配结果
+    **/
+private boolean backTracking(char[][] board, String word, int row, int col, int pathLength) {
+    if(word.length() == pathLength)
+        return true;
+
+    boolean hasPath = false;
+    if( row >= 0 && row < board.length && col >= 0 && col < board[0].length 
+       && board[row][col] == word.charAt( pathLength ) && !visited[row][col] ) {
+        // 做选择
+        pathLength++;
+        visited[row][col] = true;
+
+        // 进入下一层决策树（N叉树）
+        hasPath = ( backTracking(board, word, row, col - 1, pathLength) 
+                   || backTracking(board, word, row - 1, col, pathLength)
+                   || backTracking(board, word, row, col + 1, pathLength)
+                   || backTracking(board, word, row + 1, col, pathLength)
+                  );
+
+        // 撤销选择
+        if(!hasPath) {
+            pathLength--;
+            visited[row][col] = false;
+        }
+    }
+    return hasPath;
+}
+```
+
+------
+
+##### 题目示例18 `leetcode 200 岛屿数量`
+
+```java
+// 在这个问题中，需要注意的是：回溯的部分理论上是不存在的；
+// 在找到一个岛屿后，不可能再使用任何一个这个岛屿的格子
+// 相当于不会有回溯后的“状态重置”
+public int numIslands(char[][] grid) {
+    int counter = 0;
+    for(int i = 0; i < grid.length; i++)
+        for(int j = 0; j < grid[0].length; j++)
+            if(grid[i][j] == '1' && backTracking( grid, i, j ) >= 1)
+                counter++;
+    return counter;
+}
+
+private int backTracking(char[][] grid, int i, int j) {
+    if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length)
+        return 0;
+    if(grid[i][j] == '1') {
+        grid[i][j] = '0';
+        return backTracking(grid, i - 1, j) + 
+            backTracking(grid, i, j - 1) + 
+            backTracking(grid, i + 1, j) + 
+            backTracking(grid, i, j + 1) + 1;
+    }
+    return 0;
+}
+```
+
+-----
+
+##### 题目示例19 `剑指offer 13 机器人的运动范围`
+
+```java
+// 此题与示例18类似，回溯的过程不涉及“状态重置”
+// 
+public int movingCount(int m, int n, int k) {
+    if(m <= 0 || n <= 0 || k < 0)
+        return 0;
+
+    boolean[][] visited = new boolean[m][n];
+    return backTracking(m, n, 0, 0, k, visited);
+}
+
+private int backTracking(int m, int n, int row, int col, int k, boolean[][] visited) {
+    int counter = 0;
+    if(check(m, n, row, col, k, visited)) {
+        visited[row][col] = true;
+        counter = 1 + backTracking(m, n, row - 1, col, k, visited)
+            + backTracking(m, n, row, col + 1, k, visited)
+            + backTracking(m, n, row + 1, col, k, visited)
+            + backTracking(m, n, row, col - 1, k, visited);
+    }
+    return counter;
+}
+
+private boolean check(int m, int n, int row, int col, int k, boolean[][] visited) {
+    if(row >= 0 && row < m && col >= 0 && col < n && !visited[row][col])
+        if(getDigitalSum(row) + getDigitalSum(col) <= k)
+            return true;
+    return false;
+}
+
+private int getDigitalSum(int num) {
+    int sum = 0;
+    while(num > 0) {
+        sum += num % 10;
+        num = num / 10;
+    }
+    return sum;
+}
+```
+
+-----
+
+##### 题目示例20 `leetcode 733 图像渲染`
+
+```java
+// 感觉更加偏向单纯的dfs一些
+public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+    int oldVal = image[sr][sc];
+    if(oldVal == newColor)
+        return image;
+    dfs(image, sr, sc, oldVal, newColor);
+    return image;
+}
+
+private void dfs(int[][] image, int i, int j, int oldVal, int newColor) {
+    if(i < 0 || i >= image.length || j < 0 || j >= image[0].length)
+        return;
+
+    if(image[i][j] == oldVal) {
+        image[i][j] = newColor;
+        dfs(image, i - 1, j, oldVal, newColor);
+        dfs(image, i, j - 1, oldVal, newColor);
+        dfs(image, i + 1, j, oldVal, newColor);
+        dfs(image, i, j + 1, oldVal, newColor);
+    } else {
+        return;
+    }
+}
+```
+
+
 
 ------
 

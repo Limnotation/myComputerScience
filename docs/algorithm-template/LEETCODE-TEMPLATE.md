@@ -264,22 +264,25 @@ public class TreeNode
 }
 ```
 
+------
 
+##### 树的遍历
 
-##### 递归遍历
+###### 递归遍历
 
 ```java
-private void Traversal( TreeNode root )
-{
-    if( root == null )
+private void Traversal(TreeNode root) {
+    if(root == null)
         return;
-    System.out.println( root.val );		// 前序
-    preOrderTraverse( root.left );
+    System.out.println(root.val);		// 前序
+    preOrderTraverse(root.left);
     // System.out.println( root.val );   // 中序
-    preOrderTraverse( root.right );
+    preOrderTraverse(root.right);
     // System.out.println( root.val );   // 后序
 }
 ```
+
+-----
 
 ###### 前序非递归
 
@@ -5204,11 +5207,9 @@ private boolean isValid(char[][] board, int row, int col)
 
 ### 滑动窗口技巧
 
-#### 滑动窗口类型
+#### 滑动窗口类型固定窗口：窗口的大小是固定的**
 
-- **固定窗口：窗口的大小是固定的**
-
-    **固定窗口常用于求解窗口中的特殊值**
+**固定窗口常用于求解窗口中的特殊值**
 
 - **可变窗口：窗口的大小不固定**
 

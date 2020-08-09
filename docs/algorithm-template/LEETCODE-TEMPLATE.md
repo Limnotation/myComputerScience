@@ -107,6 +107,8 @@
         - [题目示例11 `leetcode 901 股票价格跨度`](#题目示例11-leetcode-901-股票价格跨度)
         - [题目示例12 `leetcode 1019 链表的下一个更大结点`](#题目示例12-leetcode-1019-链表的下一个更大结点)
         - [题目示例13 `leetcode 1124 表现良好的最长时间段`](#题目示例13-leetcode-1124-表现良好的最长时间段)
+        - [题目示例14 `leetcode 316 去除重复字母`](#题目示例14-leetcode-316-去除重复字母)
+        - [题目示例15 `leetcode 132模式`](#题目示例15-leetcode-132模式)
 - [基础算法](#基础算法)
   - [排序](#排序)
   - [深度优先搜索](#深度优先搜索)
@@ -2616,13 +2618,16 @@ public String decodeString(String s)
 
 1. **单调递增栈就是元素的值由栈底到栈顶大小单调递增**
 
-    **单调递增栈可以找到左起第一个比当前数字小的元素**
+    - **单调递增栈可以找到左起第一个比当前数字小的元素**
+    - **如果栈是一个单调递增栈，对于一个刚刚出栈的元素而言，新的栈顶元素就是其左侧第一个小于自己的元素，即将入栈的元素就是右侧第一个小于自己的元素；如果元素出栈后栈为空表示自己左侧没有更小的元素，如果没有新元素将要入栈，表示自己右侧没有更小的元素。**
 
 2. **单调递减栈就是元素的值由栈底到栈顶大小单调递减**
-
-    **单调递减栈可以找到左起第一个比当前数字大的元素**
+- **单调递减栈可以找到左起第一个比当前数字大的元素**
+    - **如果栈是一个单调递减栈，对于一个刚刚出栈的元素而言，新的栈顶元素就是其左侧第一个大于自己的元素，即将入栈的元素就是右侧第一个大于自己的元素；如果元素出栈后栈为空表示自己左侧没有更大的元素，如果没有新元素将要入栈，表示自己右侧没有更大的元素。**
 
 **单调栈里可以保存元素的值或者数组下标**
+
+**单调栈维护的时间复杂度O(n),任何元素只会进出单调栈一次**
 
 **构建栈的过程从数组的右侧开始时，可以找到当前元素右侧第一个更大或者更小的元素**
 
@@ -2653,22 +2658,20 @@ for(int i = 0; i < nums.length; i++) {
 
 ```java
 // v1，从右往左构建一个单调递减栈
-private int[] nextGreaterElement( int[] nums1, int[] nums2 )
-{
+private int[] nextGreaterElement(int[] nums1, int[] nums2) {
     int[] res = new int[nums1.length];
     int[] temp = new int[nums2.length];
     Deque<Integer> stack = new LinkedList<>();
-    for( int i = nums2.length - 1; i >= 0; i-- )
-    {
-        while( !stack.isEmpty() && nums2[i] >= stack.peekLast() )
+    for(int i = nums2.length - 1; i >= 0; i--) {
+        while(!stack.isEmpty() && nums2[i] >= stack.peekLast())
             stack.removeLast();
         temp[i] = stack.isEmpty()? -1:stack.peekLast();
         stack.addLast( nums2[i] );
     }
 
-    for( int i = 0; i < nums1.length; i++ )
-        for( int j = 0; j < nums2.length; j++ )
-            if( nums2[j] == nums1[i] )
+    for(int i = 0; i < nums1.length; i++)
+        for(int j = 0; j < nums2.length; j++)
+            if(nums2[j] == nums1[i])
                 res[i] = temp[j];
     return res;
 }
@@ -2700,17 +2703,15 @@ private int[] nextGreaterElement( int[] nums1, int[] nums2 )
 
 ```java
 // 从右往左构建一个单调递减栈
-private int[] nextGreaterElements( int[] nums )
-{
+private int[] nextGreaterElements(int[] nums) {
     int n = nums.length;
     Deque<Integer> stack = new LinkedList<>();
     int[] res = new int[n];
-    for( int i = 2 * n - 1; i >= 0; i-- )
-    {
-        while( !stack.isEmpty() && nums[i%n] >= s.peekLast() )
+    for(int i = 2 * n - 1; i >= 0; i--) {
+        while(!stack.isEmpty() && nums[i%n] >= s.peekLast())
             stack.removeLast();
         res[i%n] = stack.isEmpty()? -1:stack.peekLast();
-        stack.addLast( nums[i%n] );
+        stack.addLast(nums[i%n]);
     }
     return res;
 }
@@ -2722,16 +2723,14 @@ private int[] nextGreaterElements( int[] nums )
 
 ```java
 // 从右往左构建一个单调递减栈
-private int[] dailyTemperatures( int[] T )
-{
+private int[] dailyTemperatures(int[] T) {
     int[] res = new int[T.length];
     Deque<Integer> stack = new LinkedList<>();
-    for( int i = T.length - 1; i >= 0; i-- )
-    {
-        while( !stack.isEmpty() && T[i] >= T[stack.peekLast()] )
+    for( int i = T.length - 1; i >= 0; i--) {
+        while(!stack.isEmpty() && T[i] >= T[stack.peekLast()])
             stack.removeLast();
         res[i] = stack.isEmpty() ? 0:stack.peekLast() - i;
-        stack.addLast( i );
+        stack.addLast(i);
     }
     return res;
 }
@@ -2744,19 +2743,18 @@ private int[] dailyTemperatures( int[] T )
 ```java
 // 从左往右构建一个单调递减栈,这个单调递减栈是一个全局性的单调递减栈
 // 其最终存储的结果是从数组整体来看的一个全局性的递减序列
-private int maxWidthGap( int[] A )
-{
+private int maxWidthRamp(int[] A) {
     Deque<Integer> stack = new LinkedList<>();
     stack.addLast(0);
     // 构建单调栈的过程不做其他操作，因为要获得全局的一个单调结果
-    for( int i = 0; i < A.length; i++ )
-        if( A[i] <= A[stack.peekLast()] )
-            stack.addLast( i );
+    for(int i = 0; i < A.length; i++)
+        if(A[i] <= A[stack.peekLast()])
+            stack.addLast(i);
     // 贪心策略，从最远的地方开始往回找
     int maxGap = 0;
-    for( int i = A.length - 1; i >= 0; i-- )
-        while( !stack.isEmpty() && A[i] >= A[stack.peekLast()] )
-            maxGap = Math.max( maxGap, i - stack.removeLast() );
+    for(int i = A.length - 1; i >= 0; i--)
+        while(!stack.isEmpty() && A[i] >= A[stack.peekLast()])
+            maxGap = Math.max(maxGap, i - stack.removeLast());
     return maxGap;
 }
 ```
@@ -2803,24 +2801,23 @@ public int trap(int[] height) {
 **从左到右构建一个单调递增的栈，对于一个栈顶元素而言，下一个可以入栈的元素就是它右边第一个小于它的元素，在栈中栈顶元素的下一个元素就是它左边第一个小于它的元素**
 
 ```java
-private int largestRectangleArea( int[] heights )
-{
-    if( heights == null || heights.length == 0 )
+private int largestRectangleArea(int[] heights) {
+    if(heights == null || heights.length == 0)
         return 0;
     
+    // 在原数组后面加上一个0，原数组最后一个元素也有了右侧更小的元素
     int[] temp = new int[heights.length+2];
-    System.arraycopy( heights, 0, temp, 1, heights.length );
+    System.arraycopy(heights, 0, temp, 1, heights.length);
     
     Deque<Integer> stack = new LinkedList<>();
     int maxArea = 0;
-    for( int i = 0; i < temp.length; i++ )
-    {
-        while( !stack.isEmpty() && temp[i] < temp[stack.peekLast()] )
-        {
+    for(int i = 0; i < temp.length; i++) {
+        // 构建单调递增栈
+        while(!stack.isEmpty() && temp[i] < temp[stack.peekLast()]) {
             int height = temp[stack.removeLast()];
-            maxArea = Math.max( maxArea, height * ( i - stack.peekLast() - 1 ) );
+            maxArea = Math.max(maxArea, height * (i - stack.peekLast() - 1));
         }
-        stack.addLast( i );
+        stack.addLast(i);
     }
     return maxArea;
 }
@@ -2927,29 +2924,61 @@ private int maxChunksToSorted( int[] arr )
 ###### 题目示例13 `leetcode 1124 表现良好的最长时间段`
 
 ```java
-private int longestWPI( int[] hours )
-{
+private int longestWPI(int[] hours) {
     // 计算前缀和
     int[] preSum = new int[hours.length+1];
-    for( int i = 0; i < hours.length; i++ )
-    {
-        if( housr[i] > 8 )	preSum[i+1] = preSum[i] + 1;
-        else			   preSum[i+1] = preSum[i] - 1;
+    for(int i = 0; i < hours.length; i++) {
+        if(hours[i] > 8)	
+            preSum[i+1] = preSum[i] + 1;
+        else			   	
+            preSum[i+1] = preSum[i] - 1;
     }
     
     // 构建单调递减栈
     Deque<Integer> stack = new LinkedList<>();
-    stack.addLast( 0 );
-    for( int i = 1; i < preSum.length; i++ )
-        if( preSum[i] < preSum[stack.peekLast()] )
-            stack.addLast( i );
+    stack.addLast(0);
+    for(int i = 1; i < preSum.length; i++)
+        if(preSum[i] < preSum[stack.peekLast()])
+            stack.addLast(i);
     
     // 从右向左利用贪心策略求最大跨度
     int maxL = 0;
-    for( int i = preSum.length - 1; i >= 0; i-- )
-    	while( !stack.isEmpty() && preSum[i] > preSum[stack.peekLast()] )
-            maxL = Math.max( maxL, i - stack.removeLast() );
+    for(int i = preSum.length - 1; i >= 0; i--)
+    	while(!stack.isEmpty() && preSum[i] > preSum[stack.peekLast()])
+            maxL = Math.max(maxL, i - stack.removeLast());
     return maxL;
+}
+```
+
+-----
+
+###### 题目示例14 `leetcode 316 去除重复字母`
+
+```java
+
+```
+
+-----
+
+###### 题目示例15 `leetcode 132模式`
+
+```java
+// 有点巧妙，好好理解
+public boolean find132pattern(int[] nums) {
+    if(nums == null || nums.length < 3)
+        return false;
+
+    Deque<Integer> stack = new LinkedList<>();
+    int third = Integer.MIN_VALUE;
+    for(int i = nums.length - 1; i >= 0; i--) {
+        if(nums[i] < third) 
+            return true;
+        while(!stack.isEmpty() && nums[i] > nums[stack.peekLast()]) {
+            third = nums[stack.removeLast()];
+        }
+        stack.addLast(i);
+    }
+    return false;
 }
 ```
 

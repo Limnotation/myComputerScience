@@ -188,6 +188,8 @@
       - [题目示例19 `剑指offer 13 机器人的运动范围`](#题目示例19-剑指offer-13-机器人的运动范围)
       - [题目示例20 `leetcode 733 图像渲染`](#题目示例20-leetcode-733-图像渲染)
       - [题目示例21 `leetcode 113 路径总和II`](#题目示例21-leetcode-113-路径总和ii)
+      - [题目示例22 `leetcode 401 二进制手表`](#题目示例22-leetcode-401-二进制手表)
+      - [题目示例23 `leetcode 1079 活字印刷`](#题目示例23-leetcode-1079-活字印刷)
   - [双指针](#双指针)
     - [快慢指针（同向指针）](#快慢指针同向指针)
       - [题目示例1  `leetcode 19 删除链表的倒数第N个节点`](#题目示例1-leetcode-19-删除链表的倒数第n个节点-1)
@@ -5347,6 +5349,99 @@ private void backTracking(TreeNode root, LinkedList<Integer> runner, int curVal,
     }
     // 撤销选择
     runner.removeLast();
+}
+```
+
+----
+
+##### 题目示例22 `leetcode 401 二进制手表`
+
+**感觉用回溯做还更难了**
+
+```java
+private List<String> res = new LinkedList<>();
+private int[] hourNum = {8, 4, 2, 1};
+private int[] minuteNum = {32, 16, 8, 4, 2, 1};
+
+public List<String> readBinaryWatch(int num) {
+    if(num > 10 || num < 0)
+        return res;
+
+    for(int i = 0; i <= num; i++) {
+        List<Integer> hourCombination = findCombination(hourNum, i);
+        List<Integer> minuteCombination = findCombination(minuteNum, num - i);
+
+        for(int j = 0; j < hourCombination.size(); j++) {
+            if(hourCombination.get(j) > 11)
+                continue;
+            for(int k = 0; k < minuteCombination.size(); k++) {
+                if(minuteCombination.get(k) > 59)
+                    continue;
+                res.add(hourCombination.get(j) + ":" + (minuteCombination.get(k) < 10?
+                        "0" + minuteCombination.get(k):minuteCombination.get(k)));
+            }
+        }
+    }
+    return res;
+}
+
+private List<Integer> findCombination(int[] arr, int num) {
+    LinkedList<Integer> tempRes = new LinkedList<>();
+    backTracking(arr, num, 0, new LinkedList<>(), tempRes);
+    return tempRes;
+}
+
+private void backTracking(int[] arr, int num, int start, LinkedList<Integer> stack, LinkedList<Integer> runner) {
+    if(stack.size() == num) {
+        runner.add(sum(stack));
+        return;
+    }
+    
+    for(int i = start; i < arr.length; i++) {
+        // 选择
+        stack.addLast(arr[i]);
+        // 进入下一层决策树
+        backTracking(arr, num, i + 1, stack, runner);
+        // 撤销选择
+        stack.removeLast();
+    }
+}
+private Integer sum(List<Integer> pre) {
+    int sum = 0;
+    for (int i = 0; i < pre.size(); i++) {
+        sum += pre.get(i);
+    }
+    return sum;
+}
+```
+
+-----
+
+##### 题目示例23 `leetcode 1079 活字印刷`
+
+```java
+public int numTilePossibilities(String tiles) {
+    int[] counter = new int[26];
+    for(int i = 0; i < tiles.length(); i++)
+        counter[ tiles.charAt(i) - 'A' ]++;
+    return backTracking(counter);
+}
+
+private int backTracking(int[] counter) {
+    int result = 0;
+    for(int i = 0; i < counter.length; i++) {
+        if(counter[i] == 0)
+            continue;
+
+        // 做选择
+        result++;
+        counter[i]--;
+        // 进入下一层决策树
+        result += backTracking(counter);
+        // 撤销选择
+        counter[i]++;
+    }
+    return result;
 }
 ```
 

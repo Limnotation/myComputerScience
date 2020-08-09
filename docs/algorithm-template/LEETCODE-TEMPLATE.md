@@ -112,6 +112,12 @@
       - [题目示例9 `leetcode 542 01矩阵`](#题目示例9-leetcode-542-01矩阵)
 - [基础算法](#基础算法)
   - [排序](#排序)
+  - [深度优先搜索](#深度优先搜索)
+    - [典型题目](#典型题目)
+      - [题目示例1 `leetcode 200 岛屿数量`](#题目示例1-leetcode-200-岛屿数量)
+      - [题目示例2  `leetcode 733 图像渲染`](#题目示例2-leetcode-733-图像渲染)
+      - [题目示例3 `剑指offer 13 机器人的运动范围`](#题目示例3-剑指offer-13-机器人的运动范围)
+      - [题目示例4 `leetcode 695 岛屿的最大面积`](#题目示例4-leetcode-695-岛屿的最大面积)
   - [二分搜索](#二分搜索)
     - [二分搜索模板](#二分搜索模板)
       - [零、二分查找框架](#零二分查找框架)
@@ -119,7 +125,7 @@
       - [二、寻找左侧边界的二分搜索](#二寻找左侧边界的二分搜索)
       - [三、寻找右侧边界的二分查找](#三寻找右侧边界的二分查找)
       - [四、逻辑统一](#四逻辑统一)
-    - [典型题目](#典型题目)
+    - [典型题目](#典型题目-1)
       - [题目示例1  `leetcode 35 插入位置`](#题目示例1-leetcode-35-插入位置)
       - [题目示例2 `leetcode 74 搜索二维矩阵`](#题目示例2-leetcode-74-搜索二维矩阵)
       - [题目示例3 `leetcode 278 第一个错误的版本`](#题目示例3-leetcode-278-第一个错误的版本)
@@ -166,30 +172,26 @@
 - [算法思维](#算法思维)
   - [回溯法](#回溯法)
     - [简单的回溯法模板](#简单的回溯法模板)
-    - [典型题目](#典型题目-1)
+    - [典型题目](#典型题目-2)
       - [题目示例1 `leetcode78 子集 `](#题目示例1-leetcode78-子集-)
       - [题目示例2 `leetcode 90 子集II`](#题目示例2-leetcode-90-子集ii)
       - [题目示例3 `leetcode 46 全排列`](#题目示例3-leetcode-46-全排列)
       - [题目示例4 `leetcode 47 全排列II `](#题目示例4-leetcode-47-全排列ii-)
-      - [题目示例5 `leetcode 996 正方形数组的数目`](#题目示例5-leetcode-996-正方形数组的数目)
-      - [题目示例6 `leetcode 77 组合`](#题目示例6-leetcode-77-组合)
-      - [题目示例7 `leetcode 39 组合总和`](#题目示例7-leetcode-39-组合总和)
-      - [题目示例8`leetcode 40 组合总和II`](#题目示例8leetcode-40-组合总和ii)
-      - [题目示例9 `leetcode 216 组合总和III`](#题目示例9-leetcode-216-组合总和iii)
-      - [题目示例10`leetcode 131 分割回文串`](#题目示例10leetcode-131-分割回文串)
-      - [题目示例11  `leetcode 93 复原IP地址`](#题目示例11-leetcode-93-复原ip地址)
-      - [题目示例12 `leetcode37 解数独`](#题目示例12-leetcode37-解数独)
-      - [题目示例13 `leetcode 22 括号生成`](#题目示例13-leetcode-22-括号生成)
-      - [题目示例14`leetcode17 电话号码的字母组合`](#题目示例14leetcode17-电话号码的字母组合)
-      - [题目示例15 `leetcode 51 N皇后`](#题目示例15-leetcode-51-n皇后)
-      - [题目示例16 `leetcode 784 字母大小写全排列`](#题目示例16-leetcode-784-字母大小写全排列)
-      - [题目示例17 `leetcode 79 单词搜索`](#题目示例17-leetcode-79-单词搜索)
-      - [题目示例18 `leetcode 200 岛屿数量`](#题目示例18-leetcode-200-岛屿数量)
-      - [题目示例19 `剑指offer 13 机器人的运动范围`](#题目示例19-剑指offer-13-机器人的运动范围)
-      - [题目示例20 `leetcode 733 图像渲染`](#题目示例20-leetcode-733-图像渲染)
-      - [题目示例21 `leetcode 113 路径总和II`](#题目示例21-leetcode-113-路径总和ii)
-      - [题目示例22 `leetcode 401 二进制手表`](#题目示例22-leetcode-401-二进制手表)
-      - [题目示例23 `leetcode 1079 活字印刷`](#题目示例23-leetcode-1079-活字印刷)
+      - [题目示例5 `leetcode 77 组合`](#题目示例5-leetcode-77-组合)
+      - [题目示例6 `leetcode 39 组合总和`](#题目示例6-leetcode-39-组合总和)
+      - [题目示例7 `leetcode 40 组合总和II`](#题目示例7-leetcode-40-组合总和ii)
+      - [题目示例8 `leetcode 216 组合总和III`](#题目示例8-leetcode-216-组合总和iii)
+      - [题目示例9 `leetcode 131 分割回文串`](#题目示例9-leetcode-131-分割回文串)
+      - [题目示例10  `leetcode 93 复原IP地址`](#题目示例10-leetcode-93-复原ip地址)
+      - [题目示例11 `leetcode37 解数独`](#题目示例11-leetcode37-解数独)
+      - [题目示例12 `leetcode 22 括号生成`](#题目示例12-leetcode-22-括号生成)
+      - [题目示例13 `leetcode17 电话号码的字母组合`](#题目示例13-leetcode17-电话号码的字母组合)
+      - [题目示例14 `leetcode 51 N皇后`](#题目示例14-leetcode-51-n皇后)
+      - [题目示例15 `leetcode 784 字母大小写全排列`](#题目示例15-leetcode-784-字母大小写全排列)
+      - [题目示例16 `leetcode 79 单词搜索`](#题目示例16-leetcode-79-单词搜索)
+      - [题目示例17 `leetcode 113 路径总和II`](#题目示例17-leetcode-113-路径总和ii)
+      - [题目示例18 `leetcode 401 二进制手表`](#题目示例18-leetcode-401-二进制手表)
+      - [题目示例19 `leetcode 1079 活字印刷`](#题目示例19-leetcode-1079-活字印刷)
   - [双指针](#双指针)
     - [快慢指针（同向指针）](#快慢指针同向指针)
       - [题目示例1  `leetcode 19 删除链表的倒数第N个节点`](#题目示例1-leetcode-19-删除链表的倒数第n个节点-1)
@@ -202,7 +204,7 @@
     - [简单的滑动窗口模板](#简单的滑动窗口模板)
       - [1、可变窗口模板](#1可变窗口模板)
       - [2、固定窗口模板](#2固定窗口模板)
-    - [典型题目](#典型题目-2)
+    - [典型题目](#典型题目-3)
       - [可变窗口题目](#可变窗口题目)
         - [题目示例1 `leetcode 76 最小覆盖子串`](#题目示例1-leetcode-76-最小覆盖子串)
         - [题目示例2 `leetcode 567 字符串的排列`](#题目示例2-leetcode-567-字符串的排列)
@@ -3116,6 +3118,242 @@ private int[][] updateMatrix( int[][] matrix )
 
 ### 排序
 
+------
+
+-----
+
+### 深度优先搜索
+
+#### 概念
+
+##### 1、沉岛思想
+
+一般用于二维数组问题的DFS中，找到满足题意的点时，把该点的值更新（岛屿沉没），确保之后不会再访问
+
+优点是递归流程不需要再自己设置和撤销访问标记
+
+缺点是会修改输入
+
+如果题目要求不能修改除符合条件的区域之外的内容，就要有相应的恢复操作
+
+------
+
+#### 典型题目
+
+##### 题目示例1 `leetcode 200 岛屿数量`
+
+**沉岛思想，会改变输入**
+
+```java
+public int numIslands(char[][] grid) {
+    int counter = 0;
+    for(int i = 0; i < grid.length; i++)
+        for(int j = 0; j < grid[0].length; j++)
+            if(grid[i][j] == '1' && dfs(grid, i, j) >= 1)
+                counter++;
+    return counter;
+}
+
+private int dfs(char[][] grid, int i, int j) {
+    if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length)
+        return 0;
+    if(grid[i][j] == '1') {
+        grid[i][j] = '0';
+        return dfs(grid, i - 1, j) + dfs(grid, i, j - 1) + dfs(grid, i + 1, j) + dfs(grid, i, j + 1) + 1;
+    }
+    return 0;
+}
+```
+
+------
+
+##### 题目示例2  `leetcode 733 图像渲染`
+
+**沉岛思想，会改变输入**
+
+```java
+public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+    int oldVal = image[sr][sc];
+    if(oldVal == newColor)
+        return image;
+    dfs(image, sr, sc, oldVal, newColor);
+    return image;
+}
+
+private void dfs(int[][] image, int i, int j, int oldVal, int newColor) {
+    if(i < 0 || i >= image.length || j < 0 || j >= image[0].length)
+        return;
+
+    if(image[i][j] == oldVal) {
+        image[i][j] = newColor;
+        dfs(image, i - 1, j, oldVal, newColor);
+        dfs(image, i, j - 1, oldVal, newColor);
+        dfs(image, i + 1, j, oldVal, newColor);
+        dfs(image, i, j + 1, oldVal, newColor);
+    } 
+}
+```
+
+-----
+
+##### 题目示例3 `剑指offer 13 机器人的运动范围`
+
+**沉岛思想，会改变输入**
+
+```java
+public int movingCount(int m, int n, int k) {
+    if(m <= 0 || n <= 0 || k < 0)
+        return 0;
+
+    boolean[][] visited = new boolean[m][n];
+    return backTracking(m, n, 0, 0, k, visited);
+}
+
+private int dfs(int m, int n, int row, int col, int k, boolean[][] visited) {
+    int counter = 0;
+    if(check(m, n, row, col, k, visited)) {
+        visited[row][col] = true;
+        counter = 1 + dfs(m, n, row - 1, col, k, visited)
+            + dfs(m, n, row, col + 1, k, visited)
+            + dfs(m, n, row + 1, col, k, visited)
+            + dfs(m, n, row, col - 1, k, visited);
+    }
+    return counter;
+}
+
+private boolean check(int m, int n, int row, int col, int k, boolean[][] visited) {
+    if(row >= 0 && row < m && col >= 0 && col < n && !visited[row][col])
+        if(getDigitalSum(row) + getDigitalSum(col) <= k)
+            return true;
+    return false;
+}
+
+private int getDigitalSum(int num) {
+    int sum = 0;
+    while(num > 0) {
+        sum += num % 10;
+        num = num / 10;
+    }
+    return sum;
+}
+```
+
+------
+
+##### 题目示例4 `leetcode 695 岛屿的最大面积`
+
+**沉岛思想，会改变输入**
+
+```java
+public int maxAreaOfIsland(int[][] grid) {
+    int res = Integer.MIN_VALUE;
+    for(int i = 0; i < grid.length; i++) 
+        for(int j = 0; j < grid[0].length; j++)
+            res = Math.max(res, dfs(grid, i, j));
+    return res;
+}
+
+private int dfs(int[][] grid, int i, int j) {
+    if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length || grid[i][j] == 0)
+        return 0;
+
+    grid[i][j] = 0;
+    int res = 1 + dfs(grid, i - 1, j)
+        + dfs(grid, i, j - 1)
+        + dfs(grid, i + 1, j)
+        + dfs(grid, i, j + 1);
+    return res;
+}
+```
+
+-----
+
+##### 题目示例5 `leetcode 1254 统计封闭岛屿的数目`
+
+**沉岛思想**，**会改变输入**
+
+```java
+public int closedIsland(int[][] grid) {
+    if(grid == null || grid.length == 0)
+        return 0;
+    
+    int res = 0;
+    int m = grid.length, n = grid[0].length;
+    for(int i = 0; i < m; i++)
+        for(int j = 0; j < n; j++)
+            if(grid[i][j] == 0 && !dfs(grid, i, j))
+                res++;
+    return res;
+}
+
+// 判断岛屿是否到达边界
+private boolean dfs(int[][] grid, int i, int j) {
+    if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length)
+        return true;
+    
+    if(grid[i][j] != 0)
+        return false;
+    
+    grid[i][j] = 1;
+    // 分别求四个方向，避免“||”的短链效应
+    boolean up = dfs(grid, i - 1, j);
+    boolean left = dfs(grid, i, j - 1);
+    boolean down = dfs(grid, i + 1, j);
+    boolean right = dfs(grid, i, j + 1);
+    return up || left || down || right;
+}
+```
+
+---
+
+##### 题目示例6 `leetcode 130 被围绕的区域`
+
+```java
+public void solve(char[][] board) {
+    if(board == null || board.length == 0)
+        return;
+
+    int m = board.length, n = board[0].length;
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            // 从边界开始，搜索所有与边界相连的岛屿，这些岛屿不可以被修改
+            // 除此之外的所有岛屿都可以被修改
+            boolean atEdge = (i == 0) || (i == m - 1) || (j == 0) || (j == n - 1);
+            if(atEdge && board[i][j] == 'O')
+                dfs(board, i, j); 
+        }
+    }
+
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            if(board[i][j] == 'O')
+                board[i][j] = 'X';
+            if(board[i][j] == '#')
+                board[i][j] = 'O';
+        }
+    }
+}
+
+private void dfs(char[][] board, int i, int j) {
+    if(i < 0 || i >= board.length || j < 0 || j >= board[0].length 
+       || board[i][j] == 'X'
+       || board[i][j] == '#')
+        return;
+
+    board[i][j] = '#';
+    dfs(board, i - 1, j);
+    dfs(board, i, j - 1);
+    dfs(board, i + 1, j);
+    dfs(board, i, j + 1);
+}
+```
+
+
+
+-----
+
+-----
+
 ### 二分搜索
 
 #### 二分搜索模板
@@ -4507,6 +4745,8 @@ class Solution
 
 ### 回溯法
 
+**回溯算法就是在N叉树上的DFS操作，加上剪枝和状态恢复操作**
+
 #### 简单的回溯法模板
 
 ```go
@@ -4682,17 +4922,9 @@ private void backTracking(int[] nums, boolean[] used, LinkedList<Integer> runner
 }
 ```
 
----
-
-##### 题目示例5 `leetcode 996 正方形数组的数目`
-
-```java
-
-```
-
 ----
 
-##### 题目示例6 `leetcode 77 组合`
+##### 题目示例5 `leetcode 77 组合`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -4723,7 +4955,7 @@ private void backTracking(int n, int k, int start, LinkedList<Integer> runner) {
 
 -----
 
-##### 题目示例7 `leetcode 39 组合总和`
+##### 题目示例6 `leetcode 39 组合总和`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -4760,7 +4992,7 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
 
 -----
 
-##### 题目示例8`leetcode 40 组合总和II`
+##### 题目示例7 `leetcode 40 组合总和II`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -4799,7 +5031,7 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
 
 ----
 
-##### 题目示例9 `leetcode 216 组合总和III`
+##### 题目示例8 `leetcode 216 组合总和III`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -4833,7 +5065,7 @@ private void backTracking(int k, int n, int start, LinkedList<Integer> runner) {
 
 ---
 
-##### 题目示例10`leetcode 131 分割回文串`
+##### 题目示例9 `leetcode 131 分割回文串`
 
 ```java
 List<List<String>> res = new LinkedList<>();
@@ -4876,7 +5108,7 @@ private boolean isPalindrome(String s, int left, int right)
 
 ----
 
-##### 题目示例11  `leetcode 93 复原IP地址`
+##### 题目示例10  `leetcode 93 复原IP地址`
 
 ```java
 List<String> res = new LinkedList<>();
@@ -4922,7 +5154,7 @@ private void backTracking(String s, int pos, LinkedList<String> runner) {
 
 ----
 
-##### 题目示例12 `leetcode37 解数独`
+##### 题目示例11 `leetcode37 解数独`
 
 ```java
 public void solveSudoku(char[][] board){
@@ -4974,7 +5206,7 @@ private boolean isValid(char[][] board, int row, int col, char c) {
 }
 ```
 
-##### 题目示例13 `leetcode 22 括号生成`
+##### 题目示例12 `leetcode 22 括号生成`
 
 ```java
 // 这个题目有两个关键性质
@@ -5022,7 +5254,7 @@ private void backTracking(int left, int right, StringBuffer s) {
 
 ---
 
-##### 题目示例14`leetcode17 电话号码的字母组合`
+##### 题目示例13 `leetcode17 电话号码的字母组合`
 
 ```java
 List<String> res = new LinkedList<>();
@@ -5067,7 +5299,7 @@ private void backTracking(String digits, int index, StringBuffer runner) {
 
 ----
 
-##### 题目示例15 `leetcode 51 N皇后`
+##### 题目示例14 `leetcode 51 N皇后`
 
 ```java
 List<List<String>> res = new LinkedList<>();
@@ -5128,7 +5360,7 @@ private boolean isValid(char[][] board, int row, int col) {
 
 ------
 
-##### 题目示例16 `leetcode 784 字母大小写全排列`
+##### 题目示例15 `leetcode 784 字母大小写全排列`
 
 ```java
 List<String> res = new LinkedList<>();
@@ -5161,7 +5393,7 @@ private void backTracking(String S, int start, char[] charArray) {
 
 -----
 
-##### 题目示例17 `leetcode 79 单词搜索`
+##### 题目示例16 `leetcode 79 单词搜索`
 
 ```java
 private boolean[][] visited;
@@ -5215,114 +5447,9 @@ private boolean backTracking(char[][] board, String word, int row, int col, int 
 }
 ```
 
-------
-
-##### 题目示例18 `leetcode 200 岛屿数量`
-
-```java
-// 在这个问题中，需要注意的是：回溯的部分理论上是不存在的；
-// 在找到一个岛屿后，不可能再使用任何一个这个岛屿的格子
-// 相当于不会有回溯后的“状态重置”
-public int numIslands(char[][] grid) {
-    int counter = 0;
-    for(int i = 0; i < grid.length; i++)
-        for(int j = 0; j < grid[0].length; j++)
-            if(grid[i][j] == '1' && backTracking( grid, i, j ) >= 1)
-                counter++;
-    return counter;
-}
-
-private int backTracking(char[][] grid, int i, int j) {
-    if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length)
-        return 0;
-    if(grid[i][j] == '1') {
-        grid[i][j] = '0';
-        return backTracking(grid, i - 1, j) + 
-            backTracking(grid, i, j - 1) + 
-            backTracking(grid, i + 1, j) + 
-            backTracking(grid, i, j + 1) + 1;
-    }
-    return 0;
-}
-```
-
 -----
 
-##### 题目示例19 `剑指offer 13 机器人的运动范围`
-
-```java
-// 此题与示例18类似，回溯的过程不涉及“状态重置”
-// 
-public int movingCount(int m, int n, int k) {
-    if(m <= 0 || n <= 0 || k < 0)
-        return 0;
-
-    boolean[][] visited = new boolean[m][n];
-    return backTracking(m, n, 0, 0, k, visited);
-}
-
-private int backTracking(int m, int n, int row, int col, int k, boolean[][] visited) {
-    int counter = 0;
-    if(check(m, n, row, col, k, visited)) {
-        visited[row][col] = true;
-        counter = 1 + backTracking(m, n, row - 1, col, k, visited)
-            + backTracking(m, n, row, col + 1, k, visited)
-            + backTracking(m, n, row + 1, col, k, visited)
-            + backTracking(m, n, row, col - 1, k, visited);
-    }
-    return counter;
-}
-
-private boolean check(int m, int n, int row, int col, int k, boolean[][] visited) {
-    if(row >= 0 && row < m && col >= 0 && col < n && !visited[row][col])
-        if(getDigitalSum(row) + getDigitalSum(col) <= k)
-            return true;
-    return false;
-}
-
-private int getDigitalSum(int num) {
-    int sum = 0;
-    while(num > 0) {
-        sum += num % 10;
-        num = num / 10;
-    }
-    return sum;
-}
-```
-
------
-
-##### 题目示例20 `leetcode 733 图像渲染`
-
-```java
-// 感觉更加偏向单纯的dfs一些
-public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
-    int oldVal = image[sr][sc];
-    if(oldVal == newColor)
-        return image;
-    dfs(image, sr, sc, oldVal, newColor);
-    return image;
-}
-
-private void dfs(int[][] image, int i, int j, int oldVal, int newColor) {
-    if(i < 0 || i >= image.length || j < 0 || j >= image[0].length)
-        return;
-
-    if(image[i][j] == oldVal) {
-        image[i][j] = newColor;
-        dfs(image, i - 1, j, oldVal, newColor);
-        dfs(image, i, j - 1, oldVal, newColor);
-        dfs(image, i + 1, j, oldVal, newColor);
-        dfs(image, i, j + 1, oldVal, newColor);
-    } else {
-        return;
-    }
-}
-```
-
------
-
-##### 题目示例21 `leetcode 113 路径总和II`
+##### 题目示例17 `leetcode 113 路径总和II`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -5354,7 +5481,7 @@ private void backTracking(TreeNode root, LinkedList<Integer> runner, int curVal,
 
 ----
 
-##### 题目示例22 `leetcode 401 二进制手表`
+##### 题目示例18 `leetcode 401 二进制手表`
 
 **感觉用回溯做还更难了**
 
@@ -5417,7 +5544,7 @@ private Integer sum(List<Integer> pre) {
 
 -----
 
-##### 题目示例23 `leetcode 1079 活字印刷`
+##### 题目示例19 `leetcode 1079 活字印刷`
 
 ```java
 public int numTilePossibilities(String tiles) {

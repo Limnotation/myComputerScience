@@ -113,11 +113,16 @@
 - [基础算法](#基础算法)
   - [排序](#排序)
   - [深度优先搜索](#深度优先搜索)
+    - [概念](#概念)
+      - [1、沉岛思想](#1沉岛思想)
     - [典型题目](#典型题目)
       - [题目示例1 `leetcode 200 岛屿数量`](#题目示例1-leetcode-200-岛屿数量)
       - [题目示例2  `leetcode 733 图像渲染`](#题目示例2-leetcode-733-图像渲染)
       - [题目示例3 `剑指offer 13 机器人的运动范围`](#题目示例3-剑指offer-13-机器人的运动范围)
       - [题目示例4 `leetcode 695 岛屿的最大面积`](#题目示例4-leetcode-695-岛屿的最大面积)
+      - [题目示例5 `leetcode 1254 统计封闭岛屿的数目`](#题目示例5-leetcode-1254-统计封闭岛屿的数目)
+      - [题目示例6 `leetcode 130 被围绕的区域`](#题目示例6-leetcode-130-被围绕的区域)
+      - [题目示例7 `leetcode 417 太平洋大西洋水流问题`](#题目示例7-leetcode-417-太平洋大西洋水流问题)
   - [二分搜索](#二分搜索)
     - [二分搜索模板](#二分搜索模板)
       - [零、二分查找框架](#零二分查找框架)
@@ -192,6 +197,7 @@
       - [题目示例17 `leetcode 113 路径总和II`](#题目示例17-leetcode-113-路径总和ii)
       - [题目示例18 `leetcode 401 二进制手表`](#题目示例18-leetcode-401-二进制手表)
       - [题目示例19 `leetcode 1079 活字印刷`](#题目示例19-leetcode-1079-活字印刷)
+      - [题目示例20 `leetcode 526 优美的排列`](#题目示例20-leetcode-526-优美的排列)
   - [双指针](#双指针)
     - [快慢指针（同向指针）](#快慢指针同向指针)
       - [题目示例1  `leetcode 19 删除链表的倒数第N个节点`](#题目示例1-leetcode-19-删除链表的倒数第n个节点-1)
@@ -3348,6 +3354,59 @@ private void dfs(char[][] board, int i, int j) {
 }
 ```
 
+-----
+
+##### 题目示例7 `leetcode 417 太平洋大西洋水流问题`
+
+**沉岛思想，不过利用备份确保不修改输入**
+
+```java
+List<List<Integer>> res = new LinkedList<>();
+public List<List<Integer>> pacificAtlantic(int[][] matrix) {
+    if(matrix == null || matrix.length == 0)
+        return res;
+    
+    int m = matrix.length, n = matrix[0].length;
+    int[][] pacific = new int[m][n];
+    int[][] atlantic = new int[m][n];
+    
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            // 从大洋逆流进到陆地，
+            if(i == 0 || j == 0) 
+                dfs(matrix, pacific, i, j, matrix[i][j]);
+            if(i == m - 1 || j == n - 1)
+                dfs(matrix, atlantic, i, j, matrix[i][j]);
+        }
+    }
+    
+    // 
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            if(pacific[i][j] == 1 && atlantic[i][j] == 1)
+                res.add(Arrays.asList(i, j));
+        }
+    }
+    return res;
+}
+
+private void dfs(int[][] matrix, int[][] ocean, int i, int j, int preVal) {
+    if(i < 0 || i >= matrix.length || j < 0 || j > matrix[0].length 
+       // 已经流到过，不需要再试
+       || ocean[i][j] == 1
+       // 无法流动（注意这里是逆流）
+       || matrix[i][j] < pre ) {
+        return;
+    }
+    
+    ocean[i][j] = 1;
+    dfs(matrix, ocean, i - 1, j, matrix[i][j]);
+    dfs(matrix, ocean, i, j - 1, matrix[i][j]);
+    dfs(matrix, ocean, i + 1, j, matrix[i][j]);
+    dfs(matrix, ocean, i, j + 1, matrix[i][j]);
+}
+```
+
 
 
 -----
@@ -5569,6 +5628,37 @@ private int backTracking(int[] counter) {
         counter[i]++;
     }
     return result;
+}
+```
+
+------
+
+##### 题目示例20 `leetcode 526 优美的排列`
+
+```java
+private int counter = 0;
+public int countArrangement(int N) {
+    boolean[] used = new boolean[N + 1];
+    backTracking(N, 1, used);
+    return counter;
+}
+
+private void backTracking(int N, int pos, boolean[] used) {
+    if(N < pos) {
+        counter++;
+        return;
+    }
+
+    for(int i = 1; i <= N; i++) {
+        if(!used[i] && (i % pos == 0 || pos % i == 0)) {
+            // 做选择
+            used[i] = true;
+            // 进入下一层决策树
+            backTracking(N, pos + 1, used);
+            // 撤销选择
+            used[i] = false;
+        }
+    }
 }
 ```
 

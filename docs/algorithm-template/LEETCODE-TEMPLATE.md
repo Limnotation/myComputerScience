@@ -89,7 +89,11 @@
       - [题目示例1 `leetcode 155 最小栈`](#题目示例1-leetcode-155-最小栈)
       - [题目示例2 `leetcode 150 逆波兰表达式求值`](#题目示例2-leetcode-150-逆波兰表达式求值)
       - [题目示例3 `leetcode 394 字符串解码`](#题目示例3-leetcode-394-字符串解码)
-    - [栈和队列的特殊应用：单调栈/单调队列](#栈和队列的特殊应用单调栈单调队列)
+    - [栈和队列的特殊应用1：单调栈/单调队列](#栈和队列的特殊应用1单调栈单调队列)
+      - [概念](#概念)
+        - [单调栈：](#单调栈)
+        - [单调队列：](#单调队列)
+      - [典型题目](#典型题目)
         - [题目示例 1 `leetcode 496 下一个更大元素I`](#题目示例-1-leetcode-496-下一个更大元素i)
         - [题目示例2 `leetcode 503 下一个更大元素II`](#题目示例2-leetcode-503-下一个更大元素ii)
         - [题目示例3 `leetcode 739 每日温度`](#题目示例3-leetcode-739-每日温度)
@@ -103,19 +107,12 @@
         - [题目示例11 `leetcode 901 股票价格跨度`](#题目示例11-leetcode-901-股票价格跨度)
         - [题目示例12 `leetcode 1019 链表的下一个更大结点`](#题目示例12-leetcode-1019-链表的下一个更大结点)
         - [题目示例13 `leetcode 1124 表现良好的最长时间段`](#题目示例13-leetcode-1124-表现良好的最长时间段)
-        - [题目示例14  `leetcode 907 子数组的最小值之和`](#题目示例14-leetcode-907-子数组的最小值之和)
-    - [`利用栈进行DFS递归搜索模板`](#利用栈进行dfs递归搜索模板)
-      - [题目示例5`leetcode 94 二叉树的中序遍历`](#题目示例5leetcode-94-二叉树的中序遍历)
-      - [题目示例6 `leetcode 133 克隆图`](#题目示例6-leetcode-133-克隆图)
-    - [队列](#队列)
-      - [题目示例8 `leetcode 232 用栈实现队列`](#题目示例8-leetcode-232-用栈实现队列)
-      - [题目示例9 `leetcode 542 01矩阵`](#题目示例9-leetcode-542-01矩阵)
 - [基础算法](#基础算法)
   - [排序](#排序)
   - [深度优先搜索](#深度优先搜索)
-    - [概念](#概念)
+    - [概念](#概念-1)
       - [1、沉岛思想](#1沉岛思想)
-    - [典型题目](#典型题目)
+    - [典型题目](#典型题目-1)
       - [题目示例1 `leetcode 200 岛屿数量`](#题目示例1-leetcode-200-岛屿数量)
       - [题目示例2  `leetcode 733 图像渲染`](#题目示例2-leetcode-733-图像渲染)
       - [题目示例3 `剑指offer 13 机器人的运动范围`](#题目示例3-剑指offer-13-机器人的运动范围)
@@ -130,7 +127,7 @@
       - [二、寻找左侧边界的二分搜索](#二寻找左侧边界的二分搜索)
       - [三、寻找右侧边界的二分查找](#三寻找右侧边界的二分查找)
       - [四、逻辑统一](#四逻辑统一)
-    - [典型题目](#典型题目-1)
+    - [典型题目](#典型题目-2)
       - [题目示例1  `leetcode 35 插入位置`](#题目示例1-leetcode-35-插入位置)
       - [题目示例2 `leetcode 74 搜索二维矩阵`](#题目示例2-leetcode-74-搜索二维矩阵)
       - [题目示例3 `leetcode 278 第一个错误的版本`](#题目示例3-leetcode-278-第一个错误的版本)
@@ -177,7 +174,7 @@
 - [算法思维](#算法思维)
   - [回溯法](#回溯法)
     - [简单的回溯法模板](#简单的回溯法模板)
-    - [典型题目](#典型题目-2)
+    - [典型题目](#典型题目-3)
       - [题目示例1 `leetcode78 子集 `](#题目示例1-leetcode78-子集-)
       - [题目示例2 `leetcode 90 子集II`](#题目示例2-leetcode-90-子集ii)
       - [题目示例3 `leetcode 46 全排列`](#题目示例3-leetcode-46-全排列)
@@ -210,7 +207,7 @@
     - [简单的滑动窗口模板](#简单的滑动窗口模板)
       - [1、可变窗口模板](#1可变窗口模板)
       - [2、固定窗口模板](#2固定窗口模板)
-    - [典型题目](#典型题目-3)
+    - [典型题目](#典型题目-4)
       - [可变窗口题目](#可变窗口题目)
         - [题目示例1 `leetcode 76 最小覆盖子串`](#题目示例1-leetcode-76-最小覆盖子串)
         - [题目示例2 `leetcode 567 字符串的排列`](#题目示例2-leetcode-567-字符串的排列)
@@ -2607,43 +2604,48 @@ public String decodeString(String s)
 
 ---
 
-#### 栈和队列的特殊应用：单调栈/单调队列
+#### 栈和队列的特殊应用1：单调栈/单调队列
+
+##### 概念
 
 ---
 
-**单调栈：栈中存放的数据都是有序的，元素的分布从栈底到栈顶具有单调性，分为单调递增栈和单调递减栈两种**
+###### 单调栈：
+
+**栈中存放的数据都是有序的，元素的分布从栈底到栈顶具有单调性，分为单调递增栈和单调递减栈两种**
 
 1. **单调递增栈就是元素的值由栈底到栈顶大小单调递增**
+
+    **单调递增栈可以找到左起第一个比当前数字小的元素**
+
 2. **单调递减栈就是元素的值由栈底到栈顶大小单调递减**
+
+    **单调递减栈可以找到左起第一个比当前数字大的元素**
 
 **单调栈里可以保存元素的值或者数组下标**
 
+**构建栈的过程从数组的右侧开始时，可以找到当前元素右侧第一个更大或者更小的元素**
+
+###### 单调队列：
+
 **某些场景下栈底也需要维护，此时可能需要借助队列或双端队列实现，此时称为单调队列**
-
-**单调栈主要回答的几种问题:**
-
-- 比当前元素更大的下一个元素
-- 比当前元素更大的前一个元素
-- 比当前元素更小的下一个元素
-- 比当前元素更小的前一个元素
 
 **根据题目大小变化元素的遍历顺序和不等号的方向即可**
 
 ```java
 // 一个简单的单调栈模板
 Deque<Integer> stack = new LinkedList<>();
-for( int i = 0; i < nums.length; i++ )
-{
-    while( !stack.isEmpty() && nums[i] <= nums[stack.peekLast()] ) // 单调递增栈
+for(int i = 0; i < nums.length; i++) {
+    while(!stack.isEmpty() && nums[i] <= nums[stack.peekLast()]) // 单调递增栈
         // 单调递减栈 nums[i] >= nums[stack.peekLast()]
         stack.removeLast();
-    stack.addLast( i );
+    stack.addLast(i);
 }
 ```
 
-
-
 ---
+
+##### 典型题目
 
 ###### 题目示例 1 `leetcode 496 下一个更大元素I`
 
@@ -2764,32 +2766,29 @@ private int maxWidthGap( int[] A )
 ###### 题目示例5 `leetcode 42 接雨水`
 
 ```java
-private int trap( int[] height )
-{
-    if( height == null || height.length < 3 )
+public int trap(int[] height) {
+    if(height == null || height.length < 3)
         return 0;
-    
-    Deque<Integer> stack = new LinkedList<>();
+
     int res = 0;
-    
-    for( int i = 0; i < height.length; i++ )
-    {
+    Deque<Integer> stack = new LinkedList<>();
+    for(int i = 0; i < height.length; i++) {
         // 构建一个单调递减栈
-        while( !stack.isEmpty() && height[stack.peekLast()] < height[i] )
-        {
-            int bottomIndex = stack.removeLast();
+        while(!stack.isEmpty() && height[stack.peekLast()] < height[i]) {
+            int bottomIndex  = stack.removeLast();
             // 栈顶元素与bottom相等时应该pop出栈，因为无法形成蓄水的凹槽
-            while( !stack.isEmpty() && height[stack.peekLast()] == height[bottomIndex] )
+            while(!stack.isEmpty() && height[stack.peekLast()] == height[bottomIndex]) {
                 stack.removeLast();
-            if( !stack.isEmpty() )
-            {
+            }
+
+            if(!stack.isEmpty()) {
                 // leftEdge指向蓄水凹槽的左侧边界
                 // 蓄水凹槽的右边界即为i
                 int leftEdge = stack.peekLast();
-                res += ( Math.min( height[leftEdge], height[i] ) - height[bottomIndex] ) * ( i - leftEdge - 1 );
+                res += (Math.min(height[leftEdge], height[i]) - height[bottomIndex]) * (i - leftEdge - 1);
             }
         }
-        stack.addLast( i );
+        stack.addLast(i);
     }
     return res;
 }
@@ -2953,170 +2952,6 @@ private int longestWPI( int[] hours )
     return maxL;
 }
 ```
-
----
-
-
-
-###### 题目示例14  `leetcode 907 子数组的最小值之和`
-
-----
-
----
-
-#### `利用栈进行DFS递归搜索模板`
-
-```go
-boolean DFS( Node root, int target )
-{
-    Set<Node> visited;
-    Stack<Node> s;
-    add root to s;
-    while( s is not empty )
-    {
-        Node cur = the top element in s;
-        return true if cur is target;
-        for( Node next:the neighbors of cur )
-        {
-            if( next is not visited )
-            {
-                add next to s;
-                add next to visited
-            }
-        }
-        remove cur from s;
-    }
-    return false;
-}
-```
-
-##### 题目示例5`leetcode 94 二叉树的中序遍历`
-
-```java
-private List<Integer> inorderTraversal( TreeNode root )
-{
-    List<Integer> res = new LinkedList<>();
-    if( root == null )
-        return res;
-    
-    Stack<TreeNode> stack = new Stack<>();
-    while( !stack.isEmpty() || root != null )
-    {
-        while( root != null )
-        {
-            stack.push( root );
-            root = root.left;
-        }
-        TreeNode node = stack.pop();
-        res.add( node.val );
-        root = node.right;
-    }
-    return res;
-}
-```
-
-##### 题目示例6 `leetcode 133 克隆图`
-
-```java
-public Node cloneGraph( Node node )
-{
-    HashMap<Node, Node> visited = new HashMap<>();
-    return clone( node, visited );
-}
-
-private Node clone( Node node, HashMap<Node, Node> visited )
-{
-    if( node == null )
-        return null;
-    
-    if( visited.get( node ) != null )
-        return visited.get( node );
-    
-    Node newNode = new Node( node.val, new ArrayList<>( node.neighbors.size() ) );
-    visited.put( node, newNode );
-    for( int i = 0; i < node.neighbors.size(); i++ )
-        newNode.neighbors.add( i, clone( node.neighbors.get(i), visited ) );
-    return newNode;
-}
-```
-
-#### 队列
-
-##### 题目示例8 `leetcode 232 用栈实现队列`
-
-```java
-class MyQueue 
-{
-    Stack<Integer> stack1;
-    Stack<Integer> stack2;
-    /** Initialize your data structure here. */
-    public MyQueue() 
-    {
-        stack1 = new Stack<>();
-        stack2 = new Stack<>();
-    }
-    
-    /** Push element x to the back of queue. */
-    public void push(int x) 
-    {
-        stack1.push( x );
-    }
-    
-    /** Removes the element from in front of queue and returns that element. */
-    public int pop() 
-    {
-        if( !stack2.isEmpty() )
-            return stack2.pop();
-        while( !stack1.isEmpty() )
-        {
-            int t = stack1.pop();
-            stack2.push( t );
-        }
-        return stack2.pop();
-    }
-    
-    /** Get the front element. */
-    public int peek() 
-    {
-        if( !stack2.isEmpty() )
-            return stack2.peek();
-        while( !stack1.isEmpty() )
-        {
-            int t = stack1.pop();
-            stack2.push( t );
-        }
-        return stack2.peek();
-    }
-    
-    /** Returns whether the queue is empty. */
-    public boolean empty() 
-    {
-        return stack1.isEmpty() && stack2.isEmpty();
-    }
-}
-
-/**
- * Your MyQueue object will be instantiated and called as such:
- * MyQueue obj = new MyQueue();
- * obj.push(x);
- * int param_2 = obj.pop();
- * int param_3 = obj.peek();
- * boolean param_4 = obj.empty();
- */
-```
-
-##### 题目示例9 `leetcode 542 01矩阵`
-
-// 暂存
-
-```java
-private int[][] updateMatrix( int[][] matrix )
-{
-    
-}
-```
-
-
 
 
 

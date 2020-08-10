@@ -3120,13 +3120,13 @@ class UnionFind {
     }
     
     // 合并两个连通分量
-    public void union(int p, int q) {
+    public boolean union(int p, int q) {
         int pRoot = find(p);
         int qRoot = find(q);
         
         // 如果已经同属一个集合，不需要再合并
         if(pRoot == qRoot) 
-            return;
+            return false;
         
         // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
         if(pRoot < qRoot) {
@@ -3140,6 +3140,7 @@ class UnionFind {
         
         // 两个分量合并后总的分量个数减一
         this.count--;
+        return true;
     }
 }
 ```

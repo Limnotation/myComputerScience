@@ -109,12 +109,22 @@
         - [题目示例13 `leetcode 1124 表现良好的最长时间段`](#题目示例13-leetcode-1124-表现良好的最长时间段)
         - [题目示例14 `leetcode 316 去除重复字母`](#题目示例14-leetcode-316-去除重复字母)
         - [题目示例15 `leetcode 132模式`](#题目示例15-leetcode-132模式)
+  - [并查集](#并查集)
+    - [概念](#概念-1)
+      - [1、基础并查集代码](#1基础并查集代码)
+    - [典型题目](#典型题目-1)
+      - [题目示例1 `leetcode 547 朋友圈`](#题目示例1-leetcode-547-朋友圈)
+      - [题目示例2 `leetcode 323 无向图中连通分量的个数`](#题目示例2-leetcode-323-无向图中连通分量的个数)
+      - [题目示例3 `leetcode 261 以图判树`](#题目示例3-leetcode-261-以图判树)
+      - [题目示例4 `leetcode 1319 连通网络的操作次数`](#题目示例4-leetcode-1319-连通网络的操作次数)
+      - [题目示例5 `leetcode 684 冗余连接`](#题目示例5-leetcode-684-冗余连接)
+      - [题目示例6 `leetcode 990 等式方程的可满足性`](#题目示例6-leetcode-990-等式方程的可满足性)
 - [基础算法](#基础算法)
   - [排序](#排序)
   - [深度优先搜索](#深度优先搜索)
-    - [概念](#概念-1)
+    - [概念](#概念-2)
       - [1、沉岛思想](#1沉岛思想)
-    - [典型题目](#典型题目-1)
+    - [典型题目](#典型题目-2)
       - [题目示例1 `leetcode 200 岛屿数量`](#题目示例1-leetcode-200-岛屿数量)
       - [题目示例2  `leetcode 733 图像渲染`](#题目示例2-leetcode-733-图像渲染)
       - [题目示例3 `剑指offer 13 机器人的运动范围`](#题目示例3-剑指offer-13-机器人的运动范围)
@@ -129,7 +139,7 @@
       - [二、寻找左侧边界的二分搜索](#二寻找左侧边界的二分搜索)
       - [三、寻找右侧边界的二分查找](#三寻找右侧边界的二分查找)
       - [四、逻辑统一](#四逻辑统一)
-    - [典型题目](#典型题目-2)
+    - [典型题目](#典型题目-3)
       - [题目示例1  `leetcode 35 插入位置`](#题目示例1-leetcode-35-插入位置)
       - [题目示例2 `leetcode 74 搜索二维矩阵`](#题目示例2-leetcode-74-搜索二维矩阵)
       - [题目示例3 `leetcode 278 第一个错误的版本`](#题目示例3-leetcode-278-第一个错误的版本)
@@ -176,7 +186,7 @@
 - [算法思维](#算法思维)
   - [回溯法](#回溯法)
     - [简单的回溯法模板](#简单的回溯法模板)
-    - [典型题目](#典型题目-3)
+    - [典型题目](#典型题目-4)
       - [题目示例1 `leetcode78 子集 `](#题目示例1-leetcode78-子集-)
       - [题目示例2 `leetcode 90 子集II`](#题目示例2-leetcode-90-子集ii)
       - [题目示例3 `leetcode 46 全排列`](#题目示例3-leetcode-46-全排列)
@@ -209,7 +219,7 @@
     - [简单的滑动窗口模板](#简单的滑动窗口模板)
       - [1、可变窗口模板](#1可变窗口模板)
       - [2、固定窗口模板](#2固定窗口模板)
-    - [典型题目](#典型题目-4)
+    - [典型题目](#典型题目-5)
       - [可变窗口题目](#可变窗口题目)
         - [题目示例1 `leetcode 76 最小覆盖子串`](#题目示例1-leetcode-76-最小覆盖子串)
         - [题目示例2 `leetcode 567 字符串的排列`](#题目示例2-leetcode-567-字符串的排列)
@@ -2982,7 +2992,568 @@ public boolean find132pattern(int[] nums) {
 }
 ```
 
+--------
 
+------
+
+### 并查集
+
+#### 概念
+
+##### 1、基础并查集代码
+
+```java
+class UnionFind {
+    // 连通分量个数
+    private int count;
+    // 存储触点的父节点引用
+    private int[] parent;
+    // 记录根节点所代表的树的最大高度
+    private int[] rank;
+    
+    public UnionFind(int n) {
+        this.count = n;
+       	this.parent = new int[n];
+        this.rank = new int[n];
+        for(int i = 0; i < n; i++) {
+            parent[i] = i;	// 初始时所有节点的父节点引用都指向自己
+            rank[i] = 1;	// 初始时每棵树都只有一个根节点，树高为1
+        }
+    }
+    
+    // 返回连通分量的个数
+    public int count() {
+        return this.count;
+    }
+    
+    // 找到指定触点的根节点
+    public int find(int k) {
+        while(parent[k] != k) {
+            parent[k] = parent[parent[k]];
+            k = parent[k];
+        }
+        return k;
+    }
+    
+    // 检查两个触点代表的连通分量的连通性
+    public boolean connected(int p, int q) {
+        return find(p) == find(q);
+    }
+    
+    // 合并两个连通分量
+    public void union(int p, int q) {
+        int pRoot = find(p);
+        int qRoot = find(q);
+        
+        // 如果已经同属一个集合，不需要再合并
+        if(pRoot == qRoot) 
+            return;
+        
+        // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
+        if(pRoot < qRoot) {
+            parent[pRoot] = qRoot;
+        } else if(pRoot > qRoot) {
+            parent[qRoot] = pRoot;
+        } else {
+            parent[pRoot] = qRoot;
+            rank[qRoot]++;
+        }
+        
+        // 两个分量合并后总的分量个数减一
+        this.count--;
+    }
+}
+```
+
+-----
+
+------
+
+#### 典型题目
+
+##### 题目示例1 `leetcode 547 朋友圈`
+
+```java
+// 求二维数组不相交集合的个数
+public int findCircleNum(int[][] M) {
+    int len = M.length;
+    UnionFind uf = new UnionFind(len);
+    for(int i = 0; i < len; i++) {
+        for(int j = 0; j < i; j++) {
+            // 由于无向连通图的对称性，只需要检查右上半部分矩阵
+            if(M[i][j] == 1) {
+                uf.union(i, j);
+            }
+        }
+    }
+    return nf.count();
+}
+
+class UnionFind {
+    // 连通分量个数
+    private int count;
+    // 存储触点的父节点
+    private int[] parent;
+    // 记录根节点所代表的树的最大高度
+    private int[] rank;
+
+    public UnionFind(int n) {
+        this.count = n;
+        parent = new int[n];
+        rank = new int[n];
+        for(int i = 0; i < n; i++) {
+            parent[i] = i;
+            rank[i] = 1;
+        }
+    }
+
+    // 返回连通分量个数
+    public int count() {
+        return this.count;
+    }
+
+    // 找到所给触点的根节点
+    public int find(int k) {
+        while(parent[k] != k) {
+            // 路径压缩
+            parent[k] = parent[parent[k]];
+            k = parent[k];
+        }
+        return k;
+    }
+
+    // 检查所给两个分量的连通性
+    public boolean connected(int p, int q) {
+        return find(p) == find(q);
+    }
+
+    // 合并两个分量
+    public void union(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+        if(rootP == rootQ)
+            return;
+
+        // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
+        if(rank[rootP] > rank[rootQ]) {
+            parent[rootQ] = rootP;
+        } else if(rank[rootP] < rank[rootQ]) {
+            parent[rootP] = rootQ;
+        } else {
+            parent[rootP] = rootQ;
+            rank[rootQ] ++;
+        }
+        this.count--;
+    }
+}
+```
+
+-----
+
+##### 题目示例2 `leetcode 323 无向图中连通分量的个数`
+
+```java
+// 典型题目，合并所有给出的分量，返回count
+public int countComponents(int n, int[][] edges) {
+    UnionFind uf = new UnionFind(n);
+    for(int[] edge:edges) {
+        uf.union(edge[0], edge[1]);
+    }
+    return uf.count();
+}
+
+
+class UnionFind {
+    // 连通分量个数
+    private int count;
+    // 存储触点的父节点
+    private int[] parent;
+    // 记录根节点所代表的树的最大高度
+    private int[] rank;
+
+    public UnionFind(int n) {
+        this.count = n;
+        parent = new int[n];
+        rank = new int[n];
+        for(int i = 0; i < n; i++) {
+            parent[i] = i;
+            rank[i] = 1;
+        }
+    }
+
+    // 返回连通分量个数
+    public int count() {
+        return this.count;
+    }
+
+    // 找到所给触点的根节点
+    public int find(int k) {
+        while(parent[k] != k) {
+            // 路径压缩
+            parent[k] = parent[parent[k]];
+            k = parent[k];
+        }
+        return k;
+    }
+
+    // 检查所给两个分量的连通性
+    public boolean connected(int p, int q) {
+        return find(p) == find(q);
+    }
+
+    // 合并两个分量
+    public void union(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+        if(rootP == rootQ)
+            return;
+
+        // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
+        if(rank[rootP] > rank[rootQ]) {
+            parent[rootQ] = rootP;
+        } else if(rank[rootP] < rank[rootQ]) {
+            parent[rootP] = rootQ;
+        } else {
+            parent[rootP] = rootQ;
+            rank[rootQ] ++;
+        }
+        this.count--;
+    }
+}
+```
+
+-----
+
+##### 题目示例3 `leetcode 261 以图判树`
+
+```java
+// 有效的树结构: 无环、根节点唯一
+public boolean validTree(int n, int[][] edges) {
+    UnionFind uf = new UnionFind(n);
+    for(int[] edge:edges) {
+        if(!uf.union(edge[0], edge[1])) {
+            return false;
+        }
+    }
+    return uf.count() == 1;
+}
+
+
+class UnionFind {
+    // 连通分量个数
+    private int count;
+    // 存储触点的父节点
+    private int[] parent;
+    // 记录根节点所代表的树的最大高度
+    private int[] rank;
+
+    public UnionFind(int n) {
+        this.count = n;
+        parent = new int[n];
+        rank = new int[n];
+        for(int i = 0; i < n; i++) {
+            parent[i] = i;
+            rank[i] = 1;
+        }
+    }
+
+    // 返回连通分量个数
+    public int count() {
+        return this.count;
+    }
+
+    // 找到所给触点的根节点
+    public int find(int k) {
+        while(parent[k] != k) {
+            // 路径压缩
+            parent[k] = parent[parent[k]];
+            k = parent[k];
+        }
+        return k;
+    }
+
+    // 检查所给两个分量的连通性
+    public boolean connected(int p, int q) {
+        return find(p) == find(q);
+    }
+
+    // 合并两个分量
+    public boolean union(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+        
+        // 如果两个触点的根节点已经属于同一个分量
+        // 再合并就会出现环（无向图）
+        // 所以直接返回false
+        if(rootP == rootQ)
+            return false;
+
+        // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
+        if(rank[rootP] > rank[rootQ]) {
+            parent[rootQ] = rootP;
+        } else if(rank[rootP] < rank[rootQ]) {
+            parent[rootP] = rootQ;
+        } else {
+            parent[rootP] = rootQ;
+            rank[rootQ] ++;
+        }
+        this.count--;
+        return true;
+    }
+}
+```
+
+------
+
+##### 题目示例4 `leetcode 1319 连通网络的操作次数`
+
+```java
+public int makeConnected(int n, int[][] connections) {
+    UnionFind uf = new UnionFind(n);
+    int extraLines = 0;
+    for(int[] connection:connections) {
+        // 每一次可能成环的操作，代表一条多余的线
+        if(!uf.union(connection[0], connection[1])) {
+            extraLines++;
+        }
+    }
+    // 多余的线必须能够至少把不相交集合连成一棵树
+    int disJointSets = uf.count();
+    return extraLines < disJointSets - 1? -1:(disJointSets - 1);
+}
+
+class UnionFind {
+    // 连通分量个数
+    private int count;
+    // 存储触点的父节点
+    private int[] parent;
+    // 记录根节点所代表的树的最大高度
+    private int[] rank;
+
+    public UnionFind(int n) {
+        this.count = n;
+        parent = new int[n];
+        rank = new int[n];
+        for(int i = 0; i < n; i++) {
+            parent[i] = i;
+            rank[i] = 1;
+        }
+    }
+
+    // 返回连通分量个数
+    public int count() {
+        return this.count;
+    }
+
+    // 找到所给触点的根节点
+    public int find(int k) {
+        while(parent[k] != k) {
+            // 路径压缩
+            parent[k] = parent[parent[k]];
+            k = parent[k];
+        }
+        return k;
+    }
+
+    // 检查所给两个分量的连通性
+    public boolean connected(int p, int q) {
+        return find(p) == find(q);
+    }
+
+    // 合并两个分量
+    public boolean union(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+        if(rootP == rootQ)
+            return false;
+
+        // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
+        if(rank[rootP] > rank[rootQ]) {
+            parent[rootQ] = rootP;
+        } else if(rank[rootP] < rank[rootQ]) {
+            parent[rootP] = rootQ;
+        } else {
+            parent[rootP] = rootQ;
+            rank[rootQ] ++;
+        }
+        this.count--;
+        return true;
+    }
+}
+```
+
+-----
+
+##### 题目示例5 `leetcode 684 冗余连接`
+
+```java
+// nothing special
+public int[] findRedundantConnection(int[][] edges) {
+    UnionFind uf = new UnionFind(1001);
+    for(int[] edge:edges) {
+        if(!uf.union(edge[0], edge[1])) {
+            return edge;
+        }
+    }
+    return new int[0];
+}
+
+class UnionFind {
+    // 连通分量个数
+    private int count;
+    // 存储触点的父节点
+    private int[] parent;
+    // 记录根节点所代表的树的最大高度
+    private int[] rank;
+
+    public UnionFind(int n) {
+        this.count = n;
+        parent = new int[n];
+        rank = new int[n];
+        for(int i = 0; i < n; i++) {
+            parent[i] = i;
+            rank[i] = 1;
+        }
+    }
+
+    // 返回连通分量个数
+    public int count() {
+        return this.count;
+    }
+
+    // 找到所给触点的根节点
+    public int find(int k) {
+        while(parent[k] != k) {
+            // 路径压缩
+            parent[k] = parent[parent[k]];
+            k = parent[k];
+        }
+        return k;
+    }
+
+    // 检查所给两个分量的连通性
+    public boolean connected(int p, int q) {
+        return find(p) == find(q);
+    }
+
+    // 合并两个分量
+    public boolean union(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+        if(rootP == rootQ)
+            return false;
+
+        // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
+        if(rank[rootP] > rank[rootQ]) {
+            parent[rootQ] = rootP;
+        } else if(rank[rootP] < rank[rootQ]) {
+            parent[rootP] = rootQ;
+        } else {
+            parent[rootP] = rootQ;
+            rank[rootQ] ++;
+        }
+        this.count--;
+        return true;
+    }
+}
+```
+
+------
+
+##### 题目示例6 `leetcode 990 等式方程的可满足性`
+
+```java
+public boolean equationsPossible(String[] equations) {
+    // 当且仅当不等号两侧的变量在合并过程中被合并到同一个集合中时
+    // 等式方程不可满足
+    UnionFind uf = new UnionFind(26);
+    for(String equation:equations) {
+        char[] eq = equation.toCharArray();
+        if(eq[1] == '=') {
+            int i = eq[0] - 'a';
+            int j = eq[3] - 'a';
+            uf.union(i, j);
+        }
+    }
+
+    for(String equation:equations) {
+        char[] eq = equation.toCharArray();
+        if(eq[1] == '!') {
+            int i = eq[0] - 'a';
+            int j = eq[3] - 'a';
+            if(uf.connected(i, j))
+                return false;
+        }
+    }
+    return true;
+}
+
+
+class UnionFind {
+    // 连通分量个数
+    private int count;
+    // 存储触点的父节点
+    private int[] parent;
+    // 记录根节点所代表的树的最大高度
+    private int[] rank;
+
+    public UnionFind(int n) {
+        this.count = n;
+        parent = new int[n];
+        rank = new int[n];
+        for(int i = 0; i < n; i++) {
+            parent[i] = i;
+            rank[i] = 1;
+        }
+    }
+
+    // 返回连通分量个数
+    public int count() {
+        return this.count;
+    }
+
+    // 找到所给触点的根节点
+    public int find(int k) {
+        while(parent[k] != k) {
+            // 路径压缩
+            parent[k] = parent[parent[k]];
+            k = parent[k];
+        }
+        return k;
+    }
+
+    // 检查所给两个分量的连通性
+    public boolean connected(int p, int q) {
+        return find(p) == find(q);
+    }
+
+    // 合并两个分量
+    public boolean union(int p, int q) {
+        int rootP = find(p);
+        int rootQ = find(q);
+        if(rootP == rootQ)
+            return false;
+
+        // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
+        if(rank[rootP] > rank[rootQ]) {
+            parent[rootQ] = rootP;
+        } else if(rank[rootP] < rank[rootQ]) {
+            parent[rootP] = rootQ;
+        } else {
+            parent[rootP] = rootQ;
+            rank[rootQ] ++;
+        }
+        this.count--;
+        return true;
+    }
+}
+```
+
+
+
+------
+
+-------
 
 ## 基础算法
 

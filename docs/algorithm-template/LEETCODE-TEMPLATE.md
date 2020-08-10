@@ -109,6 +109,7 @@
         - [题目示例13 `leetcode 1124 表现良好的最长时间段`](#题目示例13-leetcode-1124-表现良好的最长时间段)
         - [题目示例14 `leetcode 316 去除重复字母`](#题目示例14-leetcode-316-去除重复字母)
         - [题目示例15 `leetcode 132模式`](#题目示例15-leetcode-132模式)
+        - [题目示例16 `leetcode 85 最大矩形`](#题目示例16-leetcode-85-最大矩形)
   - [并查集](#并查集)
     - [概念](#概念-1)
       - [1、基础并查集代码](#1基础并查集代码)
@@ -2632,7 +2633,7 @@ public String decodeString(String s)
     - **如果栈是一个单调递增栈，对于一个刚刚出栈的元素而言，新的栈顶元素就是其左侧第一个小于自己的元素，即将入栈的元素就是右侧第一个小于自己的元素；如果元素出栈后栈为空表示自己左侧没有更小的元素，如果没有新元素将要入栈，表示自己右侧没有更小的元素。**
 
 2. **单调递减栈就是元素的值由栈底到栈顶大小单调递减**
-- **单调递减栈可以找到左起第一个比当前数字大的元素**
+    - **单调递减栈可以找到左起第一个比当前数字大的元素**
     - **如果栈是一个单调递减栈，对于一个刚刚出栈的元素而言，新的栈顶元素就是其左侧第一个大于自己的元素，即将入栈的元素就是右侧第一个大于自己的元素；如果元素出栈后栈为空表示自己左侧没有更大的元素，如果没有新元素将要入栈，表示自己右侧没有更大的元素。**
 
 **单调栈里可以保存元素的值或者数组下标**
@@ -2673,16 +2674,19 @@ private int[] nextGreaterElement(int[] nums1, int[] nums2) {
     int[] temp = new int[nums2.length];
     Deque<Integer> stack = new LinkedList<>();
     for(int i = nums2.length - 1; i >= 0; i--) {
-        while(!stack.isEmpty() && nums2[i] >= stack.peekLast())
+        while(!stack.isEmpty() && nums2[i] >= stack.peekLast()) {
             stack.removeLast();
+        }
         temp[i] = stack.isEmpty()? -1:stack.peekLast();
         stack.addLast( nums2[i] );
     }
 
-    for(int i = 0; i < nums1.length; i++)
-        for(int j = 0; j < nums2.length; j++)
+    for(int i = 0; i < nums1.length; i++) {
+        for(int j = 0; j < nums2.length; j++) {
             if(nums2[j] == nums1[i])
-                res[i] = temp[j];
+                res[i] = temp[j];      
+        }
+    }
     return res;
 }
 
@@ -2838,23 +2842,21 @@ private int largestRectangleArea(int[] heights) {
 ###### 题目示例7 `leetcode 239 滑动窗口最大值`
 
 ```java
-private int[] maxSlidingWindow( int[] nums, int k )
-{
-    if( nums == null || k < 1 || nums.length < k )
+private int[] maxSlidingWindow(int[] nums, int k) {
+    if(nums == null || k < 1 || nums.length < k)
         return new int[0];
     
     LinkedList<Integer> window = new LinkedList<>();
     int[] res = new int[nums.length - k + 1];
     int index = 0;
-    for( int i = 0; i < nums.length; i++ )
-    {
+    for(int i = 0; i < nums.length; i++) {
         // 构建一个单调递减栈，栈底元素是窗口范围内的最大元素
-        while( !window.isEmpty() && nums[i] >= nums[window.peekLast()] )
+        while(!window.isEmpty() && nums[i] >= nums[window.peekLast()])
             window.pollLast();
-        window.addLast( i );
-        if( window.peek() <= i - k )
+        window.addLast(i);
+        if(window.peek() <= i - k)
             window.poll();
-        if( i >= k - 1 )
+        if(i >= k - 1)
             res[index++] = nums[window.peekFirst()];
     }
     return res;
@@ -2877,23 +2879,22 @@ private int maximalRectangle( char[][] matrix )
 ###### 题目示例9 `leetcode 402 移掉K位数字`
 
 ```java
-private String removeKdigits( String num, int K )
-{
+// 删除数字的原则：给定一个数字序列[D1, D2, ..Dn].如果数字D2小于其做邻居D1，应该删除其
+// 左邻居D1
+private String removeKdigits(String num, int K) {
     StringBuffer s = new StringBuffer();
     int n = num.length(), m = n - k;
-    for( char c:num.toCharArray() )
-    {
+    for(char c:num.toCharArray()) {
         // 构建一个“单调递增栈”
-        while( k > 0 && s.length() > 0 && s.charAt( s.length() - 1 ) > c )
-        {
-            s.deleteCharAt( s.length() - 1 );
+        while(k > 0 && s.length() > 0 && s.charAt( s.length() - 1 ) > c) {
+            s.deleteCharAt(s.length() - 1);
             k--;
         }
-        s.append( c );
+        s.append(c);
     }
     
-    s.delete( m, s.length() );
-    while( s.length() > 0 && s.charAt(0) == '0' )
+    s.delete(m, s.length());
+    while(s.length() > 0 && s.charAt(0) == '0')
         s.deleteCharAt(0);
     return s.length() == 0? "0":s.toString();
 }
@@ -2904,20 +2905,17 @@ private String removeKdigits( String num, int K )
 ###### 题目示例10 `leetcode 768 最多能完成排序的块II`
 
 ```java
-private int maxChunksToSorted( int[] arr )
-{
+private int maxChunksToSorted(int[] arr){
     Deque<Integer> stack = new LinkedList<>();
-    for( int num:arr )
-    {
-        if( !stack.isEmpty() && num < stack.peekLast() )
-        {
+    for(int num:arr) {
+        if(!stack.isEmpty() && num < stack.peekLast()) {
             int head = stack.removeLast();
-            while( !stack.isEmpty() && num < stack.peekLast() )
+            while(!stack.isEmpty() && num < stack.peekLast())
                 stack.removeLast();
-            stack.addLast( head );
+            stack.addLast(head);
+        } else {
+            stack.addLast(num);
         }
-        else
-            stack.addLast( num );
     }
     return stack.size();
 }
@@ -2965,7 +2963,43 @@ private int longestWPI(int[] hours) {
 ###### 题目示例14 `leetcode 316 去除重复字母`
 
 ```java
-
+private String removeDuplicateLetters(String s) {
+    if(s == null || s.length() < 2) 
+        return s;
+    
+    int len = s.length();
+    // 记录字符是否在使用
+    boolean[] charSet = new boolean[26];
+    // 记录每一个字符最后一次出现的位置
+    int[] lastAppearIndex = new int[26];
+    for(int i = 0; i < len; i++) {
+        lastAppearIndex[s.charAt(i) - 'a'] = i;
+    }
+    
+    Deque<Character> stack = new LinkedList<>();
+    for(int i = 0; i < len; i++) {
+        // 如果当前字符已经在栈里出现过，跳过
+        char curChar = s.charAt(i);
+        if(charSet[curChar - 'a']) {
+            continue;
+        }
+        
+        // 构建单调递增栈，当前元素比栈顶元素严格小时，当且仅当栈顶元素在之后
+        // 还出现时才舍弃栈顶元素
+        while(!stack.isEmpty() && stack.peekLast() > curChar
+             && lastAppearIndex[stack.peekLast() - 'a'] >= i) {
+            charSet[stack.removeLast() - 'a'] = false;
+        }
+        stack.addLast(curChar);
+        charSet[curChar - 'a'] = true;
+    }
+    
+    StringBuffer res = new StringBuffer();
+    while(!stack.isEmpty()) {
+        res.insert(0, stack.removeLast());
+    }
+    return res.toString();
+}
 ```
 
 -----
@@ -2992,7 +3026,50 @@ public boolean find132pattern(int[] nums) {
 }
 ```
 
---------
+----
+
+###### 题目示例16 `leetcode 85 最大矩形`
+
+```java
+public int maximalRectangle(char[][] matrix) {
+    if(matrix == null || matrix.length == 0)
+        return 0;
+
+    int[] heights = new int[matrix[0].length];
+    int maxArea = 0;
+    for(int i = 0; i < matrix.length; i++) {
+        for(int j = 0; j < matrix[0].length; j++) {
+            if(matrix[i][j] == '1') 
+                heights[j] += 1;
+            else
+                heights[j] = 0;
+        }
+        maxArea = Math.max(maxArea, largestRectangleArea(heights));
+    }
+    return maxArea;
+}
+
+private int largestRectangleArea(int[] heights) {
+    if(heights == null || heights.length == 0)
+        return 0;
+
+    int[] temp = new int[heights.length + 2];
+    System.arraycopy(heights, 0, temp, 1, heights.length);
+    Deque<Integer> stack = new LinkedList<>();
+    int maxArea = 0;
+
+    for(int i = 0; i < temp.length; i++) {
+        while(!stack.isEmpty() && temp[i] < temp[stack.peekLast()]) {
+            int height = temp[stack.removeLast()];
+            maxArea = Math.max(maxArea, height * (i - stack.peekLast() - 1));
+        }
+        stack.add(i);
+    }
+    return maxArea;
+}
+```
+
+
 
 ------
 

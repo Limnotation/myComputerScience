@@ -122,6 +122,7 @@
         - [题目示例5 `leetcode 684 冗余连接`](#题目示例5-leetcode-684-冗余连接)
         - [题目示例6 `leetcode 990 等式方程的可满足性`](#题目示例6-leetcode-990-等式方程的可满足性)
       - [带权值的并查集问题](#带权值的并查集问题)
+        - [题目示例1 `leetcode 128 最长连续序列`](#题目示例1-leetcode-128-最长连续序列)
 - [基础算法](#基础算法)
   - [排序](#排序)
   - [深度优先搜索](#深度优先搜索)
@@ -3077,6 +3078,8 @@ private int largestRectangleArea(int[] heights) {
 
 ### 并查集
 
+参考：https://www.yuque.com/liweiwei1419/algo/ltd86x
+
 #### 概念
 
 ##### 1、基础并查集代码
@@ -3634,6 +3637,84 @@ class UnionFind {
 ------
 
 ##### 带权值的并查集问题
+
+###### 题目示例1 `leetcode 128 最长连续序列`
+
+```java
+// 不得不说这种方法太骚了
+public int longestConsecutive(int[] nums) {
+    int len = nums.length;
+    if(len < 2)
+        return len;
+    
+    UnionFind uf = new UnionFind(nums);
+    int res = 1;	// 每个数组都是一个长度为1的序列
+    for(int i = 0; i < len; i++) {
+        int num = nums[i];
+        if(uf.contains(num - 1)) {
+            res = Math.max(res, uf.union(num, num - 1));
+        }
+        if(uf.contains(num + 1)) {
+            res = Math.max(res, uf.union(num, num + 1));
+        }
+    }
+    return res;
+}
+
+
+
+class UnionFind {
+    private Map<Integer, Integer> parent;
+    // 维护以当前结点为根的子树的结点总数
+    private Map<Integer, Integer> size;
+    
+    public UnionFind(int[] nums) {
+        int len = nums.length;
+        this.parent = new HashMap<>(len);
+        this.size = new HashMap<>(len);
+        for(int i = 0; i < len; i++) {
+            parent.put(nums[i], nums[i]);
+            size.put(nums[i], 1);
+        }
+    }
+    
+    // union方法返回合并后的连通分量的结点个数
+    public int union(int i, int j) {
+        int rootI = find(i);
+        int rootJ = find(j);
+        
+        if(rootI == rootJ) {
+            return 0;
+        }
+        
+        int sizeI = this.size.get(rootI);
+        int sizeJ = this.size.get(rootJ);
+        int sum = sizeI + sizeJ;
+        if(sizeI < sizeJ) {
+            parent.put(rootI, rootJ);
+            size.put(rootJ, sum);
+        } else {
+            parent.put(rootJ, rootI);
+            size.put(rootI, sum);
+        }
+        return sum;
+    }
+    
+    // 路径压缩版本的find方法
+    public int find(int i) {
+        while(i != parent.get(i)) {
+            parent.put(i, parent.get(parent.get(i)));
+            i = parent.get(i);
+        }
+        return i;
+    }
+    
+    // 检查元素是否存在
+    public boolean contains(int x) {
+        return parent.containsKey(x);
+    }
+}
+```
 
 
 

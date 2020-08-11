@@ -270,6 +270,8 @@
     - [题目示例12  `leetcode 1109 航班预定`](#题目示例12-leetcode-1109-航班预定)
     - [题目示例13 `leetcode 1094 拼车`](#题目示例13-leetcode-1094-拼车)
 - [leetcode 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
+  - [排序](#排序-1)
+    - [题目1 `leetcode 179 最大数`](#题目1-leetcode-179-最大数)
   - [设计](#设计)
     - [题目1 `leetcode 146 LRU缓存机制`](#题目1-leetcode-146-lru缓存机制)
     - [题目2 `leetcode 1206 设计跳表`](#题目2-leetcode-1206-设计跳表)
@@ -7467,6 +7469,48 @@ private boolean carPooling(int[][] trips, int capacity)
 -----
 
 ## leetcode 未归纳题解（按tag分类）
+
+------
+
+------
+
+### 排序
+
+#### 题目1 `leetcode 179 最大数`
+
+```java
+/*官方题解*/
+private String largestNumber(int[] nums) {
+    String[] asStrs = new String[nums.length];
+    for(int i = 0; i < nums.length; i++) {
+        asStrs[i] = String.valueOf(nums[i]);
+    }
+    
+    /*关键就是确定一个排序规则, 重写比较器*/
+    Arrays.sort(asStrs, new Comparator<String> {
+        @Override
+        public int compare(String s1, String s2) {
+            String order1 = s1 + s2;
+            String order2 = s2 + s1;
+            return order2.compareTo(order1);
+        }
+    });
+    
+    if(asStrs[0].equals("0")) {
+        return "0";
+    }
+    
+    StringBuffer sb = new StringBuffer();
+    for(String s:asStrs) {
+        sb.append(s);
+    }
+    return sb.toString();
+}
+```
+
+
+
+------
 
 ------
 

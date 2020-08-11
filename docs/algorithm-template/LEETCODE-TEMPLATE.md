@@ -71,7 +71,7 @@
         - [题目示例3 `leetcode 25 K个一组翻转链表`](#题目示例3-leetcode-25-k个一组翻转链表)
       - [链表中的双指针问题](#链表中的双指针问题)
         - [题目示例1  `leetcode 19 删除链表的倒数第N个节点`](#题目示例1-leetcode-19-删除链表的倒数第n个节点)
-        - [题目示例 2 `leetcode 83 删除排序链表中的重复严肃`](#题目示例-2-leetcode-83-删除排序链表中的重复严肃)
+        - [题目示例 2 `leetcode 83 删除排序链表中的重复元素`](#题目示例-2-leetcode-83-删除排序链表中的重复元素)
         - [题目示例3  `leetcode 82 删除排序链表中的重复元素II`](#题目示例3-leetcode-82-删除排序链表中的重复元素ii)
         - [题目示例4 `leetcode 141 环形链表`](#题目示例4-leetcode-141-环形链表)
         - [题目示例5  `leetcode 142 环形链表II`](#题目示例5-leetcode-142-环形链表ii)
@@ -123,12 +123,15 @@
         - [题目示例6 `leetcode 990 等式方程的可满足性`](#题目示例6-leetcode-990-等式方程的可满足性)
       - [带权值的并查集问题](#带权值的并查集问题)
         - [题目示例1 `leetcode 128 最长连续序列`](#题目示例1-leetcode-128-最长连续序列)
+  - [堆/优先队列](#堆优先队列)
+    - [典型题目](#典型题目-2)
+      - [题目示例1 `leetcode 692 前K个高频单词`](#题目示例1-leetcode-692-前k个高频单词)
 - [基础算法](#基础算法)
   - [排序](#排序)
   - [深度优先搜索](#深度优先搜索)
     - [概念](#概念-2)
       - [1、沉岛思想](#1沉岛思想)
-    - [典型题目](#典型题目-2)
+    - [典型题目](#典型题目-3)
       - [题目示例1 `leetcode 200 岛屿数量`](#题目示例1-leetcode-200-岛屿数量)
       - [题目示例2  `leetcode 733 图像渲染`](#题目示例2-leetcode-733-图像渲染)
       - [题目示例3 `剑指offer 13 机器人的运动范围`](#题目示例3-剑指offer-13-机器人的运动范围)
@@ -136,6 +139,7 @@
       - [题目示例5 `leetcode 1254 统计封闭岛屿的数目`](#题目示例5-leetcode-1254-统计封闭岛屿的数目)
       - [题目示例6 `leetcode 130 被围绕的区域`](#题目示例6-leetcode-130-被围绕的区域)
       - [题目示例7 `leetcode 417 太平洋大西洋水流问题`](#题目示例7-leetcode-417-太平洋大西洋水流问题)
+      - [题目示例8 `leetcode 329 矩阵中的最长递增路径`](#题目示例8-leetcode-329-矩阵中的最长递增路径)
   - [二分搜索](#二分搜索)
     - [二分搜索模板](#二分搜索模板)
       - [零、二分查找框架](#零二分查找框架)
@@ -143,7 +147,7 @@
       - [二、寻找左侧边界的二分搜索](#二寻找左侧边界的二分搜索)
       - [三、寻找右侧边界的二分查找](#三寻找右侧边界的二分查找)
       - [四、逻辑统一](#四逻辑统一)
-    - [典型题目](#典型题目-3)
+    - [典型题目](#典型题目-4)
       - [题目示例1  `leetcode 35 插入位置`](#题目示例1-leetcode-35-插入位置)
       - [题目示例2 `leetcode 74 搜索二维矩阵`](#题目示例2-leetcode-74-搜索二维矩阵)
       - [题目示例3 `leetcode 278 第一个错误的版本`](#题目示例3-leetcode-278-第一个错误的版本)
@@ -190,7 +194,7 @@
 - [算法思维](#算法思维)
   - [回溯法](#回溯法)
     - [简单的回溯法模板](#简单的回溯法模板)
-    - [典型题目](#典型题目-4)
+    - [典型题目](#典型题目-5)
       - [题目示例1 `leetcode78 子集 `](#题目示例1-leetcode78-子集-)
       - [题目示例2 `leetcode 90 子集II`](#题目示例2-leetcode-90-子集ii)
       - [题目示例3 `leetcode 46 全排列`](#题目示例3-leetcode-46-全排列)
@@ -223,7 +227,7 @@
     - [简单的滑动窗口模板](#简单的滑动窗口模板)
       - [1、可变窗口模板](#1可变窗口模板)
       - [2、固定窗口模板](#2固定窗口模板)
-    - [典型题目](#典型题目-5)
+    - [典型题目](#典型题目-6)
       - [可变窗口题目](#可变窗口题目)
         - [题目示例1 `leetcode 76 最小覆盖子串`](#题目示例1-leetcode-76-最小覆盖子串)
         - [题目示例2 `leetcode 567 字符串的排列`](#题目示例2-leetcode-567-字符串的排列)
@@ -2105,7 +2109,7 @@ private ListNode removeNthFromEnd(ListNode head, int n) {
 
 -----
 
-###### 题目示例 2 `leetcode 83 删除排序链表中的重复严肃`
+###### 题目示例 2 `leetcode 83 删除排序链表中的重复元素`
 
 ```java
 private ListNode deleteDuplicates(ListNode head) {
@@ -2928,6 +2932,45 @@ private int maxChunksToSorted(int[] arr){
 
 ###### 题目示例11 `leetcode 901 股票价格跨度`
 
+```java
+class StockSpanner {
+	/*当前元素的序号，代表是第几个元素*/
+    private int index;
+    /*存储所有元素的列表*/
+    private List<Integer> stock;
+    /*单调栈，存储满足单调栈关系的元素的序号*/
+    private Deque<Integer> stack;
+    
+    public StockSpanner() {
+        this.index = 0;
+     	this.stock = new ArrayList<>(32);
+        this.stack = new LinkedList<>();
+        
+        /*放入哨兵，永远不会被弹出*/
+        stock.add(Integer.MAX_VALUE);
+        stack.addLast(0);
+    }
+    
+    public int next(int price) {
+        /*当前放进来的元素的序号*/
+        index++;
+        /*构建单调递减栈*/
+        while(!stack.isEmpty() && stock.get(stack.peekLast()) <= price) {
+            stack.removeLast();
+        }
+        
+        int res = index - stack.peekLast();
+        stock.add(price);
+        stack.addLast(index);
+        return res;
+    }
+}
+```
+
+
+
+------
+
 ###### 题目示例12 `leetcode 1019 链表的下一个更大结点`
 
 ---
@@ -3052,6 +3095,7 @@ public int maximalRectangle(char[][] matrix) {
     return maxArea;
 }
 
+// 
 private int largestRectangleArea(int[] heights) {
     if(heights == null || heights.length == 0)
         return 0;
@@ -3716,6 +3760,53 @@ class UnionFind {
 }
 ```
 
+-----
+
+------
+
+### 堆/优先队列
+
+#### 典型题目
+
+##### 题目示例1 `leetcode 692 前K个高频单词`
+
+```java
+private List<String> topKFrequent(String[] words, int k) {
+    LinkedList<String> res = new LinkedList<>();
+    if(words == null || words.length == 0 || k <= 0) {
+        return res;
+    }
+    
+    /*统计词频的哈希表*/
+    HashMap<String, Integer> frequency = new HashMap<>();
+    /*优先队列使用自定义比较器,构建小根堆*/
+    PriorityQueue<String> pq = new PriorityQueue<>(k, new Comparator<String>() {
+        @Override
+        public int compare(String s1, String s2) {
+            if(frequency.get(s1).equals(frequency.get(s2))) {
+                return s2.compareTo(s1);
+            }
+            return frequency.get(s1).compareTo(frequency.get(s2));
+        }
+    });
+    
+    for(String word:words) {
+        frequency.put(word, frequency.getOrDefault(word, 0) + 1);
+    }
+    for(String word:frequency.keySet()) {
+        pq.offer(word);
+        if(pq.size() > k) {
+            pq.poll();
+        }
+    }
+    
+    while(!pq.isEmpty()) {
+        res.addFirst(pq.poll());
+    }
+    return res;
+}
+```
+
 
 
 ------
@@ -4006,6 +4097,63 @@ private void dfs(int[][] matrix, int[][] ocean, int i, int j, int preVal) {
     dfs(matrix, ocean, i, j - 1, matrix[i][j]);
     dfs(matrix, ocean, i + 1, j, matrix[i][j]);
     dfs(matrix, ocean, i, j + 1, matrix[i][j]);
+}
+```
+
+-----
+
+##### 题目示例8 `leetcode 329 矩阵中的最长递增路径`
+
+```java
+/*
+* 关键：
+* 从一个格子开始找，对比它4周的格子，有没有比它小的，如果有，比如有A，B，C三个格子都比它小，
+* 那么当前格子的最大连续递增长度就是这3个格子的最大连续递增长度中的最大值+1
+*/
+class Solution {
+    private int row;
+    private int col;
+    private int[][] dirs = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+    private int[][] visited;
+    
+    public int longestIncreasingPath(int[][] matrix) {
+        if(matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        
+        row = matrix.length;
+        col = matrix[0].length;
+        visited = new int[row][col];
+        int res = 0;
+        
+        for(int i = 0; i < row; i++) {
+            for(int j = 0; j < col; j++) {
+                res = Math.max(res, dfs(matrix, i, j));
+            }
+        }
+        return res;
+    }
+    
+    private int dfs(int[][] matrix, int i, int j) {
+        if(!checkBound(i, j)) {
+            return 0;
+        }
+        if(visited[i][j] != 0) {
+            return visited[i][j];
+        }
+        
+        for(int[] dir:dirs) {
+            int newRow = i + dir[0], newCol = j + dir[1];
+            if(checkBound(newRow, newCol) && matrix[i][j] > matrix[newRow][newCol]) {
+                visited[i][j] = Math.max(visited[i][j], dfs(matrix, newRow, newCol));
+            }
+        }
+        return ++visited[i][j];
+    }
+    
+    private boolean checkBound(int i, int j) {
+        return i >= 0 && i < row && j >= 0 && j < col; 
+    }
 }
 ```
 

@@ -2874,9 +2874,42 @@ private int[] maxSlidingWindow(int[] nums, int k) {
 ###### 题目示例8 `leetcode 85 最大矩形 `
 
 ```java
-private int maximalRectangle( char[][] matrix )
-{
-    
+public int maximalRectangle(char[][] matrix) {
+    if(matrix == null || matrix.length == 0)
+        return 0;
+
+    int[] heights = new int[matrix[0].length];
+    int maxArea = 0;
+    for(int i = 0; i < matrix.length; i++) {
+        for(int j = 0; j < matrix[0].length; j++) {
+            if(matrix[i][j] == '1') 
+                heights[j] += 1;
+            else
+                heights[j] = 0;
+        }
+        maxArea = Math.max(maxArea, largestRectangleArea(heights));
+    }
+    return maxArea;
+}
+
+// 使用函数
+private int largestRectangleArea(int[] heights) {
+    if(heights == null || heights.length == 0)
+        return 0;
+
+    int[] temp = new int[heights.length + 2];
+    System.arraycopy(heights, 0, temp, 1, heights.length);
+    Deque<Integer> stack = new LinkedList<>();
+    int maxArea = 0;
+
+    for(int i = 0; i < temp.length; i++) {
+        while(!stack.isEmpty() && temp[i] < temp[stack.peekLast()]) {
+            int height = temp[stack.removeLast()];
+            maxArea = Math.max(maxArea, height * (i - stack.peekLast() - 1));
+        }
+        stack.add(i);
+    }
+    return maxArea;
 }
 ```
 
@@ -3070,52 +3103,6 @@ public boolean find132pattern(int[] nums) {
     return false;
 }
 ```
-
-----
-
-###### 题目示例16 `leetcode 85 最大矩形`
-
-```java
-public int maximalRectangle(char[][] matrix) {
-    if(matrix == null || matrix.length == 0)
-        return 0;
-
-    int[] heights = new int[matrix[0].length];
-    int maxArea = 0;
-    for(int i = 0; i < matrix.length; i++) {
-        for(int j = 0; j < matrix[0].length; j++) {
-            if(matrix[i][j] == '1') 
-                heights[j] += 1;
-            else
-                heights[j] = 0;
-        }
-        maxArea = Math.max(maxArea, largestRectangleArea(heights));
-    }
-    return maxArea;
-}
-
-// 使用函数
-private int largestRectangleArea(int[] heights) {
-    if(heights == null || heights.length == 0)
-        return 0;
-
-    int[] temp = new int[heights.length + 2];
-    System.arraycopy(heights, 0, temp, 1, heights.length);
-    Deque<Integer> stack = new LinkedList<>();
-    int maxArea = 0;
-
-    for(int i = 0; i < temp.length; i++) {
-        while(!stack.isEmpty() && temp[i] < temp[stack.peekLast()]) {
-            int height = temp[stack.removeLast()];
-            maxArea = Math.max(maxArea, height * (i - stack.peekLast() - 1));
-        }
-        stack.add(i);
-    }
-    return maxArea;
-}
-```
-
-
 
 ------
 

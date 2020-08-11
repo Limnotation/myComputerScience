@@ -3094,7 +3094,7 @@ public int maximalRectangle(char[][] matrix) {
     return maxArea;
 }
 
-// 
+// 使用函数
 private int largestRectangleArea(int[] heights) {
     if(heights == null || heights.length == 0)
         return 0;

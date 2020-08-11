@@ -1453,18 +1453,15 @@ private boolean findNode(TreeNode root, int target)
 ##### 题目示例15 `leetcode 285 二叉搜索树中的顺序后继`
 
 ```java
-private TreeNode inorderSuccessor(TreeNode root, TreeNode p)
-{
+private TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
     TreeNode res = null;
-    while(root != null)
-    {
-        if(p.val < root.val)
-        {
+    while(root != null) {
+        if(p.val < root.val) {
             res = root;
             root = root.left;
-        }
-        else
+        } else {
             root = root.right;
+        }
     }
     return res;
 }

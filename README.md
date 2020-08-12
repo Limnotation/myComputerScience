@@ -1,2 +1,1 @@
-# CS-Ways
-# 访问位置 https://lynn17op.github.io/CS-Ways/
+# For now, I still got nothing to say.

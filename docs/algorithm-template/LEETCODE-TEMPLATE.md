@@ -162,6 +162,7 @@
       - [题目示例12 `leetcode 69 X的平方根`](#题目示例12-leetcode-69-x的平方根)
       - [题目示例13 `leetcode 374 猜数字大小`](#题目示例13-leetcode-374-猜数字大小)
       - [题目示例14 `leetcode 638 找到K个最接近的元素`](#题目示例14-leetcode-638-找到k个最接近的元素)
+      - [题目示例15 `剑指offer 53-II 0 ~ n-1中缺失的数字`](#题目示例15-剑指offer-53-ii-0--n-1中缺失的数字)
   - [动态规划](#动态规划)
     - [矩阵类型( 10% )](#矩阵类型-10-)
         - [题目示例1 `leetcode 64 最小路径和`](#题目示例1-leetcode-64-最小路径和)
@@ -194,26 +195,31 @@
   - [回溯法](#回溯法)
     - [简单的回溯法模板](#简单的回溯法模板)
     - [典型题目](#典型题目-5)
-      - [题目示例1 `leetcode78 子集 `](#题目示例1-leetcode78-子集-)
-      - [题目示例2 `leetcode 90 子集II`](#题目示例2-leetcode-90-子集ii)
-      - [题目示例3 `leetcode 46 全排列`](#题目示例3-leetcode-46-全排列)
-      - [题目示例4 `leetcode 47 全排列II `](#题目示例4-leetcode-47-全排列ii-)
-      - [题目示例5 `leetcode 77 组合`](#题目示例5-leetcode-77-组合)
-      - [题目示例6 `leetcode 39 组合总和`](#题目示例6-leetcode-39-组合总和)
-      - [题目示例7 `leetcode 40 组合总和II`](#题目示例7-leetcode-40-组合总和ii)
-      - [题目示例8 `leetcode 216 组合总和III`](#题目示例8-leetcode-216-组合总和iii)
-      - [题目示例9 `leetcode 131 分割回文串`](#题目示例9-leetcode-131-分割回文串)
-      - [题目示例10  `leetcode 93 复原IP地址`](#题目示例10-leetcode-93-复原ip地址)
-      - [题目示例11 `leetcode37 解数独`](#题目示例11-leetcode37-解数独)
-      - [题目示例12 `leetcode 22 括号生成`](#题目示例12-leetcode-22-括号生成)
-      - [题目示例13 `leetcode17 电话号码的字母组合`](#题目示例13-leetcode17-电话号码的字母组合)
-      - [题目示例14 `leetcode 51 N皇后`](#题目示例14-leetcode-51-n皇后)
-      - [题目示例15 `leetcode 784 字母大小写全排列`](#题目示例15-leetcode-784-字母大小写全排列)
-      - [题目示例16 `leetcode 79 单词搜索`](#题目示例16-leetcode-79-单词搜索)
-      - [题目示例17 `leetcode 113 路径总和II`](#题目示例17-leetcode-113-路径总和ii)
-      - [题目示例18 `leetcode 401 二进制手表`](#题目示例18-leetcode-401-二进制手表)
-      - [题目示例19 `leetcode 1079 活字印刷`](#题目示例19-leetcode-1079-活字印刷)
-      - [题目示例20 `leetcode 526 优美的排列`](#题目示例20-leetcode-526-优美的排列)
+      - [题型1：基本回溯问题，在数组上进行回溯搜索](#题型1基本回溯问题在数组上进行回溯搜索)
+        - [题目示例1 `leetcode78 子集 `](#题目示例1-leetcode78-子集-)
+        - [题目示例2 `leetcode 90 子集II`](#题目示例2-leetcode-90-子集ii)
+        - [题目示例3 `leetcode 46 全排列`](#题目示例3-leetcode-46-全排列)
+        - [题目示例4 `leetcode 47 全排列II `](#题目示例4-leetcode-47-全排列ii-)
+        - [题目示例5 `leetcode 77 组合`](#题目示例5-leetcode-77-组合)
+        - [题目示例6 `leetcode 39 组合总和`](#题目示例6-leetcode-39-组合总和)
+        - [题目示例7 `leetcode 40 组合总和II`](#题目示例7-leetcode-40-组合总和ii)
+        - [题目示例8 `leetcode 216 组合总和III`](#题目示例8-leetcode-216-组合总和iii)
+      - [题型2：字符串上的回溯问题](#题型2字符串上的回溯问题)
+        - [题目示例1 `leetcode 131 分割回文串`](#题目示例1-leetcode-131-分割回文串)
+        - [题目示例2  `leetcode 93 复原IP地址`](#题目示例2-leetcode-93-复原ip地址)
+        - [题目示例3 `leetcode 17 电话号码的字母组合`](#题目示例3-leetcode-17-电话号码的字母组合)
+        - [题目示例4 `leetcode 784 字母大小写全排列`](#题目示例4-leetcode-784-字母大小写全排列)
+        - [题目示例5 `leetcode 22 括号生成`](#题目示例5-leetcode-22-括号生成)
+      - [题型3：二维平面上的回溯问题](#题型3二维平面上的回溯问题)
+        - [题目示例1 `leetcode 79 单词搜索`](#题目示例1-leetcode-79-单词搜索)
+      - [题型四：游戏问题](#题型四游戏问题)
+        - [题目示例1 `leetcode37 解数独`](#题目示例1-leetcode37-解数独)
+        - [题目示例2 `leetcode 51 N皇后`](#题目示例2-leetcode-51-n皇后)
+      - [其他题目](#其他题目-1)
+        - [题目示例17 `leetcode 113 路径总和II`](#题目示例17-leetcode-113-路径总和ii)
+        - [题目示例18 `leetcode 401 二进制手表`](#题目示例18-leetcode-401-二进制手表)
+        - [题目示例19 `leetcode 1079 活字印刷`](#题目示例19-leetcode-1079-活字印刷)
+        - [题目示例20 `leetcode 526 优美的排列`](#题目示例20-leetcode-526-优美的排列)
   - [双指针](#双指针)
     - [快慢指针（同向指针）](#快慢指针同向指针)
       - [题目示例1  `leetcode 19 删除链表的倒数第N个节点`](#题目示例1-leetcode-19-删除链表的倒数第n个节点-1)
@@ -2451,7 +2457,6 @@ private ListNode deleteNodes(ListNode head, int m, int n) {
 ###### 题目示例18 `leetcode 369 给单链表加一`
 
 ```java
-
 // 双指针
 // dummyHead
 private ListNode plusOne(ListNode head) {
@@ -4827,7 +4832,35 @@ private List<Integer> findClosestElements(int[] arr, int k, int x)
 }
 ```
 
+-----
 
+##### 题目示例15 `剑指offer 53-II 0 ~ n-1中缺失的数字`
+
+```java
+private int missingNumber(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return -1;
+    }
+    
+    // 搜索区间是一个闭区间
+    // 关键点：缺失的数字后面的所有数字都满足：数值大于下标
+    int left = 0, right = nums.length - 1;
+    while(left <= right) {
+        int mid = left + (right - left) / 2;
+        if(nums[mid] > mid) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    
+    return left;
+}
+```
+
+-------
+
+-------
 
 ### 动态规划
 
@@ -5565,7 +5598,9 @@ func backTrack( 选择列表， 路径 ) {
 
 #### 典型题目
 
-##### 题目示例1 `leetcode78 子集 `
+##### 题型1：基本回溯问题，在数组上进行回溯搜索
+
+###### 题目示例1 `leetcode78 子集 `
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -5599,7 +5634,7 @@ private void backTracking(int[] nums, int start, LinkedList<Integer> runner) {
 
 ---
 
-##### 题目示例2 `leetcode 90 子集II`
+###### 题目示例2 `leetcode 90 子集II`
 
 **简单的图示分析**
 
@@ -5638,7 +5673,7 @@ private void backTracking(int[] nums, int start, LinkedList<Integer> runner) {
 
 -----
 
-##### 题目示例3 `leetcode 46 全排列`
+###### 题目示例3 `leetcode 46 全排列`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -5672,7 +5707,7 @@ private void backTracking(int[] nums, LinkedList<Integer> runner) {
 
 -----
 
-##### 题目示例4 `leetcode 47 全排列II `
+###### 题目示例4 `leetcode 47 全排列II `
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -5718,7 +5753,7 @@ private void backTracking(int[] nums, boolean[] used, LinkedList<Integer> runner
 
 ----
 
-##### 题目示例5 `leetcode 77 组合`
+###### 题目示例5 `leetcode 77 组合`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -5749,7 +5784,7 @@ private void backTracking(int n, int k, int start, LinkedList<Integer> runner) {
 
 -----
 
-##### 题目示例6 `leetcode 39 组合总和`
+###### 题目示例6 `leetcode 39 组合总和`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -5786,7 +5821,7 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
 
 -----
 
-##### 题目示例7 `leetcode 40 组合总和II`
+###### 题目示例7 `leetcode 40 组合总和II`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -5825,7 +5860,7 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
 
 ----
 
-##### 题目示例8 `leetcode 216 组合总和III`
+###### 题目示例8 `leetcode 216 组合总和III`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -5859,7 +5894,9 @@ private void backTracking(int k, int n, int start, LinkedList<Integer> runner) {
 
 ---
 
-##### 题目示例9 `leetcode 131 分割回文串`
+##### 题型2：字符串上的回溯问题
+
+###### 题目示例1 `leetcode 131 分割回文串`
 
 ```java
 List<List<String>> res = new LinkedList<>();
@@ -5902,7 +5939,7 @@ private boolean isPalindrome(String s, int left, int right)
 
 ----
 
-##### 题目示例10  `leetcode 93 复原IP地址`
+###### 题目示例2  `leetcode 93 复原IP地址`
 
 ```java
 List<String> res = new LinkedList<>();
@@ -5946,9 +5983,197 @@ private void backTracking(String s, int pos, LinkedList<String> runner) {
 }
 ```
 
-----
+------
 
-##### 题目示例11 `leetcode37 解数独`
+###### 题目示例3 `leetcode 17 电话号码的字母组合`
+
+```java
+List<String> res = new LinkedList<>();
+HashMap<Character, String> map = new HashMap<>(){
+    {
+        put('2', "abc");
+        put('3', "def");
+        put('4', "ghi");
+        put('5', "jkl");
+        put('6', "mno");
+        put('7', "pqrs");
+        put('8', "tuv");
+        put('9', "wyxz");
+    }
+};
+public List<String> letterCombinations(String digits) {
+    if(digits == null || digits.length() == 0)
+        return res;
+    
+    backTracking(digits, 0, new StringBuffer());
+    return res;
+}
+
+private void backTracking(String digits, int index, StringBuffer runner) {
+    if(index == digits.length()) {
+        res.add(runner.toString());
+        return;
+    }
+    
+    char curC = digits.charAt(index);
+    String tempS = map.get(curC);
+    for(char c:tempS.toCharArray()) {
+        // 做选择
+        runner.append(c);
+        // 进入下一层决策树
+        backTracking(digits, index + 1, runner);
+        // 撤销选择
+        runner.deleteCharAt(runner.length() - 1);
+    }
+}
+```
+
+-----
+
+###### 题目示例4 `leetcode 784 字母大小写全排列`
+
+```java
+List<String> res = new LinkedList<>();
+public List<String> letterCasePermutation(String S) {
+    if(S == null || S.length() == 0)
+        return res;
+
+    backTracking(S, 0, S.toCharArray());
+    return res;
+}
+
+private void backTracking(String S, int start, char[] charArray) {
+    if(start == S.length()) {
+        res.add(new String(charArray));
+        return;
+    }
+
+    // 做选择（把当前字符放入路径中）
+    charArray[start] = S.charAt(start);
+    // 进入下一层决策树
+    backTracking(S, start + 1, charArray);
+    // 在当前字符为字母时创建新分支
+    if(Character.isLetter(S.charAt(start))) {
+        // 修改字母大小写属性，相当于回溯，这里注意理解（你只有重新回到决策树当前层才能修改）
+        charArray[start] ^= (1 << 5);
+        backTracking(S, start + 1, charArray);
+    }
+}
+```
+
+-------
+
+###### 题目示例5 `leetcode 22 括号生成`
+
+```java
+// 这个题目有两个关键性质
+// 1.一个合法的括号组合的左括号数量一定等于右括号数量
+// 2.对于一个“合法”的括号字符串组合p,必然对于任何 0 <= i < p.length(),都有：子串p[0..i]中左括号的数量都大于等于右括号的数量
+List<String> res = new LinkedList<>();
+public List<String> generateParenthesis(int n) {
+    if(n <= 0)
+        return res;
+    
+    backTracking(n, n, new StringBuffer());
+    return res;
+}
+
+private void backTracking(int left, int right, StringBuffer s) {
+    // 剩下的左括号更多，说明不合法
+    if(left > right)
+        return;
+    // 数量小于0，不合法
+    if(left < 0 || right < 0)
+        return;
+    // 所有括号都能用完，得到一个合法的括号组合
+    if(left == 0 && right == 0) {
+        res.add(s.toString());
+        return;
+    }
+    
+    // 尝试放置一个左括号
+    // 选择
+    s.append('(');
+    // 进入下一层决策树
+    backTracking(left - 1, right, s);
+    // 撤销选择
+    s.deleteCharAt(s.length() - 1);
+    
+    // 尝试放置一个右括号
+    // 选择
+    s.append(')');
+    // 进入下一层决策树
+    backTracking(left, right - 1, s);
+    // 撤销选择
+    s.deleteCharAt(s.length() - 1);
+}
+```
+
+------
+
+##### 题型3：二维平面上的回溯问题
+
+**其实就是DFS加上了剪枝的操作**
+
+###### 题目示例1 `leetcode 79 单词搜索`
+
+```java
+private boolean[][] visited;
+public boolean exist(char[][] board, String word) {
+    if(board == null || word == null || board.length == 0 || board[0].length == 0)
+        return false;
+
+    int pathLength = 0;
+    int m = board.length, n = board[0].length;
+    visited = new boolean[m][n];
+    for(int i = 0; i < m; i++)
+        for(int j = 0; j < n; j++)
+            if(backTracking(board, word, i, j, pathLength))
+                return true;
+    return false;
+}
+
+/**
+    *@parameter board       字符二维网格
+    *@parameter word        目标单词
+    *@parameter row         方法当前所访问的行索引
+    *@parameter col         方法当前所访问的列索引
+    *@parameter pathLength  当前已经匹配的路径长度
+    *@return                路径的匹配结果
+    **/
+private boolean backTracking(char[][] board, String word, int row, int col, int pathLength) {
+    if(word.length() == pathLength)
+        return true;
+
+    boolean hasPath = false;
+    if( row >= 0 && row < board.length && col >= 0 && col < board[0].length 
+       && board[row][col] == word.charAt( pathLength ) && !visited[row][col] ) {
+        // 做选择
+        pathLength++;
+        visited[row][col] = true;
+
+        // 进入下一层决策树（N叉树）
+        hasPath = ( backTracking(board, word, row, col - 1, pathLength) 
+                   || backTracking(board, word, row - 1, col, pathLength)
+                   || backTracking(board, word, row, col + 1, pathLength)
+                   || backTracking(board, word, row + 1, col, pathLength)
+                  );
+
+        // 撤销选择
+        if(!hasPath) {
+            pathLength--;
+            visited[row][col] = false;
+        }
+    }
+    return hasPath;
+}
+```
+
+-----
+
+##### 题型四：游戏问题
+
+###### 题目示例1 `leetcode37 解数独`
 
 ```java
 public void solveSudoku(char[][] board){
@@ -6000,100 +6225,11 @@ private boolean isValid(char[][] board, int row, int col, char c) {
 }
 ```
 
-##### 题目示例12 `leetcode 22 括号生成`
 
-```java
-// 这个题目有两个关键性质
-// 1.一个合法的括号组合的左括号数量一定等于右括号数量
-// 2.对于一个“合法”的括号字符串组合p,必然对于任何 0 <= i < p.length(),都有：子串p[0..i]中左括号的数量都大于等于右括号的数量
-List<String> res = new LinkedList<>();
-public List<String> generateParenthesis(int n) {
-    if(n <= 0)
-        return res;
-    
-    backTracking(n, n, new StringBuffer());
-    return res;
-}
-
-private void backTracking(int left, int right, StringBuffer s) {
-    // 剩下的左括号更多，说明不合法
-    if(left > right)
-        return;
-    // 数量小于0，不合法
-    if(left < 0 || right < 0)
-        return;
-    // 所有括号都能用完，得到一个合法的括号组合
-    if(left == 0 && right == 0) {
-        res.add(s.toString());
-        return;
-    }
-    
-    // 尝试放置一个左括号
-    // 选择
-    s.append('(');
-    // 进入下一层决策树
-    backTracking(left - 1, right, s);
-    // 撤销选择
-    s.deleteCharAt(s.length() - 1);
-    
-    // 尝试放置一个右括号
-    // 选择
-    s.append(')');
-    // 进入下一层决策树
-    backTracking(left, right - 1, s);
-    // 撤销选择
-    s.deleteCharAt(s.length() - 1);
-}
-```
-
----
-
-##### 题目示例13 `leetcode17 电话号码的字母组合`
-
-```java
-List<String> res = new LinkedList<>();
-HashMap<Character, String> map = new HashMap<>(){
-    {
-        put('2', "abc");
-        put('3', "def");
-        put('4', "ghi");
-        put('5', "jkl");
-        put('6', "mno");
-        put('7', "pqrs");
-        put('8', "tuv");
-        put('9', "wyxz");
-    }
-};
-public List<String> letterCombinations(String digits) {
-    if(digits == null || digits.length() == 0)
-        return res;
-    
-    backTracking(digits, 0, new StringBuffer());
-    return res;
-}
-
-private void backTracking(String digits, int index, StringBuffer runner) {
-    if(index == digits.length()) {
-        res.add(runner.toString());
-        return;
-    }
-    
-    char curC = digits.charAt(index);
-    String tempS = map.get(curC);
-    for(char c:tempS.toCharArray()) {
-        // 做选择
-        runner.append(c);
-        // 进入下一层决策树
-        backTracking(digits, index + 1, runner);
-        // 撤销选择
-        runner.deleteCharAt(runner.length() - 1);
-    }
-}
-```
 
 ----
 
-##### 题目示例14 `leetcode 51 N皇后`
+###### 题目示例2 `leetcode 51 N皇后`
 
 ```java
 List<List<String>> res = new LinkedList<>();
@@ -6152,98 +6288,11 @@ private boolean isValid(char[][] board, int row, int col) {
 }
 ```
 
-------
-
-##### 题目示例15 `leetcode 784 字母大小写全排列`
-
-```java
-List<String> res = new LinkedList<>();
-public List<String> letterCasePermutation(String S) {
-    if(S == null || S.length() == 0)
-        return res;
-
-    backTracking(S, 0, S.toCharArray());
-    return res;
-}
-
-private void backTracking(String S, int start, char[] charArray) {
-    if(start == S.length()) {
-        res.add(new String(charArray));
-        return;
-    }
-
-    // 做选择（把当前字符放入路径中）
-    charArray[start] = S.charAt(start);
-    // 进入下一层决策树
-    backTracking(S, start + 1, charArray);
-    // 在当前字符为字母时创建新分支
-    if(Character.isLetter(S.charAt(start))) {
-        // 修改字母大小写属性，相当于回溯，这里注意理解（你只有重新回到决策树当前层才能修改）
-        charArray[start] ^= (1 << 5);
-        backTracking(S, start + 1, charArray);
-    }
-}
-```
-
 -----
 
-##### 题目示例16 `leetcode 79 单词搜索`
+##### 其他题目
 
-```java
-private boolean[][] visited;
-public boolean exist(char[][] board, String word) {
-    if(board == null || word == null || board.length == 0 || board[0].length == 0)
-        return false;
-
-    int pathLength = 0;
-    int m = board.length, n = board[0].length;
-    visited = new boolean[m][n];
-    for(int i = 0; i < m; i++)
-        for(int j = 0; j < n; j++)
-            if(backTracking(board, word, i, j, pathLength))
-                return true;
-    return false;
-}
-
-/**
-    *@parameter board       字符二维网格
-    *@parameter word        目标单词
-    *@parameter row         方法当前所访问的行索引
-    *@parameter col         方法当前所访问的列索引
-    *@parameter pathLength  当前已经匹配的路径长度
-    *@return                路径的匹配结果
-    **/
-private boolean backTracking(char[][] board, String word, int row, int col, int pathLength) {
-    if(word.length() == pathLength)
-        return true;
-
-    boolean hasPath = false;
-    if( row >= 0 && row < board.length && col >= 0 && col < board[0].length 
-       && board[row][col] == word.charAt( pathLength ) && !visited[row][col] ) {
-        // 做选择
-        pathLength++;
-        visited[row][col] = true;
-
-        // 进入下一层决策树（N叉树）
-        hasPath = ( backTracking(board, word, row, col - 1, pathLength) 
-                   || backTracking(board, word, row - 1, col, pathLength)
-                   || backTracking(board, word, row, col + 1, pathLength)
-                   || backTracking(board, word, row + 1, col, pathLength)
-                  );
-
-        // 撤销选择
-        if(!hasPath) {
-            pathLength--;
-            visited[row][col] = false;
-        }
-    }
-    return hasPath;
-}
-```
-
------
-
-##### 题目示例17 `leetcode 113 路径总和II`
+###### 题目示例17 `leetcode 113 路径总和II`
 
 ```java
 List<List<Integer>> res = new LinkedList<>();
@@ -6275,7 +6324,7 @@ private void backTracking(TreeNode root, LinkedList<Integer> runner, int curVal,
 
 ----
 
-##### 题目示例18 `leetcode 401 二进制手表`
+###### 题目示例18 `leetcode 401 二进制手表`
 
 **感觉用回溯做还更难了**
 
@@ -6338,7 +6387,7 @@ private Integer sum(List<Integer> pre) {
 
 -----
 
-##### 题目示例19 `leetcode 1079 活字印刷`
+###### 题目示例19 `leetcode 1079 活字印刷`
 
 ```java
 public int numTilePossibilities(String tiles) {
@@ -6368,7 +6417,7 @@ private int backTracking(int[] counter) {
 
 ------
 
-##### 题目示例20 `leetcode 526 优美的排列`
+###### 题目示例20 `leetcode 526 优美的排列`
 
 ```java
 private int counter = 0;

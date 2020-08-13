@@ -147,16 +147,18 @@
       - [三、寻找右侧边界的二分查找](#三寻找右侧边界的二分查找)
       - [四、逻辑统一](#四逻辑统一)
     - [典型题目](#典型题目-4)
-      - [题目示例1  `leetcode 35 插入位置`](#题目示例1-leetcode-35-插入位置)
+      - [题型1：二分求满足条件的元素](#题型1二分求满足条件的元素)
+        - [题目示例1 `leetcode 704 二分查找`](#题目示例1-leetcode-704-二分查找)
+        - [题目示例2 `leetcode 34 在排序数组中查找元素的第一个和最后一个位置`](#题目示例2-leetcode-34-在排序数组中查找元素的第一个和最后一个位置)
+        - [题目示例3 `leetcode 35 搜索插入位置`](#题目示例3-leetcode-35-搜索插入位置)
+        - [题目示例4 `leetcode 33 搜索旋转排序数组`](#题目示例4-leetcode-33-搜索旋转排序数组)
+        - [题目示例5 `leetcode 81 搜索旋转排序数组II`](#题目示例5-leetcode-81-搜索旋转排序数组ii)
+        - [题目示例6  `leetcode 153 寻找旋转排序数组中的最小值`](#题目示例6-leetcode-153-寻找旋转排序数组中的最小值)
+        - [题目示例7 `leetcode 154 寻找旋转排序数组中的最小值II`](#题目示例7-leetcode-154-寻找旋转排序数组中的最小值ii)
+        - [题目示例8 `leetcode 275 H指数II`](#题目示例8-leetcode-275-h指数ii)
       - [题目示例2 `leetcode 74 搜索二维矩阵`](#题目示例2-leetcode-74-搜索二维矩阵)
       - [题目示例3 `leetcode 278 第一个错误的版本`](#题目示例3-leetcode-278-第一个错误的版本)
-      - [题目示例4 `leetcode 153 寻找旋转排序数组中的最小值`](#题目示例4-leetcode-153-寻找旋转排序数组中的最小值)
-      - [题目示例 5 `leetcode 154 寻找旋转排序数组的最小值II`](#题目示例-5-leetcode-154-寻找旋转排序数组的最小值ii)
-      - [题目示例5 `leetcode 33 搜索旋转排序数组`](#题目示例5-leetcode-33-搜索旋转排序数组)
-      - [题目示例 6 `leetcode 81 搜索旋转排序数组II`](#题目示例-6-leetcode-81-搜索旋转排序数组ii)
-      - [题目示例7 `leetcode 34 在排序数组中查找元素的第一个和最后一个位置`](#题目示例7-leetcode-34-在排序数组中查找元素的第一个和最后一个位置)
       - [题目示例8 `leetcode 162 寻找峰值`](#题目示例8-leetcode-162-寻找峰值)
-      - [题目示例9 `leetcode 275 H指数II`](#题目示例9-leetcode-275-h指数ii)
       - [题目示例10  `leetcode 287 寻找重复数`](#题目示例10-leetcode-287-寻找重复数)
       - [题目示例11 `leetcode 315 计算右侧小于当前元素的个数`](#题目示例11-leetcode-315-计算右侧小于当前元素的个数)
       - [题目示例12 `leetcode 69 X的平方根`](#题目示例12-leetcode-69-x的平方根)
@@ -4160,12 +4162,10 @@ class Solution {
 ##### 零、二分查找框架
 
 ```java
-private int binarySearch(int[] nums, int target)
-{
+private int binarySearch(int[] nums, int target) {
     int left = 0, right = ...;
     
-    while(...)
-    {
+    while(...) {
         int mid = left + (right - left) / 2;
         if(nums[mid] == target)
             ...;
@@ -4186,14 +4186,12 @@ private int binarySearch(int[] nums, int target)
 搜索一个数，如果存在，返回其索引，否则返回-1
 
 ```java
-private int binarySearch(int[] nums, int target)
-{
+private int binarySearch(int[] nums, int target) {
     if(nums == null || nums.length == 0)
         return -1;
     
     int left = 0, right = nums.length - 1;
-    while(left <= right)
-    {
+    while(left <= right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] == target)
             return mid;
@@ -4211,33 +4209,31 @@ private int binarySearch(int[] nums, int target)
 因为初始化时`right`赋值为`nums.length - 1`,则每次搜索的区间为闭区间`[left, right]`,循环终止有两个可能：
 
 - 找到目标值，即`nums[mid] == target` 
-- 搜索区间为空，`while( left <= right )`终止条件为 `left == right + 1 `,表示闭区间 `[right + 1, right ]`,此时区间为空，`while`循环正确终止
+- 搜索区间为空，`while(left <= right)`终止条件为 `left == right + 1 `,表示闭区间 `[right + 1, right]`,此时区间为空，`while`循环正确终止
 
 **2、left = mid + 1, right = mid - 1的变化规律**
 
-因为这个算法搜索区间为闭区间 `[left, right]`,当发现 `mid`对应位置不是目标值时，应该将其从搜索区间中去除，搜索区间变为 `[left, mid - 1]` 或 `[mid + 1, right]`
+因为这个算法搜索区间为闭区间 `[left, right]`,当发现 `mid`对应位置不是目标值时，应该将其从搜索区间中**去除**，搜索区间变为 `[left, mid - 1]` 或 `[mid + 1, right]`
 
 **3、算法的缺陷**
 
-无法有效进行边界搜索
+无法有效进行边界搜索，在数组中存在重复元素时，算法在搜索到第一个元素之后立刻返回
 
-
+----
 
 ##### 二、寻找左侧边界的二分搜索
 
 ```java
-private int leftBound(int[] nums, int target)
-{
+private int leftBound(int[] nums, int target) {
     if(nums.length == 0)
         return -1;
     int left = 0;
     int right = nums.length;
     
-    while(left < right)
-    {
+    while(left < right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] == target)
-            right = mid;
+            right = mid;	
         else if(nums[mid] < target)
             left = mid + 1;
         else if(nums[mid] > target)
@@ -4253,7 +4249,7 @@ private int leftBound(int[] nums, int target)
 
 `while(left < right)`的终止条件为 `left == right `,此时搜索区间 `[left, left)`为空，循环可以正确终止
 
-在循环内，查找空间的每一步至少有2个元素
+在循环内，查找空间的每一步至少有2个元素，在存在目标元素的情况下，循环退出时，`left`和 `right`都指向同一个元素
 
 **2、算法在数组中不存在target值的情况下返回结果的含义**
 
@@ -4270,8 +4266,7 @@ private int leftBound(int[] nums, int target)
 可以看出，函数的返回值（即 `left`变量的值）取值范围为 `[0, nums.length]`,可以通过添加简单的代码来处理数组中不存在目标值的情况，当然，具体的返回值根据需求决定
 
 ```java
-while(left < right)
-{
+while(left < right) {
     // ...
 }
 
@@ -4299,19 +4294,17 @@ if(nums[mid] == target)
 
 其实也可以设置为 `right`,因为循环的终止条件为 `left == right`，此时查找空间内只剩一个元素，再判断这个元素是否满足条件即可
 
-
+---
 
 ##### 三、寻找右侧边界的二分查找
 
 ```java
-private int rightBound(int[] nums, int target)
-{
+private int rightBound(int[] nums, int target) {
     if(nums.length == 0)
         return -1;
     
     int left = 0, right = nums.length;
-    while(left < right)
-    {
+    while(left < right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] == target)
             left = mid + 1;
@@ -4360,19 +4353,17 @@ if(left == 0)
 return nums[left - 1] == target ? (left - 1):-1;
 ```
 
-
+----
 
 ##### 四、逻辑统一
 
 在之前的分析中，普通的二分搜索与左右边界的二分搜索在形式上有所区别，在这里对其进行统一，规定使用两端封闭的搜索区间来实现
 
 ```java
-// 基本的二分搜索模板
-private int binarySearch(int[] nums, int target)
-{
+// 基本的二分搜索模板，判断元素存在与否
+private int binarySearch(int[] nums, int target) {
     int left = 0, right = nums.length - 1;
-    while(left <= right)
-    {
+    while(left <= right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] == target)
             return mid;
@@ -4385,11 +4376,9 @@ private int binarySearch(int[] nums, int target)
 }
 
 // 搜索左侧边界的二分搜索模板
-private int leftBound(int[] nums, int target)
-{
+private int leftBound(int[] nums, int target) {
     int left = 0, right = nums.length - 1;
-    while(left <= right)
-    {
+    while(left <= right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] == target)
             right = mid - 1;
@@ -4406,11 +4395,9 @@ private int leftBound(int[] nums, int target)
 }
 
 // 搜索右侧边界的二分搜索模板
-private int rightBound(int[] nums, int target)
-{
+private int rightBound(int[] nums, int target) {
     int left = 0, right = nums.length - 1;
-    while(left <= right)
-    {
+    while(left <= right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] == target)
             left = mid + 1;
@@ -4427,30 +4414,303 @@ private int rightBound(int[] nums, int target)
 }
 ```
 
-
+----
 
 #### 典型题目
 
-##### 题目示例1  `leetcode 35 插入位置`
+##### 题型1：二分求满足条件的元素
+
+二分法确定**满足条件**的元素的下标/或元素本身
+
+通常是在有序或者半有序的数组中查找特定元素
+
+###### 题目示例1 `leetcode 704 二分查找`
+
+**最基础的二分题, 寻找满足条件的一个数**
 
 ```java
-// 寻找左侧边界值的二分搜索问题
-private int searchInsert(int[] nums, int target)
-{
+private int search(int[] nums, int target) {
+    if(nums == null || nums.length == 0) {
+        return -1;
+    }
+    
     int left = 0, right = nums.length - 1;
-    while(left <= right)
-    {
+    while(left <= right) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] == target)
-            right = mid - 1;
-        else if(nums[mid] < target)
+        if(nums[mid] == target) {
+            return mid;
+        } else if(nums[mid] < target) {
             left = mid + 1;
-        else if(nums[mid] > target)
+        } else if(nums[mid] > target) {
             right = mid - 1;
+        }
+    }
+    return -1;
+}
+```
+
+----
+
+###### 题目示例2 `leetcode 34 在排序数组中查找元素的第一个和最后一个位置`
+
+**左右边界查找算法的综合使用**
+
+```java
+public int[] searchRange(int[] nums, int target) {
+    int first = leftBound(nums, target);
+    int right = rightBound(nums, target);
+    return new int[]{first, right};
+}
+
+/**
+* 寻找元素的左侧边界
+*/
+private int leftBound(int[] nums, int target) {
+    if(nums == null || nums.length == 0) {
+        return -1;
+    }
+
+    int left = 0, right = nums.length - 1;
+    while(left <= right) {
+        int mid = left + (right - left) / 2;
+        if(nums[mid] == target) {
+            right = mid - 1;
+        } else if(nums[mid] < target) {
+            left = mid + 1;
+        } else if(nums[mid] > target) {
+            right = mid - 1;
+        }
+    }
+
+    if(left >= nums.length || nums[left] != target) {
+        return -1;
+    }
+    return left;
+}
+
+/**
+* 寻找元素的右侧边界
+*/
+private int rightBound(int[] nums, int target) {
+    if(nums == null || nums.length == 0) {
+        return -1;
+    }
+
+    int left  = 0, right = nums.length - 1;
+    while(left <= right) {
+        int mid = left + (right - left) / 2;
+        if(nums[mid] == target) {
+            left = mid + 1;
+        } else if(nums[mid] < target) {
+            left = mid + 1;
+        } else if(nums[mid] > target) {
+            right = mid - 1;
+        }
+    }
+
+    if(right < 0 || nums[right] != target) {
+        return -1;
+    }
+    return right;
+}
+```
+
+----
+
+###### 题目示例3 `leetcode 35 搜索插入位置`
+
+**本质是搜索元素的左边界**
+
+```java
+public int searchInsert(int[] nums, int target) {
+    int left = 0, right = nums.length - 1;
+    while(left <= right) {
+        int mid = left + (right - left) / 2;
+        if(nums[mid] == target) {
+            return mid;
+        } else if(nums[mid] < target) {
+            left = mid + 1;
+        } else if(nums[mid] > target) {
+            right = mid - 1;
+        }
     }
     return left;
 }
 ```
+
+----
+
+###### 题目示例4 `leetcode 33 搜索旋转排序数组`
+
+**要求：时间复杂度为O(logN),只能用二分查找**
+
+```java
+/*
+* 重点就是在判断mid分割出的两个搜索区间哪个是有序的，先去有序的部分搜索
+* 由于题目说数字了无重复，举个例子：
+* 1 2 3 4 5 6 7 可以大致分为两类，
+* 第一类 2 3 4 5 6 7 1 这种，也就是 nums[start] <= nums[mid]。此例子中就是 2 <= 5。
+* 这种情况下，前半部分有序。因此如果 nums[start] <=target<nums[mid]，则在前半部分找，否则去后半部分找。
+* 第二类 6 7 1 2 3 4 5 这种，也就是 nums[start] > nums[mid]。此例子中就是 6 > 2。
+* 这种情况下，后半部分有序。因此如果 nums[mid] <target<=nums[end]，则在后半部分找，否则去前半部分找
+*/
+private int search(int[] nums, int target) {
+    if(nums == null || nums.length == 0) {
+        return -1;
+    }
+    
+    int left = 0, right = nums.length - 1;
+    while(left <= right) {
+        int mid = left + (right - left) / 2;
+        
+        if(nums[mid] == target) {
+            return mid;
+        }
+        // 前半部分有序
+        if(nums[left] <= nums[mid]) {
+            if(nums[left] <= target && target < nums[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } else {
+            if(nums[mid] < target && target <= nums[right]) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+    }
+    return -1;
+}
+```
+
+----
+
+###### 题目示例5 `leetcode 81 搜索旋转排序数组II`
+
+```java
+/**
+* 举例如下：
+* 第一类
+* 1011110111 和 1110111101 这种。此种情况下 nums[start] == nums[mid]，分不清到底是前面有序还是后面有序，此时 start++ 即* * 可。相当于去掉一个重复的干扰项。
+* 第二类
+* 22 33 44 55 66 77 11 这种，也就是 nums[start] < nums[mid]。此例子中就是 2 < 5；
+* 这种情况下，前半部分有序。因此如果 nums[start] <=target<nums[mid]，则在前半部分找，否则去后半部分找。
+* 第三类
+* 66 77 11 22 33 44 55 这种，也就是 nums[start] > nums[mid]。此例子中就是 6 > 2；
+* 这种情况下，后半部分有序。因此如果 nums[mid] <target<=nums[end]。则在后半部分找，否则去前半部分找。
+*/
+private boolean search(int[] nums, int target) {
+    if(nums == null || nums.length ==0) {
+        return false;
+    }
+    
+    int left = 0, right = nums.length - 1;
+    while(left <= right) {
+        int mid = left + (right - left) / 2;
+        
+        if(nums[mid] == target) {
+            return true;
+        }
+        
+        // 无法判断哪部分有序时，直接移动边界
+        if(nums[left] == nums[mid]) {
+            left++;
+            continue;
+        }
+        // 左半部分有序
+        if(nums[left] < nums[mid]) {
+            if(nums[left] <= target && target < nums[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } else {
+            if(nums[mid] < target && target <= nums[right]) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+    }
+    return false;
+}
+```
+
+-----
+
+###### 题目示例6  `leetcode 153 寻找旋转排序数组中的最小值`
+
+```java
+private int findMin(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return -1;
+    }
+    
+    int left = 0, right = nums.length - 1;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(nums[mid] > nums[right]) {
+            left = mid + 1;
+        } else if(nums[mid] <= nums[right]) {
+            right = mid;
+        }
+    }
+    // 循环结束时，left和right都指向了最小元素
+    return nums[left];
+}
+```
+
+-----
+
+###### 题目示例7 `leetcode 154 寻找旋转排序数组中的最小值II`
+
+有重复元素
+
+```java
+private int findMin(int[] nums) {
+    if(nums == null || nums.length <= 0)
+        return -1;
+    
+    int left = 0, right = nums.length - 1;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(nums[mid] < nums[right])
+            right = mid;
+        else if(nums[mid] > nums[right])
+            left = mid + 1;
+        else if(nums[mid] == nums[right])
+            right--;
+    }
+    return nums[left];
+}
+```
+
+-----
+
+###### 题目示例8 `leetcode 275 H指数II`
+
+```java
+// 关键：返回一个数据区间的长度，该区间满足最小的值大于等于该区间的长度
+private int hIndex(int[] citations) {
+    if(citations == null || citations.length == 0 || citations[citations.length - 1] == 0)
+        return 0;
+    
+    int len = citations.length;
+    int left = 0, right = len - 1;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(citations[mid] < len - mid)
+            left = mid + 1;
+        else
+            right = mid;
+    }
+    return len - left;
+}
+```
+
+
 
 ---
 
@@ -4504,189 +4764,6 @@ private int firstBadVersion(int n)
 
 -----
 
-##### 题目示例4 `leetcode 153 寻找旋转排序数组中的最小值`
-
-无重复元素,搜索数组中的最小值
-
-```java
-private int findMin(int[] nums) 
-{
-    if(nums == null || nums.length == 0)
-        return -1;
-    int left = 0, right = nums.length - 1;
-    while(left < right)
-    {
-        int mid = left + (right - left) / 2;
-        if(nums[mid] > nums[right])
-            left = mid + 1;
-        else if(nums[mid] <= nums[right])
-            right = mid;
-    }
-    return nums[left];
-}
-```
-
------
-
-##### 题目示例 5 `leetcode 154 寻找旋转排序数组的最小值II`
-
-存在重复元素，搜索数组中的最小值
-
-```java
-public int findMin(int[] nums) 
-{
-    if(nums == null || nums.length <= 0)
-        return -1;
-    
-    int left = 0, right = nums.length - 1;
-    while(left < right)
-    {
-        int mid = left + (right - left) / 2;
-        if(nums[mid] < nums[right])
-            right = mid;
-        else if(nums[mid] > nums[right])
-            left = mid + 1;
-        else if(nums[mid] == nums[right])
-            right--;
-    }
-    return nums[left];
-}
-```
-
-----
-
-##### 题目示例5 `leetcode 33 搜索旋转排序数组`
-
-无重复元素，寻找特定值
-
-```java
-private int search(int[] nums, int target)
-{
-    if(nums == null || nums.length == 0)
-        return -1;
-    if(nums.length == 1)
-        return nums[0] == target ? 0:-1;
-    
-    int left = 0, right = nums.length - 1;
-    while(left <= right)
-    {
-        int mid = left + (right - left) / 2;
-        if(nums[mid] == target)
-            return mid;
-        if(nums[0] <= nums[mid])
-        {
-            if(nums[0] <= target && target < nums[mid])
-                right = mid - 1;
-            else 
-                left = mid + 1;
-        }
-        else
-        {
-            if(nums[mid] < target && target <= nums[nums.length - 1])
-                left = mid + 1;
-            else
-                right = mid - 1;
-        }
-    }
-    return -1;
-}
-```
-
------
-
-##### 题目示例 6 `leetcode 81 搜索旋转排序数组II`
-
-```java
-private boolean search(int[] nums, int target)
-{
-    if(nums == null || nums.length == 0)
-        return false;
-    
-    int left = 0, right = nums.length - 1;
-    while(left <= right)
-    {
-        int mid = left + (right - left) / 2;
-        if(nums[mid] == target)
-            return true;
-        if(nums[left] == nums[mid])
-        {
-            left++;
-            continue;
-        }
-        
-        if(nums[0] < nums[mid])
-        {
-            if(nums[0] <= target && target < nums[mid])
-                right = mid - 1;
-            else
-                left = mid + 1;
-        }
-        else
-        {
-            if(target > nums[mid] && target <= nums[nums.length - 1])
-                left = mid + 1;
-            else
-                right = mid - 1;
-        }
-    }
-    return false;
-}
-```
-
------
-
-##### 题目示例7 `leetcode 34 在排序数组中查找元素的第一个和最后一个位置`
-
-左边界和右边界查找的综合应用
-
-```java
-public int[] searchRange(int[] nums, int target) 
-{
-    int left = leftBound(nums, target);
-    int right = rightBound(nums, target);
-    return new int[]{left, right};
-}
-
-private int leftBound(int[] nums, int target)
-{
-    int left = 0, right = nums.length - 1;
-    while(left <= right)
-    {
-        int mid = left + (right - left) / 2;
-        if(nums[mid] == target)
-            right = mid - 1;
-        else if(nums[mid] < target)
-            left = mid + 1;
-        else if(nums[mid] > target)
-            right = mid - 1;
-    }
-
-    if(left >= nums.length || nums[left] != target)
-        return -1;
-    return left;
-}
-
-private int rightBound(int[] nums, int target)
-{
-    int left = 0, right = nums.length - 1;
-    while(left <= right)
-    {
-        int mid = left + (right - left) / 2;
-        if(nums[mid] == target)
-            left = mid + 1;
-        else if(nums[mid] < target)
-            left = mid + 1;
-        else if(nums[mid] > target)
-            right = mid - 1;
-    }
-    if(right < 0 || nums[right] != target)
-        return -1;
-    return right;
-}
-```
-
------
-
 ##### 题目示例8 `leetcode 162 寻找峰值`
 
 ```java
@@ -4702,31 +4779,6 @@ private int findPeakElement(int[] nums)
             right = mid;
     }
     return left;
-}
-```
-
------
-
-##### 题目示例9 `leetcode 275 H指数II`
-
-```java
-// 关键：返回一个数据区间的长度，该区间满足最小的值大于等于该区间的长度
-private int hIndex(int[] citations)
-{
-    if(citations == null || citations.length == 0 || citations[citations.length - 1] == 0)
-        return 0;
-    
-    int len = citations.length;
-    int left = 0, right = len - 1;
-    while(left < right)
-    {
-        int mid = left + (right - left) / 2;
-        if(citations[mid] < len - mid)
-            left = mid + 1;
-        else
-            right = mid;
-    }
-    return len - left;
 }
 ```
 

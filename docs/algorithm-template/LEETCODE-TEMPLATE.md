@@ -1685,6 +1685,7 @@ class Trie
 ###### 题目示例1`leetcode 203 移除链表元素`
 
 ```java
+// 使用哑节点，所有节点被删除的流程都是一致的
 private ListNode removeElements(ListNode head, int val) {
     ListNode dummyHead = new ListNode(-1);
     dummyHead.next = head;
@@ -2542,6 +2543,8 @@ class MinStack
  */
 ```
 
+--
+
 ##### 题目示例2 `leetcode 150 逆波兰表达式求值`
 
 ```java
@@ -2593,6 +2596,8 @@ private int evalRPN( String[] tokens )
 }
 ```
 
+-----
+
 ##### 题目示例3 `leetcode 394 字符串解码`
 
 ```java
@@ -2625,7 +2630,23 @@ public String decodeString(String s)
 }
 ```
 
----
+----
+
+##### 题目示例4 `leetcode 20 有效的括号`
+
+```java
+private boolean isValid(String s) {
+    if(s == null || s.length() == 0) {
+        return true;
+    } else if(s.length() % 2 != 0) {
+        return false;
+    }
+    
+    Deque<Character> stack = new Lin
+}
+```
+
+
 
 ---
 
@@ -7556,7 +7577,13 @@ private boolean carPooling(int[][] trips, int capacity)
 
 ------
 
-------
+### 数组
+
+
+
+-----
+
+-----
 
 ### 排序
 

@@ -162,8 +162,18 @@ public static quickSortThreeWay(int[] arr, int low, int high) {
         return;
     }
 
-    int less = low, i = low + 1, great = high;
-    int pivotVal = arr[low];
+    int less = low, i = low, great = high;
+    int pivotVal = arr[low];- [排序](#排序)
+  - [快速排序](#快速排序)
+    - [partition](#partition)
+      - [双边循环法：](#双边循环法)
+      - [单边循环法：](#单边循环法)
+    - [快速排序的递归实现](#快速排序的递归实现)
+    - [快速排序的非递归实现](#快速排序的非递归实现)
+    - [三向切分快速排序](#三向切分快速排序)
+      - [概念说明](#概念说明)
+      - [算法说明](#算法说明)
+      - [算法实现代码](#算法实现代码)
     while(i <= great) {
         // arr[i]小于v
         if(arr[i] < pivotVal) {

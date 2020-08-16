@@ -229,6 +229,7 @@
     - [快慢指针（同向指针）](#快慢指针同向指针)
       - [题目示例1  `leetcode 19 删除链表的倒数第N个节点`](#题目示例1-leetcode-19-删除链表的倒数第n个节点-1)
     - [左右指针（对撞指针）](#左右指针对撞指针)
+      - [题目示例1 `leetcode 15 三数之和`](#题目示例1-leetcode-15-三数之和)
     - [其他双指针](#其他双指针)
   - [滑动窗口技巧](#滑动窗口技巧)
     - [滑动窗口类型](#滑动窗口类型)
@@ -513,6 +514,8 @@ private int maxDepth( TreeNode root )
 }
 ```
 
+-----
+
 ##### 题目示例3： `leetcode 124:二叉树中的最大路径和`
 
 **思路**：分治法，分为三种情况
@@ -523,34 +526,31 @@ private int maxDepth( TreeNode root )
 
 需要保存两个变量：
 
-- 第一个变量保存子树最大路径和
+- 第一个变量为全局变量res，保存子树最大路径和
 
-- 第二个变量保存左右子树单向路径和加上根节点值
+- 第二个变量保存左右子树单向路径和加上根节点值，为当前子树的经过根节点的路径的最大值
 
     比较两个变量取最大值
 
 ```java
-class Solution
-{
+class Solution {
     int res = Integer.MIN_VALUE;
-    public int maxPathSum( TreeNode root )
-    {
-        oneSideMax( root );
+    public int maxPathSum(TreeNode root) {
+        oneSideMax(root);
         return res;
     }
     
-    private int oneSideMax( TreeNode root )
-    {
-        if( root == null )
+    private int oneSideMax(TreeNode root) {
+        if(root == null)
             return 0;
         
         // divide
-       	int left = oneSideMax( root.left );
-        int right = oneSideMax( root.right );
+       	int left = Math.max(0, oneSideMax(root.left));
+        int right = Math.max(0, oneSideMax(root.right));
         
         // conquer
-        res = Math.max( res, left + right + root.val );
-        return Math.max( left, right ) + root.val;
+        res = Math.max(res, left + right + root.val);
+        return Math.max(left, right) + root.val;
     }
 }
 ```
@@ -872,21 +872,23 @@ private TreeNode buildTree(int inLeft, int inRight, int postLeft, int postRight)
 **重点：划分左右子树区间**
 
 ```java
+// 将前序遍历序列设置为全局变量，避免过多的传值
 private int[] preorder;
+// 存储中序遍历序列中元素和下标的映射（元素无重复）
 private Map<Integer, Integer> hashMap;
-public TreeNode buildTree(int[] preorder, int[] inorder)
-{
+public TreeNode buildTree(int[] preorder, int[] inorder) {
+    // 1、边界条件特判
     if(inorder == null || preorder == null)
         return null;
-    
     int inLen = inorder.length, preLen = preorder.length;
     if(inLen == 0  || preLen == 0 || inLen != preLen)
         return null;
     
     this.preorder = preorder;
     hashMap = new HashMap<>();
-    for(int i = 0; i < inLen; i++)
+    for(int i = 0; i < inLen; i++){
         hashMap.put(inorder[i], i);
+    }
     return buildTree(0, preLen - 1, 0, inLen - 1);
 }
 
@@ -898,14 +900,14 @@ public TreeNode buildTree(int[] preorder, int[] inorder)
 * @param inRight 	中序遍历序列的右边界	
 * @return 二叉树的根节点
 */
-private TreeNode buildTree(int preLeft, int preRight, int inLeft, int inRight)
-{
+private TreeNode buildTree(int preLeft, int preRight, int inLeft, int inRight) {
     if(inLeft > inRight || preLeft > preRight)
         return null;
     
     int rootVal = preorder[preLeft];
     int rootIndex = hashMap.get(rootVal);
     TreeNode root = new TreeNode(rootVal);
+    // 边界的数学关系，如果忘了就在纸上演算一遍
     root.left = buildTree(preLeft + 1, rootIndex - inLeft + preLeft, inLeft, rootIndex - 1);
     root.right = buildTree(rootIndex - inLeft + preLeft + 1, preRight, rootIndex + 1, inRight);
     return root;
@@ -4885,11 +4887,9 @@ private int firstBadVersion(int n)
 ##### 题目示例8 `leetcode 162 寻找峰值`
 
 ```java
-private int findPeakElement(int[] nums) 
-{
+private int findPeakElement(int[] nums) {
     int left = 0, right = nums.length - 1;
-    while(left < right)
-    {
+    while(left < right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] < nums[mid + 1])
             left = mid + 1;
@@ -4935,11 +4935,9 @@ private int findDuplicate(int[] nums)
 ##### 题目示例12 `leetcode 69 X的平方根`
 
 ```java
-private int mySqrt(int x)
-{
+private int mySqrt(int x) {
     long left = 0, right = x / 2;
-    while(left <= right)
-    {
+    while(left <= right) {
         long mid = left + (right - left) / 2;
         long sqr = mid * mid;
         long nextSqr = (mid + 1) * (mid + 1);
@@ -6644,6 +6642,57 @@ private void backTracking(int N, int pos, boolean[] used) {
 
 #### 左右指针（对撞指针）
 
+##### 题目示例1 `leetcode 15 三数之和`
+
+**参考题解：**https://leetcode-cn.com/problems/3sum/solution/pai-xu-shuang-zhi-zhen-zhu-xing-jie-shi-python3-by/
+
+​					https://leetcode-cn.com/problems/3sum/solution/hua-jie-suan-fa-15-san-shu-zhi-he-by-guanpengchn/
+
+```java
+public List<List<Integer>> threeSum(int[] nums) {
+    List<List<Integer>> res = new LinkedList<>();
+    if(nums == null || nums.length < 3)  {
+        return res;
+    }
+
+    Arrays.sort(nums);
+    int len = nums.length;
+    for(int i = 0; i < nums.length; i++) {
+        // 当前数字大于0，与其后两个数字相加一定大于0
+        if(nums[i] > 0) {
+            break;
+        }
+        // 当前数字与前一数字相同，跳过去重
+        if(i > 0 && nums[i] == nums[i-1]) {
+            continue;
+        }
+
+        int left  = i + 1;
+        int right = len - 1;
+        while(left < right) {
+            int sum = nums[i] + nums[left] + nums[right];
+            if(sum == 0) {
+                res.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                // 移动left和right指针去除重复元素
+                while(left < right && nums[left] == nums[left+1]) {
+                    left++;
+                }
+                while(left < right && nums[right] == nums[right - 1]) {
+                    right--;
+                }
+                left++;
+                right--;
+            } else if(sum < 0) {
+                left++;
+            } else if(sum > 0) {
+                right--;
+            }
+        }
+    }
+    return res;
+}
+```
+
 
 
 ----
@@ -7310,16 +7359,14 @@ for(int i = 0; i < n; i++)
 #### 题目示例1 `leetcode 1 两数之和`
 
 ```java
-private int[] towSum(int[] nums, int target)
-{
+private int[] towSum(int[] nums, int target) {
     int n = nums.length;
     HashMap<Integer, Integer> hashmap = new HashMap<>();
     
-    for(int i = 0; i < n; i++)
-    {
+    for(int i = 0; i < n; i++) {
         int cur = nums[i];
         if(hashmap.containsKey(target - cur))
-            return new int[]{ hashmap.get(target - cur), i };
+            return new int[]{hashmap.get(target - cur), i};
         hashmap.put(nums[i], i);
     }
     return new int[2];

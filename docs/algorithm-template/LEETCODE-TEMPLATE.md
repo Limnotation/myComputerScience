@@ -2065,12 +2065,15 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
 
 ```java
 public ListNode reverseKGroup(ListNode head, int k) {
-    if( head == null )
-        return null;
+    if(head == null || k <= 0) {
+        return head;
+    }
+
     ListNode a = head, b = head;
     for(int i = 0; i < k; i++) {
-        if(b == null)
+        if(b == null) {
             return a;
+        }
         b = b.next;
     }
 
@@ -2079,10 +2082,14 @@ public ListNode reverseKGroup(ListNode head, int k) {
     return newHead;
 }
 
+
+/**
+* 翻转[a,b)间的链表
+*/
 private ListNode reverseWithinRange(ListNode a, ListNode b) {
-    ListNode pre = null, cur = a, next = a;
+    ListNode pre = null, cur = a;
     while(cur != b) {
-        next = cur.next;
+        ListNode next = cur.next;
         cur.next = pre;
         pre = cur;
         cur = next;
@@ -2224,31 +2231,52 @@ private ListNode detectCycle(ListNode head) {
 ###### 题目示例6 `leetcode 234 回文链表`
 
 ```java
-private boolean isPalindrome(ListNode head) {
-    if(head == null)
+public boolean isPalindrome(ListNode head) {
+    if(head == null || head.next == null)
         return true;
     
-    ListNode slow = head;
-    // fast 如果初始化为head.next,则中点在slow.next
-    // fast 初始化为head,则中点在slow
-    ListNode fast = head.next;
-    while(fast != null && fast.next != null) {
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-    
-    ListNode tail = reverseList(slow.next);
-    slow.next = null;
-    while(head != null && tail != null) {
-        if(head.val != tail.val)
+    /**
+    * 将链表切分成两半，并将第二部分反转
+    */
+    ListNode preMid = getPreMiddle(head);
+    ListNode secondHalf = preMid.next;
+    preMid.next = null;
+    secondHalf = reverse(secondHalf);
+
+    /**
+    * 比较两段链表元素
+    */
+    while(head != null && secondHalf != null) {
+        if(head.val != secondHalf.val) {
             return false;
+        }
         head = head.next;
-        tail = tail.next;
+        secondHalf = secondHalf.next;
     }
     return true;
 }
 
-private ListNode reverseList(ListNode head) {
+/** 获取链表中点的前一个节点
+* 链表个数为偶数，返回前半部分最后一个节点
+* 链表个数为奇数，返回中点
+*/
+private ListNode getPreMiddle(ListNode head) {
+    if(head == null) {
+        return null;
+    }
+
+    ListNode slow = head, fast = head.next;
+    while(fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    return slow;
+}
+
+/**
+* 翻转链表
+*/
+private ListNode reverse(ListNode head) {
     if(head == null)
         return head;
     
@@ -3920,7 +3948,7 @@ public int movingCount(int m, int n, int k) {
         return 0;
 
     boolean[][] visited = new boolean[m][n];
-    return backTracking(m, n, 0, 0, k, visited);
+    return dfs(m, n, 0, 0, k, visited);
 }
 
 private int dfs(int m, int n, int row, int col, int k, boolean[][] visited) {
@@ -6222,13 +6250,13 @@ private boolean backTracking(char[][] board, String word, int row, int col, int 
 
     boolean hasPath = false;
     if( row >= 0 && row < board.length && col >= 0 && col < board[0].length 
-       && board[row][col] == word.charAt( pathLength ) && !visited[row][col] ) {
+       && board[row][col] == word.charAt(pathLength) && !visited[row][col]) {
         // 做选择
         pathLength++;
         visited[row][col] = true;
 
-        // 进入下一层决策树（N叉树）
-        hasPath = ( backTracking(board, word, row, col - 1, pathLength) 
+        // 进入下一层决策树（四叉树）
+        hasPath = (backTracking(board, word, row, col - 1, pathLength) 
                    || backTracking(board, word, row - 1, col, pathLength)
                    || backTracking(board, word, row, col + 1, pathLength)
                    || backTracking(board, word, row + 1, col, pathLength)
@@ -7569,6 +7597,39 @@ private boolean carPooling(int[][] trips, int capacity)
 }
 ```
 
+----
+
+-----
+
+### 循环不变量
+
+**算是一个稍微有点冷门的算法思想，最重要的部分是确定算法流程中的循环不变量**
+
+**循环不变量帮助规范化算法流程**
+
+#### 典型题目
+
+##### 题目示例1 `leetcode 283 移动零`
+
+```java
+private void moveZeros(int[] nums) {
+    /**
+    * 循环不变量：
+    * [0, j)都为非0
+    * [j, len)都为0
+    * j表示下一个非零元素的位置
+    */
+    int j = 0; 
+    for(int i = 0; i < nums.length; j++) {
+        if(nums[i] != 0) {
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    }
+}
+```
+
 
 
 -----
@@ -7714,7 +7775,7 @@ class LRUCache {
 
 -----
 
-#### 题目2 `leetcode 1206 设计跳表`
+#### 题目2 `leetcode 1206 设计跳表（未完成，感觉机制有点复杂）`
 
 ```java
 class Skiplist {   

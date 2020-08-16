@@ -142,6 +142,7 @@
       - [题目示例6 `leetcode 130 被围绕的区域`](#题目示例6-leetcode-130-被围绕的区域)
       - [题目示例7 `leetcode 417 太平洋大西洋水流问题`](#题目示例7-leetcode-417-太平洋大西洋水流问题)
       - [题目示例8 `leetcode 329 矩阵中的最长递增路径`](#题目示例8-leetcode-329-矩阵中的最长递增路径)
+      - [题目示例9 `leetcode 199 二叉树的右视图`](#题目示例9-leetcode-199-二叉树的右视图)
   - [二分搜索](#二分搜索)
     - [二分搜索模板](#二分搜索模板)
       - [零、二分查找框架](#零二分查找框架)
@@ -4266,6 +4267,41 @@ class Solution {
     private boolean checkBound(int i, int j) {
         return i >= 0 && i < row && j >= 0 && j < col; 
     }
+}
+```
+
+---
+
+##### 题目示例9 `leetcode 199 二叉树的右视图`
+
+**参考题解:**https://leetcode-cn.com/problems/binary-tree-right-side-view/solution/jian-dan-bfsdfs-bi-xu-miao-dong-by-sweetiee/
+
+```java
+List<Integer> res = new LinkedList<>();
+public List<Integer> rightSideView(TreeNode root) {
+    if(root == null) {
+        return res;
+    }
+
+    dfs(root, 0);
+    return res;
+}
+
+/**
+* 节点访问顺序：根节点，右子节点，左子节点
+*/
+private void dfs(TreeNode root, int depth) {
+    if(root == null) {
+        return;
+    }
+
+    if(depth == res.size()) {
+        res.add(root.val);
+    }
+
+    depth++;
+    dfs(root.right, depth);
+    dfs(root.left, depth);
 }
 ```
 

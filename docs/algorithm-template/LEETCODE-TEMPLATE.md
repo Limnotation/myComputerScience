@@ -30,6 +30,7 @@
       - [题目示例20： `leetcode 102 二叉树的层序遍历`](#题目示例20-leetcode-102-二叉树的层序遍历)
       - [题目示例21 ：`leetcode 107 二叉树的层次遍历II`](#题目示例21-leetcode-107-二叉树的层次遍历ii)
       - [题目示例22：`leetcode 103 二叉树的锯齿形层次遍历`](#题目示例22leetcode-103-二叉树的锯齿形层次遍历)
+      - [题目示例23 ：`leetcode 114 二叉树展开为链表`](#题目示例23-leetcode-114-二叉树展开为链表)
     - [二叉搜索树](#二叉搜索树)
       - [题目示例1 `leetcode 98 验证二叉搜索树`](#题目示例1-leetcode-98-验证二叉搜索树)
       - [题目示例2 `leetcode  701  二叉搜索树中的插入操作`](#题目示例2-leetcode-701-二叉搜索树中的插入操作)
@@ -65,6 +66,7 @@
         - [题目示例8 `leetcode 143 重排链表`](#题目示例8-leetcode-143-重排链表)
         - [题目示例9 `leetcode 147 对链表进行插入排序`](#题目示例9-leetcode-147-对链表进行插入排序)
         - [题目示例10 `leetcode 148 排序链表`](#题目示例10-leetcode-148-排序链表)
+        - [题目示例11 `leetcode 2 两数相加`](#题目示例11-leetcode-2-两数相加)
       - [反转类题目](#反转类题目)
         - [题目示例1 `leetcode 206 反转链表`](#题目示例1-leetcode-206-反转链表)
         - [题目示例2 `leetcode 92 反转链表II`](#题目示例2-leetcode-92-反转链表ii)
@@ -277,13 +279,16 @@
     - [题目示例11 `leetcode 1124 表现良好的最长时间段`](#题目示例11-leetcode-1124-表现良好的最长时间段)
     - [题目示例12  `leetcode 1109 航班预定`](#题目示例12-leetcode-1109-航班预定)
     - [题目示例13 `leetcode 1094 拼车`](#题目示例13-leetcode-1094-拼车)
+  - [循环不变量](#循环不变量)
+    - [典型题目](#典型题目-7)
+      - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
 - [leetcode 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
   - [数组](#数组)
   - [排序](#排序-1)
     - [题目1 `leetcode 179 最大数`](#题目1-leetcode-179-最大数)
   - [设计](#设计)
     - [题目1 `leetcode 146 LRU缓存机制`](#题目1-leetcode-146-lru缓存机制)
-    - [题目2 `leetcode 1206 设计跳表`](#题目2-leetcode-1206-设计跳表)
+    - [题目2 `leetcode 1206 设计跳表（未完成，感觉机制有点复杂）`](#题目2-leetcode-1206-设计跳表未完成感觉机制有点复杂)
 ## 数据结构
 
 ### 树
@@ -1015,42 +1020,75 @@ private List<List<Integer>> levelOrderBottom( TreeNode root )
 ##### 题目示例22：`leetcode 103 二叉树的锯齿形层次遍历`
 
 ```java
-private List<List<Integer>> zigzagLevelOrder( TreeNode root )
-{
+public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
     List<List<Integer>> res = new LinkedList<>();
-    if( root == null )
+    if(root == null) {
         return res;
-    
-    Queue<TreeNode> queue = new LinkedList<>();
-    queue.offer( root );
-    boolean toggle = false;
-    while( !queue.isEmpty() )
-    {
-        List<Integer> runner = new LinkedList<>();
-        int levelLen = queue.size();
-        while( levelLen > 0 )
-        {
+    }
+
+    boolean toggle = false;                         // 翻转标志
+    Deque<TreeNode> queue = new LinkedList<>();     // 队列，辅助实现BFS
+    queue.offer(root);  
+    while(!queue.isEmpty()) {
+        LinkedList<Integer> temp = new LinkedList<>();  // 存储当前层元素
+        int levelSize = queue.size();                   // 当前层所拥有的元素数量
+        while(levelSize > 0) {
+            // 根据翻转标志，决定把元素放在列表头部还是尾部
             TreeNode node = queue.poll();
-            if( toggle )
-                runner.add( 0, node.val );
-            else
-                runner.add( node.val );
-            
-            if( node.left != null )
-                queue.offer( node.left );
-            if( node.right != null )
-                queue.offer( node.right );
-            
-            levelLen--;
+            if(!toggle) {
+                temp.addLast(node.val);
+            } else {
+                temp.addFirst(node.val);
+            }
+
+            // 查看当前节点是否还有子节点
+            if(node.left != null) {
+                queue.offer(node.left);
+            }
+            if(node.right != null) {
+                queue.offer(node.right);
+            }
+            levelSize--;
         }
-        res.add( new LinkedList( runner ) );
+
+        res.add(new LinkedList(temp));
         toggle = !toggle;
     }
     return res;
 }
 ```
 
-------
+-----
+
+##### 题目示例23 ：`leetcode 114 二叉树展开为链表`
+
+参考题解：https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/solution/114-er-cha-shu-zhan-kai-wei-lian-biao-by-ming-zhi-/
+
+```java
+private void flatten(TreeNode root) {
+    if(root == null) {
+        return;
+    }
+    
+    // 步骤一：将根节点的左子树展开为链表
+    flatten(root.left);
+    // 步骤二：将根节点的右子树展开为链表
+    flatten(root.right);
+    
+    // 步骤三：将变成链表的左子树挂到根节点的右子树位置
+    TreeNode temp = root.right;
+    root.right = root.left;
+    root.left = null;
+    
+    // 步骤四：将变成链表的右子树挂在变成链表的左子树的最右边
+    while(root.right != null) {
+        root = root.right;
+    }
+    root.right = temp;
+}
+```
+
+
 
 ------
 
@@ -2006,6 +2044,36 @@ private ListNode mergeSort( ListNode head )
 }
 ```
 
+----
+
+###### 题目示例11 `leetcode 2 两数相加`
+
+```java
+public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    int carry = 0;
+    ListNode dummyHead = new ListNode(0);
+    ListNode runner = dummyHead;
+    // 利用好while循环中的条件，避免了特判
+    while(l1 != null || l2 != null || carry != 0) {
+        int temp = carry;
+        if(l1 != null) {
+            temp += l1.val;
+            l1 = l1.next;
+        } 
+        if(l2 != null) {
+            temp += l2.val;
+            l2 = l2.next;
+        }
+
+        int val = temp % 10;
+        carry = temp / 10;
+        runner.next = new ListNode(val);
+        runner = runner.next;
+    }
+    return dummyHead.next;
+}
+```
+
 
 
 -----
@@ -2081,7 +2149,6 @@ public ListNode reverseKGroup(ListNode head, int k) {
     a.next = reverseKGroup(b, k);
     return newHead;
 }
-
 
 /**
 * 翻转[a,b)间的链表
@@ -6400,28 +6467,28 @@ private boolean isValid(char[][] board, int row, int col) {
 ```java
 List<List<Integer>> res = new LinkedList<>();
 public List<List<Integer>> pathSum(TreeNode root, int sum) {
-    backTracking(root, new LinkedList<Integer>(), 0, sum);
+    backTracking(root, sum, new LinkedList<Integer>());
     return res;
 }
 
-private void backTracking(TreeNode root, LinkedList<Integer> runner, int curVal, int sum) {
-    if(root == null)
+private void backTracking(TreeNode root, int sum, LinkedList<Integer> path) {
+    if(root == null) {
         return;
-    
+    }
+
     // 做选择
-    runner.add(root.val);
-    curVal += root.val;
-    if(curVal == sum && root.left == null && root.right == null) {
-        res.add(new LinkedList(runner));
+    sum -= root.val;
+    path.addLast(root.val);
+    if(sum == 0 && root.left == null && root.right == null) {
+        res.add(new LinkedList(path));
     } else {
         // 进入下一层决策树
-        if(root.left != null)
-            backTracking(root.left, runner, curVal, sum);
-        if(root.right != null)
-            backTracking(root.right, runner, curVal, sum);
+        backTracking(root.left, sum, path);
+        backTracking(root.right, sum, path);
     }
     // 撤销选择
-    runner.removeLast();
+    sum += root.val;
+    path.removeLast();
 }
 ```
 
@@ -6558,6 +6625,8 @@ private void backTracking(int N, int pos, boolean[] used) {
 ------
 
 #### 快慢指针（同向指针）
+
+**这种双指针类型常用在链表问题中**
 
 -----
 

@@ -284,6 +284,7 @@
   - [循环不变量](#循环不变量)
     - [典型题目](#典型题目-7)
       - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
+      - [题目示例2 `剑指offer 21 调整数组顺序使奇数位于偶数的前面`](#题目示例2-剑指offer-21-调整数组顺序使奇数位于偶数的前面)
 - [leetcode 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
   - [数组](#数组)
   - [排序](#排序-1)
@@ -7779,6 +7780,29 @@ private void moveZeros(int[] nums) {
             nums[j] = temp;
         }
     }
+}
+```
+
+-----
+
+##### 题目示例2 `剑指offer 21 调整数组顺序使奇数位于偶数的前面`
+
+```java
+private int[] exchange(int[] nums) {
+    /**
+        * 循环不变量：
+        * [0, mark)为奇数元素
+        */
+    int mark = 0;
+    for(int i = 0; i < nums.length; i++) {
+        if(nums[i] % 2 != 0) {
+            int temp = nums[i];
+            nums[i] = nums[mark];
+            nums[mark] = temp;
+            mark++;
+        }
+    }
+    return nums;
 }
 ```
 

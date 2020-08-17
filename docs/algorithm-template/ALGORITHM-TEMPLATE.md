@@ -64,12 +64,11 @@ private static int partition(int[] arr, int startIndex, int endIndex) {
             arr[mark] = arr[i];
             arr[i] = temp;
         }
-        
-        // pivot与划分点位置元素交换
-        arr[startIndex] = arr[mark];
-        arr[mark] = pivot;
-        return mark;
     }
+    // pivot与划分点位置元素交换
+    arr[startIndex] = arr[mark];
+    arr[mark] = pivot;
+    return mark;
 }
 ```
 

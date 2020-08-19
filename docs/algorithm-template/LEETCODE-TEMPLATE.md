@@ -5891,12 +5891,14 @@ public List<List<Integer>> permute(int[] nums) {
 }
 
 private void backTracking(int[] nums, LinkedList<Integer> runner) {
+    // 结束条件
     if(runner.size() == nums.length) {
         res.add(new LinkedList(runner));
         return;
     }
     
     for(int i = 0; i < nums.length; i++) {
+        // 剪枝
         if(runner.contains(nums[i]))
             continue;
         
@@ -5939,9 +5941,7 @@ private void backTracking(int[] nums, boolean[] used, LinkedList<Integer> runner
         * 那么在决策树的下一层就会有重复的可选项，则会出现错误的重复情况。
         * 所以剪枝条件为index > 0 && nums[i]==nums[i-1] && !used[index-1]
         */
-        if(used[i])
-            continue;
-        if(i > 0 && nums[i] == nums[i-1] && !used[i-1])
+        if(used[i] || (i > 0 && nums[i] == nums[i-1] && !used[i-1]))
             continue;
         
         // 做选择
@@ -6050,6 +6050,7 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
             break;
         // i > start,是个很重要的细节，思考一下这是如何实现避免
         // 重复选取元素的
+        // "在一个for循环中，所有被遍历到的元素都是属于同一层级的"
         if(i > start && candidates[i] == candidates[i-1])
             continue;
         
@@ -6686,6 +6687,7 @@ private void backTracking(int N, int pos, boolean[] used) {
 ​					https://leetcode-cn.com/problems/3sum/solution/hua-jie-suan-fa-15-san-shu-zhi-he-by-guanpengchn/
 
 ```java
+// 核心就是去重操作
 public List<List<Integer>> threeSum(int[] nums) {
     List<List<Integer>> res = new LinkedList<>();
     if(nums == null || nums.length < 3)  {

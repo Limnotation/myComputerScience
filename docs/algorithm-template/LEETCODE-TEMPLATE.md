@@ -181,7 +181,8 @@
         - [题目示例4 `leetcode 132 分割回文串`](#题目示例4-leetcode-132-分割回文串)
         - [题目示例5 `leetcode 300最长上升子序列`](#题目示例5-leetcode-300最长上升子序列)
         - [题目示例6 `leetcode 139 单词拆分`](#题目示例6-leetcode-139-单词拆分)
-      - [双序列（字符串）DP类型 （40%）](#双序列字符串dp类型-40)
+        - [题目示例7 `leetcode 647 回文子串`](#题目示例7-leetcode-647-回文子串)
+    - [双序列（字符串）DP类型 （40%）](#双序列字符串dp类型-40)
     - [0-1背包问题 （10%）](#0-1背包问题-10)
         - [题目示例1 `leetcode 416分割等和子集`](#题目示例1-leetcode-416分割等和子集)
         - [题目示例2 `leetcode 322零钱兑换`](#题目示例2-leetcode-322零钱兑换)
@@ -286,6 +287,10 @@
       - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
       - [题目示例2 `剑指offer 21 调整数组顺序使奇数位于偶数的前面`](#题目示例2-剑指offer-21-调整数组顺序使奇数位于偶数的前面)
 - [leetcode 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
+  - [数学](#数学)
+    - [题目1 `leetcode 7 整数反转`](#题目1-leetcode-7-整数反转)
+  - [字符串](#字符串)
+    - [题目1 `leetcode 字符串转换整数(atoi)`](#题目1-leetcode-字符串转换整数atoi)
   - [数组](#数组)
   - [排序](#排序-1)
     - [题目1 `leetcode 179 最大数`](#题目1-leetcode-179-最大数)
@@ -5080,42 +5085,43 @@ private int missingNumber(int[] nums) {
 // return dp[rowLen-1][colLen-1]
 
 // v1
-private int minPathSum( int[][] grid )
-{
-    if( grid == null || grid.length == 0 || grid[0].length == 0 )
+private int minPathSum( int[][] grid ) {
+    if(grid == null || grid.length == 0 || grid[0].length == 0) {
         return 0;
-    
+    }
+        
     int m = grid.length, n = grid[0].length;
     int[][] dp = new int[m][n];
     dp[0][0] = grid[0][0];
-    for( int i = 1; i < m; i++ )
-        dp[i][0] = grid[i][0] + dp[i-1][0];
-    for( int i = 1; i < n; i++ )
+    for( int i = 1; i < m; i++ ){
+        dp[i][0] = grid[i][0] + dp[i-1][0];    
+    }
+    for( int i = 1; i < n; i++ ) {
         dp[0][i] = grid[0][i] + dp[0][i-1];
-    
-    for( int i = 1; i < m; i++ )
-        for( int j = 1; j < n; j++ )
-            dp[i][j] = Math.min( dp[i-1][j], dp[i][j-1] ) + grid[i][j];
+    }
+    for(int i = 1; i < m; i++) {
+        for(int j = 1; j < n; j++) {
+            dp[i][j] = Math.min( dp[i-1][j], dp[i][j-1] ) + grid[i][j]; 
+        }      
+    }
+
     return dp[m-1][n-1];
 }
 
 // 根据v1的解法可以知道，dp[i][j]的值只依赖其左侧，上侧的值和当前所在位置的值
 // 可以压缩使用的空间，得到如下解法
 // v2
-private int minPathSum( int[][] grid )
-{
-    if( grid == null || grid.length == 0 || grid[0].length == 0 )
+private int minPathSum( int[][] grid ) {
+    if(grid == null || grid.length == 0 || grid[0].length == 0)
         return 0;
     
     int m = grid.length, n = grid[0].length;
     int[] dp = new int[n];
-    for( int i = 0; i < m; i++ )
-    {
-        for( int j = 0; j < n; j++ )
-        {
-            if( j == 0 )
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            if(j == 0)
                 dp[j] = dp[j];		// 只能从上侧走到该位置
-            else if( i == 0 )
+            else if(i == 0)
                 dp[j] = dp[j-1];	// 只能从左侧走到该位置
             else
             	dp[j] = Math.min( dp[j], dp[j-1] );
@@ -5320,9 +5326,61 @@ private boolean wordBreak( String s, List<String> wordDict )
 }
 ```
 
+-----
+
+###### 题目示例7 `leetcode 647 回文子串`
+
+**参考题解：**https://leetcode-cn.com/problems/palindromic-substrings/solution/647-hui-wen-zi-chuan-dong-tai-gui-hua-fang-shi-qiu/
+
+```java
+// dp[i][j]表示字符串中[i, j]所划分的子串是否为回文子串
+/**
+* 使用中心扩散法，设dp[i+1][j-1]已知，则
+* 	若s.charAt(i) == s.charAt(j),则只要dp[i+1][j-1]为真，则dp[i][j]也为真
+*	若s.charAt(i) != s.charAt(j),dp[i][j]必为假
+*/
+public int countSubstrings(String s) {
+    if(s == null || s.length() == 0) {
+        return 0;
+    }
+
+    int len = s.length();
+    // 每个单独的字符都是一个回文串
+    int res = len;
+    boolean[][] dp = new boolean[len][len];
+    for(int i = 0; i < len; i++) {
+        dp[i][i] = true;
+    }
+
+    for(int i = len - 1; i >= 0; i--) {
+        for(int j = i + 1; j < len; j++) {
+            if(s.charAt(i) == s.charAt(j)) {
+                // i与j相邻时， dp[i+1][j-1]是不存在的，需要特判
+                if(j - i == 1) {
+                    dp[i][j] = true;
+                } else {
+                    dp[i][j] = dp[i+1][j-1];
+                }
+            } else {
+                dp[i][j] = false;
+            }
+
+            if(dp[i][j]) {
+                res++;
+            }
+        }
+    }
+    return res;
+}
+```
 
 
-##### 双序列（字符串）DP类型 （40%）
+
+-----
+
+------
+
+#### 双序列（字符串）DP类型 （40%）
 
 #### 0-1背包问题 （10%）
 
@@ -7815,6 +7873,91 @@ private int[] exchange(int[] nums) {
 -----
 
 ## leetcode 未归纳题解（按tag分类）
+
+-----
+
+### 数学
+
+#### 题目1 `leetcode 7 整数反转`
+
+参考题解：https://leetcode-cn.com/problems/reverse-integer/solution/hua-jie-suan-fa-7-zheng-shu-fan-zhuan-by-guanpengc/
+
+```java
+private int reverse(int x) {
+    int res = 0;
+    while(x != 0) {
+        // 获取最低位数字
+        int pop = x % 10;
+        if(res > Integer.MAX_VALUE / 10 || (res == Integer.MIN_VALUE / 10 && pop > 7)) {
+            return 0;
+        } else if(res < Integer.MIN_VALUE / 10 || (res == Integer.MIN_VALUE && pop < -8)) {
+            return 0;
+        }
+        res = res * 10 + pop;
+        x /= 10;
+    }
+    return res;
+}
+```
+
+
+
+-----
+
+### 字符串
+
+#### 题目1 `leetcode 字符串转换整数(atoi)`
+
+```java
+private int myAtoi(String str) {
+    // 边界条件特判
+    if(str == null || str.length() <= 0) {
+        return 0;
+    }
+    // 正负数的最大最小值
+    int max = Integer.MAX_VALUE, min = Integer.MIN_VALUE;
+    int res = 0, index = 0;
+    // 去掉前导空格
+    while(index < str.length() && str.charAt(index) == ' ') {
+        index++;
+    }
+    if(index == str.length()) {
+        return 0;
+    }
+    
+    // 取正负号
+    char label = str.charAt(index);
+    boolean positive = true;
+    if(!Character.isDigit(label)) {
+        if(label != '-' && label != '+') {
+            return 0;
+        }
+        index++;
+        positive = label != '-';
+    }
+    // 用负数保存正负数边界，确保不会溢出
+    int limit = positive? -max:min;
+    // 过滤掉前置0
+    while(index < str.length() && str.charAt(index) == '0') {
+        index++;
+    }
+    // 取每一位，在非字符截止
+    while(index < str.length() && Character.isDigit(str.charAt(index))) {
+        int digit = str.charAt(index) - '0';
+        index++;
+        // 超过边界，返回32位整数的最大值
+        if(res < (limit + digit) / 10) {
+            return positive? max:min;
+        }
+        // 计算当前数值,在这里使用的是减法，所以在
+        // 整个计算过程中，res的值都为负数
+        res = res * 10 - digit;
+    }
+    return positive? -res:res;
+}
+```
+
+
 
 ------
 

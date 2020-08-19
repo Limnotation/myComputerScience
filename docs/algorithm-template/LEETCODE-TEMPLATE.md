@@ -286,7 +286,9 @@
     - [典型题目](#典型题目-7)
       - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
       - [题目示例2 `剑指offer 21 调整数组顺序使奇数位于偶数的前面`](#题目示例2-剑指offer-21-调整数组顺序使奇数位于偶数的前面)
-- [leetcode 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
+- [`leetcode` 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
+  - [跳跃游戏系列](#跳跃游戏系列)
+    - [题目1 `leetcode 55 跳跃游戏`](#题目1-leetcode-55-跳跃游戏)
   - [数学](#数学)
     - [题目1 `leetcode 7 整数反转`](#题目1-leetcode-7-整数反转)
   - [字符串](#字符串)
@@ -5222,26 +5224,31 @@ private int climbStairs( int n )
 }
 ```
 
+-----
+
 ###### 题目示例2 `leetcode 55跳跃游戏`
 
 ```java
-// dp[i]表示是否能从0跳到i
-// base case:dp[0] = true
-// return dp[nums.length - 1]
-private boolean canJump( int[] nums )
-{
-    if( nums.length == 0 )
+/** 
+* dp[i]表示是否能从0跳到i
+* base case:dp[0] = true
+* return dp[nums.length - 1]
+*/
+private boolean canJump(int[] nums) {
+    if(nums.length == 0)
         return true;
     
     boolean[] dp = new boolean[nums.length - 1];
     dp[0] = true;
-    for( int i = 1; i < nums.length; i++ )
-        for( int j = 0; j < i; j++ )
-            if( dp[j] && nums[j] + j >= i )
+    for(int i = 1; i < nums.length; i++)
+        for(int j = 0; j < i; j++)
+            if(dp[j] && nums[j] + j >= i)
                 dp[i] = true;
     return dp[nums.length - 1];
 }
 ```
+
+-----
 
 ###### 题目示例3 `leetcode 45跳跃游戏II`
 
@@ -7872,7 +7879,34 @@ private int[] exchange(int[] nums) {
 
 -----
 
-## leetcode 未归纳题解（按tag分类）
+## `leetcode` 未归纳题解（按tag分类）
+
+### 跳跃游戏系列
+
+#### 题目1 `leetcode 55 跳跃游戏`
+
+参考题解：https://leetcode-cn.com/problems/jump-game/solution/55-by-ikaruga/
+
+```java
+/**
+* 如果某一个作为起跳点的格子可以跳跃的距离是3，那么表示后面3个格子都可以作为起跳点。
+* 可以对每一个能作为起跳点的格子都尝试跳一次，把能跳到最远的距离不断更新。
+* 如果可以一直跳到最后，就成功了
+*/
+public boolean canJump(int[] nums) {
+    // maxDis表示现在能跳到的最远位置
+    int maxDis = 0;
+    for(int i = 0; i < nums.length; i++) {
+        if(i > maxDis) {
+            return false;
+        }
+        maxDis = Math.max(maxDis, i + nums[i]);
+    }
+    return true;
+}
+```
+
+
 
 -----
 

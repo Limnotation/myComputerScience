@@ -35,7 +35,7 @@
     - [二叉搜索树](#二叉搜索树)
       - [题目示例1 `leetcode 98 验证二叉搜索树`](#题目示例1-leetcode-98-验证二叉搜索树)
       - [题目示例2 `leetcode  701  二叉搜索树中的插入操作`](#题目示例2-leetcode-701-二叉搜索树中的插入操作)
-      - [题目示例3 `leetcode450 删除二叉搜索树 `](#题目示例3-leetcode450-删除二叉搜索树-)
+      - [题目示例3 `leetcode 450 删除二叉搜索树 `](#题目示例3-leetcode-450-删除二叉搜索树-)
       - [题目示例4 `leetcode 669 修剪二叉搜索树`](#题目示例4-leetcode-669-修剪二叉搜索树)
       - [题目示例5 `leetcode 230 二叉搜索树中第K小的元素`](#题目示例5-leetcode-230-二叉搜索树中第k小的元素)
       - [题目示例6 `leetcode 538 把二叉搜索树转换为累加树`](#题目示例6-leetcode-538-把二叉搜索树转换为累加树)
@@ -144,6 +144,7 @@
       - [题目示例7 `leetcode 417 太平洋大西洋水流问题`](#题目示例7-leetcode-417-太平洋大西洋水流问题)
       - [题目示例8 `leetcode 329 矩阵中的最长递增路径`](#题目示例8-leetcode-329-矩阵中的最长递增路径)
       - [题目示例9 `leetcode 199 二叉树的右视图`](#题目示例9-leetcode-199-二叉树的右视图)
+      - [题目示例10 `leetcode 257 二叉树的所有路径`](#题目示例10-leetcode-257-二叉树的所有路径)
   - [二分搜索](#二分搜索)
     - [二分搜索模板](#二分搜索模板)
       - [零、二分查找框架](#零二分查找框架)
@@ -1155,25 +1156,24 @@ private int level(TreeNode root) {
 **思路1：中序遍历，检查结果列表是否有序**
 
 ```java
-List<Integer> res = new LinkedList<>();
- 
-public boolean isValidBST(TreeNode root)
-{
-    inOrderTraversal(root);
-    for(int i = 0; i < res.size() - 1; i++)
-        if(res.get(i) >= res.get(i+1))
-            return false;
-    return true;
-}
+public boolean isValidBST(TreeNode root) {
+    // 注意溢出
+    double pre = -Double.MAX_VALUE;
+    Deque<TreeNode> stack = new LinkedList<>();
+    while(!stack.isEmpty() || root != null) {
+        while(root != null) {
+            stack.addLast(root);
+            root = root.left;
+        }
 
-private void inOrderTraversal(TreeNode root)
-{
-    if(root == null)
-        return;
-    
-    inOrderTraversal(root.left);
-    res.add(root.val);
-    inOrderTraversal(root.right);
+        TreeNode node = stack.removeLast();
+        if(node.val <= pre) {
+            return false;
+        }
+        root = node.right;
+        pre = node.val;
+    }
+    return true;
 }
 ```
 
@@ -1216,48 +1216,68 @@ public TreeNode insertIntoBST(TreeNode root, int val)
 
 ------
 
-##### 题目示例3 `leetcode450 删除二叉搜索树 `
+##### 题目示例3 `leetcode 450 删除二叉搜索树 `
 
 ```java
-public TreeNode deleteNode( TreeNode node, int key )
-{
-    if( root == null )
+/**
+* 删除二叉搜索树一个结点x的完整步骤(当x有两个子结点时)：
+* 1、将指向即将被删除的结点的链接保存为t
+* 2、将x指向它的后继结点min(t.right);
+* 3、将x的右链接（原本指向一棵所有结点都大于x.key的BST）指向deleteMin(t.right),
+* 	 deleteMin(t.right)返回的仍然是一棵所有结点都大于x.key的BST
+* 4、将x的左链接设为t.left
+*/
+public TreeNode deleteNode(TreeNode root, int key) {
+    if(root == null) {
         return root;
-    if( key < root.val )
-        root.left = deleteNode( root.left, key );
-    else if( key > root.val )
-        root.right = deleteNode( root.right, key );
-    else if( key == root.val )
-    {
-        if( root.left == null )
+    }
+
+    if(root.val < key) {
+        // key < root.val, 递归在左子树删除
+        root.right = deleteNode(root.right, key);
+    } else if(root.val > key) {
+        // key > root.val, 递归在右子树删除
+        root.left = deleteNode(root.left, key);
+    } else {
+        // key == root.val,删除当前结点，根据当前结点子结点数量
+        // 进行相关操作
+        if(root.left == null) {
             return root.right;
-        else if( root.right == null )
+        } else if(root.right == null) {
             return root.left;
-        else
-        {
-            TreeNode t = root;
-            root = min( t.right );
-            root.right = deleteMin( t.right );
-            root.left = t.left;
         }
+        TreeNode t = root;
+        root = min(t.right);
+        root.right = deleteMin(t.right);
+        root.left = t.left;
     }
     return root;
 }
 
-private TreeNode min( TreeNode root )
-{
-    if( root == null || root.left == null )
-        return root;
-    return min( root.left );
+/**
+* 找到二叉搜索树的最小结点
+*/
+private TreeNode min(TreeNode root) {
+    if(root == null) {
+        return null;
+    }
+    while(root.left != null) {
+        root = root.left;
+    }
+    return root;
 }
 
-private TreeNode deleteMin(  TreeNode root )
-{
-    if( root == null )
+/**
+* 删除二叉搜索树的最小结点
+*/
+private TreeNode deleteMin(TreeNode root) {
+    if(root == null) {
         return root;
-    if( root.left == null )
+    }
+    if(root.left == null) {
         return root.right;
-    root.left = deleteMin( root.left );
+    }
+    root.left = deleteMin(root.left);
     return root;
 }
 ```
@@ -1595,26 +1615,26 @@ private Node inorderSuccessor(Node node)
 
 ##### 题目示例17  `leetcode 426 将二叉搜索树转化为排序的双向链表`
 
+参考题解：https://leetcode-cn.com/problems/er-cha-sou-suo-shu-yu-shuang-xiang-lian-biao-lcof/solution/mian-shi-ti-36-er-cha-sou-suo-shu-yu-shuang-xian-5/
+
 ```java
 private Node curNode;
-public Node treeToDoublyList(Node root)
-{
+public Node treeToDoublyList(Node root) {
     Node dummyHead = new Node(-1, null, null);
     curNode = dummyHead;
-    if(root != null)
-    {
+    if(root != null) {
         inorderTraversal(root);
+        // 将链表头尾结点相连，构成循环双向链表
         curNode.right = dummyHead.right;
         dummyHead.right.left = curNode;
     }
     return dummyHead.right;
 }
 
-private void inorderTraversal(Node root)
-{
-    if(root != null)
-    {
+private void inorderTraversal(Node root) {
+    if(root != null) {
         inorderTraversal(root.left);
+        // 调整指针指向，将遍历过的部分调整为双向链表
         curNode.right = root;
         root.left = curNode;
         curNode = root;
@@ -4353,6 +4373,35 @@ private void dfs(TreeNode root, int depth) {
     depth++;
     dfs(root.right, depth);
     dfs(root.left, depth);
+}
+```
+
+-----
+
+##### 题目示例10 `leetcode 257 二叉树的所有路径`
+
+```java
+List<String> res = new LinkedList<>();
+public List<String> binaryTreePaths(TreeNode root) {
+    dfs(root, "");
+    return res;
+}
+
+/**
+* 在这里传String的原因是，每次改变都会创建一个新对象
+*/
+private void dfs(TreeNode root, String s) {
+    if(root == null) {
+        return;
+    }
+
+    s += Integer.toString(root.val);
+    if(root.left == null && root.right == null) {
+        res.add(s);
+    }
+    s += "->";
+    dfs(root.left, s);
+    dfs(root.right, s);
 }
 ```
 

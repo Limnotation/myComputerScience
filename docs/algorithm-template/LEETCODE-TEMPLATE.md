@@ -8,7 +8,7 @@
         - [中序非递归](#中序非递归)
         - [后序非递归](#后序非递归)
     - [普通二叉树问题（未仔细分类）](#普通二叉树问题未仔细分类)
-      - [题目示例1 `leetcode 104 :二叉树的最大深度`](#题目示例1-leetcode-104-二叉树的最大深度)
+      - [题目示例1 `leetcode 104 二叉树的最大深度`](#题目示例1-leetcode-104-二叉树的最大深度)
       - [题目示例2`leetcode 110 平衡二叉树`](#题目示例2leetcode-110-平衡二叉树)
       - [题目示例3： `leetcode 124:二叉树中的最大路径和`](#题目示例3-leetcode-124二叉树中的最大路径和)
       - [题目示例4  `leetcode 236 二叉树的最近公共祖先`](#题目示例4-leetcode-236-二叉树的最近公共祖先)
@@ -31,6 +31,7 @@
       - [题目示例21 ：`leetcode 107 二叉树的层次遍历II`](#题目示例21-leetcode-107-二叉树的层次遍历ii)
       - [题目示例22：`leetcode 103 二叉树的锯齿形层次遍历`](#题目示例22leetcode-103-二叉树的锯齿形层次遍历)
       - [题目示例23 ：`leetcode 114 二叉树展开为链表`](#题目示例23-leetcode-114-二叉树展开为链表)
+      - [题目示例24 `leetcode 222 完全二叉树的节点个数`](#题目示例24-leetcode-222-完全二叉树的节点个数)
     - [二叉搜索树](#二叉搜索树)
       - [题目示例1 `leetcode 98 验证二叉搜索树`](#题目示例1-leetcode-98-验证二叉搜索树)
       - [题目示例2 `leetcode  701  二叉搜索树中的插入操作`](#题目示例2-leetcode-701-二叉搜索树中的插入操作)
@@ -268,20 +269,21 @@
         - [题目示例17 `leetcode 1052 爱生气的书店老板`](#题目示例17-leetcode-1052-爱生气的书店老板)
         - [题目示例19 `leetcode 727 最小窗口子序列`](#题目示例19-leetcode-727-最小窗口子序列)
   - [前缀和技巧](#前缀和技巧)
-    - [前缀和简单定义](#前缀和简单定义)
-    - [题目示例1 `leetcode 1 两数之和`](#题目示例1-leetcode-1-两数之和)
-    - [题目示例2 `leetcode 560 和为K的子数组`](#题目示例2-leetcode-560-和为k的子数组)
-    - [题目示例3 `leetcode 1248 统计优美子数组`](#题目示例3-leetcode-1248-统计优美子数组)
-    - [题目示例4 `leetcode 974 和可被K整除的子数组`](#题目示例4-leetcode-974-和可被k整除的子数组)
-    - [题目示例5 `leetcode 1074 元素和为目标值的子矩阵数量`](#题目示例5-leetcode-1074-元素和为目标值的子矩阵数量)
-    - [题目示例6 `leetcode 930 和相同的二元子数组`](#题目示例6-leetcode-930-和相同的二元子数组)
-    - [题目示例7 `leetcode 303 区域和检索-数组不可变`](#题目示例7-leetcode-303-区域和检索-数组不可变)
-    - [题目示例8 `leetcode 304二维区域和检索-矩阵不可变`](#题目示例8-leetcode-304二维区域和检索-矩阵不可变)
-    - [题目示例9 `leetcode 307 区域和检索-数组可修改`](#题目示例9-leetcode-307-区域和检索-数组可修改)
-    - [题目示例10 `leetcode 554砖墙`](#题目示例10-leetcode-554砖墙)
-    - [题目示例11 `leetcode 1124 表现良好的最长时间段`](#题目示例11-leetcode-1124-表现良好的最长时间段)
-    - [题目示例12  `leetcode 1109 航班预定`](#题目示例12-leetcode-1109-航班预定)
-    - [题目示例13 `leetcode 1094 拼车`](#题目示例13-leetcode-1094-拼车)
+    - [前缀和概念](#前缀和概念)
+    - [题目示例](#题目示例)
+      - [题目示例1 `leetcode 1 两数之和`](#题目示例1-leetcode-1-两数之和)
+      - [题目示例2 `leetcode 560 和为K的子数组`](#题目示例2-leetcode-560-和为k的子数组)
+      - [题目示例3 `leetcode 1248 统计优美子数组`](#题目示例3-leetcode-1248-统计优美子数组)
+      - [题目示例4 `leetcode 974 和可被K整除的子数组`](#题目示例4-leetcode-974-和可被k整除的子数组)
+      - [题目示例5 `leetcode 1074 元素和为目标值的子矩阵数量`](#题目示例5-leetcode-1074-元素和为目标值的子矩阵数量)
+      - [题目示例6 `leetcode 930 和相同的二元子数组`](#题目示例6-leetcode-930-和相同的二元子数组)
+      - [题目示例7 `leetcode 303 区域和检索-数组不可变`](#题目示例7-leetcode-303-区域和检索-数组不可变)
+      - [题目示例8 `leetcode 304二维区域和检索-矩阵不可变`](#题目示例8-leetcode-304二维区域和检索-矩阵不可变)
+      - [题目示例9 `leetcode 307 区域和检索-数组可修改`](#题目示例9-leetcode-307-区域和检索-数组可修改)
+      - [题目示例10 `leetcode 554砖墙`](#题目示例10-leetcode-554砖墙)
+      - [题目示例11 `leetcode 1124 表现良好的最长时间段`](#题目示例11-leetcode-1124-表现良好的最长时间段)
+      - [题目示例12  `leetcode 1109 航班预定`](#题目示例12-leetcode-1109-航班预定)
+      - [题目示例13 `leetcode 1094 拼车`](#题目示例13-leetcode-1094-拼车)
   - [循环不变量](#循环不变量)
     - [典型题目](#典型题目-7)
       - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
@@ -479,7 +481,7 @@ func traversal( root *TreeNode ) ResultType {
 }
 ```
 
-##### 题目示例1 `leetcode 104 :二叉树的最大深度`
+##### 题目示例1 `leetcode 104 二叉树的最大深度`
 
 ```java
 private int maxDepth( TreeNode root )
@@ -1096,6 +1098,47 @@ private void flatten(TreeNode root) {
         root = root.right;
     }
     root.right = temp;
+}
+```
+
+-----
+
+##### 题目示例24 `leetcode 222 完全二叉树的节点个数`
+
+```java
+/**
+* 一定要注意理解完全二叉树的性质：若完全二叉树的层数为h，则总节点数为：2^h - 1.
+*/
+public int countNodes(TreeNode root) {
+    if(root == null) {
+        return 0;
+    }
+
+    int left = level(root.left);
+    int right = level(root.right);
+    if(left == right) {
+        // left == right 代表左子树一定是满的
+        return countNodes(root.right) + (1 << left);
+    } else {
+        // left != right表示右子树是满的
+        return countNodes(root.left) + (1 << right);
+    }
+}
+
+/**
+* 计算完全二叉树的高度
+*/
+private int level(TreeNode root) {
+    if(root == null) {
+        return 0;
+    }
+
+    int h = 0;
+    while(root != null) {
+        h++;
+        root = root.left;
+    }
+    return h;
 }
 ```
 
@@ -7446,7 +7489,7 @@ private String minWindow(String S, String T)
 
 ### 前缀和技巧
 
-#### 前缀和简单定义
+#### 前缀和概念
 
 ```java
 int n = nums.length;
@@ -7456,11 +7499,14 @@ for(int i = 0; i < n; i++)
     preSum[i+1] = preSum[i] + nums[i];
 // preSum[i]表示nums[0..i-1]的和
 // nums[i..j]的和可以表示为preSum[j+1] - preSum[i]
+// 前缀和主要的实现方式是使用hashMap
 ```
 
 ---
 
-#### 题目示例1 `leetcode 1 两数之和`
+#### 题目示例
+
+##### 题目示例1 `leetcode 1 两数之和`
 
 ```java
 private int[] towSum(int[] nums, int target) {
@@ -7479,22 +7525,26 @@ private int[] towSum(int[] nums, int target) {
 
 ---
 
-#### 题目示例2 `leetcode 560 和为K的子数组`
+##### 题目示例2 `leetcode 560 和为K的子数组`
 
 ```java
-private int subarraySum(int[] nums, int k)
-{
-    int n = nums.length;
-    int res = 0;
+public int subarraySum(int[] nums, int k) {
+    if(nums == null || nums.length == 0) {
+        return 0;
+    }
+
+    /**
+    * presum的key表示前缀和的值，value表示对应前缀和出现的次数
+    */
     HashMap<Integer, Integer> preSum = new HashMap<>();
     preSum.put(0, 1);
     int curSum = 0;
-    
-    for(int i = 0; i < n; i++)
-    {
+    int res = 0;
+    for(int i = 0; i < nums.length; i++) {
         curSum += nums[i];
-        if(preSum.containsKey(curSum - k))
+        if(preSum.containsKey(curSum - k)) {
             res += preSum.get(curSum - k);
+        }
         preSum.put(curSum, preSum.getOrDefault(curSum, 0) + 1);
     }
     return res;
@@ -7503,22 +7553,20 @@ private int subarraySum(int[] nums, int k)
 
 ----
 
-#### 题目示例3 `leetcode 1248 统计优美子数组`
+##### 题目示例3 `leetcode 1248 统计优美子数组`
 
 ```java
 /*
-* 使用了前缀和数组preSum[],下标是前缀和（即当前奇数的个数），值是前缀和的个数 
+* 使用了前缀和数组preSum[],下标(key)是前缀和（即到当前元素为止奇数的个数），值(value)是前缀和的个数 
 * 还是要好好理解
 */
-private int numberOfSubArrays(int[] nums, int k)
-{
+private int numberOfSubArrays(int[] nums, int k) {
     int n = nums.length;
     int[] preSum = new int[n+1];
     preSum[0] = 1;
     int res = 0, curSum = 0;
     
-    for(int num:nums)
-    {
+    for(int num:nums) {
         curSum += num & 1;
         preSum[curSum]++;
         if(curSum >= k)
@@ -7530,26 +7578,25 @@ private int numberOfSubArrays(int[] nums, int k)
 
 ----
 
-#### 题目示例4 `leetcode 974 和可被K整除的子数组`
+##### 题目示例4 `leetcode 974 和可被K整除的子数组`
+
+参考题解：https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/solution/you-jian-qian-zhui-he-na-jiu-zai-ci-dai-ni-da-tong/
 
 ```java
 /**
 * 步骤：
 * 1.根据当前的(preSum mod K)的值，在哈希表中找到与之相等的key,并得到相应的value,
 *	该value表示满足条件的历史(preSum mod K)出现的次数，也代表当前preSum能找到的
-* 	历史前缀和，与之形成n个不同形式的子数组，满足元素和能被K整除
+* 	历史前缀和，与之形成value个不同形式的子数组，满足子数组元素和能被K整除
 * 2.遍历数组A的每一项，重复步骤1，统计累计结果到res,最终返回res
-*
 */
-private int subarrayDivByK(int[] A, int K)
-{
+private int subarrayDivByK(int[] A, int K) {
     int[] preSum = new int[K];
     preSum[0] = 1;
     int curSumModK = 0;
     int res = 0;
     
-    for(int i = 0; i < A.length; i++)
-    {
+    for(int i = 0; i < A.length; i++) {
     	curSumModK = (curSumModK + A[i]) % K;
         if(curSumModK < 0)
             curSumModK += K;
@@ -7562,7 +7609,7 @@ private int subarrayDivByK(int[] A, int K)
 
 ---
 
-#### 题目示例5 `leetcode 1074 元素和为目标值的子矩阵数量`
+##### 题目示例5 `leetcode 1074 元素和为目标值的子矩阵数量`
 
 ```java
 private int numSubmatrixSumTarget(int[][] matrix, int target)
@@ -7597,7 +7644,7 @@ private int numSubmatrixSumTarget(int[][] matrix, int target)
 
 ---
 
-#### 题目示例6 `leetcode 930 和相同的二元子数组`
+##### 题目示例6 `leetcode 930 和相同的二元子数组`
 
 ```java
 private int numSubarraysWithSum(int[] A, int S)
@@ -7621,7 +7668,7 @@ private int numSubarraysWithSum(int[] A, int S)
 
 ---
 
-#### 题目示例7 `leetcode 303 区域和检索-数组不可变`
+##### 题目示例7 `leetcode 303 区域和检索-数组不可变`
 
 ```java
 private int[] preSum;
@@ -7640,7 +7687,7 @@ public int sumRange(int i, int j)
 
 ---
 
-#### 题目示例8 `leetcode 304二维区域和检索-矩阵不可变`
+##### 题目示例8 `leetcode 304二维区域和检索-矩阵不可变`
 
 ```java
 private int[][] preSum;
@@ -7678,7 +7725,7 @@ public int sumRegion(int row1, int col1, int row2, int col2)
 
 ---
 
-#### 题目示例9 `leetcode 307 区域和检索-数组可修改`
+##### 题目示例9 `leetcode 307 区域和检索-数组可修改`
 
 ```java
 private int[] preSum;
@@ -7707,7 +7754,7 @@ public int sumRange(int i, int j)
 
 ----
 
-#### 题目示例10 `leetcode 554砖墙`
+##### 题目示例10 `leetcode 554砖墙`
 
 ```java
 private int leastBricks(List<List<Integer>> wall)
@@ -7733,7 +7780,7 @@ private int leastBricks(List<List<Integer>> wall)
 
 ---
 
-#### 题目示例11 `leetcode 1124 表现良好的最长时间段`
+##### 题目示例11 `leetcode 1124 表现良好的最长时间段`
 
 ```java
 private int longestWPI(int[] hours)
@@ -7766,7 +7813,7 @@ private int longestWPI(int[] hours)
 
 ---
 
-#### 题目示例12  `leetcode 1109 航班预定`
+##### 题目示例12  `leetcode 1109 航班预定`
 
 ```java
 private int[] corpFlightBookings(int[][] bookings, int n)
@@ -7793,7 +7840,7 @@ private int[] corpFlightBookings(int[][] bookings, int n)
 
 ---
 
-#### 题目示例13 `leetcode 1094 拼车`
+##### 题目示例13 `leetcode 1094 拼车`
 
 ```java
 private boolean carPooling(int[][] trips, int capacity)

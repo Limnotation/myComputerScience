@@ -133,6 +133,7 @@
   - [堆/优先队列](#堆优先队列)
     - [典型题目](#典型题目-2)
       - [题目示例1 `leetcode 692 前K个高频单词`](#题目示例1-leetcode-692-前k个高频单词)
+      - [题目示例2 `leetcode 253 会议室II`](#题目示例2-leetcode-253-会议室ii)
 - [基础算法](#基础算法)
   - [排序](#排序)
   - [深度优先搜索](#深度优先搜索)
@@ -301,6 +302,7 @@
   - [字符串](#字符串)
     - [题目1 `leetcode 字符串转换整数(atoi)`](#题目1-leetcode-字符串转换整数atoi)
   - [数组](#数组)
+    - [题目1 `leetcode 66 加一`](#题目1-leetcode-66-加一)
   - [排序](#排序-1)
     - [题目1 `leetcode 179 最大数`](#题目1-leetcode-179-最大数)
   - [设计](#设计)
@@ -2760,6 +2762,8 @@ private ListNode deleteNodes(ListNode head, int m, int n) {
 
 ###### 题目示例18 `leetcode 369 给单链表加一`
 
+参考题解：https://leetcode-cn.com/problems/plus-one-linked-list/solution/c-kuai-man-zhi-zhen-bu-fan-zhuan-lian-biao-by-kao-/
+
 ```java
 // 双指针
 // dummyHead
@@ -4080,6 +4084,8 @@ class UnionFind {
 
 ### 堆/优先队列
 
+这部分的题目重点还是在使用优先队列实现排列上，最重要的是学会在构建优先队列时**使用自定义的比较器**
+
 #### 典型题目
 
 ##### 题目示例1 `leetcode 692 前K个高频单词`
@@ -4118,6 +4124,44 @@ private List<String> topKFrequent(String[] words, int k) {
         res.addFirst(pq.poll());
     }
     return res;
+}
+```
+
+------
+
+##### 题目示例2 `leetcode 253 会议室II`
+
+```java
+public int minMeetingRooms(int[][] intervals) {
+    // 自定义比较规则，将所有时间区间按照起始时间从小到大排列
+    Arrays.sort(intervals, new Comparator<int[]>() {
+        @Override 
+        public int compare(int[] a, int[] b) {
+            return a[0] - b[0];
+        }
+    });
+    /**
+    * 在小根堆中存储每个时间区间的结束时间，基于这样一个规则：
+    * 堆顶元素是当前所有已经遍历过的时间区间里最早结束的时间，
+    * 如果新遍历到的区间的起始时间大于等于堆顶元素，表示堆顶
+    * 元素使用的会议室可以被当前区间使用；否则就要新增一个会
+    * 议室，即将当前区间的结束时间加入到堆中
+    */
+    PriorityQueue<Integer> pq = new PriorityQueue<>();
+    for(int[] interval:intervals) {
+        if(pq.isEmpty()) {
+            // 没有已被分配的会议室，新增一个会议室
+            pq.offer(interval[1]);
+        } else if(pq.peek() <= interval[0]) {
+            // 有会议已经结束，重用其会议室
+            pq.poll();
+            pq.offer(interval[1]);
+        } else {
+            // 没有会议室可以重用，新分配一个会议室
+            pq.offer(interval[1]);
+        }
+    }
+    return pq.size();
 }
 ```
 
@@ -8272,6 +8316,25 @@ private int myAtoi(String str) {
 ------
 
 ### 数组
+
+#### 题目1 `leetcode 66 加一`
+
+```java
+public int[] plusOne(int[] digits) {
+    for(int i = digits.length - 1; i >= 0; i--) {
+        digits[i]++;
+        digits[i] %= 10;
+        // 中间某一位无进位，则前面不可能再有进位，直接返回
+        if(digits[i] != 0) {
+            return digits;
+        }
+    }
+	// 如果程序到了这里，表示数组加一之后最高位有进位
+    digits = new int[digits.length + 1];
+    digits[0] = 1;
+    return digits;
+}
+```
 
 
 

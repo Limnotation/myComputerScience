@@ -32,6 +32,8 @@
       - [题目示例22：`leetcode 103 二叉树的锯齿形层次遍历`](#题目示例22leetcode-103-二叉树的锯齿形层次遍历)
       - [题目示例23 ：`leetcode 114 二叉树展开为链表`](#题目示例23-leetcode-114-二叉树展开为链表)
       - [题目示例24 `leetcode 222 完全二叉树的节点个数`](#题目示例24-leetcode-222-完全二叉树的节点个数)
+      - [题目示例25 `leetcode 958 二叉树的完全性检验`](#题目示例25-leetcode-958-二叉树的完全性检验)
+      - [题目示例26 `leetcode 1325 删除给定值的叶子结点`](#题目示例26-leetcode-1325-删除给定值的叶子结点)
     - [二叉搜索树](#二叉搜索树)
       - [题目示例1 `leetcode 98 验证二叉搜索树`](#题目示例1-leetcode-98-验证二叉搜索树)
       - [题目示例2 `leetcode  701  二叉搜索树中的插入操作`](#题目示例2-leetcode-701-二叉搜索树中的插入操作)
@@ -68,6 +70,7 @@
         - [题目示例9 `leetcode 147 对链表进行插入排序`](#题目示例9-leetcode-147-对链表进行插入排序)
         - [题目示例10 `leetcode 148 排序链表`](#题目示例10-leetcode-148-排序链表)
         - [题目示例11 `leetcode 2 两数相加`](#题目示例11-leetcode-2-两数相加)
+        - [题目示例12 `leetcode 445 两数相加II`](#题目示例12-leetcode-445-两数相加ii)
       - [反转类题目](#反转类题目)
         - [题目示例1 `leetcode 206 反转链表`](#题目示例1-leetcode-206-反转链表)
         - [题目示例2 `leetcode 92 反转链表II`](#题目示例2-leetcode-92-反转链表ii)
@@ -80,6 +83,7 @@
         - [题目示例5  `leetcode 142 环形链表II`](#题目示例5-leetcode-142-环形链表ii)
         - [题目示例6 `leetcode 234 回文链表`](#题目示例6-leetcode-234-回文链表)
         - [题目示例7 `leetcode 328 奇偶链表`](#题目示例7-leetcode-328-奇偶链表)
+        - [题目示例8 `剑指offer 22 链表中倒数第k个结点`](#题目示例8-剑指offer-22-链表中倒数第k个结点)
       - [其他题目](#其他题目)
         - [题目示例11 `leetcode 138 复制带随机指针的链表`](#题目示例11-leetcode-138-复制带随机指针的链表)
         - [题目示例 12 `leetcode 876 链表的中间结点`](#题目示例-12-leetcode-876-链表的中间结点)
@@ -205,7 +209,7 @@
     - [简单的回溯法模板](#简单的回溯法模板)
     - [典型题目](#典型题目-5)
       - [题型1：基本回溯问题，在数组上进行回溯搜索](#题型1基本回溯问题在数组上进行回溯搜索)
-        - [题目示例1 `leetcode78 子集 `](#题目示例1-leetcode78-子集-)
+        - [题目示例1 `leetcode 78 子集 `](#题目示例1-leetcode-78-子集-)
         - [题目示例2 `leetcode 90 子集II`](#题目示例2-leetcode-90-子集ii)
         - [题目示例3 `leetcode 46 全排列`](#题目示例3-leetcode-46-全排列)
         - [题目示例4 `leetcode 47 全排列II `](#题目示例4-leetcode-47-全排列ii-)
@@ -588,21 +592,19 @@ private TreeNode lowestCommonAncestor( TreeNode root, TreeNode p, TreeNode q)
 
 ```java
 private int maxDiameter = 0;
-public int diameterOfBinaryTree( TreeNode root )
-{
-    findMaxDiameter( root );
+public int diameterOfBinaryTree(TreeNode root) {
+    findMaxDiameter(root);
     return maxDiameter;
 }
 
-private int findMaxDiameter( TreeNode root )
-{
-    if( root == null )
+private int findMaxDiameter(TreeNode root) {
+    if(root == null)
         return 0;
     
-    int left = findMaxDiameter( root.left );
-    int right = findMaxDiameter( root.right );
-  	maxDiameter = Math.max( maxDiameter, left + right );
-    return Math.max( left, right ) + 1;
+    int left = findMaxDiameter(root.left);
+    int right = findMaxDiameter(root.right);
+  	maxDiameter = Math.max(maxDiameter, left + right);
+    return Math.max(left, right) + 1;
 }
 ```
 
@@ -611,14 +613,14 @@ private int findMaxDiameter( TreeNode root )
 ##### 题目示例6 `leetcode 226 翻转二叉树`
 
 ```java
-private TreeNode invertTree( TreeNode root )
-{
-    if( root == null )
+private TreeNode invertTree(TreeNode root) {
+    if(root == null) {
         return null;
+    }
     
     TreeNode left = root.left;
-    root.left = invertTree( root.right );
-    root.right = invertTree( left );
+    root.left = invertTree(root.right);
+    root.right = invertTree(left);
     return root;
 }
 ```
@@ -741,15 +743,14 @@ private boolean isSymmetric(TreeNode t1, TreeNode t2)
 ##### 题目示例12 `leetcode 111 二叉树的最小深度`
 
 ```java
-private int minDepth( TreeNode root )
-{
-    if( root == null )
+private int minDepth(TreeNode root) {
+    if(root == null)
         return 0;
-    int left = minDepth( root.left );
+    int left = minDepth(root.left);
     int right = minDepth( root.right );
-    if( left == 0 || right == 0 )
+    if(left == 0 || right == 0)
         return left + right + 1;
-    return Math.min( left, right ) + 1;
+    return Math.min(left, right) + 1;
 }
 ```
 
@@ -1140,6 +1141,67 @@ private int level(TreeNode root) {
         root = root.left;
     }
     return h;
+}
+```
+
+----
+
+##### 题目示例25 `leetcode 958 二叉树的完全性检验`
+
+```java
+public boolean isCompleteTree(TreeNode root) {
+    if(root == null) {
+        return true;
+    }
+
+    Deque<TreeNode> queue = new LinkedList<>();
+    queue.offerLast(root);
+    boolean hasPrevNull = false;
+    // 层序遍历二叉树，在碰到某节点子结点为null时也一并放入
+    // 完全二叉树的层序遍历不可能出现空结点出现在非空结点之
+    // 前，靠这个性质来判断二叉树完全性
+    while(!queue.isEmpty()) {
+        TreeNode node = queue.pollFirst();
+        if(node != null) {
+            if(hasPrevNull){
+                return false;
+            } else {
+                queue.offerLast(node.left);
+                queue.offerLast(node.right);
+            }
+        } else {
+            hasPrevNull = true;
+        }
+    }
+    return true;
+}
+```
+
+----
+
+##### 题目示例26 `leetcode 1325 删除给定值的叶子结点`
+
+```java
+/**
+* 注意在java中传参只有传值这一种！！！！！！
+*/
+public TreeNode removeLeafNodes(TreeNode root, int target) {
+    root = postTraAndDelete(root, target);
+    return root;
+}
+
+
+private TreeNode postTraAndDelete(TreeNode root, int target) {
+    if(root == null) {
+        return null;
+    }
+	// 后序遍历，必须最后删除根节点
+    root.left = postTraAndDelete(root.left, target);
+    root.right = postTraAndDelete(root.right, target);
+    if(root.left == null && root.right == null && root.val == target) {
+        root = null;
+    }
+    return root;
 }
 ```
 
@@ -1889,25 +1951,26 @@ private ListNode mergeKLists(ListNode[] lists) {
 ###### 题目示例5 `leetcode 86 分隔链表`
 
 ```java
-private ListNode partition(ListNode head, int x) {
-    if(head == null || head.next == null)
+public ListNode partition(ListNode head, int x) {
+    if(head == null || head.next == null) {
         return head;
-
-    ListNode dummy1 = new ListNode(-1);
-    ListNode dummy2 = new ListNode(-1);
+    }
+	
+    // 将结点分别放到两个子链表上，结束后拼接起来即可
+    ListNode dummy1 = new ListNode(0), dummy2 = new ListNode(0);
     ListNode runner1 = dummy1, runner2 = dummy2;
     while(head != null) {
         if(head.val < x) {
-            runner1.next = head;
+            runner1.next = new ListNode(head.val);
             runner1 = runner1.next;
         } else {
-            runner2.next = head;
+            runner2.next = new ListNode(head.val);
             runner2 = runner2.next;
         }
-        head = head.next; 
+        head = head.next;
     }
+
     runner1.next = dummy2.next;
-    runner2.next = null;
     return dummy1.next;
 }
 ```
@@ -2143,6 +2206,42 @@ public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         carry = temp / 10;
         runner.next = new ListNode(val);
         runner = runner.next;
+    }
+    return dummyHead.next;
+}
+```
+
+-----
+
+###### 题目示例12 `leetcode 445 两数相加II`
+
+```java
+public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    int carry = 0;
+    // 因为数字高位位于链表头部，而相加需要从尾部开始
+    // 需要利用栈来进行“反转”
+    Deque<Integer> stack1 = new LinkedList<Integer>(), stack2 = new LinkedList<>();
+    while(l1 != null) {
+        stack1.addLast(l1.val);
+        l1 = l1.next;
+    }
+    while(l2 != null) {
+        stack2.addLast(l2.val);
+        l2 = l2.next;
+    }
+
+    ListNode dummyHead = new ListNode(0);
+    ListNode runner = dummyHead;
+    while(!stack1.isEmpty() || !stack2.isEmpty() || carry > 0) {
+        int num1 = stack1.isEmpty()? 0:stack1.removeLast();
+        int num2 = stack2.isEmpty()? 0:stack2.removeLast();
+        int temp = num1 + num2 + carry;
+        int val = temp % 10;
+        carry = temp / 10;
+
+        ListNode node = new ListNode(val);
+        node.next = dummyHead.next;
+        dummyHead.next = node;
     }
     return dummyHead.next;
 }
@@ -2454,9 +2553,40 @@ private ListNode oddEvenList(ListNode head) {
 }
 ```
 
-------
+-----
+
+###### 题目示例8 `剑指offer 22 链表中倒数第k个结点`
+
+```java
+public ListNode getKthFromEnd(ListNode head, int k) {
+    if(head == null) {
+        return head;
+    }
+
+    ListNode slow = head, fast = head;
+    for(int i = 0; i < k; i++) {
+        fast = fast.next;
+    }
+
+    while(fast != null) {
+        slow = slow.next;
+        fast = fast.next;
+    }
+    return slow;
+}
+```
+
+
+
+-----
+
+
 
 ##### 其他题目
+
+-----
+
+
 
 ---
 
@@ -4017,7 +4147,7 @@ private List<String> topKFrequent(String[] words, int k) {
 
 缺点是会修改输入
 
-如果题目要求不能修改除符合条件的区域之外的内容，就要有相应的恢复操作
+如果题目要求不能修改除符合条件的区域之外的内容，就要有相应的恢复操作，或者使用备份
 
 ------
 
@@ -4032,18 +4162,24 @@ public int numIslands(char[][] grid) {
     int counter = 0;
     for(int i = 0; i < grid.length; i++)
         for(int j = 0; j < grid[0].length; j++)
+            /**
+            * 当前位置为陆地，探寻其他所有相邻的陆地并将其沉没
+            */
             if(grid[i][j] == '1' && dfs(grid, i, j) >= 1)
                 counter++;
     return counter;
 }
 
 private int dfs(char[][] grid, int i, int j) {
+    // 判断边界
     if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length)
         return 0;
+    // 当前位置为陆地，将其沉没，并向四周查看是否有其它陆地相连
     if(grid[i][j] == '1') {
         grid[i][j] = '0';
         return dfs(grid, i - 1, j) + dfs(grid, i, j - 1) + dfs(grid, i + 1, j) + dfs(grid, i, j + 1) + 1;
     }
+    // 当前位置为水域，不存在岛屿，返回0
     return 0;
 }
 ```
@@ -4057,6 +4193,7 @@ private int dfs(char[][] grid, int i, int j) {
 ```java
 public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
     int oldVal = image[sr][sc];
+    // 原始颜色和目标颜色相同时，直接返回，避免进入死循环
     if(oldVal == newColor)
         return image;
     dfs(image, sr, sc, oldVal, newColor);
@@ -4087,7 +4224,9 @@ private void dfs(int[][] image, int i, int j, int oldVal, int newColor) {
 public int movingCount(int m, int n, int k) {
     if(m <= 0 || n <= 0 || k < 0)
         return 0;
-
+	
+    // 在这里没有原始的沉岛操作，自己设置一个矩阵来
+    // 进行沉岛操作
     boolean[][] visited = new boolean[m][n];
     return dfs(m, n, 0, 0, k, visited);
 }
@@ -4104,6 +4243,9 @@ private int dfs(int m, int n, int row, int col, int k, boolean[][] visited) {
     return counter;
 }
 
+/**
+* 检查当前位置是否可行
+*/
 private boolean check(int m, int n, int row, int col, int k, boolean[][] visited) {
     if(row >= 0 && row < m && col >= 0 && col < n && !visited[row][col])
         if(getDigitalSum(row) + getDigitalSum(col) <= k)
@@ -4111,6 +4253,9 @@ private boolean check(int m, int n, int row, int col, int k, boolean[][] visited
     return false;
 }
 
+/**
+* 获取当前坐标的数字和
+*/
 private int getDigitalSum(int num) {
     int sum = 0;
     while(num > 0) {
@@ -4129,23 +4274,34 @@ private int getDigitalSum(int num) {
 
 ```java
 public int maxAreaOfIsland(int[][] grid) {
-    int res = Integer.MIN_VALUE;
-    for(int i = 0; i < grid.length; i++) 
-        for(int j = 0; j < grid[0].length; j++)
-            res = Math.max(res, dfs(grid, i, j));
+    if(grid == null || grid.length == 0) {
+        return 0;
+    }
+
+    int res = 0;
+    for(int i = 0; i < grid.length; i++) {
+        for(int j = 0; j < grid[0].length; j++) {
+            if(grid[i][j] == 1) {
+                res = Math.max(res, dfs(grid, i, j));
+            }
+        }
+    }
     return res;
 }
 
 private int dfs(int[][] grid, int i, int j) {
-    if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length || grid[i][j] == 0)
+    if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length) {
         return 0;
+    }
 
-    grid[i][j] = 0;
-    int res = 1 + dfs(grid, i - 1, j)
-        + dfs(grid, i, j - 1)
-        + dfs(grid, i + 1, j)
-        + dfs(grid, i, j + 1);
-    return res;
+    if(grid[i][j] == 1) {
+        grid[i][j] = 0;
+        return 1 + dfs(grid, i - 1, j)
+            + dfs(grid, i, j - 1)
+            + dfs(grid, i + 1, j)
+            + dfs(grid, i, j + 1);
+    }
+    return 0;
 }
 ```
 
@@ -4154,6 +4310,8 @@ private int dfs(int[][] grid, int i, int j) {
 ##### 题目示例5 `leetcode 1254 统计封闭岛屿的数目`
 
 **沉岛思想**，**会改变输入**
+
+参考题解：https://leetcode-cn.com/problems/number-of-closed-islands/solution/dian-xing-dao-yu-ti-dfsjie-ti-xi-jie-by-happyfire/
 
 ```java
 public int closedIsland(int[][] grid) {
@@ -4164,19 +4322,30 @@ public int closedIsland(int[][] grid) {
     int m = grid.length, n = grid[0].length;
     for(int i = 0; i < m; i++)
         for(int j = 0; j < n; j++)
+            // 当前位置为陆地，dfs遍历后返回false表示该位置无法到达
+            // 边界，岛屿独立
             if(grid[i][j] == 0 && !dfs(grid, i, j))
                 res++;
     return res;
 }
 
-// 判断岛屿是否到达边界
+/** 
+* dfs判断岛屿是否到达边界,并将所有遍历过的陆地沉没
+* 与边界相邻的岛屿最终因为到达边界而返回true
+* 封闭的岛屿最终因为沉岛效应，返回false
+* 根据dfs返回结果判断当前岛屿是否封闭
+*/
 private boolean dfs(int[][] grid, int i, int j) {
+    // 到达边界
     if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length)
         return true;
     
+    // 该位置已经被访问过或者是水域，不需要从此位置继续遍历
+    // 返回false
     if(grid[i][j] != 0)
         return false;
     
+    // 沉岛
     grid[i][j] = 1;
     // 分别求四个方向，避免“||”的短链效应
     boolean up = dfs(grid, i - 1, j);
@@ -4249,15 +4418,17 @@ public List<List<Integer>> pacificAtlantic(int[][] matrix) {
     
     for(int i = 0; i < m; i++) {
         for(int j = 0; j < n; j++) {
-            // 从大洋逆流进到陆地，
+            // 从太平洋洋逆流进到陆地
             if(i == 0 || j == 0) 
                 dfs(matrix, pacific, i, j, matrix[i][j]);
+            // 从大西洋逆流进陆地
             if(i == m - 1 || j == n - 1)
                 dfs(matrix, atlantic, i, j, matrix[i][j]);
         }
     }
     
-    // 
+    // 在两个标记矩阵中都被标记为1的位置
+    // 代表两个大洋都可以逆流到的位置
     for(int i = 0; i < m; i++) {
         for(int j = 0; j < n; j++) {
             if(pacific[i][j] == 1 && atlantic[i][j] == 1)
@@ -4267,12 +4438,21 @@ public List<List<Integer>> pacificAtlantic(int[][] matrix) {
     return res;
 }
 
+/**
+* dfs寻找从大洋可以逆流到的位置
+* @param matrix		表示大陆的二维矩阵
+* @param ocean		标记矩阵
+* @param i		    单元格横坐标
+* @param j		    单元格纵坐标
+* @param preVal		前一个访问的单元格的高度
+*/
 private void dfs(int[][] matrix, int[][] ocean, int i, int j, int preVal) {
-    if(i < 0 || i >= matrix.length || j < 0 || j > matrix[0].length 
+       // 触碰到了边界
+    if(i < 0 || i >= matrix.length || j < 0 || j >= matrix[0].length 
        // 已经流到过，不需要再试
        || ocean[i][j] == 1
        // 无法流动（注意这里是逆流）
-       || matrix[i][j] < pre ) {
+       || matrix[i][j] < preVal) {
         return;
     }
     
@@ -5962,7 +6142,7 @@ func backTrack( 选择列表， 路径 ) {
 
 ##### 题型1：基本回溯问题，在数组上进行回溯搜索
 
-###### 题目示例1 `leetcode78 子集 `
+###### 题目示例1 `leetcode 78 子集 `
 
 ```java
 List<List<Integer>> res = new LinkedList<>();

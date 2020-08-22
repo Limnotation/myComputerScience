@@ -187,9 +187,10 @@
         - [题目示例2 `leetcode 55跳跃游戏`](#题目示例2-leetcode-55跳跃游戏)
         - [题目示例3 `leetcode 45跳跃游戏II`](#题目示例3-leetcode-45跳跃游戏ii)
         - [题目示例4 `leetcode 132 分割回文串`](#题目示例4-leetcode-132-分割回文串)
-        - [题目示例5 `leetcode 300最长上升子序列`](#题目示例5-leetcode-300最长上升子序列)
+        - [题目示例5 `leetcode 300 最长上升子序列`](#题目示例5-leetcode-300-最长上升子序列)
         - [题目示例6 `leetcode 139 单词拆分`](#题目示例6-leetcode-139-单词拆分)
         - [题目示例7 `leetcode 647 回文子串`](#题目示例7-leetcode-647-回文子串)
+      - [题目示例8 `面试题17.24 最大子矩阵`](#题目示例8-面试题1724-最大子矩阵)
     - [双序列（字符串）DP类型 （40%）](#双序列字符串dp类型-40)
     - [0-1背包问题 （10%）](#0-1背包问题-10)
         - [题目示例1 `leetcode 416分割等和子集`](#题目示例1-leetcode-416分割等和子集)
@@ -5662,7 +5663,7 @@ private int minCut( String s )
 
 ------
 
-###### 题目示例5 `leetcode 300最长上升子序列`
+###### 题目示例5 `leetcode 300 最长上升子序列`
 
 ```java
 private int lengthOfLIS(int[] nums) {
@@ -5734,6 +5735,64 @@ public int countSubstrings(String s) {
 
             if(dp[i][j]) {
                 res++;
+            }
+        }
+    }
+    return res;
+}
+```
+
+----
+
+##### 题目示例8 `面试题17.24 最大子矩阵`
+
+参考题解：https://leetcode-cn.com/problems/max-submatrix-lcci/solution/zhe-yao-cong-zui-da-zi-xu-he-shuo-qi-you-jian-dao-/
+
+```java
+public int[] getMaxMatrix(int[][] matrix) {
+    if(matrix == null || matrix.length == 0) {
+        return new int[0];
+    }
+
+    // 保存最大子矩阵的左上角和右下角坐标
+    int[] res = new int[4];
+    // 原矩阵的行列大小
+    int m = matrix.length, n = matrix[0].length;
+    // 记录当前第i~j行组成的子矩阵的每一列的和，将二维转化为一维
+    int[] lineSum = new int[n];             
+    // 相当于dp[i]
+    int curSum = 0;
+    // 记录目前最大的子矩阵和
+    int maxSum = Integer.MIN_VALUE;
+    // 记录当前找到的最大子矩阵的左上角坐标
+    int bestr1 = 0, bestc1 = 0;
+
+    for(int i = 0; i < m; i++) {
+        // 上界变化时要清空，重新计算每列的和
+        for(int t = 0; t < n; t++) {
+            lineSum[t] = 0;
+        }
+        // 不断增大下界
+        for(int j = i; j < m; j++) {
+            // 从头开始求dp
+            curSum = 0;
+            for(int k = 0; k < n; k++) {
+                lineSum[k] += matrix[j][k];
+                if(curSum > 0) {
+                    curSum += lineSum[k];
+                } else {
+                    curSum = lineSum[k];
+                    bestr1 = i;
+                    bestc1 = k;
+                }
+
+                if(curSum > maxSum) {
+                    maxSum = curSum;
+                    res[0] = bestr1;
+                    res[1] = bestc1;
+                    res[2] = j;
+                    res[3] = k;
+                }
             }
         }
     }

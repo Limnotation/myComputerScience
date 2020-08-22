@@ -34,6 +34,7 @@
       - [题目示例24 `leetcode 222 完全二叉树的节点个数`](#题目示例24-leetcode-222-完全二叉树的节点个数)
       - [题目示例25 `leetcode 958 二叉树的完全性检验`](#题目示例25-leetcode-958-二叉树的完全性检验)
       - [题目示例26 `leetcode 1325 删除给定值的叶子结点`](#题目示例26-leetcode-1325-删除给定值的叶子结点)
+      - [题目示例27 `leetcode 662 二叉树最大宽度`](#题目示例27-leetcode-662-二叉树最大宽度)
     - [二叉搜索树](#二叉搜索树)
       - [题目示例1 `leetcode 98 验证二叉搜索树`](#题目示例1-leetcode-98-验证二叉搜索树)
       - [题目示例2 `leetcode  701  二叉搜索树中的插入操作`](#题目示例2-leetcode-701-二叉搜索树中的插入操作)
@@ -284,12 +285,13 @@
       - [题目示例5 `leetcode 1074 元素和为目标值的子矩阵数量`](#题目示例5-leetcode-1074-元素和为目标值的子矩阵数量)
       - [题目示例6 `leetcode 930 和相同的二元子数组`](#题目示例6-leetcode-930-和相同的二元子数组)
       - [题目示例7 `leetcode 303 区域和检索-数组不可变`](#题目示例7-leetcode-303-区域和检索-数组不可变)
-      - [题目示例8 `leetcode 304二维区域和检索-矩阵不可变`](#题目示例8-leetcode-304二维区域和检索-矩阵不可变)
+      - [题目示例8 `leetcode 304 二维区域和检索-矩阵不可变`](#题目示例8-leetcode-304-二维区域和检索-矩阵不可变)
       - [题目示例9 `leetcode 307 区域和检索-数组可修改`](#题目示例9-leetcode-307-区域和检索-数组可修改)
-      - [题目示例10 `leetcode 554砖墙`](#题目示例10-leetcode-554砖墙)
+      - [题目示例10 `leetcode 554 砖墙`](#题目示例10-leetcode-554-砖墙)
       - [题目示例11 `leetcode 1124 表现良好的最长时间段`](#题目示例11-leetcode-1124-表现良好的最长时间段)
       - [题目示例12  `leetcode 1109 航班预定`](#题目示例12-leetcode-1109-航班预定)
       - [题目示例13 `leetcode 1094 拼车`](#题目示例13-leetcode-1094-拼车)
+      - [题目示例14 `leetcode 325 和等于k的最长子数组长度`](#题目示例14-leetcode-325-和等于k的最长子数组长度)
   - [循环不变量](#循环不变量)
     - [典型题目](#典型题目-7)
       - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
@@ -1204,6 +1206,48 @@ private TreeNode postTraAndDelete(TreeNode root, int target) {
         root = null;
     }
     return root;
+}
+```
+
+----
+
+##### 题目示例27 `leetcode 662 二叉树最大宽度`
+
+```java
+private int widthOfBinaryTree(TreeNode root) {
+    if(root == null) {
+        return 0;
+    }
+	
+    // 层次遍历二叉树，获取每层的第一个和最后一个结点的距离即为该层
+    // 的宽度
+    LinkedList<Integer> list = new LinkedList<>();
+    Deque<TreeNode> queue = new LinkedList<>();
+    int index = 1;
+    int res = 1;
+    queue.addLast(root);
+    list.addLast(index);
+    while(!queue.isEmpty()) {
+        int levelSize = queue.size();
+        while(levelSize > 0) {
+            TreeNode node = queue.pollFirst();
+            int curIndex = list.removeFirst();
+            if(node.left != null) {
+                queue.addLast(node.left);
+                list.addLast(2 * curIndex);
+            }
+            if(node.right != null) {
+                queue.addLast(node.right);
+                list.addLast(2 * curIndex + 1);
+            }
+            levelSize--;
+        }
+
+        if(list.size() >= 2) {
+            res = Math.max(res, list.getLast() - list.getFirst() + 1);
+        }
+    }
+    return res;
 }
 ```
 
@@ -7960,7 +8004,7 @@ public int sumRange(int i, int j)
 
 ---
 
-##### 题目示例8 `leetcode 304二维区域和检索-矩阵不可变`
+##### 题目示例8 `leetcode 304 二维区域和检索-矩阵不可变`
 
 ```java
 private int[][] preSum;
@@ -8027,7 +8071,7 @@ public int sumRange(int i, int j)
 
 ----
 
-##### 题目示例10 `leetcode 554砖墙`
+##### 题目示例10 `leetcode 554 砖墙`
 
 ```java
 private int leastBricks(List<List<Integer>> wall)
@@ -8137,7 +8181,34 @@ private boolean carPooling(int[][] trips, int capacity)
 }
 ```
 
-----
+-------
+
+##### 题目示例14 `leetcode 325 和等于k的最长子数组长度`
+
+```java
+public int maxSubArrayLen(int[] nums, int k) {
+    if(nums == null || nums.length == 0) {
+        return 0;
+    }
+
+    int maxLen = 0;
+    int curSum = 0;
+    HashMap<Integer, Integer> preSum = new HashMap<>();
+    preSum.put(0, 0);
+    for(int i = 0; i < nums.length; i++) {
+        curSum += nums[i];
+        if(!preSum.containsKey(curSum)) {
+            preSum.put(curSum, i + 1);
+        } 
+        if(preSum.containsKey(curSum - k)){
+            maxLen = Math.max(maxLen, i + 1 - preSum.get(curSum - k));
+        }
+    }
+    return maxLen;
+}
+```
+
+
 
 -----
 

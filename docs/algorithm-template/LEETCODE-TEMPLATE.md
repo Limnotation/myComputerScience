@@ -98,6 +98,7 @@
       - [题目示例2 `leetcode 150 逆波兰表达式求值`](#题目示例2-leetcode-150-逆波兰表达式求值)
       - [题目示例3 `leetcode 394 字符串解码`](#题目示例3-leetcode-394-字符串解码)
       - [题目示例4 `leetcode 20 有效的括号`](#题目示例4-leetcode-20-有效的括号)
+      - [题目示例5 `leetcode 32 最长有效括号`](#题目示例5-leetcode-32-最长有效括号)
     - [栈和队列的特殊应用1：单调栈/单调队列](#栈和队列的特殊应用1单调栈单调队列)
       - [概念](#概念)
         - [单调栈：](#单调栈)
@@ -2993,6 +2994,37 @@ private boolean isValid(String s) {
     }
     
     Deque<Character> stack = new Lin
+}
+```
+
+------
+
+##### 题目示例5 `leetcode 32 最长有效括号`
+
+参考题解：https://leetcode-cn.com/problems/longest-valid-parentheses/solution/shou-hua-tu-jie-zhan-de-xiang-xi-si-lu-by-hyj8/
+
+```java
+public int longestValidParentheses(String s) {
+    if(s == null || s.length() == 0) {
+        return 0;
+    }
+
+    Deque<Integer> stack = new LinkedList<>();
+    stack.addLast(-1);
+    int res = 0;
+    for(int i = 0; i < s.length(); i++) {
+        if(s.charAt(i) == '(') {
+            stack.addLast(i);
+        } else {
+            stack.removeLast();
+            if(stack.isEmpty()) {
+                stack.addLast(i);
+            } else {
+                res = Math.max(res, i - stack.peekLast());
+            }
+        }
+    }
+    return res;
 }
 ```
 

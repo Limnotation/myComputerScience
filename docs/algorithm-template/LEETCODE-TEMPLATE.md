@@ -184,13 +184,13 @@
         - [题目示例2 `leetcode 62 不同路径`](#题目示例2-leetcode-62-不同路径)
         - [题目示例3 `leetcode 63不同路径II`](#题目示例3-leetcode-63不同路径ii)
     - [序列类型（40%）](#序列类型40)
-        - [题目示例1 `leetcode 70 爬楼梯`](#题目示例1-leetcode-70-爬楼梯)
-        - [题目示例2 `leetcode 55跳跃游戏`](#题目示例2-leetcode-55跳跃游戏)
-        - [题目示例3 `leetcode 45跳跃游戏II`](#题目示例3-leetcode-45跳跃游戏ii)
-        - [题目示例4 `leetcode 132 分割回文串`](#题目示例4-leetcode-132-分割回文串)
-        - [题目示例5 `leetcode 300 最长上升子序列`](#题目示例5-leetcode-300-最长上升子序列)
-        - [题目示例6 `leetcode 139 单词拆分`](#题目示例6-leetcode-139-单词拆分)
-        - [题目示例7 `leetcode 647 回文子串`](#题目示例7-leetcode-647-回文子串)
+      - [题目示例1 `leetcode 70 爬楼梯`](#题目示例1-leetcode-70-爬楼梯)
+      - [题目示例2 `leetcode 55跳跃游戏`](#题目示例2-leetcode-55跳跃游戏)
+      - [题目示例3 `leetcode 45跳跃游戏II`](#题目示例3-leetcode-45跳跃游戏ii)
+      - [题目示例4 `leetcode 132 分割回文串`](#题目示例4-leetcode-132-分割回文串)
+      - [题目示例5 `leetcode 300 最长上升子序列`](#题目示例5-leetcode-300-最长上升子序列)
+      - [题目示例6 `leetcode 139 单词拆分`](#题目示例6-leetcode-139-单词拆分)
+      - [题目示例7 `leetcode 647 回文子串`](#题目示例7-leetcode-647-回文子串)
       - [题目示例8 `面试题17.24 最大子矩阵`](#题目示例8-面试题1724-最大子矩阵)
     - [双序列（字符串）DP类型 （40%）](#双序列字符串dp类型-40)
     - [0-1背包问题 （10%）](#0-1背包问题-10)
@@ -301,12 +301,15 @@
 - [`leetcode` 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
   - [跳跃游戏系列](#跳跃游戏系列)
     - [题目1 `leetcode 55 跳跃游戏`](#题目1-leetcode-55-跳跃游戏)
+  - [位运算](#位运算)
+    - [题目1 `leetcode 136 只出现一次的数字`](#题目1-leetcode-136-只出现一次的数字)
   - [数学](#数学)
     - [题目1 `leetcode 7 整数反转`](#题目1-leetcode-7-整数反转)
   - [字符串](#字符串)
     - [题目1 `leetcode 字符串转换整数(atoi)`](#题目1-leetcode-字符串转换整数atoi)
   - [数组](#数组)
     - [题目1 `leetcode 66 加一`](#题目1-leetcode-66-加一)
+    - [题目2 `leetcode 54 螺旋矩阵`](#题目2-leetcode-54-螺旋矩阵)
   - [排序](#排序-1)
     - [题目1 `leetcode 179 最大数`](#题目1-leetcode-179-最大数)
   - [设计](#设计)
@@ -701,22 +704,20 @@ private int pathSumStartsWithRoot( TreeNode root, int sum )
 ##### 题目示例10 `leetcode 572 另一个树的子树`
 
 ```java
-public boolean isSubtree( TreeNode s, TreeNode t )
-{
-    if( s == null )
+public boolean isSubtree(TreeNode s, TreeNode t) {
+    if(s == null)
         return false;
-    return isSubTreeWithRoot( s, t ) || isSubtree( s.left, t ) || isSubtree( s.right, t );
+    return isSubTreeWithRoot(s, t) || isSubtree(s.left, t) || isSubtree(s.right, t);
 }
 
-private boolean isSubTreeWithRoot( TreeNode s, TreeNode t )
-{
-    if( s == null && t == null )
+private boolean isSubTreeWithRoot(TreeNode s, TreeNode t) {
+    if(s == null && t == null) {
         return true;
-    if( s == null || t == null )
+    }
+    if(s == null || t == null || s.val != t.val) {
         return false;
-    if( s.val != t.val )
-        return false;
-    return isSubTreeWithRoot( s.left, t.left ) && isSubTreeWithRoot( s.right, t.right );
+    }
+    return isSubTreeWithRoot(s.left, t.left) && isSubTreeWithRoot(s.right, t.right);
 }
 ```
 
@@ -4103,8 +4104,9 @@ public int longestConsecutive(int[] nums) {
 
 
 class UnionFind {
+    // key表示一个触点，value表示其所在连通分量的根节点
     private Map<Integer, Integer> parent;
-    // 维护以当前结点为根的子树的结点总数
+    // size维护以当前结点为根的子树的结点总数
     private Map<Integer, Integer> size;
     
     public UnionFind(int[] nums) {
@@ -4666,7 +4668,12 @@ private void dfs(TreeNode root, int depth) {
     if(root == null) {
         return;
     }
-
+	
+    /** 
+    * 如果当前访问的结点深度与res.size()相等
+    * 表示当前访问的结点是其所在层的最右边结
+    * 点（注意根节点深度为0）
+    */
     if(depth == res.size()) {
         res.add(root.val);
     }
@@ -5124,6 +5131,7 @@ private int search(int[] nums, int target) {
             return mid;
         }
         // 前半部分有序
+        // 小于等于号是为了适应只有两个元素的特殊情况
         if(nums[left] <= nums[mid]) {
             if(nums[left] <= target && target < nums[mid]) {
                 right = mid - 1;
@@ -5600,7 +5608,7 @@ private int uniquePathWithObstacles( int[][] obstacleGrid )
 
 #### 序列类型（40%）
 
-###### 题目示例1 `leetcode 70 爬楼梯`
+##### 题目示例1 `leetcode 70 爬楼梯`
 
 ```java
 private int climbStairs( int n )
@@ -5619,7 +5627,7 @@ private int climbStairs( int n )
 
 -----
 
-###### 题目示例2 `leetcode 55跳跃游戏`
+##### 题目示例2 `leetcode 55跳跃游戏`
 
 ```java
 /** 
@@ -5643,7 +5651,7 @@ private boolean canJump(int[] nums) {
 
 -----
 
-###### 题目示例3 `leetcode 45跳跃游戏II`
+##### 题目示例3 `leetcode 45跳跃游戏II`
 
 ```java
 // dp[i]表示从0跳到i的最小次数
@@ -5681,7 +5689,7 @@ private int jump( int[] nums )
 }
 ```
 
-###### 题目示例4 `leetcode 132 分割回文串`
+##### 题目示例4 `leetcode 132 分割回文串`
 
 ```java
 // dp[i]表示字符串前i个字符组成的子字符串需要的最少分割次数
@@ -5695,7 +5703,7 @@ private int minCut( String s )
 
 ------
 
-###### 题目示例5 `leetcode 300 最长上升子序列`
+##### 题目示例5 `leetcode 300 最长上升子序列`
 
 ```java
 private int lengthOfLIS(int[] nums) {
@@ -5717,7 +5725,7 @@ private int lengthOfLIS(int[] nums) {
 
 -----
 
-###### 题目示例6 `leetcode 139 单词拆分`
+##### 题目示例6 `leetcode 139 单词拆分`
 
 ```java
 private boolean wordBreak( String s, List<String> wordDict )
@@ -5728,7 +5736,7 @@ private boolean wordBreak( String s, List<String> wordDict )
 
 -----
 
-###### 题目示例7 `leetcode 647 回文子串`
+##### 题目示例7 `leetcode 647 回文子串`
 
 **参考题解：**https://leetcode-cn.com/problems/palindromic-substrings/solution/647-hui-wen-zi-chuan-dong-tai-gui-hua-fang-shi-qiu/
 
@@ -5934,7 +5942,7 @@ private int change( int amount, int[] coins )
 
 
 
-
+----
 
 #### `leetcode 股票买卖系列问题`
 
@@ -6646,10 +6654,11 @@ private void backTracking(String s, int start, LinkedList<String> runner) {
     }
 }
 
-private boolean isPalindrome(String s, int left, int right)
-{
-    while(left < right)
-    {
+/**
+* 判断字符串是否为回文串
+*/
+private boolean isPalindrome(String s, int left, int right) {
+    while(left < right) {
         if(s.charAt(left) != s.charAt(right))
             return false;
         left++;
@@ -6848,21 +6857,23 @@ public boolean exist(char[][] board, String word) {
     int pathLength = 0;
     int m = board.length, n = board[0].length;
     visited = new boolean[m][n];
-    for(int i = 0; i < m; i++)
-        for(int j = 0; j < n; j++)
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
             if(backTracking(board, word, i, j, pathLength))
                 return true;
+        }
+    }
     return false;
 }
 
 /**
-    *@parameter board       字符二维网格
-    *@parameter word        目标单词
-    *@parameter row         方法当前所访问的行索引
-    *@parameter col         方法当前所访问的列索引
-    *@parameter pathLength  当前已经匹配的路径长度
-    *@return                路径的匹配结果
-    **/
+* @parameter board       字符二维网格
+* @parameter word        目标单词
+* @parameter row         方法当前所访问的行索引
+* @parameter col         方法当前所访问的列索引
+* @parameter pathLength  当前已经匹配的路径长度
+* @return                路径的匹配结果
+**/
 private boolean backTracking(char[][] board, String word, int row, int col, int pathLength) {
     if(word.length() == pathLength)
         return true;
@@ -8339,9 +8350,9 @@ private void moveZeros(int[] nums) {
 ```java
 private int[] exchange(int[] nums) {
     /**
-        * 循环不变量：
-        * [0, mark)为奇数元素
-        */
+    * 循环不变量：
+    * [0, mark)为奇数元素
+    */
     int mark = 0;
     for(int i = 0; i < nums.length; i++) {
         if(nums[i] % 2 != 0) {
@@ -8385,6 +8396,22 @@ public boolean canJump(int[] nums) {
         maxDis = Math.max(maxDis, i + nums[i]);
     }
     return true;
+}
+```
+
+-----
+
+### 位运算
+
+#### 题目1 `leetcode 136 只出现一次的数字`
+
+```java
+public int singleNumber(int[] nums) {
+    int res = 0;
+    for(int num:nums) {
+        res ^= num;
+    }
+    return res;
 }
 ```
 
@@ -8495,6 +8522,57 @@ public int[] plusOne(int[] digits) {
     digits = new int[digits.length + 1];
     digits[0] = 1;
     return digits;
+}
+```
+
+-----
+
+#### 题目2 `leetcode 54 螺旋矩阵`
+
+```java
+public List<Integer> spiralOrder(int[][] matrix) {
+    List<Integer> res = new LinkedList<>();
+    if(matrix == null || matrix.length == 0) {
+        return res;
+    }
+
+    int left = 0, right = matrix[0].length - 1;
+    int top = 0, bottom = matrix.length - 1;
+    while(true) {
+        // left to right
+        for(int i = left; i <= right; i++) {
+            res.add(matrix[top][i]);
+        }
+        top++;
+        if(top > bottom) {
+            break;
+        }
+        // top to bottom
+        for(int i = top; i <= bottom; i++) {
+            res.add(matrix[i][right]);
+        }
+        right--;
+        if(left > right) {
+            break;
+        }
+        // right to left
+        for(int i = right; i >= left; i--) {
+            res.add(matrix[bottom][i]);
+        }
+        bottom--;
+        if(top > bottom) {
+            break;
+        }
+        // bottom to top
+        for(int i = bottom; i >= top; i--) {
+            res.add(matrix[i][left]);
+        }
+        left++;
+        if(left > right) {
+            break;
+        }
+    }
+    return res;
 }
 ```
 

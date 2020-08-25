@@ -1,5 +1,38 @@
 ## 剑指offer
 
+-----
+
+### 面试题09 用两个栈实现队列
+
+```java
+class CQueue {
+    private Deque<Integer> stack1;
+    private Deque<Integer> stack2;
+    public CQueue() {
+        this.stack1 = new LinkedList<>();
+        this.stack2 = new LinkedList<>();
+    }
+    
+    public void appendTail(int value) {
+        stack1.addLast(value);
+    }
+    
+    public int deleteHead() {
+        if(!stack2.isEmpty()) {
+            return stack2.removeLast();
+        } else if(!stack1.isEmpty()) {
+            while(!stack1.isEmpty()) {
+                stack2.addLast(stack1.removeLast());
+            }
+            return stack2.removeLast();
+        }
+        return -1;
+    }
+}
+```
+
+------
+
 ### 面试题29 顺时针打印矩阵
 
 **参考题解**：https://leetcode-cn.com/problems/shun-shi-zhen-da-yin-ju-zhen-lcof/solution/mian-shi-ti-29-shun-shi-zhen-da-yin-ju-zhen-she-di/

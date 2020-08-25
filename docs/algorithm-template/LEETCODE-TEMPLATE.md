@@ -152,6 +152,10 @@
       - [题目示例8 `leetcode 329 矩阵中的最长递增路径`](#题目示例8-leetcode-329-矩阵中的最长递增路径)
       - [题目示例9 `leetcode 199 二叉树的右视图`](#题目示例9-leetcode-199-二叉树的右视图)
       - [题目示例10 `leetcode 257 二叉树的所有路径`](#题目示例10-leetcode-257-二叉树的所有路径)
+  - [广度优先搜索](#广度优先搜索)
+    - [典型题目](#典型题目-4)
+      - [题目1 `leetcode 207 课程表`](#题目1-leetcode-207-课程表)
+      - [题目示例2 `leetcode 210 课程表II`](#题目示例2-leetcode-210-课程表ii)
   - [二分搜索](#二分搜索)
     - [二分搜索模板](#二分搜索模板)
       - [零、二分查找框架](#零二分查找框架)
@@ -159,7 +163,7 @@
       - [二、寻找左侧边界的二分搜索](#二寻找左侧边界的二分搜索)
       - [三、寻找右侧边界的二分查找](#三寻找右侧边界的二分查找)
       - [四、逻辑统一](#四逻辑统一)
-    - [典型题目](#典型题目-4)
+    - [典型题目](#典型题目-5)
       - [题型1：二分求满足条件的元素](#题型1二分求满足条件的元素)
         - [题目示例1 `leetcode 704 二分查找`](#题目示例1-leetcode-704-二分查找)
         - [题目示例2 `leetcode 34 在排序数组中查找元素的第一个和最后一个位置`](#题目示例2-leetcode-34-在排序数组中查找元素的第一个和最后一个位置)
@@ -211,7 +215,7 @@
 - [算法思维](#算法思维)
   - [回溯法](#回溯法)
     - [简单的回溯法模板](#简单的回溯法模板)
-    - [典型题目](#典型题目-5)
+    - [典型题目](#典型题目-6)
       - [题型1：基本回溯问题，在数组上进行回溯搜索](#题型1基本回溯问题在数组上进行回溯搜索)
         - [题目示例1 `leetcode 78 子集 `](#题目示例1-leetcode-78-子集-)
         - [题目示例2 `leetcode 90 子集II`](#题目示例2-leetcode-90-子集ii)
@@ -250,7 +254,7 @@
     - [简单的滑动窗口模板](#简单的滑动窗口模板)
       - [1、可变窗口模板](#1可变窗口模板)
       - [2、固定窗口模板](#2固定窗口模板)
-    - [典型题目](#典型题目-6)
+    - [典型题目](#典型题目-7)
       - [可变窗口题目](#可变窗口题目)
         - [题目示例1 `leetcode 76 最小覆盖子串`](#题目示例1-leetcode-76-最小覆盖子串)
         - [题目示例2 `leetcode 567 字符串的排列`](#题目示例2-leetcode-567-字符串的排列)
@@ -295,7 +299,7 @@
       - [题目示例13 `leetcode 1094 拼车`](#题目示例13-leetcode-1094-拼车)
       - [题目示例14 `leetcode 325 和等于k的最长子数组长度`](#题目示例14-leetcode-325-和等于k的最长子数组长度)
   - [循环不变量](#循环不变量)
-    - [典型题目](#典型题目-7)
+    - [典型题目](#典型题目-8)
       - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
       - [题目示例2 `剑指offer 21 调整数组顺序使奇数位于偶数的前面`](#题目示例2-剑指offer-21-调整数组顺序使奇数位于偶数的前面)
 - [`leetcode` 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
@@ -315,6 +319,8 @@
   - [设计](#设计)
     - [题目1 `leetcode 146 LRU缓存机制`](#题目1-leetcode-146-lru缓存机制)
     - [题目2 `leetcode 1206 设计跳表（未完成，感觉机制有点复杂）`](#题目2-leetcode-1206-设计跳表未完成感觉机制有点复杂)
+  - [BFS](#bfs)
+    - [](#)
 ## 数据结构
 
 ### 树
@@ -4713,6 +4719,112 @@ private void dfs(TreeNode root, String s) {
 }
 ```
 
+----
+
+### 广度优先搜索
+
+#### 典型题目
+
+##### 题目1 `leetcode 207 课程表`
+
+```java
+public boolean canFinish(int numCourses, int[][] prerequisites) {
+    if(numCourses <= 0) {
+        return false;
+    }
+
+    if(prerequisites.length == 0) {
+        return true;
+    }
+
+    int[] inDegree = new int[numCourses];
+    HashSet<Integer>[] adj = new HashSet[numCourses];
+    for(int i = 0; i < numCourses; i++) {
+        adj[i] = new HashSet<>();
+    }
+
+    for(int[] p:prerequisites) {
+        inDegree[p[0]]++;
+        adj[p[1]].add(p[0]);
+    }
+
+    Queue<Integer> queue = new LinkedList<>();
+
+    // 首先加入入度为0的节点
+    for(int i = 0; i < numCourses; i++) {
+        if(inDegree[i] == 0) {
+            queue.offer(i);
+        }
+    }
+
+    // 记录已经出队的课程数量
+    int counter = 0;
+    while(!queue.isEmpty()) {
+        int top = queue.poll();
+        counter++;
+        // 遍历当前出队节点的所有后继节点
+        for(int successor:adj[top]) {
+            inDegree[successor]--;
+            if(inDegree[successor] == 0) {
+                queue.offer(successor);
+            }
+        }
+    }
+    return counter == numCourses;
+}
+```
+
+----
+
+##### 题目示例2 `leetcode 210 课程表II`
+
+```java
+public int[] findOrder(int numCourses, int[][] prerequisites) {
+    if(numCourses == 0) {
+        return new int[0];
+    }
+
+    int[] inDegree = new int[numCourses];
+    HashSet<Integer>[] adj = new HashSet[numCourses];
+    int[] res = new int[numCourses];
+    int index = 0;
+    for(int i = 0; i < numCourses; i++) {
+        adj[i] = new HashSet<>();
+    }
+
+    for(int[] p:prerequisites) {
+        inDegree[p[0]]++;
+        adj[p[1]].add(p[0]);
+    }
+
+    Queue<Integer> queue = new LinkedList<>();
+
+    // 首先加入入度为0的节点
+    for(int i = 0; i < numCourses; i++) {
+        if(inDegree[i] == 0) {
+            queue.offer(i);
+        }
+    }
+
+    // 
+    while(!queue.isEmpty()) {
+        int top = queue.poll();
+        res[index] = top;
+        index++;
+        for(int successor:adj[top]) {
+            inDegree[successor]--;
+            if(inDegree[successor] == 0) {
+                queue.offer(successor);
+            }
+        }
+    }
+    if(index == numCourses) {
+        return res;
+    }
+    return new int[0];
+}
+```
+
 
 
 -----
@@ -8779,3 +8891,10 @@ class Skiplist {
  */
 ```
 
+----
+
+### BFS
+
+------
+
+#### 

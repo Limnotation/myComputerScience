@@ -132,6 +132,7 @@
         - [题目示例6 `leetcode 990 等式方程的可满足性`](#题目示例6-leetcode-990-等式方程的可满足性)
       - [带权值的并查集问题](#带权值的并查集问题)
         - [题目示例1 `leetcode 128 最长连续序列`](#题目示例1-leetcode-128-最长连续序列)
+        - [题目示例2 `leetcode 945 使数组唯一的最小增量`](#题目示例2-leetcode-945-使数组唯一的最小增量)
   - [堆/优先队列](#堆优先队列)
     - [典型题目](#典型题目-2)
       - [题目示例1 `leetcode 692 前K个高频单词`](#题目示例1-leetcode-692-前k个高频单词)
@@ -4129,7 +4130,6 @@ class UnionFind {
     public int union(int i, int j) {
         int rootI = find(i);
         int rootJ = find(j);
-        
         if(rootI == rootJ) {
             return 0;
         }
@@ -4162,6 +4162,102 @@ class UnionFind {
     }
 }
 ```
+
+------
+
+###### 题目示例2 `leetcode 945 使数组唯一的最小增量`
+
+```java
+class Solution {
+	public int minIncrementForUnique(int[] A) {
+        int len = A.length;
+        if(len == 0) {
+            return 0;
+        }
+        
+        UnionFind unionFind = new UnionFind();
+        int res = 0;
+        for(int num:A) {
+            if(unionFind.contains(num)) {
+                int root = unionFind.find(num);
+                int add = root + 1;
+                res += (add - num);
+                unionFind.init(add);
+            } else {
+                unionFind.init(add);
+            }
+        }
+        return res;
+    }
+    
+    /**
+    * 内部类：并查集定义
+    */
+    private class UnionFind {
+        /**
+        * 代表元法，元素指向父亲节点
+        */
+        private int[] parent;
+        
+        /**
+        * 构造函数
+        */
+        public UnionFind() {
+            this.parent = new int[79999];
+            Arrays.fill(parent, -1);
+        }
+        
+        /**
+        * 初始化并查集，添加新元素，新元素一定没有在集合中出现过
+        * @param x 加入当前集合的元素一定会在加入后仍保持当前集合的性质
+        */
+        public void init(int x) {
+            parent[x] = x;
+            if(x > 0 && parent[x-1] != -1) {
+                union(x, x - 1);
+            }
+            if(parent[x + 1] != -1) {
+                union(x, x + 1);
+            }
+        }
+        
+        /**
+        * 查看集合中是否已经存在该元素
+        */
+        public boolean contains(int x) {
+            return parent[x] != -1;
+        }
+        
+        /**
+        * 返回不相交集合的代表元节点
+        */
+        public int find(int x) {
+            while(parent[x] != x) {
+                parent[x] = parent[parent[x]];
+                x = parent[x];
+            }
+            return x;
+        }
+        
+        /**
+        * 合并两个不相交集合
+        */
+        public void union(int x, int y) {
+            int rootx = find(x);
+            int rooty = find(y);
+            
+            if(rootx < rooty) {
+                parent[rootx] = rooty;
+            }
+            if(rooty < rootx) {
+                parent[rooty] = rootx;
+            }
+        }
+    }
+}
+```
+
+
 
 -----
 
@@ -5238,19 +5334,23 @@ private int search(int[] nums, int target) {
     int left = 0, right = nums.length - 1;
     while(left <= right) {
         int mid = left + (right - left) / 2;
-        
+        // 命中
         if(nums[mid] == target) {
             return mid;
         }
-        // 前半部分有序
+
         // 小于等于号是为了适应只有两个元素的特殊情况
         if(nums[left] <= nums[mid]) {
+            // 前半部分有序且目标在范围内，则搜索范围为前半部分
+            // 否则搜索范围为后半部分
             if(nums[left] <= target && target < nums[mid]) {
                 right = mid - 1;
             } else {
                 left = mid + 1;
             }
         } else {
+            // 后半部分有序且目标在范围内，则搜索范围为后半部分
+            // 否则搜索范围为前半部分
             if(nums[mid] < target && target <= nums[right]) {
                 left = mid + 1;
             } else {
@@ -5599,7 +5699,7 @@ private int missingNumber(int[] nums) {
 // base case:dp[0][0] = grid[0][0], dp[i][0] = sum( 0, 0 -> i, 0 ), dp[0][i] = sum( 0, 0 -> 0, i )
 // return dp[rowLen-1][colLen-1]
 
-// v1
+// v1，未使用空间压缩的方法
 private int minPathSum( int[][] grid ) {
     if(grid == null || grid.length == 0 || grid[0].length == 0) {
         return 0;
@@ -5634,12 +5734,17 @@ private int minPathSum( int[][] grid ) {
     int[] dp = new int[n];
     for(int i = 0; i < m; i++) {
         for(int j = 0; j < n; j++) {
-            if(j == 0)
-                dp[j] = dp[j];		// 只能从上侧走到该位置
-            else if(i == 0)
-                dp[j] = dp[j-1];	// 只能从左侧走到该位置
-            else
-            	dp[j] = Math.min( dp[j], dp[j-1] );
+            if(j == 0) {
+                // 当前在第一列。只能从上方位置到达
+                dp[j] = dp[j];
+            } else if(i == 0) {
+                // 当前在第一行。只能从左侧位置到达
+                dp[j] = dp[j-1];
+            } else {
+                // 当前在边界之外的位置。可以从左侧或者上方位置到达
+                dp[j] = Math.max(dp[j-1], dp[j]);
+            }
+            // 加上当前位置的路径代价
             dp[j] += grid[i][j];
         }
     }

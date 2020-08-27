@@ -121,7 +121,7 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
 
 ##### 概念说明
 
-- 在数组中存在大量重复元素时，普通的快速排序算法会重复操作这些重复元素；为了改进算法的这个缺陷，提出这样一个思想：在切分时将数组分为三个部分：分别对应小于、等于和大于切分元素的数组元素
+- 在数组中存在大量重复元素时，普通的快速排序算法会在partition过程重复操作这些元素；为了改进算法的这个缺陷，提出这样一个思想：在切分时将数组分为三个部分：分别对应小于、等于和大于切分元素的数组元素
 
 ##### 算法说明
 
@@ -165,7 +165,6 @@ public static quickSortThreeWay(int[] arr, int low, int high) {
     int less = low, i = low, great = high;
     int pivotVal = arr[low];
     while(i <= great) {
-        // arr[i]小于v
         if(arr[i] < pivotVal) {
             swap(arr, less++, i++);
         } else if(arr[i] > pivotVal) {

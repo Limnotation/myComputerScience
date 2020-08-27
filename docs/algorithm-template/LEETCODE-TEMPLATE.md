@@ -1351,10 +1351,10 @@ public TreeNode deleteNode(TreeNode root, int key) {
     }
 
     if(root.val < key) {
-        // key < root.val, 递归在左子树删除
+        // key > root.val, 递归在右子树删除
         root.right = deleteNode(root.right, key);
     } else if(root.val > key) {
-        // key > root.val, 递归在右子树删除
+        // key < root.val, 递归在左子树删除
         root.left = deleteNode(root.left, key);
     } else {
         // key == root.val,删除当前结点，根据当前结点子结点数量
@@ -4825,6 +4825,7 @@ private void dfs(TreeNode root, String s) {
 
 ```java
 public boolean canFinish(int numCourses, int[][] prerequisites) {
+    // 课程数目为0，肯定不能完成学习
     if(numCourses <= 0) {
         return false;
     }

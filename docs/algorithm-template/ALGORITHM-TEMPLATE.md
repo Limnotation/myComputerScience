@@ -157,7 +157,7 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
     *
     * Pointer k is the first index of ?-part.
     */
-public static quickSortThreeWay(int[] arr, int low, int high) {
+public void quickSortThreeWay(int[] arr, int low, int high) {
     if(high <= low) {
         return;
     }
@@ -166,9 +166,12 @@ public static quickSortThreeWay(int[] arr, int low, int high) {
     int pivotVal = arr[low];
     while(i <= great) {
         if(arr[i] < pivotVal) {
-            swap(arr, less++, i++);
+            swap(arr, less, i);
+            less++;
+            i++;
         } else if(arr[i] > pivotVal) {
-            swap(arr, i, great--);
+            swap(arr, i, great);
+            great--;
         } else {
             i++;
         }

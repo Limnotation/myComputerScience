@@ -587,6 +587,8 @@ class Solution {
 }
 ```
 
+-----
+
 ##### 题目示例4  `leetcode 236 二叉树的最近公共祖先` 
 
 ```java
@@ -2843,7 +2845,9 @@ private ListNode plusOne(ListNode head) {
 }
 ```
 
+----
 
+------
 
 ### 栈和队列
 
@@ -2852,19 +2856,16 @@ private ListNode plusOne(ListNode head) {
 ##### 题目示例1 `leetcode 155 最小栈`
 
 ```java
-class MinStack 
-{
+class MinStack  {
     Stack<Integer> dataS;
     Stack<Integer> minS;
     /** initialize your data structure here. */
-    public MinStack() 
-    {
+    public MinStack() {
         dataS = new Stack<>();
         minS = new Stack<>();
     }
     
-    public void push(int x) 
-    {
+    public void push(int x)  {
         dataS.push( x );
         if( minS.size() == 0 )
             minS.push( x );
@@ -5005,12 +5006,11 @@ private int leftBound(int[] nums, int target) {
     
     while(left < right) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] == target)
-            right = mid;	
-        else if(nums[mid] < target)
-            left = mid + 1;
-        else if(nums[mid] > target)
+        if(nums[mid] >= target) {
             right = mid;
+        } else {
+            left = mid + 1;
+        }
     }
     return left; // 循环的结束条件是left == right,所以也可以返回right
 }
@@ -5036,16 +5036,17 @@ private int leftBound(int[] nums, int target) {
 
 再比如有序数组 `nums = [2, 3, 5, 7],target = 8` 算法返回值为4,表示： `nums`中小于8的元素有4个
 
-可以看出，函数的返回值（即 `left`变量的值）取值范围为 `[0, nums.length]`,可以通过添加简单的代码来处理数组中不存在目标值的情况，当然，具体的返回值根据需求决定
+可以看出，函数的返回值（即 `left`变量的值）取值范围为 `[0, nums.length]`,可以通过添加简单的代码来处理数组中不存在目标值的情况，当然，具体的返回值根据题目要求决定
 
 ```java
 while(left < right) {
     // ...
 }
 
-if(left == nums.length)
+if(left == nums.length || nums[left] != target) {
     return -1;
-return nums[left] == target? left:-1;
+}
+return left;
 ```
 
 **3、`left = mid + 1, right = mid`的变化规律**
@@ -5057,7 +5058,7 @@ return nums[left] == target? left:-1;
 在 `nums[mid] == target`时，算法的处理方式为：
 
 ```java
-if(nums[mid] == target)
+if(nums[mid] >= target)
     right = mid;
 ```
 
@@ -5079,12 +5080,11 @@ private int rightBound(int[] nums, int target) {
     int left = 0, right = nums.length;
     while(left < right) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] == target)
+        if(nums[mid] <= target) {
             left = mid + 1;
-        else if(nums[mid] < target)
-            left = mid + 1;
-        else if(nums[mid] > target)
+        } else {
             right = mid;
+        }
     }
     return left - 1;// 循环结束的条件是left == right,同时有left = mid + 1；返回值可以是left-1或right-1
 }
@@ -5093,7 +5093,7 @@ private int rightBound(int[] nums, int target) {
 **1、算法搜索右侧边界的原理**
 
 ```java
-if(nums[mid] == target)
+if(nums[mid] <= target)
     left = mid + 1;
 ```
 
@@ -5106,7 +5106,7 @@ if(nums[mid] == target)
 由于在搜索右侧边界时有：
 
 ```java
-if(nums[mid] == target)
+if(nums[mid] <= target)
     left = mid + 1;
 ```
 

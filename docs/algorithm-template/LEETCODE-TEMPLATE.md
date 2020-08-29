@@ -507,15 +507,15 @@ func traversal( root *TreeNode ) ResultType {
 ##### 题目示例1 `leetcode 104 二叉树的最大深度`
 
 ```java
-private int maxDepth( TreeNode root )
-{
-    if( root == null )
+private int maxDepth(TreeNode root) {
+    if(root == null) {
         return 0;
+    }
     
     // divide 
-    int left = maxDepth( root.left );
-    int right = maxDepth( root.right );
-    return Math.max( left, right ) + 1;
+    int left = maxDepth(root.left);
+    int right = maxDepth(root.right);
+    return Math.max(left, right) + 1;
 }
 ```
 
@@ -952,14 +952,12 @@ private TreeNode buildTree(int preLeft, int preRight, int inLeft, int inRight) {
 **建议在纸上跑一遍算法流程**
 
 ```java
-private Node connect(Node root)
-{
+private Node connect(Node root) {
     if(root == null)
         return null;
     Node left = root.left;
     Node right = root.right;
-    while(left != null)
-    {
+    while(left != null) {
         left.next = right;
         left = left.right;
         right = right.left;
@@ -976,9 +974,35 @@ private Node connect(Node root)
 ##### 题目示例19 `leetcode 117 填充每个节点的下一个右侧节点指针 II`
 
 ```java
-private Node connect(Node root)
-{
-    
+// BFS解决
+public Node connect(Node root) {
+    if(root == null) {
+        return root;
+    }
+
+    Queue<Node> queue = new LinkedList<>();
+    queue.offer(root);
+    while(!queue.isEmpty()) {
+        int levelSize = queue.size();
+        while(levelSize > 0) {
+            // 链接同一层的右侧指针
+            Node node = queue.poll();
+            levelSize--;
+            if(levelSize > 0) {
+                node.next = queue.peek();
+            } else {
+                node.next = null;
+            }
+
+            if(node.left != null) {
+                queue.offer(node.left);
+            }
+            if(node.right != null) {
+                queue.offer(node.right);
+            }
+        }
+    }
+    return root;
 }
 ```
 
@@ -1715,19 +1739,19 @@ private TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
 ##### 题目示例16 `leetcode 510 二叉搜索树中的中序后继`
 
 ```java
-private Node inorderSuccessor(Node node)
-{
-    if(node.right != null)
-    {
+private Node inorderSuccessor(Node node) {
+    if(node.right != null) {
+        // 目标节点右子树不为空，则其中序后继为其右子树中的最小节点
         node = node.right;
-        while(node.left != null)
+        while(node.left != null) { 
             node = node.left;
+        }
         return node;
-    }
-    else
-    {
-        while(node.parent != null && node.parent.val < node.val)
+    } else {
+        // 否则向上找到第一个这样的节点，目标节点存在于其左子树中
+        while(node.parent != null && node.parent.val < node.val) {
             node = node.parent;
+        }
         return node.parent;
     }
 }
@@ -5880,7 +5904,7 @@ private int uniquePathWithObstacles( int[][] obstacleGrid )
 */
 
 // 二维矩阵dp
-public int minimumTotal(List<List<Integer>> triangle) {
+private int minimumTotal(List<List<Integer>> triangle) {
     int n = triangle.size();
 
     int[][] dp = new int[n+1][n+1];
@@ -5890,6 +5914,19 @@ public int minimumTotal(List<List<Integer>> triangle) {
         }
     }
     return dp[0][0];
+}
+
+// 空间压缩
+private int minimumTotal(List<List<Integer>> triangle) {
+    int n = triangle.size();
+
+    int[] dp = new int[n+1];
+    for(int i = n - 1; i >= 0; i--) {
+        for(int j = 0; j <= i; j++) {
+            dp[j] = Math.min(dp[j], dp[j+1]) + triangle.get(i).get(j);
+        }
+    }
+    return dp[0];
 }
 ```
 

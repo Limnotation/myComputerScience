@@ -183,11 +183,13 @@
       - [题目示例13 `leetcode 374 猜数字大小`](#题目示例13-leetcode-374-猜数字大小)
       - [题目示例14 `leetcode 638 找到K个最接近的元素`](#题目示例14-leetcode-638-找到k个最接近的元素)
       - [题目示例15 `剑指offer 53-II 0 ~ n-1中缺失的数字`](#题目示例15-剑指offer-53-ii-0--n-1中缺失的数字)
+      - [题目示例16 `leetcode 852 山脉数组的峰顶索引`](#题目示例16-leetcode-852-山脉数组的峰顶索引)
   - [动态规划](#动态规划)
     - [矩阵类型( 10% )](#矩阵类型-10-)
-        - [题目示例1 `leetcode 64 最小路径和`](#题目示例1-leetcode-64-最小路径和)
-        - [题目示例2 `leetcode 62 不同路径`](#题目示例2-leetcode-62-不同路径)
-        - [题目示例3 `leetcode 63不同路径II`](#题目示例3-leetcode-63不同路径ii)
+      - [题目示例1 `leetcode 64 最小路径和`](#题目示例1-leetcode-64-最小路径和)
+      - [题目示例2 `leetcode 62 不同路径`](#题目示例2-leetcode-62-不同路径)
+      - [题目示例3 `leetcode 63不同路径II`](#题目示例3-leetcode-63不同路径ii)
+      - [题目示例4 `leetcode 120 三角形最小路径和`](#题目示例4-leetcode-120-三角形最小路径和)
     - [序列类型（40%）](#序列类型40)
       - [题目示例1 `leetcode 70 爬楼梯`](#题目示例1-leetcode-70-爬楼梯)
       - [题目示例2 `leetcode 55跳跃游戏`](#题目示例2-leetcode-55跳跃游戏)
@@ -2314,6 +2316,7 @@ public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 ###### 题目示例1 `leetcode 206 反转链表`
 
 ```java
+// 迭代方式反转
 private ListNode reverseList(ListNode head) {
     ListNode pre = null;
     ListNode cur = head;
@@ -2326,6 +2329,19 @@ private ListNode reverseList(ListNode head) {
     }
     return pre;
 }
+
+// 递归方式反转
+private ListNode reverseList(ListNode head) {
+    if(head == null || head.next == null) {
+        return head;
+    }
+
+    ListNode nextNode = head.next;
+    ListNode newNode = reverseList(nextNode);
+    nextNode.next = head;
+    head.next = null;
+    return newNode;
+}
 ```
 
 -----
@@ -2334,13 +2350,17 @@ private ListNode reverseList(ListNode head) {
 
 ```java
 public ListNode reverseBetween(ListNode head, int m, int n) {
+    // 定位到被反转的第一个节点以及其前置节点
     ListNode pre = null, cur = head;
     for(int i = 1; i < m; i++) {
         pre = cur;
         cur = cur.next;
         n--;
     }
+    // 记录被反转部分的尾节点以及被反转部分之前的
+    // 链表最后一个节点
     ListNode tail = cur, con = pre;
+    // 反转指定范围内的链表节点
     while(n > 0) {
         ListNode temp = cur.next;
         cur.next = pre;
@@ -2349,6 +2369,7 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
         n--;
     }
 
+    // con = null表示链表头结点也被反转了
     if(con != null)
         con.next = pre;
     else 
@@ -5026,7 +5047,7 @@ private int leftBound(int[] nums, int target) {
 
 **2、算法在数组中不存在target值的情况下返回结果的含义**
 
-**左侧边界**的含义：
+**左侧边界**的含义：**左侧边界的值表示严格小于target的元素的数量**
 
 ![](../../../mdPics/1.jpg)
 
@@ -5121,9 +5142,10 @@ while(left < right)
 {
     //...
 }
-if(left == 0)
+if(left == 0 || nums[left - 1] != target) {
     return -1;
-return nums[left - 1] == target ? (left - 1):-1;
+}
+return left - 1;
 ```
 
 ----
@@ -5153,12 +5175,11 @@ private int leftBound(int[] nums, int target) {
     int left = 0, right = nums.length - 1;
     while(left <= right) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] == target)
+        if(nums[mid] >= target) {
             right = mid - 1;
-        else if(nums[mid] < target)
+        } else {
             left = mid + 1;
-        else if(nums[mid] > target)
-            right = mid - 1;
+        }
     }
     
     // 检查left 越界情况
@@ -5172,18 +5193,17 @@ private int rightBound(int[] nums, int target) {
     int left = 0, right = nums.length - 1;
     while(left <= right) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] == target)
+        if(nums[mid] <= target) {
             left = mid + 1;
-        else if(nums[mid] < target)
-            left = mid + 1;
-        else if(nums[mid] > target)
-            right = mid - 1;
+        } else {
+            right = mid;
+        }
     }
     
     // 检查right越界情况
-    if(right < 0 || nums[right] != target)
+    if(left == 0 || nums[left - 1] != target)
         return -1;
-    return right;
+    return left - 1;
 }
 ```
 
@@ -5392,7 +5412,7 @@ private boolean search(int[] nums, int target) {
             return true;
         }
         
-        // 无法判断哪部分有序时，直接移动边界
+        // 无法判断哪部分有序时，直接移动左边界
         if(nums[left] == nums[mid]) {
             left++;
             continue;
@@ -5684,15 +5704,41 @@ private int missingNumber(int[] nums) {
 }
 ```
 
--------
+------
 
--------
+##### 题目示例16 `leetcode 852 山脉数组的峰顶索引`
+
+```java
+private int peakIndexInMountainArray(int[] nums) {
+    int left = 0;
+    int right = nums.length - 1;
+    while(left <= right) {
+        int mid = left + (right - left) / 2;
+        if(nums[mid - 1] < nums[mid] && nums[mid] > nums[mid + 1]) {
+            return mid;
+        } else if(nums[mid] > nums[mid - 1]) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return -1;
+}
+```
+
+-----
+
+-----
+
+
+
+
 
 ### 动态规划
 
 #### 矩阵类型( 10% )
 
-###### 题目示例1 `leetcode 64 最小路径和`
+##### 题目示例1 `leetcode 64 最小路径和`
 
 ```java
 // dp[i][j] 表示从起点走到（i,j）的最短路径长度
@@ -5753,7 +5799,7 @@ private int minPathSum( int[][] grid ) {
 }
 ```
 
-###### 题目示例2 `leetcode 62 不同路径`
+##### 题目示例2 `leetcode 62 不同路径`
 
 ```java
 // dp[i][j]表示从起点（0，0）走到当前位置（i,j）的路径总数
@@ -5772,7 +5818,7 @@ private int uniquePaths( int m, int n )
 }
 ```
 
-###### 题目示例3 `leetcode 63不同路径II`
+##### 题目示例3 `leetcode 63不同路径II`
 
 ```java
 // dp[][]数组的含义与示例二相同
@@ -5819,6 +5865,31 @@ private int uniquePathWithObstacles( int[][] obstacleGrid )
             	dp[j] += dp[j-1];
     }
     return dp[n-1];
+}
+```
+
+-----
+
+##### 题目示例4 `leetcode 120 三角形最小路径和`
+
+```java
+/**
+* 状态定义：dp[i][j]表示从点（i, j）到底边的最小路径和
+* 状态转移方程： dp[i][j] = min(dp[i+1][j], dp[i+1][j+1]) + triangle[i][j];
+* 自底向上求解dp矩阵
+*/
+
+// 二维矩阵dp
+public int minimumTotal(List<List<Integer>> triangle) {
+    int n = triangle.size();
+
+    int[][] dp = new int[n+1][n+1];
+    for(int i = n - 1; i >= 0; i--) {
+        for(int j = 0; j <= i; j++) {
+            dp[i][j] = Math.min(dp[i+1][j], dp[i+1][j+1]) + triangle.get(i).get(j);
+        }
+    }
+    return dp[0][0];
 }
 ```
 

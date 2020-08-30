@@ -41,7 +41,7 @@ class Trie {
     public boolean search(String word) {
         TrieNode node = root;
         for(char c:word.toCharArray()) {
-            if(node.child[c- 'a']) {
+            if(node.child[c- 'a'] == null) {
                 return false;
             }
             node = node.child[c - 'a'];

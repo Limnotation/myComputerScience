@@ -236,6 +236,7 @@
         - [题目示例5 `leetcode 22 括号生成`](#题目示例5-leetcode-22-括号生成)
       - [题型3：二维平面上的回溯问题](#题型3二维平面上的回溯问题)
         - [题目示例1 `leetcode 79 单词搜索`](#题目示例1-leetcode-79-单词搜索)
+        - [题目示例2 `leetcode 212 单词搜索II`](#题目示例2-leetcode-212-单词搜索ii)
       - [题型四：游戏问题](#题型四游戏问题)
         - [题目示例1 `leetcode37 解数独`](#题目示例1-leetcode37-解数独)
         - [题目示例2 `leetcode 51 N皇后`](#题目示例2-leetcode-51-n皇后)
@@ -2007,23 +2008,22 @@ private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
 
 ```java
 private ListNode mergeKLists(ListNode[] lists) {
-    if(lists == null || lists.length == 0)
+    if(lists == null || lists.length == 0) {
         return null;
+    }
 
-    PriorityQueue<ListNode> pq = new PriorityQueue<>((o1, o2)->(o1.val - o2.val));
+    PriorityQueue<Integer> pq = new PriorityQueue<>();
     for(ListNode list:lists) {
         while(list != null) {
-            ListNode temp = list;
-            list = temp.next;
-            temp.next = null;
-            pq.offer(temp);
+            pq.offer(list.val);
+            list = list.next;
         }
     }
 
-    ListNode dummyHead = new ListNode(-1);
+    ListNode dummyHead = new ListNode(0);
     ListNode runner = dummyHead;
     while(!pq.isEmpty()) {
-        runner.next = pq.poll();
+        runner.next = new ListNode(pq.poll());
         runner = runner.next;
     }
     return dummyHead.next;
@@ -2041,8 +2041,10 @@ public ListNode partition(ListNode head, int x) {
     }
 	
     // 将结点分别放到两个子链表上，结束后拼接起来即可
-    ListNode dummy1 = new ListNode(0), dummy2 = new ListNode(0);
-    ListNode runner1 = dummy1, runner2 = dummy2;
+    ListNode dummy1 = new ListNode(0);
+    ListNode dummy2 = new ListNode(0);
+    ListNode runner1 = dummy1;
+    ListNode runner2 = dummy2;
     while(head != null) {
         if(head.val < x) {
             runner1.next = new ListNode(head.val);
@@ -2088,6 +2090,7 @@ private ListNode rotateRight(ListNode head, int k) {
         return head;
     }
 
+    // 获取链表长度，求余取得需要被反转的结点数量
     int length = 0;
     ListNode runner = head;
     while(runner != null) {
@@ -2095,13 +2098,20 @@ private ListNode rotateRight(ListNode head, int k) {
         runner = runner.next;
     }
     int gap = k % length;
-    ListNode slow = head, fast = head;
-    for(int i = 0; i < gap; i++) 
+    
+    // 双指针，slow 指针最终指向被翻转部分的前一个结点
+    // fast指针最终指向链表最后一个结点
+    ListNode slow = head;
+    ListNode fast = head;
+    for(int i = 0; i < gap; i++)  {
         fast = fast.next;
+    }
     while(fast.next != null) {
         slow = slow.next;
         fast = fast.next;
     }
+    // 调整指针，将被翻转部分移到链表最前段端
+    // 注意把slow.next 设为空，避免形成循环
     fast.next = head;
     head = slow.next;
     slow.next = null;
@@ -2117,17 +2127,21 @@ private ListNode rotateRight(ListNode head, int k) {
 // 1、将链表从中间断开
 // 2、将后半部分反转
 // 3、交叉将两个链表节点放入新链表中
-public void reorderList( ListNode head )
-{
-    if( head == null )
+public void reorderList(ListNode head) {
+    if(head == null) { 
         return;
-    ListNode middle = findMiddle( head );
-    ListNode tail = reverseList( middle.next );
-    middle.next = null;
-    head = mergeTwoLists( head, tail );
+    }
+    ListNode preMid = getPreMid(head);
+    ListNode tail = reverseList(preMid.next);
+    // 注意将两部分断开，否则会形成循环
+    preMid.next = null;
+    head = mergeTwoLists(head, tail);
 }
 
-private ListNode findMiddle(ListNode head) {
+/**
+* 获取链表中点的前一个结点
+*/
+private ListNode getPreMid(ListNode head) {
     ListNode slow = head;
     ListNode fast = head.next;
     while(fast != null && fast.next != null) {
@@ -2137,6 +2151,9 @@ private ListNode findMiddle(ListNode head) {
     return slow;
 }
 
+/**
+* 交叉合并两个链表
+*/
 private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
     ListNode dummy = new ListNode(-1);
     ListNode head = dummy;
@@ -2153,20 +2170,25 @@ private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
         head = head.next;
     }
     
-    if(l1 != null)
+	if(l1 != null) {
         head.next = l1;
-    if(l2 != null)
+    } else if(l2 != null) {
         head.next = l2;
+    }
     return dummy.next;
 }
 
+/**
+* 反转链表
+*/
 private ListNode reverseList(ListNode head) {
     ListNode pre = null;
-    while(head != null) {
-        ListNode next = head.next;
-        head.next = pre;
-        pre = head;
-        head = next;
+    ListNode cur = head;
+    while(cur != null) {
+        ListNode next = cur.next;
+        cur.next = pre;
+        pre = cur;
+        cur = next;
     }
     return pre;
 }
@@ -2178,11 +2200,12 @@ private ListNode reverseList(ListNode head) {
 
 ```java
 private ListNode insertionSortList(ListNode head) {
-    ListNode dummyHead = new ListNode(-1);
+    ListNode dummyHead = new ListNode(0);
     ListNode pre = dummyHead;
     ListNode cur = head;
 
     while(cur != null) {
+        // 保存未排序部分的链表
         ListNode next = cur.next;
         // 确定插入位置
         while(pre.next != null && pre.next.val < cur.val) {
@@ -2322,7 +2345,7 @@ public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         int temp = num1 + num2 + carry;
         int val = temp % 10;
         carry = temp / 10;
-
+	    // 注意这里需要头插法
         ListNode node = new ListNode(val);
         node.next = dummyHead.next;
         dummyHead.next = node;
@@ -2344,8 +2367,7 @@ public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 private ListNode reverseList(ListNode head) {
     ListNode pre = null;
     ListNode cur = head;
-    while(cur != null)
-    {
+    while(cur != null) {
         ListNode next = cur.next;
         cur.next = pre;
         pre = cur;
@@ -2383,7 +2405,8 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
     }
     // 记录被反转部分的尾节点以及被反转部分之前的
     // 链表最后一个节点
-    ListNode tail = cur, con = pre;
+    ListNode tail = cur;
+    ListNode con = pre;
     // 反转指定范围内的链表节点
     while(n > 0) {
         ListNode temp = cur.next;
@@ -2394,10 +2417,11 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
     }
 
     // con = null表示链表头结点也被反转了
-    if(con != null)
+    if(con != null) {
         con.next = pre;
-    else 
+    } else {
         head = pre;
+    }
     tail.next = cur;
     return head;
 }
@@ -2413,6 +2437,7 @@ public ListNode reverseKGroup(ListNode head, int k) {
         return head;
     }
 
+    // 确定反转区间，如果区间小于k，直接返回即可
     ListNode a = head, b = head;
     for(int i = 0; i < k; i++) {
         if(b == null) {
@@ -2420,7 +2445,8 @@ public ListNode reverseKGroup(ListNode head, int k) {
         }
         b = b.next;
     }
-
+	
+    // 递归反转
     ListNode newHead = reverseWithinRange(a, b);
     a.next = reverseKGroup(b, k);
     return newHead;
@@ -2430,7 +2456,8 @@ public ListNode reverseKGroup(ListNode head, int k) {
 * 翻转[a,b)间的链表
 */
 private ListNode reverseWithinRange(ListNode a, ListNode b) {
-    ListNode pre = null, cur = a;
+    ListNode pre = null;
+    ListNode cur = a;
     while(cur != b) {
         ListNode next = cur.next;
         cur.next = pre;
@@ -2453,7 +2480,8 @@ private ListNode reverseWithinRange(ListNode a, ListNode b) {
 private ListNode removeNthFromEnd(ListNode head, int n) {
     ListNode dummyHead = new ListNode(0);
     dummyHead.next = head;
-    ListNode slow = dummyHead, fast = dummyHead;
+    ListNode slow = dummyHead;
+    ListNode fast = dummyHead;
     for(int i = 0; i <= n; i++) {
         fast = fast.next;
     }
@@ -2500,13 +2528,18 @@ private ListNode deleteDuplicates(ListNode head) {
     boolean isDuplicate = false;
     while(cur != null && cur.next != null) {
         if(cur.val == cur.next.val) {
+            // 当前元素与后继元素相等，移动指针
             cur = cur.next;
             isDuplicate = true;
         } else {
+            // 当前元素与后继元素不相等，并且当前元素存在重复
+            // 移动指针，不再管当前元素的值
             if(isDuplicate) {
                 cur = cur.next;
                 isDuplicate = false;
             } else {
+                // 当前元素与后继元素不相等，并且当前元素唯一
+                // 在结果中存储当前元素，移动指针
                 pre.next = new ListNode(cur.val);
                 pre = pre.next;
                 cur = cur.next;
@@ -2516,7 +2549,6 @@ private ListNode deleteDuplicates(ListNode head) {
     // 处理链表最后一个节点
     if(!isDuplicate) {
         pre.next = new ListNode(cur.val);
-        pre = pre.next;
     }
     return dummyHead.next;
 }
@@ -2578,17 +2610,14 @@ public boolean isPalindrome(ListNode head) {
     if(head == null || head.next == null)
         return true;
     
-    /**
-    * 将链表切分成两半，并将第二部分反转
-    */
+    // 将链表切分成两半，并将第二部分反转
     ListNode preMid = getPreMiddle(head);
     ListNode secondHalf = preMid.next;
     preMid.next = null;
     secondHalf = reverse(secondHalf);
 
-    /**
-    * 比较两段链表元素
-    */
+
+    // 比较两段链表元素
     while(head != null && secondHalf != null) {
         if(head.val != secondHalf.val) {
             return false;
@@ -2608,7 +2637,8 @@ private ListNode getPreMiddle(ListNode head) {
         return null;
     }
 
-    ListNode slow = head, fast = head.next;
+    ListNode slow = head;
+    ListNode fast = head.next;
     while(fast != null && fast.next != null) {
         slow = slow.next;
         fast = fast.next.next;
@@ -2620,15 +2650,13 @@ private ListNode getPreMiddle(ListNode head) {
 * 翻转链表
 */
 private ListNode reverse(ListNode head) {
-    if(head == null)
-        return head;
-    
     ListNode pre = null;
-    while(head != null) {
-        ListNode next = head.next;
-        head.next = pre;
-        pre = head;
-        head = next;
+    ListNode cur = head;
+    while(cur != null) {
+        ListNode next = cur.next;
+        cur.next = pre;
+        pre = cur;
+        cur = next;
     }
     return pre;
 }
@@ -2639,12 +2667,14 @@ private ListNode reverse(ListNode head) {
 ###### 题目示例7 `leetcode 328 奇偶链表`
 
 ```java
-private ListNode oddEvenList(ListNode head) {
-    if(head == null)
-        return null;
-    
-    ListNode oddRunner = head, evenRunner = head.next;
-    ListNode evenHead = evenRunner;
+public ListNode oddEvenList(ListNode head) {
+    if(head == null || head.next == null) {
+        return head;
+    }
+
+    ListNode oddRunner = head;
+    ListNode evenRunner = head.next;
+    ListNode evenHead = head.next;
     while(evenRunner != null && evenRunner.next != null) {
         oddRunner.next = evenRunner.next;
         oddRunner = oddRunner.next;
@@ -7228,7 +7258,80 @@ private boolean backTracking(char[][] board, String word, int row, int col, int 
 }
 ```
 
------
+###### 题目示例2 `leetcode 212 单词搜索II`
+
+```java
+public List<String> findWords(char[][] board, String[] words) {
+    List<String> res = new LinkedList<>();
+
+    for(String word:words) {
+        if(exist(board, word)) {
+            res.add(word);
+        }
+    }
+    return res;
+}
+
+/**
+* 检查单词是否存在于二维网格中
+*/
+private boolean exist(char[][] board, String word) {
+    if(board == null || word == null || board.length == 0) {
+        return false;
+    }
+
+    int m = board.length;
+    int n = board[0].length;
+    boolean[][] visited = new boolean[m][n];
+    for(int i = 0; i < board.length; i++) {
+        for(int j = 0; j < board[0].length; j++) {
+            if(backTracking(board, word, i, j, 0, visited)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/**
+* @parameter board       字符二维网格
+* @parameter word        目标单词
+* @parameter row         方法当前所访问的行索引
+* @parameter col         方法当前所访问的列索引
+* @parameter pathLength  当前已经匹配的路径长度
+* @return                路径的匹配结果
+**/
+private boolean backTracking(char[][] board, String word, int row, int col, int pathLength) {
+    if(word.length() == pathLength)
+        return true;
+
+    boolean hasPath = false;
+    if( row >= 0 && row < board.length && col >= 0 && col < board[0].length 
+       && board[row][col] == word.charAt(pathLength) && !visited[row][col]) {
+        // 做选择
+        pathLength++;
+        visited[row][col] = true;
+
+        // 进入下一层决策树（四叉树）
+        hasPath = (backTracking(board, word, row, col - 1, pathLength) 
+                   || backTracking(board, word, row - 1, col, pathLength)
+                   || backTracking(board, word, row, col + 1, pathLength)
+                   || backTracking(board, word, row + 1, col, pathLength)
+                  );
+
+        // 撤销选择
+        if(!hasPath) {
+            pathLength--;
+            visited[row][col] = false;
+        }
+    }
+    return hasPath;
+}
+```
+
+
+
+------
 
 ##### 题型四：游戏问题
 

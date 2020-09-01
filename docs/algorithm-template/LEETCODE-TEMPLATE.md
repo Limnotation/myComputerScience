@@ -2579,21 +2579,26 @@ private boolean hasCycle(ListNode head) {
 ###### 题目示例5  `leetcode 142 环形链表II`
 
 ```java
-private ListNode detectCycle(ListNode head) {
-    ListNode dummyHead = new ListNode(0);
-    dummyHead.next = head;
-    ListNode slow = dummyHead, fast = dummyHead;
-    while(true) {
-        if(fast.next == null || fast.next.next == null) {
-            return null;
-        }
+public ListNode detectCycle(ListNode head) {
+    if(head == null || head.next == null) {
+        return null;
+    }
+
+    ListNode slow = head;
+    ListNode fast = head;
+    while(fast != null && fast.next != null) {
         slow = slow.next;
         fast = fast.next.next;
-        if(fast == slow)
+        if(slow == fast) {
             break;
+        }
     }
-    slow = dummyHead;
-    while(fast != slow) {
+
+    if(fast == null || fast.next == null) {
+        return null;
+    }
+    slow = head;
+    while(slow != fast) {
         slow = slow.next;
         fast = fast.next;
     }

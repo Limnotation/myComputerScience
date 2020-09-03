@@ -54,8 +54,6 @@
       - [题目示例16 `leetcode 510 二叉搜索树中的中序后继`](#题目示例16-leetcode-510-二叉搜索树中的中序后继)
       - [题目示例17  `leetcode 426 将二叉搜索树转化为排序的双向链表`](#题目示例17-leetcode-426-将二叉搜索树转化为排序的双向链表)
       - [题目示例18 `leetcode 99 恢复二叉搜索树`](#题目示例18-leetcode-99-恢复二叉搜索树)
-    - [Tire树](#tire树)
-      - [题目示例1 `leetcode 208 实现Tire(前缀树)`](#题目示例1-leetcode-208-实现tire前缀树)
   - [链表](#链表)
     - [基本技能](#基本技能)
     - [常见题型](#常见题型)
@@ -103,26 +101,27 @@
       - [概念](#概念)
         - [单调栈：](#单调栈)
         - [单调队列：](#单调队列)
-      - [典型题目](#典型题目)
+      - [单调栈典型题目](#单调栈典型题目)
         - [题目示例 1 `leetcode 496 下一个更大元素I`](#题目示例-1-leetcode-496-下一个更大元素i)
         - [题目示例2 `leetcode 503 下一个更大元素II`](#题目示例2-leetcode-503-下一个更大元素ii)
         - [题目示例3 `leetcode 739 每日温度`](#题目示例3-leetcode-739-每日温度)
         - [题目示例 4`leetcode 962 最大宽度坡`](#题目示例-4leetcode-962-最大宽度坡)
         - [题目示例5 `leetcode 42 接雨水`](#题目示例5-leetcode-42-接雨水)
         - [题目示例 6 `leetcode 84 柱状图中最大的矩形`](#题目示例-6-leetcode-84-柱状图中最大的矩形)
-        - [题目示例7 `leetcode 239 滑动窗口最大值`](#题目示例7-leetcode-239-滑动窗口最大值)
-        - [题目示例8 `leetcode 85 最大矩形 `](#题目示例8-leetcode-85-最大矩形-)
-        - [题目示例9 `leetcode 402 移掉K位数字`](#题目示例9-leetcode-402-移掉k位数字)
-        - [题目示例10 `leetcode 768 最多能完成排序的块II`](#题目示例10-leetcode-768-最多能完成排序的块ii)
-        - [题目示例11 `leetcode 901 股票价格跨度`](#题目示例11-leetcode-901-股票价格跨度)
-        - [题目示例12 `leetcode 1019 链表的下一个更大结点`](#题目示例12-leetcode-1019-链表的下一个更大结点)
-        - [题目示例13 `leetcode 1124 表现良好的最长时间段`](#题目示例13-leetcode-1124-表现良好的最长时间段)
-        - [题目示例14 `leetcode 316 去除重复字母`](#题目示例14-leetcode-316-去除重复字母)
-        - [题目示例15 `leetcode 132模式`](#题目示例15-leetcode-132模式)
+        - [题目示例7 `leetcode 85 最大矩形 `](#题目示例7-leetcode-85-最大矩形-)
+        - [题目示例8 `leetcode 402 移掉K位数字`](#题目示例8-leetcode-402-移掉k位数字)
+        - [题目示例9 `leetcode 768 最多能完成排序的块II`](#题目示例9-leetcode-768-最多能完成排序的块ii)
+        - [题目示例10 `leetcode 901 股票价格跨度`](#题目示例10-leetcode-901-股票价格跨度)
+        - [题目示例11 `leetcode 1019 链表的下一个更大结点`](#题目示例11-leetcode-1019-链表的下一个更大结点)
+        - [题目示例12 `leetcode 1124 表现良好的最长时间段`](#题目示例12-leetcode-1124-表现良好的最长时间段)
+        - [题目示例13 `leetcode 316 去除重复字母`](#题目示例13-leetcode-316-去除重复字母)
+        - [题目示例14`leetcode 132模式`](#题目示例14leetcode-132模式)
+      - [单调队列典型题目](#单调队列典型题目)
+        - [题目示例1 `leetcode 239 滑动窗口最大值`](#题目示例1-leetcode-239-滑动窗口最大值)
   - [并查集](#并查集)
     - [概念](#概念-1)
       - [1、基础并查集代码](#1基础并查集代码)
-    - [典型题目](#典型题目-1)
+    - [典型题目](#典型题目)
       - [基础题目](#基础题目)
         - [题目示例1 `leetcode 547 朋友圈`](#题目示例1-leetcode-547-朋友圈)
         - [题目示例2 `leetcode 323 无向图中连通分量的个数`](#题目示例2-leetcode-323-无向图中连通分量的个数)
@@ -134,7 +133,7 @@
         - [题目示例1 `leetcode 128 最长连续序列`](#题目示例1-leetcode-128-最长连续序列)
         - [题目示例2 `leetcode 945 使数组唯一的最小增量`](#题目示例2-leetcode-945-使数组唯一的最小增量)
   - [堆/优先队列](#堆优先队列)
-    - [典型题目](#典型题目-2)
+    - [典型题目](#典型题目-1)
       - [题目示例1 `leetcode 692 前K个高频单词`](#题目示例1-leetcode-692-前k个高频单词)
       - [题目示例2 `leetcode 253 会议室II`](#题目示例2-leetcode-253-会议室ii)
 - [基础算法](#基础算法)
@@ -142,7 +141,7 @@
   - [深度优先搜索](#深度优先搜索)
     - [概念](#概念-2)
       - [1、沉岛思想](#1沉岛思想)
-    - [典型题目](#典型题目-3)
+    - [典型题目](#典型题目-2)
       - [题目示例1 `leetcode 200 岛屿数量`](#题目示例1-leetcode-200-岛屿数量)
       - [题目示例2  `leetcode 733 图像渲染`](#题目示例2-leetcode-733-图像渲染)
       - [题目示例3 `剑指offer 13 机器人的运动范围`](#题目示例3-剑指offer-13-机器人的运动范围)
@@ -154,7 +153,7 @@
       - [题目示例9 `leetcode 199 二叉树的右视图`](#题目示例9-leetcode-199-二叉树的右视图)
       - [题目示例10 `leetcode 257 二叉树的所有路径`](#题目示例10-leetcode-257-二叉树的所有路径)
   - [广度优先搜索](#广度优先搜索)
-    - [典型题目](#典型题目-4)
+    - [典型题目](#典型题目-3)
       - [题目1 `leetcode 207 课程表`](#题目1-leetcode-207-课程表)
       - [题目示例2 `leetcode 210 课程表II`](#题目示例2-leetcode-210-课程表ii)
   - [二分搜索](#二分搜索)
@@ -164,7 +163,7 @@
       - [二、寻找左侧边界的二分搜索](#二寻找左侧边界的二分搜索)
       - [三、寻找右侧边界的二分查找](#三寻找右侧边界的二分查找)
       - [四、逻辑统一](#四逻辑统一)
-    - [典型题目](#典型题目-5)
+    - [典型题目](#典型题目-4)
       - [题型1：二分求满足条件的元素](#题型1二分求满足条件的元素)
         - [题目示例1 `leetcode 704 二分查找`](#题目示例1-leetcode-704-二分查找)
         - [题目示例2 `leetcode 34 在排序数组中查找元素的第一个和最后一个位置`](#题目示例2-leetcode-34-在排序数组中查找元素的第一个和最后一个位置)
@@ -218,7 +217,7 @@
 - [算法思维](#算法思维)
   - [回溯法](#回溯法)
     - [简单的回溯法模板](#简单的回溯法模板)
-    - [典型题目](#典型题目-6)
+    - [典型题目](#典型题目-5)
       - [题型1：基本回溯问题，在数组上进行回溯搜索](#题型1基本回溯问题在数组上进行回溯搜索)
         - [题目示例1 `leetcode 78 子集 `](#题目示例1-leetcode-78-子集-)
         - [题目示例2 `leetcode 90 子集II`](#题目示例2-leetcode-90-子集ii)
@@ -258,7 +257,7 @@
     - [简单的滑动窗口模板](#简单的滑动窗口模板)
       - [1、可变窗口模板](#1可变窗口模板)
       - [2、固定窗口模板](#2固定窗口模板)
-    - [典型题目](#典型题目-7)
+    - [典型题目](#典型题目-6)
       - [可变窗口题目](#可变窗口题目)
         - [题目示例1 `leetcode 76 最小覆盖子串`](#题目示例1-leetcode-76-最小覆盖子串)
         - [题目示例2 `leetcode 567 字符串的排列`](#题目示例2-leetcode-567-字符串的排列)
@@ -272,7 +271,7 @@
         - [题目示例10 `leetcode 159 至多包含两个不同字符的最长子串`](#题目示例10-leetcode-159-至多包含两个不同字符的最长子串)
         - [题目示例11 `leetcode 340 至多包含K个不同字符的最长子串`](#题目示例11-leetcode-340-至多包含k个不同字符的最长子串)
       - [固定窗口题目](#固定窗口题目)
-        - [题目示例1 `leetcode 239 滑动窗口最大值`](#题目示例1-leetcode-239-滑动窗口最大值)
+        - [题目示例1 `leetcode 239 滑动窗口最大值`](#题目示例1-leetcode-239-滑动窗口最大值-1)
         - [题目示例2 `leetcode 1456 定长子串中原因的最大数目`](#题目示例2-leetcode-1456-定长子串中原因的最大数目)
       - [未分类题目](#未分类题目)
         - [题目示例6 `leetcode 904 水果成篮`](#题目示例6-leetcode-904-水果成篮)
@@ -303,7 +302,7 @@
       - [题目示例13 `leetcode 1094 拼车`](#题目示例13-leetcode-1094-拼车)
       - [题目示例14 `leetcode 325 和等于k的最长子数组长度`](#题目示例14-leetcode-325-和等于k的最长子数组长度)
   - [循环不变量](#循环不变量)
-    - [典型题目](#典型题目-8)
+    - [典型题目](#典型题目-7)
       - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
       - [题目示例2 `剑指offer 21 调整数组顺序使奇数位于偶数的前面`](#题目示例2-剑指offer-21-调整数组顺序使奇数位于偶数的前面)
 - [`leetcode` 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
@@ -1820,91 +1819,6 @@ private void recoverTree(TreeNode root) {
 }
 ```
 
-
-
-----
-
------
-
-#### Tire树
-
-##### 题目示例1 `leetcode 208 实现Tire(前缀树)`
-
-```java
-class TrieNode
-{
-    TrieNode[] child;	// 记录孩子结点
-    boolean isLeaf;		// 记录当前节点是否是一个单词的结束字母
-    public TrieNode()
-    {
-        this.child = new TrieNode[26];
-        this.isLeaf = false;
-    }
-}
-
-class Trie 
-{
-    /** 记录前缀树的根*/
-    TrieNode root;
-    
-    /** Initialize your data structure here. */
-    public Trie() 
-    {
-		this.root = new TrieNode();
-    }
-    
-    /** Inserts a word into the trie. */
-    public void insert(String word) 
-    {
-		TrieNode node = root;							// 从根出发
-        for( int i = 0; i < word.length(); i++ )
-        {
-            char c = word.charAt(i);					  // 对于每个字母
-            if( node.child[c-'a'] == null )				  // c - 'a'为空，说明未存入		  
-                node.child[c-'a'] = new TrieNode();		   // 存入新节点
-            node = node.child[c-'a'];					  // 指针指向当前节点
-        }
-        node.isLeaf = true;
-    }
-    
-    /** Returns if the word is in the trie. */
-    public boolean search(String word) 
-    {
-		TrieNode node = root;
-        for( int i = 0; i < word.length(); i++ )
-        {
-            char c = word.charAt(i);
-            if( node.child[c-'a'] == null )
-                return false;
-            node = node.child[c-'a'];
-        }
-        return node.isLeaf;
-    }
-    
-    /** Returns if there is any word in the trie that starts with the given prefix. */
-    public boolean startsWith(String prefix) 
-    {
-		TrieNode node = root;
-    	for( int i = 0; i < prefix.length(); i++ )
-        {
-            char c = prefix.charAt(i);
-            if( node.child[c-'a'] == null )
-                return false;
-            node = node.child[c-'a'];
-        }
-        return true;
-    }
-}
-
-/**
- * Your Trie object will be instantiated and called as such:
- * Trie obj = new Trie();
- * obj.insert(word);
- * boolean param_2 = obj.search(word);
- * boolean param_3 = obj.startsWith(prefix);
- */
-```
-
 -----
 
 ### 链表
@@ -3156,16 +3070,16 @@ public int longestValidParentheses(String s) {
 // 一个简单的单调栈模板
 Deque<Integer> stack = new LinkedList<>();
 for(int i = 0; i < nums.length; i++) {
-    while(!stack.isEmpty() && nums[i] <= nums[stack.peekLast()]) // 单调递增栈
-        // 单调递减栈 nums[i] >= nums[stack.peekLast()]
+    while(!stack.isEmpty() && nums[i] <= nums[stack.peekLast()]) {
         stack.removeLast();
+    }
     stack.addLast(i);
 }
 ```
 
 ---
 
-##### 典型题目
+##### 单调栈典型题目
 
 ###### 题目示例 1 `leetcode 496 下一个更大元素I`
 
@@ -3174,43 +3088,27 @@ for(int i = 0; i < nums.length; i++) {
 ```java
 // v1，从右往左构建一个单调递减栈
 private int[] nextGreaterElement(int[] nums1, int[] nums2) {
-    int[] res = new int[nums1.length];
-    int[] temp = new int[nums2.length];
-    Deque<Integer> stack = new LinkedList<>();
-    for(int i = nums2.length - 1; i >= 0; i--) {
-        while(!stack.isEmpty() && nums2[i] >= stack.peekLast()) {
-            stack.removeLast();
+    // 在nums2上，从右至左维护单调递减栈，获取每个数字的下一个更大元素
+    Deque<Integer> monoStack = new LinkedList<>();
+    int len2 = nums2.length;
+    int[] temp = new int[len2];
+    for(int i = len2 - 1; i >= 0; i--) {
+        while(!monoStack.isEmpty() && nums2[i] >= monoStack.peekLast()) {
+            monoStack.removeLast();
         }
-        temp[i] = stack.isEmpty()? -1:stack.peekLast();
-        stack.addLast( nums2[i] );
+        temp[i] = monoStack.isEmpty()? -1 : monoStack.peekLast();
+        monoStack.addLast(nums2[i]);
     }
-
-    for(int i = 0; i < nums1.length; i++) {
-        for(int j = 0; j < nums2.length; j++) {
-            if(nums2[j] == nums1[i])
-                res[i] = temp[j];      
+	// 遍历nums1和nums2,获取结果
+    int len1 = nums1.length;
+    int[] res = new int[len1];
+    for(int i = 0; i < len1; i++) {
+        for(int j = 0; j < len2; j++) {
+            if(nums2[j] == nums1[i]) {
+                res[i] = temp[j];
+            }
         }
     }
-    return res;
-}
-
-
-// v2，从左往右构建一个单调递减栈
-private int[] nextGreaterElement( int[] nums1, int[] nums2 )
-{
-    Deque<Integer> stack = new LinkedList<>();
-    HashMap<Integer, Integer> hashmap = new HashMap<>();
-    int[] res = new int[nums1.length];
-    for( int i = 0; i < nums2.length; i++ )
-    {
-        while( !stack.isEmpty() && nums2[i] > stack.peekLast() )
-            hashmap.put( stack.removeLast(), nums2[i] );
-        stack.addLast( nums2[i] );
-    }
-    while( !stack.isEmpty() )
-        hashmap.put( stack.removeLast(), - 1 );
-    for( int i = 0; i < nums1.length; i++ )
-        res[i] = hashmap.get( nums1[i] );
     return res;
 }
 ```
@@ -3223,13 +3121,13 @@ private int[] nextGreaterElement( int[] nums1, int[] nums2 )
 // 从右往左构建一个单调递减栈
 private int[] nextGreaterElements(int[] nums) {
     int n = nums.length;
-    Deque<Integer> stack = new LinkedList<>();
+    Deque<Integer> monoStack = new LinkedList<>();
     int[] res = new int[n];
     for(int i = 2 * n - 1; i >= 0; i--) {
-        while(!stack.isEmpty() && nums[i%n] >= s.peekLast())
-            stack.removeLast();
-        res[i%n] = stack.isEmpty()? -1:stack.peekLast();
-        stack.addLast(nums[i%n]);
+        while(!monoStack.isEmpty() && nums[i%n] >= monoStack.peekLast())
+            monoStack.removeLast();
+        res[i%n] = monoStack.isEmpty()? -1:monoStack.peekLast();
+        monoStack.addLast(nums[i%n]);
     }
     return res;
 }
@@ -3241,14 +3139,17 @@ private int[] nextGreaterElements(int[] nums) {
 
 ```java
 // 从右往左构建一个单调递减栈
-private int[] dailyTemperatures(int[] T) {
-    int[] res = new int[T.length];
-    Deque<Integer> stack = new LinkedList<>();
-    for( int i = T.length - 1; i >= 0; i--) {
-        while(!stack.isEmpty() && T[i] >= T[stack.peekLast()])
-            stack.removeLast();
-        res[i] = stack.isEmpty() ? 0:stack.peekLast() - i;
-        stack.addLast(i);
+public int[] dailyTemperatures(int[] T) {
+    int len = T.length;
+    int[] res = new int[len];
+    Deque<Integer> monoStack = new LinkedList<>();
+    // 注意单调栈内存储的是下标，方便计算距离
+    for(int i = len - 1; i >= 0; i--) {
+        while(!monoStack.isEmpty() && T[i] >= T[monoStack.peekLast()]) {
+            monoStack.removeLast();
+        }
+        res[i] = monoStack.isEmpty()? 0 : monoStack.peekLast() - i;
+        monoStack.addLast(i);
     }
     return res;
 }
@@ -3262,18 +3163,23 @@ private int[] dailyTemperatures(int[] T) {
 // 从左往右构建一个单调递减栈,这个单调递减栈是一个全局性的单调递减栈
 // 其最终存储的结果是从数组整体来看的一个全局性的递减序列
 private int maxWidthRamp(int[] A) {
-    Deque<Integer> stack = new LinkedList<>();
-    stack.addLast(0);
+    Deque<Integer> monoStack = new LinkedList<>();
+    monoStack.addLast(0);
     // 构建单调栈的过程不做其他操作，因为要获得全局的一个单调结果
-    for(int i = 0; i < A.length; i++)
-        if(A[i] <= A[stack.peekLast()])
-            stack.addLast(i);
+    int len = A.length;
+    for(int i = 0; i < len; i++) {
+        if(A[i] <= A[monoStack.peekLast()]) {
+            monoStack.addLast(i);
+        }
+    }
     // 贪心策略，从最远的地方开始往回找
-    int maxGap = 0;
-    for(int i = A.length - 1; i >= 0; i--)
-        while(!stack.isEmpty() && A[i] >= A[stack.peekLast()])
-            maxGap = Math.max(maxGap, i - stack.removeLast());
-    return maxGap;
+    int res = 0;
+    for(int i = len - 1; i >= 0; i--) {
+        while(!monoStack.isEmpty() && A[i] >= A[monoStack.peekLast()]) {
+            res = Math.max(res, i - monoStack.removeLast());
+        }
+    }
+    return res;
 }
 ```
 
@@ -3283,28 +3189,29 @@ private int maxWidthRamp(int[] A) {
 
 ```java
 public int trap(int[] height) {
-    if(height == null || height.length < 3)
+    if(height == null || height.length < 3) { 
         return 0;
+    }
 
     int res = 0;
-    Deque<Integer> stack = new LinkedList<>();
+    Deque<Integer> monoStack = new LinkedList<>();
     for(int i = 0; i < height.length; i++) {
         // 构建一个单调递减栈
-        while(!stack.isEmpty() && height[stack.peekLast()] < height[i]) {
-            int bottomIndex  = stack.removeLast();
+        while(!monoStack.isEmpty() && height[monoStack.peekLast()] < height[i]) {
+            int bottomIndex  = monoStack.removeLast();
             // 栈顶元素与bottom相等时应该pop出栈，因为无法形成蓄水的凹槽
-            while(!stack.isEmpty() && height[stack.peekLast()] == height[bottomIndex]) {
-                stack.removeLast();
+            while(!monoStack.isEmpty() && height[monoStack.peekLast()] == height[bottomIndex]) {
+                monoStack.removeLast();
             }
 
-            if(!stack.isEmpty()) {
+            if(!monoStack.isEmpty()) {
                 // leftEdge指向蓄水凹槽的左侧边界
                 // 蓄水凹槽的右边界即为i
-                int leftEdge = stack.peekLast();
+                int leftEdge = monoStack.peekLast();
                 res += (Math.min(height[leftEdge], height[i]) - height[bottomIndex]) * (i - leftEdge - 1);
             }
         }
-        stack.addLast(i);
+        monoStack.addLast(i);
     }
     return res;
 }
@@ -3320,22 +3227,23 @@ public int trap(int[] height) {
 
 ```java
 private int largestRectangleArea(int[] heights) {
-    if(heights == null || heights.length == 0)
+    if(heights == null || heights.length == 0) {
         return 0;
+    }
     
-    // 在原数组后面加上一个0，原数组最后一个元素也有了右侧更小的元素
+    // 在原数组后面加上一个0，原数组边界元素也有了更小的元素
     int[] temp = new int[heights.length+2];
     System.arraycopy(heights, 0, temp, 1, heights.length);
     
-    Deque<Integer> stack = new LinkedList<>();
+    Deque<Integer> monoStack = new LinkedList<>();
     int maxArea = 0;
     for(int i = 0; i < temp.length; i++) {
         // 构建单调递增栈
-        while(!stack.isEmpty() && temp[i] < temp[stack.peekLast()]) {
-            int height = temp[stack.removeLast()];
-            maxArea = Math.max(maxArea, height * (i - stack.peekLast() - 1));
+        while(!monoStack.isEmpty() && temp[i] < temp[monoStack.peekLast()]) {
+            int height = temp[monoStack.removeLast()];
+            maxArea = Math.max(maxArea, height * (i - monoStack.peekLast() - 1));
         }
-        stack.addLast(i);
+        monoStack.addLast(i);
     }
     return maxArea;
 }
@@ -3343,33 +3251,7 @@ private int largestRectangleArea(int[] heights) {
 
 ----
 
-###### 题目示例7 `leetcode 239 滑动窗口最大值`
-
-```java
-private int[] maxSlidingWindow(int[] nums, int k) {
-    if(nums == null || k < 1 || nums.length < k)
-        return new int[0];
-    
-    LinkedList<Integer> window = new LinkedList<>();
-    int[] res = new int[nums.length - k + 1];
-    int index = 0;
-    for(int i = 0; i < nums.length; i++) {
-        // 构建一个单调递减栈，栈底元素是窗口范围内的最大元素
-        while(!window.isEmpty() && nums[i] >= nums[window.peekLast()])
-            window.pollLast();
-        window.addLast(i);
-        if(window.peek() <= i - k)
-            window.poll();
-        if(i >= k - 1)
-            res[index++] = nums[window.peekFirst()];
-    }
-    return res;
-}
-```
-
-----
-
-###### 题目示例8 `leetcode 85 最大矩形 `
+###### 题目示例7 `leetcode 85 最大矩形 `
 
 ```java
 public int maximalRectangle(char[][] matrix) {
@@ -3413,7 +3295,7 @@ private int largestRectangleArea(int[] heights) {
 
 ----
 
-###### 题目示例9 `leetcode 402 移掉K位数字`
+###### 题目示例8 `leetcode 402 移掉K位数字`
 
 ```java
 // 删除数字的原则：给定一个数字序列[D1, D2, ..Dn].如果数字D2小于其做邻居D1，应该删除其
@@ -3439,7 +3321,7 @@ private String removeKdigits(String num, int K) {
 
 ---
 
-###### 题目示例10 `leetcode 768 最多能完成排序的块II`
+###### 题目示例9 `leetcode 768 最多能完成排序的块II`
 
 ```java
 private int maxChunksToSorted(int[] arr){
@@ -3460,7 +3342,7 @@ private int maxChunksToSorted(int[] arr){
 
 ---
 
-###### 题目示例11 `leetcode 901 股票价格跨度`
+###### 题目示例10 `leetcode 901 股票价格跨度`
 
 ```java
 class StockSpanner {
@@ -3501,11 +3383,11 @@ class StockSpanner {
 
 ------
 
-###### 题目示例12 `leetcode 1019 链表的下一个更大结点`
+###### 题目示例11 `leetcode 1019 链表的下一个更大结点`
 
 ---
 
-###### 题目示例13 `leetcode 1124 表现良好的最长时间段`
+###### 题目示例12 `leetcode 1124 表现良好的最长时间段`
 
 ```java
 private int longestWPI(int[] hours) {
@@ -3536,7 +3418,7 @@ private int longestWPI(int[] hours) {
 
 -----
 
-###### 题目示例14 `leetcode 316 去除重复字母`
+###### 题目示例13 `leetcode 316 去除重复字母`
 
 ```java
 private String removeDuplicateLetters(String s) {
@@ -3580,7 +3462,7 @@ private String removeDuplicateLetters(String s) {
 
 -----
 
-###### 题目示例15 `leetcode 132模式`
+###### 题目示例14`leetcode 132模式`
 
 ```java
 // 有点巧妙，好好理解
@@ -3603,6 +3485,35 @@ public boolean find132pattern(int[] nums) {
 ```
 
 ------
+
+##### 单调队列典型题目
+
+###### 题目示例1 `leetcode 239 滑动窗口最大值`
+
+```java
+private int[] maxSlidingWindow(int[] nums, int k) {
+    if(nums == null || k < 1 || nums.length < k) {
+        return new int[0];
+    }
+    
+    LinkedList<Integer> window = new LinkedList<>();
+    int[] res = new int[nums.length - k + 1];
+    int index = 0;
+    for(int i = 0; i < nums.length; i++) {
+        // 构建一个单调递减栈，栈底元素是窗口范围内的最大元素
+        while(!window.isEmpty() && nums[i] >= nums[window.peekLast()])
+            window.pollLast();
+        window.addLast(i);
+        if(window.peek() <= i - k)
+            window.poll();
+        if(i >= k - 1)
+            res[index++] = nums[window.peekFirst()];
+    }
+    return res;
+}
+```
+
+-----
 
 ### 并查集
 
@@ -9064,7 +8975,8 @@ private String largestNumber(int[] nums) {
 class LRUCache {
     // 内部类,双向链表结点
     private class LinkedListNode {
-        public LinkedListNode next, pre;
+        public LinkedListNode next;
+        public LinkedListNode pre;
         public int key;
         public int val;
         public LinkedListNode(int key, int val) {

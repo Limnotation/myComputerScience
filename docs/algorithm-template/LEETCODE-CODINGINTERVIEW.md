@@ -78,3 +78,85 @@ private int[] spiralOrder(int[][] matrix) {
 }
 ```
 
+-----
+
+### 面试题51 数组中的逆序对
+
+```java
+public class Solution {
+    // 存储逆序对数量
+    private int res = 0;
+    // 辅助数组，帮助进行归并排序
+    private int[] copy;
+    
+    public int reversePairs(int[] nums) {
+        if(nums == null) {
+            return res;
+        }
+        
+        int len = nums.length;
+        if(len < 2) {
+            return res;
+        }
+        this.copy = new int[len];
+        mergeSort(nums, 0, len - 1);
+        return res;
+    }
+    
+    /**
+    * 对数组进行归并排序
+    * @param nums	要进行排序的数组
+    * @param left	左边界(能取到)
+    * @param right	右边界(能取到)
+     */
+    private void mergeSort(int[] nums, int left, int right) {
+        if(left == right) {
+            return;
+        }
+        
+        int mid = left + (right - left) / 2;
+        mergeSort(nums, left, mid);
+        mergeSort(nums, mid + 1, right);
+        mergeTwoSortedArray(nums, left, mid, right);
+    }
+    
+    /**
+    * 对两个有序的子数组进行归并
+    * @param nums 
+    * @param left
+    * @param mid
+    * @param right
+     */
+    private void mergeTwoSortedArray(int[] nums, int left, int mid, int right) {
+        int i = left;
+        int j = mid + 1;
+        int k = left;
+        while(i <= mid || j <= right) {
+            if(i > mid) {
+                // 左边的子数组已经遍历完，只从右边的子数组取元素
+                copy[k] = nums[j];
+                j++;
+            } else if(j > right) {
+                // 右边的子数组已经遍历完，只从左边的子数组取元素
+                copy[k] = nums[i];
+                i++;
+            } else if(nums[i] <= nums[j]) {
+                // 左子数组当前元素小于右子数组当前元素，取其放入归并数组
+                copy[k] = nums[i];
+                i++;
+            } else {
+                // 左子数组当前元素大于右子数组当前元素，左子数组当前及其
+                // 之后所有元素都与右子数组当前元素构成逆序对
+                copy[k] = nums[j];
+                j++;
+                res += mid - i + 1;
+            }
+            k++;
+        }
+        for(k = left; k <= high; k++) {
+            nums[k] = copy[k];
+        }
+    }
+}
+```
+

@@ -2,7 +2,7 @@
 
 -----
 
-### 快速排序
+### 1、快速排序
 
 #### partition
 
@@ -136,7 +136,6 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
 ##### 算法实现代码
 
 ```java
-// 
 /*
     * Partitioning degenerates to the traditional 3-way
     * (or "Dutch National Flag") schema:
@@ -184,6 +183,77 @@ private void swap(int[] arr, int i, int j) {
     int temp = arr[i];
     arr[i] = arr[j];
     arr[j] = temp;
+}
+```
+
+-------
+
+--------
+
+### 2、归并排序
+
+#### 2.1、 普通归并排序代码
+
+```java
+public class MergeSort {
+    public int[] sortArray(int[] nums) {
+        int len = nums.length;
+        mergeSort(nums, 0, len - 1);
+        return nums;
+    }
+    
+    /**
+    * 对数组nums的子区间[left。。right]进行归并排序
+    * 
+    * @param nums
+    * @param left
+    * @param right
+     */
+     private void mergeSort(int[] nums, int left, int right) {
+         // 递归终止条件：[left, right]区间内只有一个元素
+         if(left == right) {
+             return;
+         }
+
+         int mid = left + (right - left) / 2;
+         mergeSort(nums, left, mid);
+         mergeSort(nums, mid + 1, right);
+         mergeTwoSortedArray(nums, left, mid, right);
+     }
+
+    /**
+    * 合并两个有序数组: 先把值复制到临时数组，再合并回去
+    * 
+    * @param nums
+    * @param left
+    * @param mid
+    * @param right
+     */
+    private void mergeTwoSortedArray(int[] nums, int left, int mid, int right) {
+        int len = right - left + 1;
+        int[] temp = new int[len];
+        for(int i = 0; i < len; i++) {
+            temp[i] = nums[left + i];
+        }
+
+        int i = 0; 
+        int j = mid - left + 1;
+        for(int k = 0; k < len; k++) {
+            if(i == mid - left + 1) {
+                nums[left + k] = temp[j];
+                j++;
+            } else if(j == right - left + 1) {
+                nums[left + k] = nums[i];
+                i++;
+            } else if(temp[i] <= temp[j]) {
+                nums[left + k] = temp[i];
+                i++;
+            } else {
+                nums[left + k] = temp[j];
+                j++;
+            }
+        }
+    }
 }
 ```
 

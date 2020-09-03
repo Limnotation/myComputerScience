@@ -909,11 +909,13 @@ private int[] preorder;
 private Map<Integer, Integer> hashMap;
 public TreeNode buildTree(int[] preorder, int[] inorder) {
     // 1、边界条件特判
-    if(inorder == null || preorder == null)
+    if(inorder == null || preorder == null) {
         return null;
+    }
     int inLen = inorder.length, preLen = preorder.length;
-    if(inLen == 0  || preLen == 0 || inLen != preLen)
+    if(inLen == 0  || preLen == 0 || inLen != preLen) {
         return null;
+    }
     
     this.preorder = preorder;
     hashMap = new HashMap<>();
@@ -932,8 +934,9 @@ public TreeNode buildTree(int[] preorder, int[] inorder) {
 * @return 二叉树的根节点
 */
 private TreeNode buildTree(int preLeft, int preRight, int inLeft, int inRight) {
-    if(inLeft > inRight || preLeft > preRight)
+    if(inLeft > inRight || preLeft > preRight) {
         return null;
+    }
     
     int rootVal = preorder[preLeft];
     int rootIndex = hashMap.get(rootVal);
@@ -7601,6 +7604,51 @@ public List<List<Integer>> threeSum(int[] nums) {
         }
     }
     return res;
+}
+```
+
+------
+
+##### 题目示例2 `leetcode 344 反转字符串`
+
+```java
+private void reverseString(char[] s) {
+    int left = 0;
+    int right = s.length - 1;
+    while(left < right) {
+        char temp = s[left];
+        s[left] = s[right];
+        s[right] = temp;
+        left++;
+        right--;
+    }
+}
+```
+
+-------
+
+##### 题目示例3 `leetcode 541 反转字符串II`
+
+```java
+public String reverseStr(String s, int k) {
+    if(s == null || s.length() == 0 || k <= 0) {
+        return s;
+    }
+
+    int len = s.length();
+    char[] charArr = s.toCharArray();
+    for(int i = 0; i < len; i += 2 * k) {
+        int left = i;
+        int right = Math.min(i + k - 1, len - 1);
+        while(left < right) {
+            char temp = charArr[left];
+            charArr[left] = charArr[right];
+            charArr[right] = temp;
+            left++;
+            right--;
+        }
+    }
+    return String.valueOf(charArr);
 }
 ```
 

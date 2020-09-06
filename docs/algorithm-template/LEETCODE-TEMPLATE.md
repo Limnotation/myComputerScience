@@ -203,7 +203,9 @@
       - [题目示例10 `leetcode 354 俄罗斯套娃信封问题`](#题目示例10-leetcode-354-俄罗斯套娃信封问题)
       - [题目示例11 `leetcode 53 最大子序和`](#题目示例11-leetcode-53-最大子序和)
       - [题目示例12 `leetcode 152 乘积最大子数组`](#题目示例12-leetcode-152-乘积最大子数组)
+      - [题目示例13 `leetcode 740 删除与获得点数`](#题目示例13-leetcode-740-删除与获得点数)
     - [双序列（字符串）DP类型 （40%）](#双序列字符串dp类型-40)
+      - [题目示例1 `leetcode 1143 最长公共子序列`](#题目示例1-leetcode-1143-最长公共子序列)
     - [0-1背包问题 （10%）](#0-1背包问题-10)
         - [题目示例1 `leetcode 416分割等和子集`](#题目示例1-leetcode-416分割等和子集)
         - [题目示例2 `leetcode 322零钱兑换`](#题目示例2-leetcode-322零钱兑换)
@@ -6266,7 +6268,8 @@ private int maxEnvelopes(int[][] envelopes) {
             return a[0] - b[0];
         }
     });
-
+	
+    // 求第二个数字的一个LIS
     int len = envelopes.length;
     int[] dp = new int[len];
     Arrays.fill(dp, 1);
@@ -6338,6 +6341,43 @@ private int maxProduct(int[] nums) {
 }
 ```
 
+-----
+
+##### 题目示例13 `leetcode 740 删除与获得点数`
+
+```java
+public int deleteAndEarn(int[] nums) {
+    // 边界特判
+    if(nums == null || nums.length == 0) {
+        return 0;
+    } else if(nums.length == 1) {
+        return nums[0];
+    }
+	
+    // 记录每个数字的出现次数
+    int len = nums.length;
+    int maxVal = nums[0];
+    for(int i = 0; i < len; i++) {
+        maxVal = Math.max(maxVal, nums[i]);
+    }
+
+    int[] countPoints = new int[maxVal + 1];
+    for(int i = 0; i < len; i++) {
+        countPoints[nums[i]]++;
+    }
+
+    // 根据题目条件，相邻的数字不可以同时取
+    // dp思路与打家劫舍第一题相同
+    int[] dp = new int[maxVal + 1];
+    dp[1] = countPoints[1] * 1;
+    dp[2] = Math.max(dp[1], dp[2] * 2);
+    for(int i = 2; i <= maxVal; i++) {
+        dp[i] = Math.max(dp[i-1], dp[i-2] + countPoints[i] * i);
+    }
+    return dp[maxVal];
+}
+```
+
 
 
 -----
@@ -6345,6 +6385,35 @@ private int maxProduct(int[] nums) {
 ------
 
 #### 双序列（字符串）DP类型 （40%）
+
+##### 题目示例1 `leetcode 1143 最长公共子序列`
+
+```java
+private int longestCommonSubsequence(String text1, String text2) {
+    int len1 = text1.length();
+    int len2 = text2.length();
+    // dp[i][j]表示text1[1..i]和text2[1..j]的LCS
+    int[][] dp = new int[len1 + 1][len2 + 1];
+    for(int i = 1; i <= len1; i++) {
+        for(int j = 1; j <= len2; j++) {
+            if(text1.charAt(i-1) == text2.charAt(j-1)) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+    }
+    return dp[len1][len2];
+}
+```
+
+------
+
+
+
+-------
+
+-------
 
 #### 0-1背包问题 （10%）
 

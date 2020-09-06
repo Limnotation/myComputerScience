@@ -152,6 +152,7 @@
       - [题目示例8 `leetcode 329 矩阵中的最长递增路径`](#题目示例8-leetcode-329-矩阵中的最长递增路径)
       - [题目示例9 `leetcode 199 二叉树的右视图`](#题目示例9-leetcode-199-二叉树的右视图)
       - [题目示例10 `leetcode 257 二叉树的所有路径`](#题目示例10-leetcode-257-二叉树的所有路径)
+      - [题目示例11 `面试题 16.19 水域大小`](#题目示例11-面试题-1619-水域大小)
   - [广度优先搜索](#广度优先搜索)
     - [典型题目](#典型题目-3)
       - [题目1 `leetcode 207 课程表`](#题目1-leetcode-207-课程表)
@@ -198,6 +199,10 @@
       - [题目示例6 `leetcode 139 单词拆分`](#题目示例6-leetcode-139-单词拆分)
       - [题目示例7 `leetcode 647 回文子串`](#题目示例7-leetcode-647-回文子串)
       - [题目示例8 `面试题17.24 最大子矩阵`](#题目示例8-面试题1724-最大子矩阵)
+      - [题目示例9 `leetcode 673 最长递增子序列的个数`](#题目示例9-leetcode-673-最长递增子序列的个数)
+      - [题目示例10 `leetcode 354 俄罗斯套娃信封问题`](#题目示例10-leetcode-354-俄罗斯套娃信封问题)
+      - [题目示例11 `leetcode 53 最大子序和`](#题目示例11-leetcode-53-最大子序和)
+      - [题目示例12 `leetcode 152 乘积最大子数组`](#题目示例12-leetcode-152-乘积最大子数组)
     - [双序列（字符串）DP类型 （40%）](#双序列字符串dp类型-40)
     - [0-1背包问题 （10%）](#0-1背包问题-10)
         - [题目示例1 `leetcode 416分割等和子集`](#题目示例1-leetcode-416分割等和子集)
@@ -249,6 +254,8 @@
       - [题目示例1  `leetcode 19 删除链表的倒数第N个节点`](#题目示例1-leetcode-19-删除链表的倒数第n个节点-1)
     - [左右指针（对撞指针）](#左右指针对撞指针)
       - [题目示例1 `leetcode 15 三数之和`](#题目示例1-leetcode-15-三数之和)
+      - [题目示例2 `leetcode 344 反转字符串`](#题目示例2-leetcode-344-反转字符串)
+      - [题目示例3 `leetcode 541 反转字符串II`](#题目示例3-leetcode-541-反转字符串ii)
     - [其他双指针](#其他双指针)
   - [滑动窗口技巧](#滑动窗口技巧)
     - [滑动窗口类型](#滑动窗口类型)
@@ -4812,6 +4819,67 @@ private void dfs(TreeNode root, String s) {
 
 ----
 
+##### 题目示例11 `面试题 16.19 水域大小`
+
+比较简单的`dfs`题目
+
+```java
+public int[] pondSizes(int[][] land) {
+    int m = land.length;
+    int n = land[0].length;
+    if(m == 0 || n == 0) {
+        return new int[0];
+    }
+
+    List<Integer> res = new LinkedList<>();
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            if(land[i][j] == 0) {
+                int temp = dfs(land, i, j);
+                res.add(temp);
+            }
+        }
+    }
+
+    int[] waters = new int[res.size()];
+    for(int i = 0; i < res.size(); i++) {
+        waters[i] = res.get(i);
+    }
+    Arrays.sort(waters);
+    return waters;
+}
+
+/**
+* dfs获得水域的大小
+* 
+* @param land 表示土地的矩阵
+* @param i	  当前位置行坐标
+* @param j	  当前位置列坐标
+*/
+private int dfs(int[][] land, int i, int j) {
+    if(i < 0 || i >= land.length || j < 0 || j >= land[0].length || land[i][j] != 0) {
+        return 0;
+    }
+
+    land[i][j] = 1;
+    // 注意对角线方向也要搜索
+    return 1 + dfs(land, i - 1, j)
+        + dfs(land, i, j - 1)
+        + dfs(land, i + 1, j)
+        + dfs(land, i, j + 1)
+        + dfs(land, i - 1, j - 1)
+        + dfs(land, i - 1, j + 1)
+        + dfs(land, i + 1, j - 1)
+        + dfs(land, i + 1, j + 1);
+}
+```
+
+
+
+------
+
+------
+
 ### 广度优先搜索
 
 #### 典型题目
@@ -5981,19 +6049,30 @@ private int minCut( String s )
 ##### 题目示例5 `leetcode 300 最长上升子序列`
 
 ```java
+/**
+* 递推表达式dp[]含义：dp[i]表示以序号为i的数字结尾的最长上升序列的长度,
+* 初始值为1
+ */
 private int lengthOfLIS(int[] nums) {
-    if(nums == null || nums.length == 0)
+    if(nums == null || nums.length == 0) {
         return 0;
+    }
     
-    int[] dp = new int[nums.length];
+    int len = nums.length;
+    int[] dp = new int[len];
     Arrays.fill(dp, 1);
-    for(int i = 0; i < nums.length; i++)
-        for(int j = 0; j < i; j++)
-            if(nums[i] > nums[j])
+    for(int i = 0; i < len; i++) {
+        for(int j = 0; j < i; j++) {
+            if(nums[i] > nums[j]) {
                 dp[i] = Math.max(dp[i], dp[j] + 1);
-    int res = 0;
-    for(int re:dp)
-        res = Math.max( res, re );
+            }
+        }
+    }
+    
+    int res = 1;
+    for(int i = 0; i < len; i++) {
+        res = Math.max(res, dp[i]);
+    }
     return res;
 }
 ```
@@ -6069,10 +6148,11 @@ public int[] getMaxMatrix(int[][] matrix) {
         return new int[0];
     }
 
-    // 保存最大子矩阵的左上角和右下角坐标
+    // 结果数组,保存最大子矩阵的左上角和右下角坐标
     int[] res = new int[4];
     // 原矩阵的行列大小
-    int m = matrix.length, n = matrix[0].length;
+    int m = matrix.length;
+    int n = matrix[0].length;
     // 记录当前第i~j行组成的子矩阵的每一列的和，将二维转化为一维
     int[] lineSum = new int[n];             
     // 相当于dp[i]
@@ -6080,17 +6160,19 @@ public int[] getMaxMatrix(int[][] matrix) {
     // 记录目前最大的子矩阵和
     int maxSum = Integer.MIN_VALUE;
     // 记录当前找到的最大子矩阵的左上角坐标
-    int bestr1 = 0, bestc1 = 0;
+    int bestr1 = 0;
+    int bestc1 = 0;
 
     for(int i = 0; i < m; i++) {
         // 上界变化时要清空，重新计算每列的和
         for(int t = 0; t < n; t++) {
             lineSum[t] = 0;
         }
-        // 不断增大下界
+        // 以当前i所指向的行作为子矩阵上界，不断增大下界
         for(int j = i; j < m; j++) {
             // 从头开始求dp
             curSum = 0;
+            // 在lineSum数组上求出最大子序和
             for(int k = 0; k < n; k++) {
                 lineSum[k] += matrix[j][k];
                 if(curSum > 0) {
@@ -6101,6 +6183,8 @@ public int[] getMaxMatrix(int[][] matrix) {
                     bestc1 = k;
                 }
 
+                // 记录下遍历过程中的子矩阵最大值
+                // 以及对应的边界下标                    
                 if(curSum > maxSum) {
                     maxSum = curSum;
                     res[0] = bestr1;
@@ -6110,6 +6194,145 @@ public int[] getMaxMatrix(int[][] matrix) {
                 }
             }
         }
+    }
+    return res;
+}
+```
+
+----
+
+##### 题目示例9 `leetcode 673 最长递增子序列的个数`
+
+```java
+/**
+* dp数组的含义与leetcode 300相同
+* counter数组含义为：以序号i代表的数字结尾的最长上升序列的数量
+ */
+private int findNumberOfLIS(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return 0;
+    }
+
+    int n = nums.length;
+    int[] dp = new int[n];
+    int[] counter = new int[n];
+    int longest = 1;
+    int res = 0;
+    Arrays.fill(dp, 1);
+    Arrays.fill(counter, 1);
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < i; j++) {
+            if(nums[i] > nums[j]) {
+                if(dp[j] + 1 > dp[i]) {
+                    dp[i] = dp[j] + 1;
+                    longest = Math.max(longest, dp[i]);
+                    counter[i] = counter[j];
+                } else if(dp[j] + 1 == dp[i]) {
+                    counter[i] += counter[j];
+                }
+            }
+        }
+    }
+
+    for(int i = 0; i < n; i++) {
+        if(dp[i] == longest) {
+            res += counter[i];
+        }
+    }
+    return res;
+}
+```
+
+----
+
+##### 题目示例10 `leetcode 354 俄罗斯套娃信封问题`
+
+```java
+/**
+* 问题分析：
+* 二维数组上的LIS问题
+* 解决思路：
+* 将每个整数对按如下规则排序：按第一个数字升序的规则排序，如果第一个数字相同
+* 按照第二个数字降序的规则排序
+ */
+private int maxEnvelopes(int[][] envelopes) {
+    // 重写比较器
+    Arrays.sort(envelopes, new Comparator<int[]>() {
+        @Override
+        public int compare(int[] a, int[] b) {
+            if(a[0] == b[0]) {
+                return b[1] - a[1];
+            }
+            return a[0] - b[0];
+        }
+    });
+
+    int len = envelopes.length;
+    int[] dp = new int[len];
+    Arrays.fill(dp, 1);
+    for(int i = 0; i < len; i++) {
+        for(int j = 0; j < i; j++) {
+            if(envelopes[i][1] > envelopes[j][1]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+    }
+    int res = 0;
+    for(int i = 0; i < len; i++) {
+        res = Math.max(res, dp[i]);
+    }
+    return res;
+}
+```
+
+----
+
+##### 题目示例11 `leetcode 53 最大子序和`
+
+```java
+// 压缩空间版本的dp解答
+private int maxSubArray(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return 0;
+    }
+
+    int sum = 0;
+    int res = nums[0];
+    for(int i = 0; i < nums.length; i++) {
+        if(sum > 0) {
+            sum += nums[i];
+        } else {
+            sum = nums[i];
+        }
+        res = Math.max(res, sum);
+    }
+    return res;
+}
+```
+
+----
+
+##### 题目示例12 `leetcode 152 乘积最大子数组`
+
+```java
+private int maxProduct(int[] nums) {
+    int res = Integer.MIN_VALUE;
+    // 由于碰到负数时，可能出现当前最大数变成最小数
+    // 当前最小数变成最大数，所以要暂存当前的最大乘
+    // 积值和最小乘积值
+    int curMin = 1;
+    int curMax = 1;
+    int len = nums.length;
+    for(int i = 0; i < len; i++) {
+        if(nums[i] < 0) {
+            int temp = curMax;
+            curMax = curMin;
+            curMin = temp;
+        }
+
+        curMax = Math.max(nums[i], curMax * nums[i]);
+        curMin = Math.min(nums[i], curMin * nums[i]);
+        res = Math.max(curMax, res);
     }
     return res;
 }
@@ -6454,69 +6677,73 @@ class Solution
 ##### 题目示例1 `leetcode 198 打家劫舍`
 
 ```java
-// v1
-/**
-* dp[i] = x表示：
-* 从第i间房子开始抢劫，最多能抢到的钱为 x
-* base case: dp[n] = 0
-*/
-class Solution 
-{
-    public int rob(int[] nums) 
-    {
-        int n = nums.length;
-        int[] dp = new int[n+2];
-        for( int i = n - 1; i >= 0; i-- )
-            dp[i] = Math.max( dp[i+1], dp[i+2] + nums[i] );
-        return dp[0];
+// v1,常规思路的dp解法
+private int rob(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return 0;
     }
+	// 递推公式:dp[i] = Math.max(dp[i-1], dp[i-2] + nums[i-1])
+    // dp[i]含义为走到第i个房子时抢劫的最大收益
+    int len = nums.length;
+    int[] dp = new int[len+1];
+    dp[0] = 0;
+    dp[1] = nums[0];
+    for(int i = 2; i <= len; i++) {
+        dp[i] = Math.max(dp[i-1], dp[i-2] + nums[i-1]);
+    }
+    return dp[len];
 }
 
-// v2 
-class Solution 
-{
-    public int rob(int[] nums) 
-    {
-        int n = nums.length;
-        int dpTwo = 0, dpOne = 0;
-        int dpCur = 0;
-        for( int i = n - 1; i >= 0; i-- )
-        {
-            dpCur = Math.max( dpOne, dpTwo + nums[i] );
-            dpTwo = dpOne;
-            dpOne = dpCur;
-        }
-        return dpCur;
+// v2,空间压缩
+private int rob(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return 0;
     }
+    
+    int len = nums.length;
+    int curMinusOne = 0;
+    int curMinusTwo = 0;
+    int res = 0;
+    for(int i = 0; i < len; i++) {
+        res = Math.max(curMinusOne, curMinusTwo + nums[i]);
+        curMinusTwo = curMinusOne;
+        curMinusOne = res;
+    }
+    return res;
 }
 ```
 
 ##### 题目示例2 `leetcode 213 打家劫舍II`
 
 ```java
-class Solution 
-{
-    public int rob(int[] nums) 
-    {
-        if( nums.length == 1 )
-            return nums[0];
-        int res1 = robInRange( nums, 0 , nums.length - 2 );
-        int res2 = robInRange( nums, 1, nums.length - 1 );
-        return res1 > res2 ? res1:res2;
+public int rob(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return 0;
     }
+    int len = nums.length;
+    if(len < 2) {
+        return nums[0];
+    }
+	// 因为存在环形的关系，所以第一个房子和最后一个房子只能抢
+    // 一个
+    int withFirstOne = rob(nums, 0, len - 2);
+    int withLastOne = rob(nums, 1, len - 1);
+    return Math.max(withFirstOne, withLastOne);
+}
 
-    private int robInRange( int[] nums, int start, int end )
-    {
-        int dpOne = 0, dpTwo = 0;
-        int dpCur = 0;
-        for( int i = end; i >= start; i-- )
-        {
-            dpCur = Math.max( dpOne, nums[i] + dpTwo );
-            dpTwo = dpOne;
-            dpOne = dpCur;
-        }
-        return dpCur;
+/**
+* 空间压缩版本的dp解法
+ */
+private int rob(int[] nums, int start, int end) {
+    int curMinusOne = 0;
+    int curMinusTwo = 0;
+    int res = 0;
+    for(int i = start; i <= end; i++) {
+        res = Math.max(curMinusOne, curMinusTwo + nums[i]);
+        curMinusTwo = curMinusOne;
+        curMinusOne = res;
     }
+    return res;
 }
 ```
 

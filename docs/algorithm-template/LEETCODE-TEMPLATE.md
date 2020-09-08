@@ -206,6 +206,8 @@
       - [题目示例13 `leetcode 740 删除与获得点数`](#题目示例13-leetcode-740-删除与获得点数)
     - [双序列（字符串）DP类型 （40%）](#双序列字符串dp类型-40)
       - [题目示例1 `leetcode 1143 最长公共子序列`](#题目示例1-leetcode-1143-最长公共子序列)
+      - [题目示例2  `leetcode 712 两个字符串的最小ASCII删除和`](#题目示例2-leetcode-712-两个字符串的最小ascii删除和)
+      - [题目示例3 `leetcode 718 最长重复子数组`](#题目示例3-leetcode-718-最长重复子数组)
     - [0-1背包问题 （10%）](#0-1背包问题-10)
         - [题目示例1 `leetcode 416分割等和子集`](#题目示例1-leetcode-416分割等和子集)
         - [题目示例2 `leetcode 322零钱兑换`](#题目示例2-leetcode-322零钱兑换)
@@ -5788,28 +5790,28 @@ private int peakIndexInMountainArray(int[] nums) {
 // dp[i][j] = min( dp[i-1][j], dp[i][j-1] ) + grid[i][j]
 // base case:dp[0][0] = grid[0][0], dp[i][0] = sum( 0, 0 -> i, 0 ), dp[0][i] = sum( 0, 0 -> 0, i )
 // return dp[rowLen-1][colLen-1]
+// 注意处理边界条件即可
 
 // v1，未使用空间压缩的方法
-private int minPathSum( int[][] grid ) {
-    if(grid == null || grid.length == 0 || grid[0].length == 0) {
-        return 0;
-    }
-        
-    int m = grid.length, n = grid[0].length;
+private int minPathSum(int[][] grid) {
+    int m = grid.length;
+    int n = grid[0].length;
     int[][] dp = new int[m][n];
-    dp[0][0] = grid[0][0];
-    for( int i = 1; i < m; i++ ){
-        dp[i][0] = grid[i][0] + dp[i-1][0];    
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            if(i == 0 && j == 0) {
+                dp[i][j] = grid[i][j];
+                continue;
+            } else if(i == 0) {
+                dp[i][j] = dp[i][j-1];
+            } else if(j == 0) {
+                dp[i][j] = dp[i-1][j];
+            } else {
+                dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1]);
+            }
+            dp[i][j] += grid[i][j];
+        }
     }
-    for( int i = 1; i < n; i++ ) {
-        dp[0][i] = grid[0][i] + dp[0][i-1];
-    }
-    for(int i = 1; i < m; i++) {
-        for(int j = 1; j < n; j++) {
-            dp[i][j] = Math.min( dp[i-1][j], dp[i][j-1] ) + grid[i][j]; 
-        }      
-    }
-
     return dp[m-1][n-1];
 }
 
@@ -6392,7 +6394,7 @@ public int deleteAndEarn(int[] nums) {
 private int longestCommonSubsequence(String text1, String text2) {
     int len1 = text1.length();
     int len2 = text2.length();
-    // dp[i][j]表示text1[1..i]和text2[1..j]的LCS
+    // dp[i][j]表示text1[1..i]和text2[1..j]的LCS的长度
     int[][] dp = new int[len1 + 1][len2 + 1];
     for(int i = 1; i <= len1; i++) {
         for(int j = 1; j <= len2; j++) {
@@ -6408,6 +6410,64 @@ private int longestCommonSubsequence(String text1, String text2) {
 ```
 
 ------
+
+##### 题目示例2  `leetcode 712 两个字符串的最小ASCII删除和`
+
+```java
+public int minimumDeleteSum(String s1, String s2) {
+    int len1 = s1.length();
+    int len2 = s2.length();
+    int[][] dp = new int[len1 + 1][len2 + 1];
+    for(int i = 1; i <= len1; i++) {
+        for(int j = 1; j <= len2; j++) {
+            // dp[i][j]表示s1[1..i]和s2[1..j]的具有最大ascii值之和
+            // LCS的ascii码值之和
+            if(s1.charAt(i-1) == s2.charAt(j-1)) {
+                dp[i][j] = dp[i-1][j-1] + s1.charAt(i-1);
+            } else {
+                dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+    }
+	
+    // 将两个字符串的ascii码值之和减去具有最大ascii码值的LCS
+    // 的值，得到的结果就是题目要求的答案
+    int ascOfS1 = 0;
+    int ascOfS2 = 0;
+    for(int i = 0; i < len1; i++) {
+        ascOfS1 += s1.charAt(i);
+    }
+    for(int i = 0; i < len2; i++) {
+        ascOfS2 += s2.charAt(i);
+    }
+
+    return ascOfS1 + ascOfS2 - 2 * dp[len1][len2];
+}
+```
+
+----
+
+##### 题目示例3 `leetcode 718 最长重复子数组`
+
+```java
+// 思路很简单
+private int findLength(int[] A, int[] B) {
+    int len1 = A.length;
+    int len2 = B.length;
+    // dp[i][j]表示A[0..i-1]和B[0..j-1]的最长重复子数组长度
+    int[][] dp = new int[len1+1][len2+1];
+    int res = 0;
+    for(int i = 1; i <= len1; i++) {
+        for(int j = 1; j <= len2; j++) {
+            if(A[i-1] == B[j-1]) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+                res = Math.max(res, dp[i][j]);
+            } 
+        }
+    }
+    return res;
+}
+```
 
 
 
@@ -8605,9 +8665,10 @@ int[] preSum = new int[n+1];
 preSum[0] = 0;
 for(int i = 0; i < n; i++)
     preSum[i+1] = preSum[i] + nums[i];
+// preSum[0]表示数组没有数字被选中,值为0
 // preSum[i]表示nums[0..i-1]的和
 // nums[i..j]的和可以表示为preSum[j+1] - preSum[i]
-// 前缀和主要的实现方式是使用hashMap
+// 前缀和主要的实现方式是使用hashMap,元素基数较小时且范围较小时也可使用数组
 ```
 
 ---

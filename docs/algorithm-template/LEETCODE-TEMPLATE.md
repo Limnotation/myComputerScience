@@ -1880,10 +1880,11 @@ private ListNode removeElements(ListNode head, int val) {
     dummyHead.next = head;
     ListNode runner = dummyHead;
     while(runner.next != null) {
-        if(runner.next.val == val)
+        if(runner.next.val == val) {
             runner.next = runner.next.next;
-        else
+        } else {
             runner = runner.next;
+        }
     }
     return dummyHead.next;
 }
@@ -1894,9 +1895,11 @@ private ListNode removeElements(ListNode head, int val) {
 ###### 题目示例2 `leetcode 237 删除链表中的节点`
 
 ```java
+// 将待删除节点的后继节点的值移到当前节点，之后将后继节点删除即可
 private void deleteNode(ListNode node) {
-    if(node == null) 
+    if(node == null) {
         return;
+    }
     node.val = node.next.val;
     node.next = node.next.next;
     return;
@@ -1951,7 +1954,8 @@ private ListNode mergeKLists(ListNode[] lists) {
     ListNode dummyHead = new ListNode(0);
     ListNode runner = dummyHead;
     while(!pq.isEmpty()) {
-        runner.next = new ListNode(pq.poll());
+        int temp = pq.poll();
+        runner.next = new ListNode(temp);
         runner = runner.next;
     }
     return dummyHead.next;
@@ -1995,8 +1999,9 @@ public ListNode partition(ListNode head, int x) {
 
 ```java
 private ListNode swapPairs(ListNode head) {
-    if(head == null || head.next == null) 
+    if(head == null || head.next == null) {
         return head;
+    }
     ListNode next = head.next;
     head.next = swapPairs(next.next);
     next.next = head;
@@ -6565,10 +6570,6 @@ private int change( int amount, int[] coins )
 
 
 
-
-
-
-
 ----
 
 #### `leetcode 股票买卖系列问题`
@@ -8655,7 +8656,7 @@ private String minWindow(String S, String T)
 
 -----
 
-### 前缀和技巧
+### 前缀和
 
 #### 前缀和概念
 
@@ -8730,10 +8731,16 @@ public int subarraySum(int[] nums, int k) {
 * 还是要好好理解
 */
 private int numberOfSubArrays(int[] nums, int k) {
+    // 特判
+    if(nums == null || nums.length < k) {
+        return 0;
+    }
+    
     int n = nums.length;
     int[] preSum = new int[n+1];
     preSum[0] = 1;
-    int res = 0, curSum = 0;
+    int res = 0;
+    int curSum = 0;
     
     for(int num:nums) {
         curSum += num & 1;
@@ -8841,15 +8848,13 @@ private int numSubarraysWithSum(int[] A, int S)
 
 ```java
 private int[] preSum;
-public NumArray(int[] nums)
-{
+public NumArray(int[] nums) {
     this.preSum = new int[nums.length+1];
     for(int i = 0; i < nums.length; i++)
         preSum[i+1] = preSum[i] + nums[i];
 }
 
-public int sumRange(int i, int j)
-{
+public int sumRange(int i, int j) {
     return preSum[j+1] - preSum[i];
 }
 ```
@@ -8859,36 +8864,36 @@ public int sumRange(int i, int j)
 ##### 题目示例8 `leetcode 304 二维区域和检索-矩阵不可变`
 
 ```java
-private int[][] preSum;
-public NumMatrix(int[][] matrix) 
-{
-    if( matrix == null || matrix.length == 0 || matrix[0].length == 0 )
+private int[][] preSumMatrix;
+public NumMatrix(int[][] matrix)  {
+    if(matrix == null || matrix.length == 0 || matrix[0].length == 0)
 		return;
     int n = matrix.length;
     int m = matrix[0].length;
-    preSum = new int[n+1][m+1];
+    preSumMatrix = new int[n+1][m+1];
     // 求行前缀和
-    for( int i = 1; i <= n; i++ )
-        for( int j = 1; j <= m; j++ )
-            preSum[i][j] = preSum[i][j-1] + matrix[i-1][j-1];
+    for(int i = 1; i <= m; i++) {
+        for(int j = 1; j <= n; j++) {
+            preSumMatrix[i][j] += preSumMatrix[i][j-1] + matrix[i-1][j-1];
+        }
+    }
     // 求列前缀和
-    // 注意：在完成列前缀和的计算之后，preSum[i][j]的值代表的是[0,0]、[i,j]
+    // 注意：在完成列前缀和的计算之后，preSum[i][j]的值代表的是[0,0]、[i-1,j-1]
     // 为边界的矩阵的区域元素和
-    for( int i = 1; i <= m; i++ )
-        for( int j = 1; j <= n; j++ )
-            preSum[j][i] += preSum[j-1][i];
-    /**
-    * 求前缀和的部分也可以写成下面的部分：
-    * for( int i = 1; i <= n; i++ )
-    *	for( int j = 1; j <= m; j++ )
-    *		preSum[i][j] = matrix[i-1][j-1] + preSum[i-1][j] + preSum[i][j-1] -preSum[i-1][j-1]
-    */
+    for(int j = 1; j <= n; j++) {
+        for(int i = 1; i <= m; i++) {
+            preSumMatrix[i][j] += preSumMatrix[i-1][j];
+        }
+    }
+
 }
-public int sumRegion(int row1, int col1, int row2, int col2) 
-{
-	if( preSum == null || preSum[0].length == 0 )
-        return
-    return preSum[row2+1][col2+1] - preSum[row2+1][col1] - preSum[row1][col2+1] + preSum[row1][col1];
+
+public int sumRegion(int row1, int col1, int row2, int col2) {
+    if(preSumMatrix == null || preSumMatrix.length == 0) {
+        return 0;
+    }
+    return preSumMatrix[row2+1][col2+1] - preSumMatrix[row1][col2+1] - preSumMatrix[row2+1][col1] + 
+        preSumMatrix[row1][col1];
 }
 ```
 
@@ -9049,11 +9054,46 @@ public int maxSubArrayLen(int[] nums, int k) {
     preSum.put(0, 0);
     for(int i = 0; i < nums.length; i++) {
         curSum += nums[i];
+        // preSum的key表示当前前缀和
+        // preSum的value表示前缀和第一次出现在第几个位置
         if(!preSum.containsKey(curSum)) {
             preSum.put(curSum, i + 1);
         } 
         if(preSum.containsKey(curSum - k)){
             maxLen = Math.max(maxLen, i + 1 - preSum.get(curSum - k));
+        }
+    }
+    return maxLen;
+}
+```
+
+---
+
+##### 题目示例15 `leetcode 525 连续数组`
+
+```java
+private int findMaxLength(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return 0;
+    }
+
+    int maxLen = 0;
+    int curSum = 0;
+    HashMap<Integer, Integer> preSum = new HashMap<>();
+    preSum.put(0, -1);
+    for(int i = 0; i < nums.length; i++) {
+        int temp = nums[i];
+        if(temp == 1) {
+            curSum += 1;
+        } else {
+            curSum += -1;
+        }
+	    // preSum的key表示当前前缀和
+        // preSum的value表示前缀和第一次出现时的元素下标
+        if(!preSum.containsKey(curSum)) {
+            preSum.put(curSum, i);
+        } else {
+            maxLen = Math.max(maxLen, i - preSum.get(curSum));
         }
     }
     return maxLen;

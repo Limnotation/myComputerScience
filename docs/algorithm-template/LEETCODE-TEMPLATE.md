@@ -295,7 +295,7 @@
         - [题目示例16 `leetcode 1040 移动石子直到连续`](#题目示例16-leetcode-1040-移动石子直到连续)
         - [题目示例17 `leetcode 1052 爱生气的书店老板`](#题目示例17-leetcode-1052-爱生气的书店老板)
         - [题目示例19 `leetcode 727 最小窗口子序列`](#题目示例19-leetcode-727-最小窗口子序列)
-  - [前缀和技巧](#前缀和技巧)
+  - [前缀和](#前缀和)
     - [前缀和概念](#前缀和概念)
     - [题目示例](#题目示例)
       - [题目示例1 `leetcode 1 两数之和`](#题目示例1-leetcode-1-两数之和)
@@ -312,6 +312,7 @@
       - [题目示例12  `leetcode 1109 航班预定`](#题目示例12-leetcode-1109-航班预定)
       - [题目示例13 `leetcode 1094 拼车`](#题目示例13-leetcode-1094-拼车)
       - [题目示例14 `leetcode 325 和等于k的最长子数组长度`](#题目示例14-leetcode-325-和等于k的最长子数组长度)
+      - [题目示例15 `leetcode 525 连续数组`](#题目示例15-leetcode-525-连续数组)
   - [循环不变量](#循环不变量)
     - [典型题目](#典型题目-7)
       - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
@@ -2161,64 +2162,67 @@ private ListNode insertionSortList(ListNode head) {
 ###### 题目示例10 `leetcode 148 排序链表`
 
 ```java
-public ListNode sortList( ListNode head )
-{
-    return mergeSort( head );
+public ListNode sortList(ListNode head) {
+    return mergeSort(head);
 }
 
-private ListNode findMiddle( ListNode head )
-{
+/**
+* 找到链表的中点的前一个节点
+ */
+private ListNode getPreMid(ListNode head) {
     ListNode slow = head;
     ListNode fast = head.next;
-    while( fast != null && fast.next != null )
-    {
+    while(fast != null && fast.next != null) {
         fast = fast.next.next;
         slow = slow.next;
     }
     return slow;
 }
 
-private ListNode mergeTwoLists( ListNode l1, ListNode l2 )
-{
-    ListNode dummy = new ListNode( 0 );
+/**
+* 合并两个有序链表
+ */
+private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0);
     ListNode head = dummy;
-    while( l1 != null && l2 != null )
-    {
-        if( l1.val < l2.val )
-        {
+    while(l1 != null && l2 != null) {
+        if(l1.val < l2.val) {
             head.next = l1;
             l1 = l1.next;
-        }
-        else
-        {
+        } else {
             head.next = l2;
             l2 = l2.next;
         }
         head = head.next;
     }
     
-    if( l1 != null )
+    if(l1 != null) {
         head.next = l1;
-    if( l2 != null )
+    }
+    if( l2 != null ) {
         head.next = l2;
+    }
     return dummy.next;
 }
 
-private ListNode mergeSort( ListNode head )
-{
-    if( head == null || head.next == null )
+/**
+* 对链表进行归并排序
+ */
+private ListNode mergeSort(ListNode head) {
+    // 递归终止条件
+    if(head == null || head.next == null) {
         return head;
+    }
     
-    // find middle
-    ListNode middle = findMiddle( head );
-    // 断开中间结点
-    ListNode tail = middle.next;
-    middle.next = null;
+    ListNode preMid = getPreMid(head);
+    ListNode secondHalf = preMid.next;
+    // 断开两个部分，避免链表成环
+    preMid.next = null;
     
-    ListNode left = mergeSort( head );
-    ListNode right = mergeSort( tail );
-    ListNode res = mergeTwoLists( left, right );
-    return res;
+    ListNode firstHalf = mergeSort(head);
+    secondHalf = mergeSort(secondHalf);
+    head = mergeTwoLists(firstHalf, secondHalf);
+    return head;
 }
 ```
 
@@ -2288,8 +2292,6 @@ public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 }
 ```
 
-
-
 -----
 
 ##### 反转类题目
@@ -2331,7 +2333,8 @@ private ListNode reverseList(ListNode head) {
 ```java
 public ListNode reverseBetween(ListNode head, int m, int n) {
     // 定位到被反转的第一个节点以及其前置节点
-    ListNode pre = null, cur = head;
+    ListNode pre = null;
+    ListNode cur = head;
     for(int i = 1; i < m; i++) {
         pre = cur;
         cur = cur.next;
@@ -2343,10 +2346,10 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
     ListNode con = pre;
     // 反转指定范围内的链表节点
     while(n > 0) {
-        ListNode temp = cur.next;
+        ListNode next = cur.next;
         cur.next = pre;
         pre = cur;
-        cur = temp;
+        cur = next;
         n--;
     }
 
@@ -2372,7 +2375,8 @@ public ListNode reverseKGroup(ListNode head, int k) {
     }
 
     // 确定反转区间，如果区间小于k，直接返回即可
-    ListNode a = head, b = head;
+    ListNode a = head;
+    ListNode b = head;
     for(int i = 0; i < k; i++) {
         if(b == null) {
             return a;
@@ -2412,6 +2416,7 @@ private ListNode reverseWithinRange(ListNode a, ListNode b) {
 
 ```java
 private ListNode removeNthFromEnd(ListNode head, int n) {
+    // 使用哑节点是为了一般化头结点被删除的特殊情况
     ListNode dummyHead = new ListNode(0);
     dummyHead.next = head;
     ListNode slow = dummyHead;
@@ -2452,12 +2457,12 @@ private ListNode deleteDuplicates(ListNode head) {
 
 ```java
 private ListNode deleteDuplicates(ListNode head) {
-    if(head == null)
+    if(head == null) {
         return null;
+    }
 
     ListNode dummyHead = new ListNode(0);
     ListNode pre = dummyHead;
-
     ListNode cur = head;
     boolean isDuplicate = false;
     while(cur != null && cur.next != null) {
@@ -2496,13 +2501,15 @@ private ListNode deleteDuplicates(ListNode head) {
 private boolean hasCycle(ListNode head) {
     ListNode dummyHead = new ListNode(0);
     dummyHead.next = head;
-    ListNode slow = dummyHead, fast = dummyHead;
+    ListNode slow = dummyHead;
+    ListNode fast = dummyHead;
 
     while(fast.next != null && fast.next.next != null) {
         slow = slow.next;
         fast = fast.next.next;
-        if(slow == fast)
+        if(slow == fast) {
             return true;
+        }
     }
     return false;
 }
@@ -2546,8 +2553,9 @@ public ListNode detectCycle(ListNode head) {
 
 ```java
 public boolean isPalindrome(ListNode head) {
-    if(head == null || head.next == null)
+    if(head == null || head.next == null) {
         return true;
+    }
     
     // 将链表切分成两半，并将第二部分反转
     ListNode preMid = getPreMiddle(head);
@@ -2567,7 +2575,8 @@ public boolean isPalindrome(ListNode head) {
     return true;
 }
 
-/** 获取链表中点的前一个节点
+/** 
+* 获取链表中点的前一个节点
 * 链表个数为偶数，返回前半部分最后一个节点
 * 链表个数为奇数，返回中点
 */
@@ -2630,12 +2639,13 @@ public ListNode oddEvenList(ListNode head) {
 ###### 题目示例8 `剑指offer 22 链表中倒数第k个结点`
 
 ```java
-public ListNode getKthFromEnd(ListNode head, int k) {
+private ListNode getKthFromEnd(ListNode head, int k) {
     if(head == null) {
         return head;
     }
 
-    ListNode slow = head, fast = head;
+    ListNode slow = head;
+    ListNode fast = head;
     for(int i = 0; i < k; i++) {
         fast = fast.next;
     }
@@ -2648,17 +2658,11 @@ public ListNode getKthFromEnd(ListNode head, int k) {
 }
 ```
 
-
-
 -----
 
 
 
 ##### 其他题目
-
------
-
-
 
 ---
 
@@ -3106,7 +3110,6 @@ for(int i = 0; i < nums.length; i++) {
 **寻找比当前元素更大的下一个元素**
 
 ```java
-// v1，从右往左构建一个单调递减栈
 private int[] nextGreaterElement(int[] nums1, int[] nums2) {
     // 在nums2上，从右至左维护单调递减栈，获取每个数字的下一个更大元素
     Deque<Integer> monoStack = new LinkedList<>();
@@ -3138,7 +3141,7 @@ private int[] nextGreaterElement(int[] nums1, int[] nums2) {
 ###### 题目示例2 `leetcode 503 下一个更大元素II`
 
 ```java
-// 从右往左构建一个单调递减栈
+// 从右往左维护一个单调递减栈
 private int[] nextGreaterElements(int[] nums) {
     int n = nums.length;
     Deque<Integer> monoStack = new LinkedList<>();
@@ -3208,7 +3211,7 @@ private int maxWidthRamp(int[] A) {
 ###### 题目示例5 `leetcode 42 接雨水`
 
 ```java
-public int trap(int[] height) {
+private int trap(int[] height) {
     if(height == null || height.length < 3) { 
         return 0;
     }
@@ -3251,14 +3254,14 @@ private int largestRectangleArea(int[] heights) {
         return 0;
     }
     
-    // 在原数组后面加上一个0，原数组边界元素也有了更小的元素
+    // 在原数组前后各加上一个0，原数组边界元素也有了更小的元素
     int[] temp = new int[heights.length+2];
     System.arraycopy(heights, 0, temp, 1, heights.length);
     
     Deque<Integer> monoStack = new LinkedList<>();
     int maxArea = 0;
     for(int i = 0; i < temp.length; i++) {
-        // 构建单调递增栈
+        // 维护一个单调递增栈
         while(!monoStack.isEmpty() && temp[i] < temp[monoStack.peekLast()]) {
             int height = temp[monoStack.removeLast()];
             maxArea = Math.max(maxArea, height * (i - monoStack.peekLast() - 1));
@@ -3399,11 +3402,43 @@ class StockSpanner {
 }
 ```
 
-
-
 ------
 
 ###### 题目示例11 `leetcode 1019 链表的下一个更大结点`
+
+```java
+private int[] nextLargerNodes(ListNode head) {
+    if(head == null) {
+        return new int[0];
+    }
+
+    // 遍历链表，将元素压入栈中，同时获得链表长度
+    int len = 0;
+    Deque<Integer> stack = new LinkedList<>();
+    Deque<Integer> monoStack = new LinkedList<>();
+    ListNode runner = head;
+    while(runner != null) {
+        stack.addLast(runner.val);
+        runner = runner.next;
+        len++;
+    }
+
+    // 从链表最后一个元素值开始往前操作，思路与leetcode 496相同
+    // 这里同样需要维护一个单调递减栈
+    int[] res = new int[len];
+    int index = len - 1;
+    while(!stack.isEmpty()) {
+        int val = stack.removeLast();
+        while(!monoStack.isEmpty() && val >= monoStack.peekLast()) {
+            monoStack.removeLast();
+        }
+        res[index] = monoStack.isEmpty()? 0:monoStack.peekLast();
+        index--;
+        monoStack.addLast(val);
+    }
+    return res;
+}
+```
 
 ---
 
@@ -4397,24 +4432,29 @@ public int minMeetingRooms(int[][] intervals) {
 ```java
 public int numIslands(char[][] grid) {
     int counter = 0;
-    for(int i = 0; i < grid.length; i++)
-        for(int j = 0; j < grid[0].length; j++)
-            /**
-            * 当前位置为陆地，探寻其他所有相邻的陆地并将其沉没
-            */
-            if(grid[i][j] == '1' && dfs(grid, i, j) >= 1)
+    for(int i = 0; i < grid.length; i++) {
+        for(int j = 0; j < grid[0].length; j++) {
+            // 当前位置为陆地，探寻其他所有相邻的陆地并将其沉没
+            if(grid[i][j] == '1' && dfs(grid, i, j) >= 1) {
                 counter++;
+            }
+        }
+    }
     return counter;
 }
 
 private int dfs(char[][] grid, int i, int j) {
     // 判断边界
-    if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length)
+    if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length) {
         return 0;
+    }
     // 当前位置为陆地，将其沉没，并向四周查看是否有其它陆地相连
     if(grid[i][j] == '1') {
         grid[i][j] = '0';
-        return dfs(grid, i - 1, j) + dfs(grid, i, j - 1) + dfs(grid, i + 1, j) + dfs(grid, i, j + 1) + 1;
+        return dfs(grid, i - 1, j) 
+            + dfs(grid, i, j - 1) 
+            + dfs(grid, i + 1, j) 
+            + dfs(grid, i, j + 1) + 1;
     }
     // 当前位置为水域，不存在岛屿，返回0
     return 0;
@@ -8022,8 +8062,6 @@ public String reverseStr(String s, int k) {
 
 ------
 
-
-
 ### 滑动窗口技巧
 
 #### 滑动窗口类型
@@ -8060,7 +8098,7 @@ private void slidingWindow(String s, String t) {
         System.out.println("window:[%d, %d ]", left, right);
         
         // 判断左侧窗口是否需要收缩
-        while(window needs shrink) {
+        while(window needs to shrink) {
             // d是将被移出窗口的字符
             char d = s.charAt(left);
             // 进行窗口内数据的一系列更新
@@ -9452,12 +9490,11 @@ class LRUCache {
         if(!map.containsKey(key))
             return -1;
         // 先把查找到的节点从链表中删除，之后放到尾部（头、尾可以自己决定）
-        // map中的映射可以不用删除
+        // map中的映射不用删除
         LinkedListNode node = map.get(key);
         node.next.pre = node.pre;
         node.pre.next = node.next;
         moveToTail(node);
-
         return node.val;
     }
     

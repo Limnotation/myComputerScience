@@ -8083,13 +8083,15 @@ private void slidingWindow(String s, String t) {
     HashMap<Character, Integer> need = new HashMap<>();
     HashMap<Character, Integer> window = new HashMap<>();
     
-    for(char c: t.toCharArray())
+    for(char c: t.toCharArray()) {
         need.put(c, need.getOrDefault(c, 0) + 1);
+    }
     
-    int left = 0, right = 0;
+    int left = 0;
+    int right = 0;
     int valid = 0;
     while(right < s.length()) {
-        // c是移入窗口的字符
+        // c是刚刚移入窗口的字符
         char c = s.charAt(right);
         // 进行窗口内数据的一系列更新
         ...;
@@ -8132,31 +8134,42 @@ private void slidingWindow(String s, String t) {
 
 ```java
 private String minWindow(String s, String t) {
-    if(s == null || t == null || s.length() < t.length())
+    // 特判
+    if(s == null || t == null || s.length() < t.length()) {
         return "";
+    }
     
+    // 
     HashMap<Character, Integer> need = new HashMap<>();
     HashMap<Character, Integer> window = new HashMap<>();
-    for(char c:t.toCharArray())
+    for(char c:t.toCharArray()) {
         need.put(c, need.getOrDefault(c, 0) + 1);
+    }
     
-    int left = 0, right = 0;
-    int match = 0, start = 0;
+    int left = 0;
+    int right = 0;
+    int match = 0;
+    int start = 0;
     int minLen = Integer.MAX_VALUE;
     int len = s.length();
     while(right < len) {
+        // 移动右边窗口
         char c1 = s.charAt(right);
         window.put(c1, window.getOrDefault(c1, 0) + 1);
-        if(window.get(c1).equals(need.get(c1)))
+        if(window.get(c1).equals(need.get(c1))) {
             match++;
+        }
+        // 窗口移动的条件是：当前窗口内包含了所有s1的字符并且数量大于等于
+        // 此时需要比较窗口大小并设置返回结果相关变量，并移动窗口左边界
         while(match == need.size()) {
             if(right - left + 1 < minLen) {
                 start = left;
                 minLen = right - left + 1;
             }
             char c2 = s.charAt(left);
-            if(window.get(c2).equals(need.get(c2)))
+            if(window.get(c2).equals(need.get(c2))) {
                 match--;
+            }
             window.put(c2, window.get(c2) - 1);
             left++;
         }
@@ -8171,23 +8184,33 @@ private String minWindow(String s, String t) {
 ###### 题目示例2 `leetcode 567 字符串的排列`
 
 ```java
+// v1:使用HashMap设置窗口
 private boolean checkInclusion(String s1, String s2) {
-    if(s1 == null || s2 == null || s2.length() < s1.length())
+    // 特判
+    if(s1 == null || s2 == null || s2.length() < s1.length()) {
         return false;
+    }
     
     HashMap<Character, Integer> need = new HashMap<>();
     HashMap<Character, Integer> window = new HashMap<>();
-    for(char c:s1.toCharArray())
+    for(char c:s1.toCharArray()) {
         need.put(c, need.getOrDefault(c, 0) + 1);
+    }
     
-    int left = 0, right = 0;
+    int left = 0;
+    int right = 0;
     int match = 0;
-    int len1 = s1.length(), len2 = s2.length();
+    int len1 = s1.length();
+    int len2 = s2.length();
     while(right < len2) {
         char c1 = s2.charAt(right);
         window.put(c1, window.getOrDefault(c1, 0) + 1);
-        if(window.get(c1).equals(need.get(c1)))
+        if(window.get(c1).equals(need.get(c1))) {
             match++;
+        }
+        
+        // 窗口移动的条件是：当前窗口大小大于s1的长度，这时候需要检查窗口内容
+        // 是否满足题目要求，并设置相应返回结果并移动窗口左边界
         while((right - left + 1) >= len1) {
             if(match == need.size())
                 return true;
@@ -8201,6 +8224,44 @@ private boolean checkInclusion(String s1, String s2) {
     }
     return false;
 }
+
+// v2:因为字符串只包含小写字符，可以使用数组代替HashMap
+private boolean checkInclusion(String s1, String s2) {
+    int[] need = new int[26];
+    int[] window = new int[26];
+    int unique = 0;
+    for(char c:s1.toCharArray()) {
+        if(need[c - 'a'] == 0) {
+            unique++;
+        }
+        need[c - 'a']++;
+    }
+
+    int left = 0;
+    int right = 0;
+    int match = 0;
+    while(right < s2.length()) {
+        char c1 = s2.charAt(right);
+        window[c1 - 'a']++;
+        if(window[c1 - 'a'] == need[c1 - 'a']) {
+            match++;
+        }
+
+        while((right - left + 1) >= s1.length()) {
+            if(match == unique) {
+                return true;
+            }
+            char c2 = s2.charAt(left);
+            if(window[c2 - 'a'] == need[c2 - 'a']) {
+                match--;
+            }
+            window[c2 - 'a']--;
+            left++;
+        }
+        right++;
+    }
+    return false;
+}
 ```
 
 ------
@@ -8208,6 +8269,7 @@ private boolean checkInclusion(String s1, String s2) {
 ###### 题目示例3 `leetcode 438 找到字符串中所有字母异位词`
 
 ```java
+// v1
 private List<Integer> findAnagrams(String s, String p) {
     List<Integer> res = new LinkedList<>();
     if(s == null || p == null || s.length() < p.length())
@@ -8215,24 +8277,73 @@ private List<Integer> findAnagrams(String s, String p) {
     
     HashMap<Character, Integer> need = new HashMap<>();
     HashMap<Character, Integer> window = new HashMap<>();
-    for(char c:p.toCharArray())
+    for(char c:p.toCharArray()) {
         need.put(c, need.getOrDefault(c, 0) + 1);
+    }
     
-    int left = 0, right = 0;
+    int left = 0;
+    int right = 0;
     int match = 0;
-    int len1 = s.length(), len2 = p.length();
+    int len1 = s.length();
+    int len2 = p.length();
     while(right < len1) {
         char c1 = s.charAt(right);
         window.put(c1, window.getOrDefault(c1, 0) + 1);
-        if(window.get(c1).equals(need.get(c1)))
+        if(window.get(c1).equals(need.get(c1))) {
             match++;
-        while((right - left + 1) >= len2) {
-            if(match == need.size())
+        }
+        // 窗口移动的条件是：当前窗口的大小等于模式串的长度
+        // 此时需要查看窗口内容是否满足题目要求并设置结果
+        // 并且移动窗口左边界
+        while((right - left + 1) == len2) {
+            if(match == need.size()) {
                 res.add(left);
+            }
             char c2 = s.charAt(left);
-            if(window.get(c2).equals(need.get(c2)))
+            if(window.get(c2).equals(need.get(c2))) {
                 match--;
+            }
             window.put(c2, window.get(c2) - 1);
+            left++;
+        }
+        right++;
+    }
+    return res;
+}
+
+// v2:由于字符的范围只包括了小写字符，可以使用数组代替哈希表
+private List<Integer> findAnagrams(String s, String p) {
+    List<Integer> res = new LinkedList<>();
+    int[] need = new int[26];
+    int[] window = new int[26];
+    int unique = 0;
+    for(char c:p.toCharArray()) {
+        if(need[c - 'a'] == 0) {
+            unique++;
+        }
+        need[c - 'a']++;
+    }
+
+    int left = 0;
+    int right = 0;
+    int match = 0;
+    while(right < s.length()) {
+        char c1 = s.charAt(right);
+        window[c1 - 'a']++;
+        if(window[c1 - 'a'] == need[c1 - 'a']) {
+            match++;
+        }
+
+        while((right - left + 1) == p.length()) {
+            if(match == unique) {
+                res.add(left);
+            }
+
+            char c2 = s.charAt(left);
+            if(need[c2 - 'a'] == window[c2 - 'a']) {
+                match--;
+            }
+            window[c2 - 'a']--;
             left++;
         }
         right++;
@@ -8247,18 +8358,21 @@ private List<Integer> findAnagrams(String s, String p) {
 
 ```java
 private int lengthOfLongestSubstring(String s) {
-    if(s == null)
+    if(s == null) {
         return 0;
-    if(s.length() <= 1)
+    } else if(s.length() <= 1) {
         return s.length();
+    }
     
     HashMap<Character, Integer> window = new HashMap<>();
-    int left = 0, right = 0;
+    int left = 0;
+    int right = 0;
     int maxLen = Integer.MIN_VALUE;
     int len = s.length();
     while(right < len) {
         char c1 = s.charAt(right);
         window.put(c1, window.getOrDefault(c1, 0) + 1);
+        // 窗口移动的条件是：当前窗口内有字符出现的次数chao'guo
         while(window.get(c1) > 1) {
             char c2 = s.charAt(left);
             window.put(c2, window.get(c2) - 1);
@@ -8277,14 +8391,18 @@ private int lengthOfLongestSubstring(String s) {
 
 ```java
 private int minSubArrayLen(int s, int[] nums) {
-    if(nums == null || nums.length == 0 || s <= 0)
+    if(nums == null || nums.length == 0 || s <= 0) {
         return 0;
+    }
     
-    int left = 0, right = 0;
-    int curVal = 0, minLen = Integer.MAX_VALUE;
+    int left = 0;
+    int right = 0;
+    int curVal = 0;
+    int minLen = Integer.MAX_VALUE;
     int len = nums.length;
     while(right < len) {
         curVal += nums[right];
+        // 窗口移动的条件：当前窗口内的数值和大于s
         while(curVal >= s) {
             minLen = Math.min(minLen, right - left + 1);
             curVal -= nums[left];
@@ -8302,19 +8420,25 @@ private int minSubArrayLen(int s, int[] nums) {
 
 ```java
 private int characterReplacement(String s, int k) {
-    if(s == null)
+    // 特判
+    if(s == null) {
         return 0;
-    if(s.length() <= k)
+    } else if(s.length() <= k) {
         return s.length();
+    }
     
-    int left = 0, right = 0;
-    int occurMost = 0, maxLen = Integer.MIN_VALUE;
+    int left = 0;
+    int right = 0;
+    int occurMost = 0;
+    int maxLen = Integer.MIN_VALUE;
     int[] window = new int[26];
     int len = s.length();
     while(right < len) {
         int index1 = s.charAt(right) - 'A';
         window[index1]++;
         occurMost = Math.max(occurMost, window[index1]);
+        // 窗口移动的条件：当前窗口大小大于重复字符数量与k的和
+        // 此时需要移动窗口左边界以确保窗口内容满足题目要求
         while((right - left + 1) > occurMost + k) {
             int index2 = s.charAt(left) - 'A';
             window[index2]--;
@@ -8333,20 +8457,29 @@ private int characterReplacement(String s, int k) {
 
 ```java
 private int longestOnes(int[] A, int K) {
-    if(A == null)
+    if(A == null) {
         return 0;
-    if(A.length <= K)
+    } else if(A.length <= K) {
         return A.length;
+    }
     
-    int left = 0, right = 0;
-    int len = A.length, maxLen = Integer.MIN_VALUE;
-    int usedZero = 0;
+    int left = 0;
+    int right = 0;
+    int len = A.length;
+    int maxLen = Integer.MIN_VALUE;
+    int Ones = 0;
     while(right < len) {
-        if(A[right] == 0)
-            usedZero++;
-        while(usedZero > K) {
-            if(A[left] == 0)
-                usedZero--;
+        int val1 = A[right];
+        if(val1 == 1) {
+            Ones++;
+        }
+        // 窗口移动的条件：当前窗口大小大于窗口内1的个数与K的和
+        // 此时需要移动窗口左边界以确保窗口内容满足题目要求
+        while((right - left + 1) > Ones + K) {
+            int val2 = A[left];
+            if(val2 == 1) {
+                Ones--;
+            }
             left++;
         }
         maxLen = Math.max(maxLen, right - left + 1);
@@ -8362,20 +8495,28 @@ private int longestOnes(int[] A, int K) {
 
 ```java
 private int numKLenSubstrNoRepeats(String S, int K) {
-    if(S == null || K <= 0 || S.length() < K)
+    // 特判
+    if(S == null || K <= 0 || S.length() < K) {
         return 0;
-    int left = 0, right = 0;
+    }
+    
+    int left = 0;
+    int right = 0;
     int[] window = new int[26];
     int res = 0;
     int len = S.length();
     while(right < len) {
         int index1 = S.charAt(right) - 'a';
         window[index1]++;
+        // 窗口移动的条件是：当前窗口内有字符出现次数超过一次
+        // 此时需要移动窗口左侧
         while(window[index1] > 1) {
             int index2 = S.charAt(left) - 'a';
             window[index2]--;
             left++;
         }
+        // 如果去重后窗口大小刚好为K，则计数结果加一
+        // 同时需要移动窗口左边界以避免重复计数
         if((right - left + 1) == K) {
             res++;
             int index2 = S.charAt(left) - 'a';
@@ -8394,32 +8535,40 @@ private int numKLenSubstrNoRepeats(String S, int K) {
 
 ```java
 private int[] shortestSeq(int[] big, int[] small) {
-    if(big == null || small == null || big.length < small.length)
+    // 特判
+    if(big == null || small == null || big.length < small.length) {
         return new int[0];
+    }
 
-    int left = 0, right = 0;
-    int start = 0, minLen = Integer.MAX_VALUE;
+    int left = 0;
+    int right = 0;
+    int start = 0;
+    int minLen = Integer.MAX_VALUE;
     int match = 0;
     HashMap<Integer, Integer> need = new HashMap<>();
     HashMap<Integer, Integer> window = new HashMap<>();
-    for(int item:small)
-        need.put(item, need.getOrDefault(item, 0) + 1);
+    for(int i = 0; i < small.length; i++) {
+        need.put(small[i], 1);
+    }
 
     int len1 = big.length;
     while(right < len1) {
         int item1 = big[right];
         window.put(item1, window.getOrDefault(item1, 0) + 1);
-        if(need.containsKey(item1) && window.get(item1) == 1)
+        if(window.get(item1).equals(need.get(item1))) {
             match++;
-
+        }
+        // 窗口移动的条件是：当前窗口内包含了small的所有元素
+        // 思路与leetcode 76相同
         while(match == need.size()) {
-            int item2 = big[left];
             if(right - left < minLen) {
                 minLen = right - left;
                 start = left;
             }
-            if(need.containsKey(item2) && window.get(item2) == 1)
+            int item2 = big[left];
+            if(window.get(item2).equals(need.get(item2))) {
                 match--;
+            }
             window.put(item2, window.get(item2) - 1);
             left++;
         }
@@ -8435,24 +8584,34 @@ private int[] shortestSeq(int[] big, int[] small) {
 
 ```java
 private int lengthOfLongestSubstringTwoDistinct(String s) {
-    if(s == null)
+    // 特判
+    if(s == null) {
         return 0;
-    if(s.length() <= 2)
+    }
+    if(s.length() <= 2) {
         return s.length();
+    }
     
-    int left = 0, right = 0;
+    int left = 0;
+    int right = 0;
     int maxLen = Integer.MIN_VALUE;
-    int len = s.length(), match = 0;
+    int len = s.length();
+    int match = 0;
     HashMap<Character, Integer> window = new HashMap<>();
     while(right < len) {
         char c1 = s.charAt(right);
-        if(!window.containsKey(c1) || window.get(c1) == 0)
+        // 统计当前窗口内出现的字符的基数
+        if(!window.containsKey(c1) || window.get(c1) == 0) {
             match++;
+        }
         window.put(c1, window.getOrDefault(c1, 0) + 1);
+        // 窗口移动的条件：当前窗口内出现了超过两种不同的字符
+        // 此时要移动窗口左边界直到窗口内容满足题目条件
         while(match > 2) {
             char c2 = s.charAt(left);
-            if(window.get(c2) == 1)
+            if(window.get(c2) == 1) {
                 match--;
+            }
             window.put(c2, window.get(c2) - 1);
             left++;
         }
@@ -8468,25 +8627,33 @@ private int lengthOfLongestSubstringTwoDistinct(String s) {
 ###### 题目示例11 `leetcode 340 至多包含K个不同字符的最长子串`
 
 ```java
+// leetcode 340是leetcode 159的一般化形式
 private int lengthOfLongestSubstringKDistinct(String s, int k) {
-    if(s == null || k <= 0)
+    // 特判
+    if(s == null || k <= 0) {
         return 0;
-    if(s.length() <= k)
+    }
+    if(s.length() <= k) {
         return s.length();
+    }
 
-    int left = 0, right = 0;
-    int match = 0, maxLen = Integer.MIN_VALUE;
+    int left = 0;
+    int right = 0;
+    int match = 0;
+    int maxLen = Integer.MIN_VALUE;
     int len = s.length();
     HashMap<Character, Integer> window = new HashMap<>();
     while(right < len) {
         char c1 = s.charAt(right);
-        if(!window.containsKey(c1) || window.get(c1) == 0)
+        if(!window.containsKey(c1) || window.get(c1) == 0) {
             match++;
+        }
         window.put(c1, window.getOrDefault(c1, 0) + 1);
         while(match > k) {
             char c2 = s.charAt(left);
-            if(window.get(c2) == 1)
+            if(window.get(c2) == 1) {
                 match--;
+            }
             window.put(c2, window.get(c2) - 1);
             left++;
         }
@@ -8497,8 +8664,6 @@ private int lengthOfLongestSubstringKDistinct(String s, int k) {
 }
 ```
 
-
-
 -----
 
 ##### 固定窗口题目
@@ -8507,21 +8672,25 @@ private int lengthOfLongestSubstringKDistinct(String s, int k) {
 
 ```java
 private int[] maxSlidingWindow(int[] nums, int k) {
-    if(nums == null || k < 1 || nums.length < k)
+    if(nums == null || k < 1 || nums.length < k) {
         return new int[0];
+    }
     
     int len = nums.length;
     int[] res = new int[len - k + 1];
     Deque<Integer> window = new LinkedList<>();
     int index = 0;
    	for(int i = 0; i < len; i++) {
-        while(!window.isEmpty() && nums[i] >= nums[window.peekLast()])
+        while(!window.isEmpty() && nums[i] >= nums[window.peekLast()]) {
             window.pollLast();
+        }
         window.offerLast(i);
-        if(i - k >= window.peekFirst())
+        if(i - k >= window.peekFirst()) {
             window.pollFirst();
-        if(i >= k - 1)
+        }
+        if(i >= k - 1) {
             res[index++] = nums[window.peekFirst()];
+        }
     }
     return res;
 }
@@ -8529,18 +8698,21 @@ private int[] maxSlidingWindow(int[] nums, int k) {
 
 ------
 
-###### 题目示例2 `leetcode 1456 定长子串中原因的最大数目`
+###### 题目示例2 `leetcode 1456 定长子串中元音的最大数目`
 
 ```java
 public int maxVowels(String s, int k) {
-    if(s == null || s.length() <= 0 || k < 1)
+    if(s == null || s.length() <= 0 || k < 1) {
         return 0;
+    }
 
-    int curVal = 0, res = 0;
+    int curVal = 0;
+    int res = 0;
     for(int i = 0; i < s.length(); i++) {
         curVal += isVowel(s.charAt(i));
-        if(i >= k)
+        if(i >= k) {
             curVal -= isVowel(s.charAt(i - k));
+        }
         res = Math.max(res, curVal);
     }
     return res;
@@ -8688,8 +8860,6 @@ private String minWindow(String S, String T)
     }
 }
 ```
-
-
 
 -----
 

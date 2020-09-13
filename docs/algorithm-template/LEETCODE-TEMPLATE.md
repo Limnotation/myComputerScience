@@ -338,6 +338,8 @@
     - [](#)
 ## 数据结构
 
+------
+
 ### 树
 
 #### 二叉树遍历问题
@@ -356,12 +358,13 @@
 ##### 树结点定义
 
 ```java
-public class TreeNode
-{
+class TreeNode {
     int val;
     TreeNode left;
     TreeNode right;
-    TreeNode( int x ) { val = x };
+    public TreeNode(int x) { 
+        this.val = x;
+    }
 }
 ```
 
@@ -373,13 +376,17 @@ public class TreeNode
 
 ```java
 private void Traversal(TreeNode root) {
-    if(root == null)
+    if(root == null) {
         return;
-    System.out.println(root.val);		// 前序
+    }
+    // 前序遍历
+    System.out.println(root.val);		
     preOrderTraverse(root.left);
-    // System.out.println(root.val);   // 中序
+    // 中序遍历
+    // System.out.println(root.val);   
     preOrderTraverse(root.right);
-    // System.out.println(root.val);   // 后序
+    // 后序遍历
+    // System.out.println(root.val);   
 }
 ```
 
@@ -388,46 +395,25 @@ private void Traversal(TreeNode root) {
 ###### 前序非递归
 
 ```java
-// v1
 private List<Integer> preorderTraversal(TreeNode root) {
     List<Integer> res = new LinkedList<>();
-    if(root == null)
+    if(root == null) {
         return res;
+    }
     
     Deque<TreeNode> stack = new LinkedList<>();
     while(root != null || !stack.isEmpty()) {
         while(root != null) {
-            // 前序遍历，先保存结果
+            // 前序遍历，先保存结果(根节点)
             res.add(root.val);
             // 被存入栈的节点是已经被访问过的节点
             stack.addLast(root);
-            // 由先序遍历的规则可知
+            // 由先序遍历的规则可知(左子节点)
             root = root.left;
         }
-        // pop
+        // pop(右子节点)
         root = stack.removeLast();
         root = root.right;
-    }
-    return res;
-}
-
-// v2
-private List<Integer> preorderTraversal( TreeNode root )
-{
-    List<Integer> res = new LinkedList<>();
-    if( root == null )
-        return res;
-    
-    Deque<TreeNode> stack = new LinkedList<>();
-    stack.addLast( root );
-    while( !stack.isEmpty() )
-    {
-        TreeNode node = stack.removeLast();
-        res.add( node.val );
-        if( node.right != null )
-            stack.addLast( node.right );
-        if( node.left != null )
-            stack.addLast( node.left );
     }
     return res;
 }
@@ -440,16 +426,16 @@ private List<Integer> preorderTraversal( TreeNode root )
 ```java
 private List<Integer> inorderTraversal(TreeNode root) {
     List<Integer> res = new LinkedList<>();
-    if(root == null)
+    if(root == null) {
         return res;
+    }
     
     Deque<TreeNode> stack = new LinkedList<>();
     while(!stack.isEmpty() || root != null) {
         while(root != null) {
             stack.addLast(root);
             root = root.left;
-        }
-        // pop
+        } 
         root = stack.removeLast();
         res.add(root.val);
         root = root.right;
@@ -465,8 +451,9 @@ private List<Integer> inorderTraversal(TreeNode root) {
 ```java
 private List<Integer> postorderTraversal(TreeNode root) {
     List<Integer> res = new LinkedList<>();
-    if(root == null)
+    if(root == null) {
         return res;
+    }
     
     Deque<TreeNode> stack = new LinkedList<>();
     TreeNode lastVisit = null;
@@ -478,11 +465,12 @@ private List<Integer> postorderTraversal(TreeNode root) {
         
         TreeNode node = stack.peekLast();
         if(node.right == null || node.right == lastVisit) {
-            // 根节点必须在其右子节点弹出之后再弹出
+            // 根节点必须在没有有子节点或者其右子节点已经弹出的情况下才能弹出
             stack.removeLast();
             res.add(node.val);
             lastVisit = node;
         } else {
+            // 当前节点的右子树未被遍历时要先访问右子树
             root = node.right;
         }
     }
@@ -494,27 +482,9 @@ private List<Integer> postorderTraversal(TreeNode root) {
 
 ------
 
-
-
 #### 普通二叉树问题（未仔细分类）
 
-```go
-func traversal( root *TreeNode ) ResultType {
-    // nil or leaf
-    if root == nil {
-        // do something and return
-    }
-    
-    // Divide 
-    ResultType left = traversal( root.left )
-    ResultType right = traversal( root.right )
-    
-    // Conquer
-    ResultType result = Merge from left to right 
-    
-    return result
-}
-```
+-------
 
 ##### 题目示例1 `leetcode 104 二叉树的最大深度`
 
@@ -531,32 +501,34 @@ private int maxDepth(TreeNode root) {
 }
 ```
 
+--------
+
 ##### 题目示例2`leetcode 110 平衡二叉树`
 
 ```java
-public boolean isBalanced( TreeNode root )
-{
-    if( root == null )
+private boolean isBalanced(TreeNode root) {
+    if(root == null) {
         return true;
+    }
     
-    int left = maxDepth( root.left );
-    int right = maxDepth( root.right );
-    int absDiff = Math.abs( left - right );
-    if( absDiff > 1 )
+    int left = maxDepth(root.left);
+    int right = maxDepth(root.right);
+    int absDiff = Math.abs(left - right);
+    if(absDiff > 1) {
         return false;
+    }
     
-    return isBalanced( root.left ) && isBalanced( root.right );
+    return isBalanced(root.left) && isBalanced(root.right);
 }
 
-private int maxDepth( TreeNode root )
-{
-    if( root == null )
+private int maxDepth(TreeNode root) {
+    if(root == null) {
         return 0;
+    }
     
-    // divide 
-    int left = maxDepth( root.left );
-    int right = maxDepth( root.right );
-    return Math.max( left, right ) + 1;
+    int left = maxDepth(root.left);
+    int right = maxDepth(root.right);
+    return Math.max(left, right) + 1;
 }
 ```
 
@@ -566,13 +538,13 @@ private int maxDepth( TreeNode root )
 
 **思路**：分治法，分为三种情况
 
-- 左子树最大路径和最大
-- 右子树最大路径和最大
-- 左右子树单向路径加上根节点值之和最大
+- 具有最大路径和的路径在左子树
+- 具有最大路径和的路径在右子树
+- 具有最大路径和的路径经过当前的根节点
 
 需要保存两个变量：
 
-- 第一个变量为全局变量res，保存子树最大路径和
+- 第一个变量为全局变量res，保存最大路径和
 
 - 第二个变量保存左右子树单向路径和加上根节点值，为当前子树的经过根节点的路径的最大值
 
@@ -606,13 +578,14 @@ class Solution {
 ##### 题目示例4  `leetcode 236 二叉树的最近公共祖先` 
 
 ```java
-private TreeNode lowestCommonAncestor( TreeNode root, TreeNode p, TreeNode q)
-{
-    if( root == null || p == root || q == root )
+private TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    // 递归的终止条件
+    if(root == null || p == root || q == root) {
         return root;
+    }
     // divide
-    TreeNode left = lowestCommonAncestor( root.left, p, q );
-    TreeNode right = lowestCommonAncestor( root.right, p, q );
+    TreeNode left = lowestCommonAncestor(root.left, p, q);
+    TreeNode right = lowestCommonAncestor(root.right, p, q);
     // conquer
     return left == null? right: right == null ? left:root;
 }
@@ -662,18 +635,18 @@ private TreeNode invertTree(TreeNode root) {
 ##### 题目示例7 `leetcode 617 合并二叉树`
 
 ```java
-public TreeNode mergeTrees( TreeNode t1, TreeNode t2 )
-{
-    if( t1 == null && t2 == null )
+private TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+	if(t1 == null && t2 == null) {
         return null;
-    if( t1 == null )
+    } else if(t1 == null) {
         return t2;
-    if( t2 == null )
+    } else if(t2 == null) {
         return t1;
+    }
     
-    TreeNode node = new TreeNode( t1.val + t2.val );
-    node.left = mergeTrees( t1.left, t2.left );
-    node.right = mergeTrees( t1.right, t2.right );
+    TreeNode node = new TreeNode(t1.val + t2.val);
+    node.left = mergeTrees(t1.left, t2.left);
+    node.right = mergeTrees(t1.right, t2.right	);
     return node;
 }
 ```
@@ -683,12 +656,12 @@ public TreeNode mergeTrees( TreeNode t1, TreeNode t2 )
 ##### 题目示例8  `leetcode 112 路径总和`
 
 ```java
-private boolean hasPathSum(TreeNode root, int sum)
-{
-    if(root == null)
+private boolean hasPathSum(TreeNode root, int sum) {
+    if(root == null) {
         return false;
-    if(root.left == null && root.right == null && root.val == sum)
+    } else if(root.left == null && root.right == null && root.val == sum) {
         return true;
+    }
     
     int remain = sum - root.val;
     return hasPathSum(root.left, remain) || hasPathSum(root.right, remain);
@@ -700,24 +673,28 @@ private boolean hasPathSum(TreeNode root, int sum)
 ##### 题目示例9 `leetcode 437 路径总和III`
 
 ```java
-public int pathSum( TreeNode root, int sum )
-{
-    if( root == null )
+public int pathSum(TreeNode root, int sum) {
+    if(root == null) {
         return 0;
+    }
     
-    int res = pathSumStartsWithRoot( root, sum ) + pathSum( root.left, sum ) + pathSum( root.right, sum );
+    int res = pathSumStartsWithRoot(root, sum) + pathSum(root.left, sum) + pathSum(root.right, sum);
     return res;
 }
 
-private int pathSumStartsWithRoot( TreeNode root, int sum )
-{
-    if( root == null )
+/**
+* 计算以root为起点的满足和为sum的路径的数量
+ */
+private int pathSumStartsWithRoot(TreeNode root, int sum) {
+    if(root == null) {
         return 0;
+    }
     
     int res = 0;
-    if( root.val == sum )
+    if(root.val == sum) {
         res++;
-    res += pathSumStartsWithRoot( root.left, sum - root.val ) + pathSumStartsWithRoot( root.right, sum - root.val );
+    }
+    res += pathSumStartsWithRoot(root.left, sum - root.val) + pathSumStartsWithRoot(root.right, sum - root.val);
     return res;
 }
 ```
@@ -728,8 +705,9 @@ private int pathSumStartsWithRoot( TreeNode root, int sum )
 
 ```java
 public boolean isSubtree(TreeNode s, TreeNode t) {
-    if(s == null)
+    if(s == null) {
         return false;
+    }
     return isSubTreeWithRoot(s, t) || isSubtree(s.left, t) || isSubtree(s.right, t);
 }
 
@@ -749,21 +727,20 @@ private boolean isSubTreeWithRoot(TreeNode s, TreeNode t) {
 ##### 题目示例11 `leetcode 101 对称二叉树`
 
 ```java
-public boolean isSymmetric(TreeNode root)
-{
-    if(root == null)
+public boolean isSymmetric(TreeNode root) {
+    if(root == null) {
         return true;
+    }
     return isSymmetric(root.left, root.right); 
 }
 
-private boolean isSymmetric(TreeNode t1, TreeNode t2)
-{
-    if(t1 == null && t2 == null)
+private boolean isSymmetric(TreeNode t1, TreeNode t2) {
+    if(t1 == null && t2 == null) {
         return true;
-    if(t1 == null || t2 == null)
+    }
+    if(t1 == null || t2 == null || t1.val != t2.val) {
         return false;
-    if(t1.val != t2.val)
-        return false;
+    }
     return isSymmetric(t1.left, t2.right) && isSymmetric(t1.right, t2.left);
 }
 ```
@@ -774,12 +751,14 @@ private boolean isSymmetric(TreeNode t1, TreeNode t2)
 
 ```java
 private int minDepth(TreeNode root) {
-    if(root == null)
+    if(root == null) {
         return 0;
+    }
     int left = minDepth(root.left);
-    int right = minDepth( root.right );
-    if(left == 0 || right == 0)
+    int right = minDepth(root.right);
+    if(left == 0 || right == 0) {
         return left + right + 1;
+    }
     return Math.min(left, right) + 1;
 }
 ```
@@ -789,19 +768,19 @@ private int minDepth(TreeNode root) {
 ##### 题目示例13 `leetcode 404 左叶子之和`
 
 ```java
-public int sumOfLeftLeaves( TreeNode root )
-{
-    if( root == null )
+public int sumOfLeftLeaves(TreeNode root) {
+    if(root == null) {
         return 0;
-    if( isLeaf(root.left) )
-        return root.left.val + sumOfLeftLeaves( root.right );
+    } else if(isLeaf(root.left)) {
+        return root.left.val + sumOfLeftLeaves(root.right);
+    }
     return sumOfLeftLeaves(root.left) + sumOfLeftLeaves（root.right);
 }
 
-private boolean isLeaf(TreeNode root)
-{
-    if(node == null)
+private boolean isLeaf(TreeNode root) {
+    if(node == null) {
         return false;
+    }
     return root.left == null && root.right == null;
 }
 ```
@@ -812,20 +791,23 @@ private boolean isLeaf(TreeNode root)
 
 ```java
 private int res = 0;
-public int longestUnivaluePath(TreeNode root)
-{
+public int longestUnivaluePath(TreeNode root) {
     arrowLength(root);
     return res;
 }
 
-private int arrowLength(TreeNode root)
-{
-    if(root == null)
+/**
+* 求从root开始往叶子节点方向的一个最长同值路径的长度
+* @param root
+ */
+private int arrowLength(TreeNode root) {
+    if(root == null) {
         return 0;
+    }
     int left = arrowLength(root.left);
     int right = arrowLength(root.right);
-    int leftPath = root.left != null && root.left.val == root.val ? left + 1 : 0;
-    int rightPath = root.right != null && root.right.val == root.val ? right + 1 : 0;
+    int leftPath = (root.left != null) && (root.left.val == root.val) ? left + 1 : 0;
+    int rightPath = (root.right != null) && (root.right.val == root.val) ? right + 1 : 0;
     res = Math.max(res, leftPath + rightPath);
     return Math.max(leftPath, rightPath);
 }
@@ -836,28 +818,27 @@ private int arrowLength(TreeNode root)
 ##### 题目示例15 `leetcode 671 二叉树中第二小的节点`
 
 ```java
-public int findSecondMinimumValue(TreeNode root) 
-{
+public int findSecondMinimumValue(TreeNode root) {
     ArrayList<Integer> reL = new ArrayList<Integer>();
-    inOrderTraverse( root, reL );
+    inOrderTraverse(root, reL);
 
-    if( reL.size() < 2 )
+    if(reL.size() < 2) {
         return -1;
-    else
-    {
+    } else {
         Collections.sort(reL);
-        return reL.get( 1 );
+        return reL.get(1);
     } 
 }
 
-private void inOrderTraverse( TreeNode root, ArrayList<Integer> list )
-{
-    if( root == null )
+private void inOrderTraverse(TreeNode root, ArrayList<Integer> list) {
+    if(root == null) {
         return;
-    inOrderTraverse( root.left, list );
-    if( !list.contains( root.val ) )
-        list.add( root.val );
-    inOrderTraverse( root.right, list );
+    }
+    inOrderTraverse(root.left, list);
+    if(!list.contains(root.val)) {
+        list.add(root.val);
+    }
+    inOrderTraverse(root.right, list);
 }
 ```
 
@@ -869,20 +850,22 @@ private void inOrderTraverse( TreeNode root, ArrayList<Integer> list )
 
 ```java
 private int[] postorder;
-private Map<Integer, Integer> hashMap;
-public TreeNode buildTree(int[] inorder, int[] postorder)
-{
-    if(inorder == null || postorder == null)
+private Map<Integer, Integer> map;
+public TreeNode buildTree(int[] inorder, int[] postorder) {
+    if(inorder == null || postorder == null) {
         return null;
+    }
     
     int inLen = inorder.length, postLen = postorder.length;
-    if(inLen == 0  || postLen == 0 || inLen != postLen)
+    if(inLen == 0  || postLen == 0 || inLen != postLen) {
         return null;
+    }
     
     this.postorder = postorder;
-    hashMap = new HashMap<>();
-    for(int i = 0; i < inLen; i++)
-        hashMap.put(inorder[i], i);
+    map = new HashMap<>();
+    for(int i = 0; i < inLen; i++) {
+        map.put(inorder[i], i);
+    }
     return buildTree(0, inLen - 1, 0, postLen - 1);
 }
 
@@ -894,13 +877,13 @@ public TreeNode buildTree(int[] inorder, int[] postorder)
 * @param postRight	后序遍历序列的右边界
 * @return 二叉树的根节点
 */
-private TreeNode buildTree(int inLeft, int inRight, int postLeft, int postRight)
-{
-    if(inLeft > inRight || postLeft > postRight)
+private TreeNode buildTree(int inLeft, int inRight, int postLeft, int postRight) {
+    if(inLeft > inRight || postLeft > postRight) {
         return null;
+    }
     
     int rootVal = postorder[postRight];
-    int rootIndex = hashMap.get(rootVal);
+    int rootIndex = map.get(rootVal);
     TreeNode root = new TreeNode(rootVal);
     root.left = buildTree(inLeft, rootIndex - 1, postLeft, postRight - inRight + rootIndex - 1);
     root.right = buildTree(rootIndex + 1, inRight, postRight - inRight + rootIndex, postRight - 1);
@@ -915,16 +898,15 @@ private TreeNode buildTree(int inLeft, int inRight, int postLeft, int postRight)
 **重点：划分左右子树区间**
 
 ```java
-// 将前序遍历序列设置为全局变量，避免过多的传值
 private int[] preorder;
-// 存储中序遍历序列中元素和下标的映射（元素无重复）
 private Map<Integer, Integer> hashMap;
 public TreeNode buildTree(int[] preorder, int[] inorder) {
     // 1、边界条件特判
     if(inorder == null || preorder == null) {
         return null;
     }
-    int inLen = inorder.length, preLen = preorder.length;
+    int inLen = inorder.length;
+    int preLen = preorder.length;
     if(inLen == 0  || preLen == 0 || inLen != preLen) {
         return null;
     }
@@ -968,8 +950,9 @@ private TreeNode buildTree(int preLeft, int preRight, int inLeft, int inRight) {
 
 ```java
 private Node connect(Node root) {
-    if(root == null)
+    if(root == null) {
         return null;
+    }
     Node left = root.left;
     Node right = root.right;
     while(left != null) {
@@ -995,25 +978,25 @@ public Node connect(Node root) {
         return root;
     }
 
-    Queue<Node> queue = new LinkedList<>();
-    queue.offer(root);
+    Deque<Node> queue = new LinkedList<>();
+    queue.offerLast(root);
     while(!queue.isEmpty()) {
         int levelSize = queue.size();
         while(levelSize > 0) {
             // 链接同一层的右侧指针
-            Node node = queue.poll();
+            Node node = queue.pollFirst();
             levelSize--;
             if(levelSize > 0) {
-                node.next = queue.peek();
+                node.next = queue.peekFirst();
             } else {
                 node.next = null;
             }
 
             if(node.left != null) {
-                queue.offer(node.left);
+                queue.offerLast(node.left);
             }
             if(node.right != null) {
-                queue.offer(node.right);
+                queue.offerLast(node.right);
             }
         }
     }
@@ -1026,29 +1009,30 @@ public Node connect(Node root) {
 ##### 题目示例20： `leetcode 102 二叉树的层序遍历`
 
 ```java
-private List<List<Integer>> levelOrder( TreeNode root )
-{
+private List<List<Integer>> levelOrder(TreeNode root) {
     List<List<Integer>> res = new LinkedList<>();
-    if( root == null )
+    if(root == null) {
         return res;
+    }
     
-    Queue<TreeNode> queue = new LinkedList<>();
-    queue.offer( root );
-    while( !queue.isEmpty() )
-    {
+    // BFS
+    Deque<TreeNode> queue = new LinkedList<>();
+    queue.offerLast(root);
+    while(!queue.isEmpty()) {
         List<Integer> runner = new LinkedList<>();
-        int len = queue.size();
-        while( len > 0 )
-        {
-            TreeNode node = queue.poll();
-            runner.add( node.val );
-            if( node.left != null )
-                queue.offer( node.left );
-            if( node.right != null )
-                queue.offer( node.right );
-            len--;
+        int levelSize = queue.size();
+        while(levelSize > 0) {
+            TreeNode node = queue.pollFirst();
+            runner.add(node.val);
+            levelSize--;
+            if(node.left != null) {
+                queue.offerLast(node.left);
+            }
+            if(node.right != null) {
+                queue.offerLast(node.right);
+            }
         }
-        res.add( new LinkedList( runner ) );
+        res.add(new LinkedList(runner));
     }
     return res;
 }
@@ -1059,29 +1043,29 @@ private List<List<Integer>> levelOrder( TreeNode root )
 ##### 题目示例21 ：`leetcode 107 二叉树的层次遍历II`
 
 ```java
-private List<List<Integer>> levelOrderBottom( TreeNode root )
-{
+private List<List<Integer>> levelOrderBottom(TreeNode root) {
     List<List<Integer>> res = new LinkedList<>();
-    if( root == null )
+    if(root == null) {
         return res;
+    }
     
     Queue<TreeNode> queue = new LinkedList<>();
-    queue.offer( root );
-    while( !queue.isEmpty() )
-    {
+    queue.offer(root);
+    while(!queue.isEmpty()) {
         List<Integer> runner = new LinkedList<>();
-        int len = queue.size();
-        while( len > 0 )
-        {
+        int levelSize = queue.size();
+        while(levelSize > 0) {
             TreeNode node = queue.poll();
-            runner.add( node.val );
-            if( node.left != null )
-                queue.offer( node.left );
-            if( node.right != null )
-                queue.offer( node.right );
-            len--;
+            runner.add(node.val);
+            levelSize--;
+            if(node.left != null) {
+                queue.offer(node.left);
+            }
+            if(node.right != null) {
+                queue.offer(node.right);
+            }
         }
-        res.add( 0, new LinkedList( runner ) );
+        res.add(0, new LinkedList(runner));
     }
     return res;
 }
@@ -1098,12 +1082,12 @@ public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         return res;
     }
 
-    boolean toggle = false;                         // 翻转标志
-    Deque<TreeNode> queue = new LinkedList<>();     // 队列，辅助实现BFS
+    boolean toggle = false;                         
+    Deque<TreeNode> queue = new LinkedList<>();     
     queue.offer(root);  
     while(!queue.isEmpty()) {
-        LinkedList<Integer> temp = new LinkedList<>();  // 存储当前层元素
-        int levelSize = queue.size();                   // 当前层所拥有的元素数量
+        LinkedList<Integer> temp = new LinkedList<>();  
+        int levelSize = queue.size();                   
         while(levelSize > 0) {
             // 根据翻转标志，决定把元素放在列表头部还是尾部
             TreeNode node = queue.poll();
@@ -1301,6 +1285,38 @@ private int widthOfBinaryTree(TreeNode root) {
         }
     }
     return res;
+}
+```
+
+------
+
+##### 题目示例28  `leetcode 113 路径总和II`
+
+```java
+List<List<Integer>> res = new LinkedList<>();
+public List<List<Integer>> pathSum(TreeNode root, int sum) {
+    backTracking(root, sum, new LinkedList<Integer>());
+    return res;
+}
+
+private void backTracking(TreeNode root, int sum, LinkedList<Integer> path) {
+    if(root == null) {
+        return;
+    }
+
+    // 做选择
+    sum -= root.val;
+    path.addLast(root.val);
+    if(sum == 0 && root.left == null && root.right == null) {
+        res.add(new LinkedList(path));
+    } else {
+        // 进入下一层决策树
+        backTracking(root.left, sum, path);
+        backTracking(root.right, sum, path);
+    }
+    // 撤销选择
+    sum += root.val;
+    path.removeLast();
 }
 ```
 
@@ -7524,32 +7540,37 @@ private void backTracking(int left, int right, StringBuffer s) {
 ```java
 private boolean[][] visited;
 public boolean exist(char[][] board, String word) {
-    if(board == null || word == null || board.length == 0 || board[0].length == 0)
+    if(board == null || word == null || board.length == 0 || board[0].length == 0) {
         return false;
+    }
 
-    int pathLength = 0;
-    int m = board.length, n = board[0].length;
+    int m = board.length;
+    int n = board[0].length;
     visited = new boolean[m][n];
     for(int i = 0; i < m; i++) {
         for(int j = 0; j < n; j++) {
-            if(backTracking(board, word, i, j, pathLength))
+            if(backTracking(board, word, i, j, 0)) {
                 return true;
+            }
         }
     }
     return false;
 }
 
 /**
+* 回溯方法搜索单词
 * @parameter board       字符二维网格
 * @parameter word        目标单词
 * @parameter row         方法当前所访问的行索引
 * @parameter col         方法当前所访问的列索引
 * @parameter pathLength  当前已经匹配的路径长度
 * @return                路径的匹配结果
-**/
+ */
 private boolean backTracking(char[][] board, String word, int row, int col, int pathLength) {
-    if(word.length() == pathLength)
+    // 递归终止条件：匹配了整个单词
+    if(word.length() == pathLength) {
         return true;
+    }
 
     boolean hasPath = false;
     if( row >= 0 && row < board.length && col >= 0 && col < board[0].length 

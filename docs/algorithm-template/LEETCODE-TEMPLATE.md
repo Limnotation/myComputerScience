@@ -1261,7 +1261,6 @@ private int widthOfBinaryTree(TreeNode root) {
     }
 	
     // 层次遍历二叉树，获取每层的第一个和最后一个结点的距离即为该层
-    // 的宽度
     LinkedList<Integer> list = new LinkedList<>();
     Deque<TreeNode> queue = new LinkedList<>();
     int index = 1;
@@ -1395,12 +1394,13 @@ public boolean isValidBST(TreeNode root) {
 }
 
 private boolean isValidBST(TreeNode root, TreeNode min, TreeNode max) {
-    if(root == null)
+    if(root == null) {
         return true;
-    if(min != null && root.val <= min.val)
+    } else if(min != null && root.val <= min.val) {
         return false;
-    if(max != null && root.val >= max.val)
+    } else if(max != null && root.val >= max.val) {
         return false;
+    }
     return isValidBST(root.left, min, root) && isValidBST(root.right, root, max);
 }
 ```
@@ -1410,16 +1410,15 @@ private boolean isValidBST(TreeNode root, TreeNode min, TreeNode max) {
 #####  题目示例2 `leetcode  701  二叉搜索树中的插入操作`
 
 ```java
-public TreeNode insertIntoBST(TreeNode root, int val) 
-{
-    if( root == null )
-        return new TreeNode( val );
-    else if( val < root.val )
-        root.left = insertIntoBST( root.left, val );
-    else if( val > root.val )
-        root.right = insertIntoBST( root.right, val );
-    else 
-        root.val = val;
+private TreeNode insertIntoBST(TreeNode root, int val) {
+    // 搜索到一个空结点，创建一个新的节点并返回其引用即可
+    if(root == null) {
+        root = new TreeNode(val);
+    } else if(val < root.val) {
+        root.left = insertIntoBST(root.left, val);
+    } else if(val > root.val) {
+        root.right = insertIntoBST(root.right, val);
+    }
     return root;
 }
 ```
@@ -1440,9 +1439,7 @@ public TreeNode insertIntoBST(TreeNode root, int val)
 public TreeNode deleteNode(TreeNode root, int key) {
     if(root == null) {
         return root;
-    }
-
-    if(root.val < key) {
+    } else if(root.val < key) {
         // key > root.val, 递归在右子树删除
         root.right = deleteNode(root.right, key);
     } else if(root.val > key) {
@@ -1483,8 +1480,7 @@ private TreeNode min(TreeNode root) {
 private TreeNode deleteMin(TreeNode root) {
     if(root == null) {
         return root;
-    }
-    if(root.left == null) {
+    } else if(root.left == null) {
         return root.right;
     }
     root.left = deleteMin(root.left);
@@ -1497,13 +1493,16 @@ private TreeNode deleteMin(TreeNode root) {
 ##### 题目示例4 `leetcode 669 修剪二叉搜索树`
 
 ```java
-private TreeNote trimBST( TreeNode root, int L, int R )
-{
-    if( root == null )		return null;
-    if( root.val < L )		return trimBST( root.right, L, R );
-    if( root.val > R )		return trimBST( root.left, L, R );
-    root.left = trimBST( root.left, L, R );
-    root.right = trimBST( root.right, L, R );
+private TreeNode trimBST(TreeNode root, int low, int high) {
+    if(root == null) {
+        return null;
+    } else if(root.val < low)	{
+        return trimBST(root.right, low, high);
+    } else if(root.val > high)	{
+        return trimBST(root.left, low, high);
+    }
+    root.left = trimBST(root.left, low, high);
+    root.right = trimBST(root.right, low, high);
     return root;
 }
 ```
@@ -1513,25 +1512,36 @@ private TreeNote trimBST( TreeNode root, int L, int R )
 ##### 题目示例5 `leetcode 230 二叉搜索树中第K小的元素`
 
 ```java
-public int kthSmallest( TreeNode root, int k )
-{
-    return select( root, k );
+public int kthSmallest(TreeNode root, int k) {
+    return select(root, k);
 }
 
-private int select( TreeNode root, int k )
-{
-    if( root == null )	return 0;
-    int t = size( root.left );
+/**
+* 找到BST中排名为k的元素
+* @param root
+* @param k
+ */
+private int select(TreeNode root, int k) {
+    if(root == null) {
+        return 0;
+    }
+    int leftSize = size( root.left );
     if( t >= k )					return select( root.left, k );
     else if( t < k - 1 )	 	 	 return select( root.right, k - t - 1 );
     else					 	    return root.val;
 }
-private int size( TreeNode root )
-{
-    if( root == null )
-        return 0;
+
+/**
+* 计算树的结点总数
+ */
+private int size(TreeNode root) {
+    if(root == null) {
+         return 0;
+    }
     
-    return size( root.left ) + size( root.right ) + 1;
+    int left = size(root.left);
+    int right = size(root.right);
+    return left + right + 1;
 }
 ```
 

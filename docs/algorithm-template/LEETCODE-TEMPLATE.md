@@ -35,6 +35,8 @@
       - [题目示例25 `leetcode 958 二叉树的完全性检验`](#题目示例25-leetcode-958-二叉树的完全性检验)
       - [题目示例26 `leetcode 1325 删除给定值的叶子结点`](#题目示例26-leetcode-1325-删除给定值的叶子结点)
       - [题目示例27 `leetcode 662 二叉树最大宽度`](#题目示例27-leetcode-662-二叉树最大宽度)
+      - [题目示例28  `leetcode 113 路径总和II`](#题目示例28-leetcode-113-路径总和ii)
+      - [题目示例29  `leetcode 156 上下翻转二叉树`](#题目示例29-leetcode-156-上下翻转二叉树)
     - [二叉搜索树](#二叉搜索树)
       - [题目示例1 `leetcode 98 验证二叉搜索树`](#题目示例1-leetcode-98-验证二叉搜索树)
       - [题目示例2 `leetcode  701  二叉搜索树中的插入操作`](#题目示例2-leetcode-701-二叉搜索树中的插入操作)
@@ -54,6 +56,8 @@
       - [题目示例16 `leetcode 510 二叉搜索树中的中序后继`](#题目示例16-leetcode-510-二叉搜索树中的中序后继)
       - [题目示例17  `leetcode 426 将二叉搜索树转化为排序的双向链表`](#题目示例17-leetcode-426-将二叉搜索树转化为排序的双向链表)
       - [题目示例18 `leetcode 99 恢复二叉搜索树`](#题目示例18-leetcode-99-恢复二叉搜索树)
+    - [序列化和反序列化](#序列化和反序列化)
+      - [题目1 `leetcode 297 二叉树的序列化与反序列化`](#题目1-leetcode-297-二叉树的序列化与反序列化)
   - [链表](#链表)
     - [基本技能](#基本技能)
     - [常见题型](#常见题型)
@@ -283,7 +287,7 @@
         - [题目示例11 `leetcode 340 至多包含K个不同字符的最长子串`](#题目示例11-leetcode-340-至多包含k个不同字符的最长子串)
       - [固定窗口题目](#固定窗口题目)
         - [题目示例1 `leetcode 239 滑动窗口最大值`](#题目示例1-leetcode-239-滑动窗口最大值-1)
-        - [题目示例2 `leetcode 1456 定长子串中原因的最大数目`](#题目示例2-leetcode-1456-定长子串中原因的最大数目)
+        - [题目示例2 `leetcode 1456 定长子串中元音的最大数目`](#题目示例2-leetcode-1456-定长子串中元音的最大数目)
       - [未分类题目](#未分类题目)
         - [题目示例6 `leetcode 904 水果成篮`](#题目示例6-leetcode-904-水果成篮)
         - [题目示例9 `leetcode 992 K个不同整数的子数组`](#题目示例9-leetcode-992-k个不同整数的子数组)
@@ -1122,6 +1126,7 @@ public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 
 ```java
 private void flatten(TreeNode root) {
+    // 递归终止条件
     if(root == null) {
         return;
     }
@@ -1160,22 +1165,19 @@ public int countNodes(TreeNode root) {
     int left = level(root.left);
     int right = level(root.right);
     if(left == right) {
-        // left == right 代表左子树一定是满的
+        // left == right 代表左子树一定是满的，右子树不确定
         return countNodes(root.right) + (1 << left);
     } else {
-        // left != right表示右子树是满的
+        // left != right表示右子树一定是满的，左子树不确定
         return countNodes(root.left) + (1 << right);
     }
 }
 
 /**
 * 计算完全二叉树的高度
+* @param root
 */
 private int level(TreeNode root) {
-    if(root == null) {
-        return 0;
-    }
-
     int h = 0;
     while(root != null) {
         h++;
@@ -1198,9 +1200,11 @@ public boolean isCompleteTree(TreeNode root) {
     Deque<TreeNode> queue = new LinkedList<>();
     queue.offerLast(root);
     boolean hasPrevNull = false;
-    // 层序遍历二叉树，在碰到某节点子结点为null时也一并放入
-    // 完全二叉树的层序遍历不可能出现空结点出现在非空结点之
-    // 前，靠这个性质来判断二叉树完全性
+    /**
+    * 层序遍历二叉树，在碰到某节点子结点为null时也一并放入
+    * 完全二叉树的层序遍历不可能出现空结点出现在非空结点之
+    * 前，靠这个性质来判断二叉树完全性
+    */
     while(!queue.isEmpty()) {
         TreeNode node = queue.pollFirst();
         if(node != null) {
@@ -1317,6 +1321,35 @@ private void backTracking(TreeNode root, int sum, LinkedList<Integer> path) {
     // 撤销选择
     sum += root.val;
     path.removeLast();
+}
+```
+
+------
+
+##### 题目示例29  `leetcode 156 上下翻转二叉树`
+
+```java
+private TreeNode upsideDownBinaryTree(TreeNode root) {
+    if(root == null) {
+        return null;
+    }
+	
+    /**
+    * 遍历二叉树的最左边界，对于遍历到的每个节点
+    * 其父节点变为其右子节点；其兄弟节点变为其左子节点
+    * 根据题目条件，遍历到的每个节点一定有兄弟节点
+     */
+    TreeNode parent = null;
+    TreeNode brother = null;
+    while(root != null) {
+        TreeNode left = root.left;
+        root.left = brother;
+        brother = root.right;
+        root.right = parent;
+        parent = root;
+        root = left;
+    }
+    return parent;
 }
 ```
 
@@ -1851,6 +1884,124 @@ private void recoverTree(TreeNode root) {
 ```
 
 -----
+
+#### 序列化和反序列化
+
+##### 题目1 `leetcode 297 二叉树的序列化与反序列化`
+
+```java
+// 通过先序遍历来序列化与反序列化二叉树
+public class Codec {
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if(root == null) {
+            return "null!";
+        }
+
+        String res = root.val + "!";
+        res += serialize(root.left); 
+        res += serialize(root.right);
+        return res;
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        String[] vals = data.split("!");
+        Deque<String> queue = new LinkedList<>();
+        for(int i = 0; i < vals.length; i++) {
+            queue.offer(vals[i]);
+        }
+        return buildTree(queue);
+    }
+
+    private TreeNode buildTree(Deque<String> queue) {
+        if(queue.isEmpty()) {
+            return null;
+        } 
+
+        String val = queue.poll();
+        if(val.equals("null")) {
+            return null;
+        }
+        TreeNode root = new TreeNode(Integer.parseInt(val));
+        root.left = buildTree(queue);
+        root.right = buildTree(queue);
+        return root;
+    }
+}
+
+// 通过层序遍历来序列化和反序列化二叉树
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if(root == null) {
+            return "";
+        }
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        StringBuffer res = new StringBuffer();
+        while(!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            if(node != null) {
+                res.append(node.val + "!");
+                queue.offer(node.left);
+                queue.offer(node.right);
+            } else {
+                res.append("null!");
+            }
+        }
+        return res.toString();
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if(data.equals("")) {
+            return null;
+        }
+        String[] vals = data.split("!");
+        return buildTree(vals);
+    }
+
+    private TreeNode buildTree(String[] vals) {
+        if(vals == null || vals.length == 0) {
+            return null;
+        }
+
+        TreeNode root = new TreeNode(Integer.parseInt(vals[0]));
+        int cursor = 1;
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while(cursor < vals.length) {
+            TreeNode node = queue.poll();
+            if(cursor < vals.length) {
+                if(!vals[cursor].equals("null")) {
+                    TreeNode left = new TreeNode(Integer.parseInt(vals[cursor]));
+                    node.left = left;
+                    queue.offer(left);
+                }
+            }
+            if(cursor + 1 < vals.length) {
+                if(!vals[cursor + 1].equals("null")) {
+                    TreeNode right = new TreeNode(Integer.parseInt(vals[cursor + 1]));
+                    node.right = right;
+                    queue.offer(right);
+                }
+            }
+
+            cursor += 2;
+        }
+        return root;
+    }
+}
+```
+
+
+
+----
+
+-------
 
 ### 链表
 

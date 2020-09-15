@@ -1525,14 +1525,19 @@ private int select(TreeNode root, int k) {
     if(root == null) {
         return 0;
     }
-    int leftSize = size( root.left );
-    if( t >= k )					return select( root.left, k );
-    else if( t < k - 1 )	 	 	 return select( root.right, k - t - 1 );
-    else					 	    return root.val;
+    int leftSize = size(root.left);
+    if(leftSize == k - 1) {
+        return root.val;
+    } else if(leftSize < k - 1) {
+        return select(root.right, k - leftSize - 1);
+    } else {
+        return select(root.left, k);
+    }
 }
 
 /**
 * 计算树的结点总数
+* @param root
  */
 private int size(TreeNode root) {
     if(root == null) {
@@ -1551,16 +1556,15 @@ private int size(TreeNode root) {
 
 ```java
 private int sum = 0;
-public TreeNode convertBST(TreeNode root) 
-{
+public TreeNode convertBST(TreeNode root) {
     morrisTraversal(root);
     return root;
 }
 
-private void morrisTraversal(TreeNode root)
-{
-    if(root == null)
+private void morrisTraversal(TreeNode root) {
+    if(root == null) {
         return;
+    }
     morrisTraversal(root.right);
     sum += root.val;
     root.val = sum;
@@ -1573,14 +1577,14 @@ private void morrisTraversal(TreeNode root)
 ##### 题目示例7 `leetcode 235 二叉查找树的最近公共祖先`
 
 ```java
-public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) 
-{
-	if( root.val < p.val && root.val < q.val )
-        return lowestCommonAncestor( root.right, p, q );
-    else if( root.val > p.val && root.val > q.val )
-        return lowestCommonAncestor( root.left, p, q );
-    else 
-    	return root;
+private TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+	if(root.val < p.val && root.val < q.val) {
+        return lowestCommonAncestor(root.right, p, q);
+    } else if(root.val > p.val && root.val > q.val) {
+        return lowestCommonAncestor(root.left, p, q);
+    } else {
+        return root;
+    }
 }
 ```
 
@@ -3769,17 +3773,23 @@ class UnionFind {
        	this.parent = new int[n];
         this.rank = new int[n];
         for(int i = 0; i < n; i++) {
-            parent[i] = i;	// 初始时所有节点的父节点引用都指向自己
-            rank[i] = 1;	// 初始时每棵树都只有一个根节点，树高为1
+            // 初始时所有节点的父节点引用都指向自己
+            parent[i] = i;	
+            // 初始时每棵树都只有一个根节点，树高为1
+            rank[i] = 1;	
         }
     }
     
-    // 返回连通分量的个数
+    /**
+    * 返回连通分量的个数
+     */
     public int count() {
         return this.count;
     }
     
-    // 找到指定触点的根节点
+    /**
+    * 找到指定触点的根节点
+     */
     public int find(int k) {
         while(parent[k] != k) {
             parent[k] = parent[parent[k]];
@@ -3788,12 +3798,16 @@ class UnionFind {
         return k;
     }
     
-    // 检查两个触点代表的连通分量的连通性
+    /**
+    * 检查两个触点代表的连通分量的连通性
+     */
     public boolean connected(int p, int q) {
         return find(p) == find(q);
     }
     
-    // 合并两个连通分量
+    /**
+    * 合并两个连通分量
+     */
     public boolean union(int p, int q) {
         int pRoot = find(p);
         int qRoot = find(q);

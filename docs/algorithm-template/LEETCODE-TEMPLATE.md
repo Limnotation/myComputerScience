@@ -7672,8 +7672,9 @@ HashMap<Character, String> map = new HashMap<>(){
     }
 };
 public List<String> letterCombinations(String digits) {
-    if(digits == null || digits.length() == 0)
+    if(digits == null || digits.length() == 0) {
         return res;
+    }
     
     backTracking(digits, 0, new StringBuffer());
     return res;
@@ -7705,8 +7706,9 @@ private void backTracking(String digits, int index, StringBuffer runner) {
 ```java
 List<String> res = new LinkedList<>();
 public List<String> letterCasePermutation(String S) {
-    if(S == null || S.length() == 0)
+    if(S == null || S.length() == 0) {
         return res;
+    }
 
     backTracking(S, 0, S.toCharArray());
     return res;
@@ -7741,27 +7743,30 @@ private void backTracking(String S, int start, char[] charArray) {
 // 2.对于一个“合法”的括号字符串组合p,必然对于任何 0 <= i < p.length(),都有：子串p[0..i]中左括号的数量都大于等于右括号的数量
 List<String> res = new LinkedList<>();
 public List<String> generateParenthesis(int n) {
-    if(n <= 0)
+    if(n <= 0) {
         return res;
+    }
     
     backTracking(n, n, new StringBuffer());
     return res;
 }
 
 private void backTracking(int left, int right, StringBuffer s) {
-    // 剩下的左括号更多，说明不合法
-    if(left > right)
+    // 剩下的左括号更多，不合法
+    if(left > right) {
         return;
+    }
     // 数量小于0，不合法
-    if(left < 0 || right < 0)
+    if(left < 0 || right < 0) {
         return;
+    }
     // 所有括号都能用完，得到一个合法的括号组合
     if(left == 0 && right == 0) {
         res.add(s.toString());
         return;
     }
     
-    // 尝试放置一个左括号
+    // 尝试选择一个左括号
     // 选择
     s.append('(');
     // 进入下一层决策树
@@ -7796,7 +7801,7 @@ public boolean exist(char[][] board, String word) {
 
     int m = board.length;
     int n = board[0].length;
-    visited = new boolean[m][n];
+    this.visited = new boolean[m][n];
     for(int i = 0; i < m; i++) {
         for(int j = 0; j < n; j++) {
             if(backTracking(board, word, i, j, 0)) {
@@ -8143,7 +8148,7 @@ private Integer sum(List<Integer> pre) {
 public int numTilePossibilities(String tiles) {
     int[] counter = new int[26];
     for(int i = 0; i < tiles.length(); i++)
-        counter[ tiles.charAt(i) - 'A' ]++;
+        counter[ tiles.charAt(i) - 'A']++;
     return backTracking(counter);
 }
 

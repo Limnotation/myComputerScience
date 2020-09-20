@@ -7,7 +7,7 @@
 class TrieNode {
     // 孩子节点指针数组
     TrieNode[] child;
-    // 当前字符是否为一个串的结束
+    // 标志当前字符是否为一个串的结束
     boolean isLeaf;
     
     public TrieNode() {
@@ -16,18 +16,25 @@ class TrieNode {
     }
 }
 
+/**
+* Trie树实现
+ */
 class Trie {
-    // 前缀树的根节点
+    // 根节点
     TrieNode root;
 
-    /** Initialize your data structure here. */
+    /** 
+    * Initialize your data structure here. 
+     */
     public Trie() {
         this.root = new TrieNode();
     }
 
-    /** Inserts a word into the trie. */
+    /** 
+    * Inserts a word into the trie.
+    */
     public void insert(String word) {
-        TrieNode node = root;
+        TrieNode node = this.root;
         for(char c:word.toCharArray()) {
             if(node.child[c - 'a'] == null) {
                 node.child[c - 'a'] = new TrieNode();
@@ -38,9 +45,11 @@ class Trie {
         node.isLeaf = true;
     }
 
-    /** Returns if the word is in the trie. */
+    /** 
+    * Returns if the word is in the trie. 
+     */
     public boolean search(String word) {
-        TrieNode node = root;
+        TrieNode node = this.root;
         for(char c:word.toCharArray()) {
             if(node.child[c- 'a'] == null) {
                 return false;
@@ -50,7 +59,9 @@ class Trie {
         return node.isLeaf;
     }
 
-    /** Returns if there is any word in the trie that starts with the given prefix. */
+    /** 
+    * Returns if there is any word in the trie that starts with the given prefix. 
+     */
     public boolean startsWith(String prefix) {
         TrieNode node = root;
         for(char c:prefix.toCharArray()) {
@@ -181,6 +192,67 @@ class Solution {
         }
         return res.toString();
     }
+}
+```
+
+----
+
+### 题目3 `leetcode 677 键值映射`
+
+```java
+class TrieNode {
+    // 子节点数组
+    private TrieNode[] child;
+    // 前缀对应的值
+    private int value;
+
+    public TrieNode() {
+        this.child = new TrieNode[26];
+        this.value = 0;
+    }
+}
+
+private TrieNode root;
+/** Initialize your data structure here. */
+public MapSum() {
+    this.root = new TrieNode();
+}
+
+public void insert(String key, int val) {
+    TrieNode node = this.root;
+    for(char c:key.toCharArray()) {
+        if(node.child[c - 'a'] == null) {
+            node.child[c - 'a'] = new TrieNode();
+        }
+        node = node.child[c-'a'];
+    }
+    // 在前缀的结尾附上相应的值
+    node.value = val;
+}
+
+public int sum(String prefix) {
+    TrieNode node = this.root;
+    int res = 0;
+    for(char c:prefix.toCharArray()) {
+        if(node.child[c - 'a'] == null) {
+            return res;
+        }
+        node = node.child[c - 'a'];
+    }
+
+    res += dfs(node);
+    return res;
+}
+
+private int dfs(TrieNode root) {
+    int res = 0;
+    res += root.value;
+    for(int i = 0; i < 26; i++) {
+        if(root.child[i] != null) {
+            res += dfs(root.child[i]);
+        }
+    }
+    return res;
 }
 ```
 

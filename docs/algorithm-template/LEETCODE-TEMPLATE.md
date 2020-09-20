@@ -778,7 +778,7 @@ public int sumOfLeftLeaves(TreeNode root) {
     } else if(isLeaf(root.left)) {
         return root.left.val + sumOfLeftLeaves(root.right);
     }
-    return sumOfLeftLeaves(root.left) + sumOfLeftLeaves（root.right);
+    return sumOfLeftLeaves(root.left) + sumOfLeftLeaves(root.right);
 }
 
 private boolean isLeaf(TreeNode root) {
@@ -1593,22 +1593,21 @@ private TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 ##### 题目示例8 `leetcode 108 将有序数组转换为二叉搜索树`
 
 ```java
-public TreeNode sortedArrayToBST(int[] nums) 
-{
-    return constructTreee( nums, 0, nums.length - 1 );
+public TreeNode sortedArrayToBST(int[] nums) {
+    return constructTreee(nums, 0, nums.length - 1);
 }
 
-private TreeNode constructTreee( int[] nums, int start, int end )
-{
-    if( nums == null || nums.length == 0 )
+private TreeNode constructTreee(int[] nums, int start, int end) {
+    // 递归终止条件
+    if(nums == null || nums.length == 0 || start > end) {
         return null;
-
-    int mid = start + ( end - start ) / 2;
-    TreeNode root = new TreeNode( nums[mid] );
-    if( mid - 1 >= start )
-        root.left = constructTreee( nums, start, mid - 1 );
-    if( mid + 1 <= end )
-        root.right = constructTreee( nums, mid + 1, end );
+    }
+	
+    // 取数组中间元素作为当前树的根节点
+    int mid = start + (end - start) / 2;
+    TreeNode root = new TreeNode(nums[mid]);
+    root.left = constructTreee(nums, start, mid - 1);
+    root.right = constructTreee(nums, mid + 1, end);
     return root;
 }
 ```
@@ -1618,12 +1617,13 @@ private TreeNode constructTreee( int[] nums, int start, int end )
 ##### 题目示例9 `leetcode 109 有序链表转换二叉搜索树`
 
 ```java
-public TreeNode sortedListToBST(ListNode head) 
-{
-    if(head == null)		
+public TreeNode sortedListToBST(ListNode head) {
+    if(head == null) {
         return null;
-    if(head.next == null)	
+    } else if(head.next == null) {
         return new TreeNode(head.val);
+    }
+    
     ListNode preMid = preMid(head);
     ListNode mid = preMid.next;
     preMid.next = null;
@@ -1633,13 +1633,14 @@ public TreeNode sortedListToBST(ListNode head)
     return root;
 }
 
-private ListNode preMid(ListNode head)
-{
+/**
+* 获取链表中间结点的前置结点
+ */
+private ListNode preMid(ListNode head) {
     ListNode slow = head;
     ListNode fast = head.next;
     ListNode pre = head;
-    while(fast != null && fast.next != null)
-    {
+    while(fast != null && fast.next != null) {
         pre = slow;
         slow = slow.next;
         fast = fast.next.next;
@@ -1655,20 +1656,18 @@ private ListNode preMid(ListNode head)
 也有前缀和的思想
 
 ```java
-public boolean findTarget( TreeNode root, int k )
-{
-    return find( root, new HashSet<Integer>(), k );
+public boolean findTarget(TreeNode root, int k) {
+    return find(root, new HashSet<Integer>(), k);
 }
 
-private boolean find( TreeNode root, Set<Integer> set, int k )
-{
-    if( root == null )
+private boolean find(TreeNode root, Set<Integer> set, int k) {
+    if(root == null) {
         return false;
-    if( set.contains( k - root.val ) )
-        return true;
-    
-    set.add( root.val );
-    return find( root.left, set, k ) || find( root.right, set, k );
+    } else if(set.contains(k - root.val)) {
+     	return true;   
+    }
+    set.add(root.val);
+    return find(root.left, set, k) || find(root.right, set, k);
 }
 ```
 
@@ -1677,23 +1676,26 @@ private boolean find( TreeNode root, Set<Integer> set, int k )
 ##### 题目示例 11 `leetcode 530 二叉搜索树的最小绝对差`
 
 ```java
-int minDiff = Integer.MAX_VALUE;
-TreeNode pre = null;
-public int getMinimumDifference(TreeNode root) 
-{
-	traversal( root );
+private int minDiff = Integer.MAX_VALUE;
+private TreeNode pre = null;
+public int getMinimumDifference(TreeNode root) {
+	traversal(root);
     return minDiff;
 }
 
-private void traversal( TreeNode root )
-{
-    if( root == null )
+/**
+* 中序遍历BST
+ */
+private void traversal(TreeNode root) {
+    if(root == null) {
         return;
-    traversal( root.left );
-    if( pre != null )
-        minDiff = Math.min( minDiff, root.val - pre.val );
+    }
+    traversal(root.left);
+    if(pre != null) {
+        minDiff = Math.min(minDiff, root.val - pre.val);
+    }
     pre = root;
-    traversal( root.right );
+    traversal(root.right);
 }
 ```
 
@@ -1702,62 +1704,64 @@ private void traversal( TreeNode root )
 ##### 题目示例12 `leetcode 333  最大BST子树`
 
 ```java
-public int largestBSTSubtree(TreeNode root)
-{
-    if(root == null)
+public int largestBSTSubtree(TreeNode root) {
+    if(root == null) {
         return 0;
-    if(isBST(root, Integer.MIN_VALUE, Integer.MAX_VALUE))
-        return countNodes(root);
-    return Math.max(largestBSTSubtree(root.left), largestBSTSubtree(root.right));
+    } else if(isValidBST(root, Integer.MIN_VALUE, Integer.MAX_VALUE)) {
+        return size(root);
+    }
+    int left = largestBSTSubtree(root.left);
+    int right = largestBSTSubtree(root.right);
+    return Math.max(left, right);
 }
 
 /**
 * 验证二叉树是否为BST
 */
-private boolean isBST(TreeNode root, int min, int max)
-{
-    if(root == null)
+private boolean isValidBST(TreeNode root, int min, int max) {
+    if(root == null) {
         return true;
-    
-    if(root.val <= min || root.val >= max)
+    } else if(root.val <= min || root.val >= max) {
         return false;
-    return isBST(root.left, min, root.val) && isBST(root.right, root.val, max);
+    }
+    return isValidBST(root.left, min, root.val) && isValidBST(root.right, root.val, max);
 }
 /**
 * 统计BST节点数量
 */
-private int countNodes(TreeNode root)
-{
-    if(root == null)
+private int size(TreeNode root) {
+    if(root == null) {
         return 0;
-    return countNodes(root.left) + countNodes(root.right) + 1;
+    }
+    
+    int left = size(root.left);
+    int right = size(root.right);
+    return left + right + 1;
 }
 ```
 
 -----
 
-##### 题目示例13 `leetcode 776拆分二叉搜索树`
+##### 题目示例13 `leetcode 776 拆分二叉搜索树`
 
 ```java
-private TreeNode[] splitBST(TreeNode root, int V)
-{
-    if(root == null)
+private TreeNode[] splitBST(TreeNode root, int V) {
+    // 递归终止条件
+    if(root == null) {
         return new TreeNode[]{null, null};
+    }
 
     TreeNode[] res = new TreeNode[2];
-    if(root.val <= V)
-    {
+    if(root.val <= V) {
+        // 根节点小于V，则其右子有可能被划分
         res = splitBST(root.right, V);
         root.right = res[0];
         res[0] = root;
-        return res;
-    }
-    else if(root.val > V)
-    {
+    } else if(root.val > V) {
+        // 根节点小于V，则其左子树可能被划分
         res = splitBST(root.left, V);
         root.left = res[1];
         res[1] = root;
-        return res;
     }
     return res;
 } 
@@ -3792,6 +3796,7 @@ class UnionFind {
      */
     public int find(int k) {
         while(parent[k] != k) {
+            // 路径压缩：隔代合并
             parent[k] = parent[parent[k]];
             k = parent[k];
         }
@@ -3813,10 +3818,12 @@ class UnionFind {
         int qRoot = find(q);
         
         // 如果已经同属一个集合，不需要再合并
-        if(pRoot == qRoot) 
+        if(pRoot == qRoot) {
             return false;
+        }
         
         // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
+        // “按秩合并”
         if(pRoot < qRoot) {
             parent[pRoot] = qRoot;
         } else if(pRoot > qRoot) {
@@ -3850,13 +3857,13 @@ public int findCircleNum(int[][] M) {
     UnionFind uf = new UnionFind(len);
     for(int i = 0; i < len; i++) {
         for(int j = 0; j < i; j++) {
-            // 由于无向连通图的对称性，只需要检查右上半部分矩阵
+            // 由于无向连通图的对称性，只需要检查下半部分矩阵
             if(M[i][j] == 1) {
                 uf.union(i, j);
             }
         }
     }
-    return nf.count();
+    return uf.count();
 }
 
 class UnionFind {
@@ -3898,22 +3905,26 @@ class UnionFind {
     }
 
     // 合并两个分量
-    public void union(int p, int q) {
-        int rootP = find(p);
-        int rootQ = find(q);
-        if(rootP == rootQ)
-            return;
+    public boolean union(int p, int q) {
+        int pRoot = find(p);
+        int qRoot = find(q);
+        if(pRoot == qRoot) {
+            return false;
+        }
 
         // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
-        if(rank[rootP] > rank[rootQ]) {
-            parent[rootQ] = rootP;
-        } else if(rank[rootP] < rank[rootQ]) {
-            parent[rootP] = rootQ;
+        int pRank = rank[pRoot];
+        int qRank = rank[qRoot];
+        if(pRank < qRank) {
+            parent[pRoot] = qRoot;
+        } else if(pRank > qRank) {
+            parent[qRoot] = pRoot;
         } else {
-            parent[rootP] = rootQ;
-            rank[rootQ] ++;
+            parent[pRoot] = qRoot;
+            rank[qRoot]++;
         }
         this.count--;
+        return true;
     }
 }
 ```
@@ -4132,19 +4143,22 @@ class UnionFind {
 
     // 合并两个分量
     public boolean union(int p, int q) {
-        int rootP = find(p);
-        int rootQ = find(q);
-        if(rootP == rootQ)
+        int pRoot = find(p);
+        int qRoot = find(q);
+        if(pRoot == qRoot) {
             return false;
+        }
 
         // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
-        if(rank[rootP] > rank[rootQ]) {
-            parent[rootQ] = rootP;
-        } else if(rank[rootP] < rank[rootQ]) {
-            parent[rootP] = rootQ;
+        int pRank = rank[pRoot];
+        int qRank = rank[qRoot];
+	    if(pRank < qRank) {
+            parent[pRoot] = qRoot;
+        } else if(pRank > qRank) {
+            parent[qRoot] = pRoot;
         } else {
-            parent[rootP] = rootQ;
-            rank[rootQ] ++;
+            parent[pRoot] = qRoot;
+            rank[qRoot]++;
         }
         this.count--;
         return true;
@@ -4208,19 +4222,22 @@ class UnionFind {
 
     // 合并两个分量
     public boolean union(int p, int q) {
-        int rootP = find(p);
-        int rootQ = find(q);
-        if(rootP == rootQ)
+        int pRoot = find(p);
+        int qRoot = find(q);
+        if(pRoot == qRoot) {
             return false;
+        }
 
         // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
-        if(rank[rootP] > rank[rootQ]) {
-            parent[rootQ] = rootP;
-        } else if(rank[rootP] < rank[rootQ]) {
-            parent[rootP] = rootQ;
+        int pRank = rank[pRoot];
+        int qRank = rank[qRoot];
+        if(pRank < qRank) {
+            parent[pRoot] = qRoot;
+        } else if(pRank > qRank) {
+            parent[qRoot] = pRoot;
         } else {
-            parent[rootP] = rootQ;
-            rank[rootQ] ++;
+            parent[pRoot] = qRoot;
+            rank[qRoot]++;
         }
         this.count--;
         return true;
@@ -4238,21 +4255,18 @@ public boolean equationsPossible(String[] equations) {
     // 等式方程不可满足
     UnionFind uf = new UnionFind(26);
     for(String equation:equations) {
-        char[] eq = equation.toCharArray();
-        if(eq[1] == '=') {
-            int i = eq[0] - 'a';
-            int j = eq[3] - 'a';
-            uf.union(i, j);
+        int x = equation.charAt(0) - 'a';
+        int y = equation.charAt(3) - 'a';
+        if(equation.charAt(1) == '=') {
+            uf.union(x, y);
         }
     }
 
     for(String equation:equations) {
-        char[] eq = equation.toCharArray();
-        if(eq[1] == '!') {
-            int i = eq[0] - 'a';
-            int j = eq[3] - 'a';
-            if(uf.connected(i, j))
-                return false;
+        int x = equation.charAt(0) - 'a';
+        int y = equation.charAt(3) - 'a';
+        if(equation.charAt(1) == '!' && uf.connected(x, y)) {
+            return false;
         }
     }
     return true;
@@ -4299,19 +4313,22 @@ class UnionFind {
 
     // 合并两个分量
     public boolean union(int p, int q) {
-        int rootP = find(p);
-        int rootQ = find(q);
-        if(rootP == rootQ)
+        int pRoot = find(p);
+        int qRoot = find(q);
+        if(pRoot == qRoot) {
             return false;
+        }
 
         // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
-        if(rank[rootP] > rank[rootQ]) {
-            parent[rootQ] = rootP;
-        } else if(rank[rootP] < rank[rootQ]) {
-            parent[rootP] = rootQ;
+        int pRank = rank[pRoot];
+        int qRank = rank[qRoot];
+        if(pRank < qRank) {
+            parent[pRoot] = qRoot;
+        } else if(pRank > qRank) {
+            parent[qRoot] = pRoot;
         } else {
-            parent[rootP] = rootQ;
-            rank[rootQ] ++;
+            parent[pRoot] = qRoot;
+            rank[qRoot]++;
         }
         this.count--;
         return true;
@@ -4329,11 +4346,14 @@ class UnionFind {
 // 不得不说这种方法太骚了
 public int longestConsecutive(int[] nums) {
     int len = nums.length;
-    if(len < 2)
+    if(len < 2) {
         return len;
-    
+    }
+
+
     UnionFind uf = new UnionFind(nums);
-    int res = 1;	// 每个数组都是一个长度为1的序列
+    // 每个数字都是一个长度为1的序列
+    int res = 1;	
     for(int i = 0; i < len; i++) {
         int num = nums[i];
         if(uf.contains(num - 1)) {
@@ -4349,11 +4369,11 @@ public int longestConsecutive(int[] nums) {
 
 
 class UnionFind {
-    // key表示一个触点，value表示其所在连通分量的根节点
+    // key表示一个触点，value表示key所在连通分量的根节点
     private Map<Integer, Integer> parent;
-    // size维护以当前结点为根的子树的结点总数
+    // size维护以当前结点所在的连通分量的结点总数
     private Map<Integer, Integer> size;
-    
+
     public UnionFind(int[] nums) {
         int len = nums.length;
         this.parent = new HashMap<>(len);
@@ -4363,28 +4383,28 @@ class UnionFind {
             size.put(nums[i], 1);
         }
     }
-    
+
     // union方法返回合并后的连通分量的结点个数
-    public int union(int i, int j) {
-        int rootI = find(i);
-        int rootJ = find(j);
-        if(rootI == rootJ) {
+    public int union(int p, int q) {
+        int pRoot = find(p);
+        int qRoot = find(q);
+        if(pRoot == qRoot) {
             return 0;
         }
-        
-        int sizeI = this.size.get(rootI);
-        int sizeJ = this.size.get(rootJ);
-        int sum = sizeI + sizeJ;
-        if(sizeI < sizeJ) {
-            parent.put(rootI, rootJ);
-            size.put(rootJ, sum);
+		
+        int pSize = size.get(pRoot);
+        int qSize = size.get(qRoot);
+        int sum = pSize + qSize;
+        if(pSize < qSize) {
+            parent.put(pRoot, qRoot);
+            size.put(qRoot, sum);
         } else {
-            parent.put(rootJ, rootI);
-            size.put(rootI, sum);
+            parent.put(qRoot, pRoot);
+            size.put(pRoot, sum);
         }
         return sum;
     }
-    
+
     // 路径压缩版本的find方法
     public int find(int i) {
         while(i != parent.get(i)) {
@@ -4393,7 +4413,7 @@ class UnionFind {
         }
         return i;
     }
-    
+
     // 检查元素是否存在
     public boolean contains(int x) {
         return parent.containsKey(x);
@@ -6706,6 +6726,48 @@ private int findLength(int[] A, int[] B) {
 }
 ```
 
+-------
+
+##### 题目示例4 `leetcode 97 交错字符串`
+
+```java
+private boolean isInterleave(String s1, String s2, String s3) {
+    int len1 = s1.length();
+    int len2 = s2.length();
+    int len3 = s3.length();
+    if(len1 + len2 != len3) {
+        return false;
+    }
+	
+    // dp[i][j]表示s1的前i个字符和s2的前j个字符是/否可以构成s3的前i+j个字符
+    boolean[][] dp = new boolean[len1 + 1][len2 + 1];
+    dp[0][0] = true;
+    for(int i = 1; i <= len1; i++) {
+        if(s1.charAt(i-1) != s3.charAt(i-1)) {
+            break;
+        }
+        dp[i][0] = true;
+    }
+    for(int i = 1; i <= len2; i++) {
+        if(s2.charAt(i-1) != s3.charAt(i-1)) {
+            break;
+        }
+        dp[0][i] = true;
+    }
+	
+    // 题目可以转化成，是否存在这样一条路径：从矩阵的左上角只能往右或者往下走
+    // 最终到达矩阵的右下角，并且路径经过的每个位置都为true
+    for(int i = 1; i <= len1; i++) {
+        for(int j = 1; j <= len2; j++) {
+            boolean fromAbove = dp[i-1][j] && (s1.charAt(i-1) == s3.charAt(i + j - 1));
+            boolean fromLeft = dp[i][j-1] && (s2.charAt(j-1) == s3.charAt(i + j - 1));
+            dp[i][j] = fromLeft || fromAbove;
+        }
+    }
+    return dp[len1][len2];
+}
+```
+
 
 
 -------
@@ -7170,16 +7232,17 @@ class Solution
 #### 简单的回溯法模板
 
 ```go
+// 一般把结果设为全局变量，避免传参消耗
 result := []
-func backTrack( 选择列表， 路径 ) {
+func backTrack(选择列表， 路径) {
     if 满足结束条件 {
-        result.add( 路径 )
+        result.add(路径)
         return
     }
     
     for 选择 in 选择列表 {
         做选择
-        backTrack( 选择列表， 路径 )
+        backTrack(选择列表， 路径)
         撤销选择
     }
 }
@@ -7198,8 +7261,9 @@ func backTrack( 选择列表， 路径 ) {
 ```java
 List<List<Integer>> res = new LinkedList<>();
 public List<List<Integer>> subsets(int[] nums) {
-    if(nums == null || nums.length == 0)
+    if(nums == null || nums.length == 0) {
         return res;
+    }
     
     backTracking(nums, 0, new LinkedList<Integer>());
     return res;
@@ -7212,6 +7276,7 @@ public List<List<Integer>> subsets(int[] nums) {
 * @param runner 存储临时结果的链表
 */
 private void backTracking(int[] nums, int start, LinkedList<Integer> runner) {
+    // 所有不同的状态都被加入到结果中
     res.add(new LinkedList(runner));
     
     for(int i = start; i < nums.length; i++) {
@@ -7271,15 +7336,17 @@ private void backTracking(int[] nums, int start, LinkedList<Integer> runner) {
 ```java
 List<List<Integer>> res = new LinkedList<>();
 public List<List<Integer>> permute(int[] nums) {
-    if(nums == null || nums.length == 0)
+    if(nums == null || nums.length == 0) {
         return res;
+    }
     
-    backTracking(nums, new LinkedList<Integer>());
+    int len = nums.length;
+    backTracking(nums, new boolean[len], new LinkedList<Integer>());
     return res;
 }
 
-private void backTracking(int[] nums, LinkedList<Integer> runner) {
-    // 结束条件
+private void backTracking(int[] nums, boolean[] used, LinkedList<Integer> runner) {
+    // 递归结束条件
     if(runner.size() == nums.length) {
         res.add(new LinkedList(runner));
         return;
@@ -7287,14 +7354,17 @@ private void backTracking(int[] nums, LinkedList<Integer> runner) {
     
     for(int i = 0; i < nums.length; i++) {
         // 剪枝
-        if(runner.contains(nums[i]))
+        if(used[i]) {
             continue;
+        }
         
-        // 做选择
+        // 1、做选择
         runner.add(nums[i]);
-        // 进入下一层决策树
-        backTracking(nums, runner);
-        // 撤销选择
+        used[i] = true;
+        // 2、进入下一层决策树
+        backTracking(nums, used, runner);
+        // 3、撤销选择
+        used[i] = false;
         runner.removeLast();
     }
 }
@@ -7307,17 +7377,19 @@ private void backTracking(int[] nums, LinkedList<Integer> runner) {
 ```java
 List<List<Integer>> res = new LinkedList<>();
 public List<List<Integer>> permuteUnique(int[] nums) {
-    if(nums == null || nums.length == 0)
+    if(nums == null || nums.length == 0) {
         return res;
+    }
     
-    boolean[] used = new boolean[nums.length];
+    int len = nums.length;
     // 排序是必须的！！！！！！
     Arrays.sort(nums);
-    backTracking(nums, used, new LinkedList<Integer>());
+    backTracking(nums, used, new boolean[len], new LinkedList<Integer>());
     return res;
 }
 
 private void backTracking(int[] nums, boolean[] used, LinkedList<Integer> runner) {
+    // 递归终止条件
     if(runner.size() == nums.length) {
         res.add(new LinkedList(runner));
         return;
@@ -7327,10 +7399,12 @@ private void backTracking(int[] nums, boolean[] used, LinkedList<Integer> runner
         /**
         * 在这里的一个思想是：如果当前元素存在重复元素，且其前一个元素未被使用
         * 那么在决策树的下一层就会有重复的可选项，则会出现错误的重复情况。
-        * 所以剪枝条件为index > 0 && nums[i]==nums[i-1] && !used[index-1]
+        * 所以第一个剪枝条件为i > 0 && nums[i]==nums[i-1] && !used[index-1]
+        * 当某个元素已经被使用了当然也不需要在当前分支继续寻找
         */
-        if(used[i] || (i > 0 && nums[i] == nums[i-1] && !used[i-1]))
+        if(used[i] || (i > 0 && nums[i] == nums[i-1] && !used[i-1])) {
             continue;
+        }
         
         // 做选择
         runner.add(nums[i]);
@@ -7382,8 +7456,9 @@ private void backTracking(int n, int k, int start, LinkedList<Integer> runner) {
 ```java
 List<List<Integer>> res = new LinkedList<>();
 public List<List<Integer>> combinationSum(int[] candidates, int target) {
-    if(candidates == null || candidates.length == 0)
+    if(candidates == null || candidates.length == 0) {
         return res;
+    }
     
     // 排序方便剪枝
     Arrays.sort(candidates);
@@ -7397,14 +7472,13 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
         return;
     }
     
-    // 每次搜索的起点都不比上一次搜索小，保证了不会选到同一个元素
     for(int i = start; i < candidates.length; i++) {
         if(target - candidates[i] < 0)
             break;
         
         // 做选择
         runner.add(candidates[i]);
-       	// 进入下一层决策树
+       	// 进入下一层决策树(注意一个元素是可以重复选取的)
         backTracking(candidates, target - candidates[i], i, runner);
         // 撤销选择
         runner.removeLast();
@@ -7419,8 +7493,9 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
 ```java
 List<List<Integer>> res = new LinkedList<>();
 public List<List<Integer>> combinationSum2(int[] candidates, int target) {
-    if(candidates == null || candidates.length == 0)
+    if(candidates == null || candidates.length == 0) {
         return res;
+    }
     
     Arrays.sort(candidates);
     backTracking(candidates, target, 0, new LinkedList<Integer>());

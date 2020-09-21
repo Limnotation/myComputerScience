@@ -9905,10 +9905,10 @@ private String largestNumber(int[] nums) {
 class LRUCache {
     // 内部类,双向链表结点
     private class LinkedListNode {
-        public LinkedListNode next;
-        public LinkedListNode pre;
-        public int key;
-        public int val;
+        private LinkedListNode next;
+        private LinkedListNode pre;
+        private int key;
+        private int val;
         public LinkedListNode(int key, int val) {
             this.key = key;
             this.val = val;
@@ -9933,8 +9933,9 @@ class LRUCache {
     }
     
     public int get(int key) {
-        if(!map.containsKey(key))
+        if(!map.containsKey(key)) {
             return -1;
+        }
         // 先把查找到的节点从链表中删除，之后放到尾部（头、尾可以自己决定）
         // map中的映射不用删除
         LinkedListNode node = map.get(key);

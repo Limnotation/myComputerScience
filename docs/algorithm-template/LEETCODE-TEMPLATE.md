@@ -860,7 +860,8 @@ public TreeNode buildTree(int[] inorder, int[] postorder) {
         return null;
     }
     
-    int inLen = inorder.length, postLen = postorder.length;
+    int inLen = inorder.length;
+    int postLen = postorder.length;
     if(inLen == 0  || postLen == 0 || inLen != postLen) {
         return null;
     }
@@ -939,7 +940,6 @@ private TreeNode buildTree(int preLeft, int preRight, int inLeft, int inRight) {
     int rootVal = preorder[preLeft];
     int rootIndex = hashMap.get(rootVal);
     TreeNode root = new TreeNode(rootVal);
-    // 边界的数学关系，如果忘了就在纸上演算一遍
     root.left = buildTree(preLeft + 1, rootIndex - inLeft + preLeft, inLeft, rootIndex - 1);
     root.right = buildTree(rootIndex - inLeft + preLeft + 1, preRight, rootIndex + 1, inRight);
     return root;
@@ -1349,6 +1349,37 @@ private TreeNode upsideDownBinaryTree(TreeNode root) {
         root = left;
     }
     return parent;
+}
+```
+
+-----
+
+##### 题目示例30 `leetcode 654 最大二叉树`
+
+```java
+public TreeNode constructMaximumBinaryTree(int[] nums) {
+    return constructMaximumBinaryTree(nums, 0, nums.length - 1);
+}
+
+private TreeNode constructMaximumBinaryTree(int[] nums, int left, int right) {
+    // 递归终止条件
+    if(left > right) {
+        return null;
+    }
+
+    // 找到[left, right]内的最大值及其位置
+    int rootIndex = left;
+    for(int i = left; i <= right; i++) {
+        if(nums[i] > nums[rootIndex]) {
+            rootIndex = i;
+        }
+    }
+	
+    // 构造根节点，递归构造其左右子树
+    TreeNode root = new TreeNode(nums[rootIndex]);
+    root.left = constructMaximumBinaryTree(nums, left, rootIndex - 1);
+    root.right = constructMaximumBinaryTree(nums, rootIndex + 1, right);
+    return root;
 }
 ```
 
@@ -7301,8 +7332,9 @@ private void backTracking(int[] nums, int start, LinkedList<Integer> runner) {
 ```java
 List<List<Integer>> res = new LinkedList<>();
 public List<List<Integer>> subsetsWithDup(int[] nums) {
-    if(nums == null || nums.length == 0)
+    if(nums == null || nums.length == 0) {
         return res;
+    }
     
     Arrays.sort(nums);
     backTracking(nums, 0 , new LinkedList<Integer>());

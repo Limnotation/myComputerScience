@@ -18,7 +18,8 @@
 
 private static int partition(int[] arr, int startIndex, int endIndex) {
     int pivot = arr[startIndex];
-    int left = startIndex, right = endIndex;
+    int left = startIndex;
+    int right = endIndex;
     while(left != right) {
         // 移动右指针
         while(left < right && arr[right] > pivot) {
@@ -57,6 +58,10 @@ private static int partition(int[] arr, int startIndex, int endIndex) {
     int pivot = arr[startIndex];
     int mark = startIndex;
     
+    /**
+    * 循环不变量:
+    * [startIndex, mark]内的元素小于pivot
+    * */
     for(int i = startIndex + 1; i <= endIndex; i++) {
         if(arr[i] < pivot) {
             mark++;
@@ -156,13 +161,16 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
     *
     * Pointer k is the first index of ?-part.
     */
-public void quickSortThreeWay(int[] arr, int low, int high) {
-    if(high <= low) {
+private void quickSortThreeWay(int[] arr, int left, int right) {
+    // 递归终止条件
+    if(high <= left) {
         return;
     }
 
-    int less = low, i = low, great = high;
-    int pivotVal = arr[low];
+    int less = left;
+    int i = left;
+    int great = right;
+    int pivotVal = arr[left];
     while(i <= great) {
         if(arr[i] < pivotVal) {
             swap(arr, less, i);
@@ -175,8 +183,8 @@ public void quickSortThreeWay(int[] arr, int low, int high) {
             i++;
         }
     }
-    quickSortThreeWay(arr, low, less - 1);
-    quickSortThreeWay(arr, great + 1, high);
+    quickSortThreeWay(arr, left, less - 1);
+    quickSortThreeWay(arr, great + 1, right);
 }
 
 private void swap(int[] arr, int i, int j) {

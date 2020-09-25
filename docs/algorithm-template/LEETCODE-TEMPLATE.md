@@ -555,25 +555,24 @@ private int maxDepth(TreeNode root) {
     比较两个变量取最大值
 
 ```java
-class Solution {
-    int res = Integer.MIN_VALUE;
-    public int maxPathSum(TreeNode root) {
-        oneSideMax(root);
-        return res;
+int res = Integer.MIN_VALUE;
+public int maxPathSum(TreeNode root) {
+    oneSideMax(root);
+    return res;
+}
+
+private int oneSideMax(TreeNode root) {
+    if(root == null) {
+        return 0;
     }
-    
-    private int oneSideMax(TreeNode root) {
-        if(root == null)
-            return 0;
-        
-        // divide
-       	int left = Math.max(0, oneSideMax(root.left));
-        int right = Math.max(0, oneSideMax(root.right));
-        
-        // conquer
-        res = Math.max(res, left + right + root.val);
-        return Math.max(left, right) + root.val;
-    }
+
+    // divide
+    int left = Math.max(0, oneSideMax(root.left));
+    int right = Math.max(0, oneSideMax(root.right));
+
+    // conquer
+    res = Math.max(res, left + right + root.val);
+    return Math.max(left, right) + root.val;
 }
 ```
 
@@ -1961,15 +1960,17 @@ private void recoverTree(TreeNode root) {
 ##### 题目1 `leetcode 297 二叉树的序列化与反序列化`
 
 ```java
-// 通过先序遍历来序列化与反序列化二叉树
+/**
+* solution1:通过先序遍历来序列化与反序列化二叉树
+ */
 public class Codec {
     // Encodes a tree to a single string.
     public String serialize(TreeNode root) {
         if(root == null) {
-            return "null!";
+            return "null,";
         }
 
-        String res = root.val + "!";
+        String res = root.val + ",";
         res += serialize(root.left); 
         res += serialize(root.right);
         return res;
@@ -1977,7 +1978,8 @@ public class Codec {
 
     // Decodes your encoded data to tree.
     public TreeNode deserialize(String data) {
-        String[] vals = data.split("!");
+        String[] vals = data.split(",");
+        // 将先序序列放入队列中，方便删除元素
         Deque<String> queue = new LinkedList<>();
         for(int i = 0; i < vals.length; i++) {
             queue.offer(vals[i]);
@@ -1994,14 +1996,19 @@ public class Codec {
         if(val.equals("null")) {
             return null;
         }
+        // 先序遍历序列第一个元素为根节点
         TreeNode root = new TreeNode(Integer.parseInt(val));
+        // 根节点的第一个后继元素为其左子树根节点
         root.left = buildTree(queue);
+        // 根节点的第二个后继元素为其右子树根节点
         root.right = buildTree(queue);
         return root;
     }
 }
 
-// 通过层序遍历来序列化和反序列化二叉树
+/**
+* solution2:通过层序遍历来序列化和反序列化二叉树
+ */
 public class Codec {
 
     // Encodes a tree to a single string.
@@ -2015,11 +2022,11 @@ public class Codec {
         while(!queue.isEmpty()) {
             TreeNode node = queue.poll();
             if(node != null) {
-                res.append(node.val + "!");
+                res.append(node.val + ",");
                 queue.offer(node.left);
                 queue.offer(node.right);
             } else {
-                res.append("null!");
+                res.append("null,");
             }
         }
         return res.toString();
@@ -2030,7 +2037,7 @@ public class Codec {
         if(data.equals("")) {
             return null;
         }
-        String[] vals = data.split("!");
+        String[] vals = data.split(",");
         return buildTree(vals);
     }
 
@@ -2068,7 +2075,7 @@ public class Codec {
 }
 ```
 
-
+ 
 
 ----
 

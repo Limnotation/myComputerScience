@@ -2,7 +2,60 @@
 
 -----
 
-### 1、快速排序
+### 1、选择排序
+
+```java
+public int[] selectionSort(int[] nums) {
+    int len = nums.length;
+    for(int i = 0; i < len - 1; i++) {
+        /**
+        * 循环不变量:[0, i)内的元素已经有序
+         */
+        int minIndex = i;
+        // 选择区间[i, len - 1]内最小的元素
+        for(int j = i + 1; j < len; j++) {
+            if(nums[j] < nums[minIndex]) {
+                minIndex = j;
+            }
+        }
+        swap(nums, i, minIndex);
+    }
+    return nums;
+}
+
+private void swap(int[] nums, int i, int j) {
+    int temp = nums[i];
+    nums[i] = nums[j];
+    nums[j] = temp;
+}
+```
+
+------
+
+### 2、插入排序
+
+```java
+public int[] insertionSort(int[] nums) {
+    int len = nums.length;
+    for(int i = 1; i < len; i++) {
+        /**
+        * 循环不变量:将nums[i]插入到区间[0, i)使该部分有序
+         */
+        int temp = nums[i];
+        int j = i;
+        while(j > 0 && nums[j-1] > temp) {
+            nums[j] = nums[j-1];
+            j--;
+        }
+        nums[j] = temp;
+    }
+    return nums;
+}
+```
+
+
+
+### 3、快速排序
 
 #### partition
 
@@ -14,9 +67,10 @@
 * @param	arr			待排序数组
 * @param	startIndex	 起始下标
 * @param	endIndex	 结束下标
+* @return	pivot的下标
 */
 
-private static int partition(int[] arr, int startIndex, int endIndex) {
+private static int partition(int[] arr, int startIndex, int endIndex){
     int pivot = arr[startIndex];
     int left = startIndex;
     int right = endIndex;
@@ -196,9 +250,7 @@ private void swap(int[] arr, int i, int j) {
 
 -------
 
---------
-
-### 2、归并排序
+### 4、归并排序
 
 #### 2.1、 普通归并排序代码
 
@@ -211,11 +263,11 @@ public class MergeSort {
     }
     
     /**
-    * 对数组nums的子区间[left。。right]进行归并排序
+    * 对数组nums的子区间[left,right]进行归并排序
     * 
-    * @param nums
-    * @param left
-    * @param right
+    * @param nums	待排序数组
+    * @param left	待排序部分的左边界
+    * @param right	待排序部分的右边界
      */
      private void mergeSort(int[] nums, int left, int right) {
          // 递归终止条件：[left, right]区间内只有一个元素
@@ -232,34 +284,95 @@ public class MergeSort {
     /**
     * 合并两个有序数组: 先把值复制到临时数组，再合并回去
     * 
-    * @param nums
-    * @param left
-    * @param mid
-    * @param right
+    * @param nums	待排序数组
+    * @param left	待排序部分的左边界
+    * @param mid	待排序部分的中间位置索引
+    * @param right	待排序部分的右边界
+    * 注:[left, mid]和[mid + 1, right]两部分分别有序，但是整体不一定完全有序
      */
     private void mergeTwoSortedArray(int[] nums, int left, int mid, int right) {
+        // 将待排序部分转移到辅助数组，之后将归并结果写回原数组
         int len = right - left + 1;
         int[] temp = new int[len];
         for(int i = 0; i < len; i++) {
             temp[i] = nums[left + i];
         }
 
+        // i指向第一个排序部分的第一个元素
         int i = 0; 
+        // j指向第二个排序部分的第一个元素
         int j = mid - left + 1;
         for(int k = 0; k < len; k++) {
             if(i == mid - left + 1) {
+                // 第一个部分的元素已取完，只能从第二个部分取元素
                 nums[left + k] = temp[j];
                 j++;
             } else if(j == right - left + 1) {
+                // 第二个部分的元素已取完，只能从第一个部分取元素
                 nums[left + k] = nums[i];
                 i++;
             } else if(temp[i] <= temp[j]) {
+                // 第一部分的当前元素更小，则写回原数组
                 nums[left + k] = temp[i];
                 i++;
             } else {
+                // 第二部分的当前元素更小，则协会原数组
                 nums[left + k] = temp[j];
                 j++;
             }
+        }
+    }
+}
+```
+
+-----
+
+### 5、堆排序
+
+```java
+public class heapSort {
+    /**
+    * "下沉"
+    * @param	heap		存储堆的数组
+    * @param	parentIndex	 将被下沉的节点在数组中的索引
+    * @param	length		 数组长度
+     */
+    private void sink(int[] heap, int parentIndex, int length) {
+        int temp = heap[parentIndex];
+        int childIndex = 2 * parentIndex + 1;
+        while(childIndex < length) {
+            // 当前节点与其两个子节点中的最大值做交换
+            if(childIndex + 1 < length && heap[childIndex] < heap[childIndex + 1]) {
+                childIndex++;
+            }
+            if(temp > heap[childIndex]) {
+                break;
+            }
+            heap[parentIndex] = heap[childIndex];
+            parentIndex = childIndex;
+            childIndex = 2 * parentIndex + 1;
+        } 
+        heap[parentIndex] = temp;
+    }
+    
+    /**
+    * 堆排序
+    * @param	heap	待排序的数组
+     */
+    public void heapSort(int[] heap) {
+        int len = heap.length;
+        
+        // 将数组构建成二叉堆
+        for(int i = (len - 2) / 2; i >= 0; i--) {
+            sink(heap, i, len);
+        }
+        // 循环不变量:[0, i]堆有序，其余部分全局有序
+        for(int i = len - 1; i >= 0; i--) {
+            int temp = heap[i];
+            heap[i] = heap[0];
+            heap[0] = temp;
+            
+            sink(heap, 0, i);
         }
     }
 }

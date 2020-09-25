@@ -622,6 +622,10 @@ private int findMaxDiameter(TreeNode root) {
 ##### 题目示例6 `leetcode 226 翻转二叉树`
 
 ```java
+/**
+* 递归交换当前子树的左右节点
+* @param root
+ */
 private TreeNode invertTree(TreeNode root) {
     if(root == null) {
         return null;
@@ -741,8 +745,7 @@ public boolean isSymmetric(TreeNode root) {
 private boolean isSymmetric(TreeNode t1, TreeNode t2) {
     if(t1 == null && t2 == null) {
         return true;
-    }
-    if(t1 == null || t2 == null || t1.val != t2.val) {
+    } else if(t1 == null || t2 == null || t1.val != t2.val) {
         return false;
     }
     return isSymmetric(t1.left, t2.right) && isSymmetric(t1.right, t2.left);
@@ -1380,6 +1383,25 @@ private TreeNode constructMaximumBinaryTree(int[] nums, int left, int right) {
     root.left = constructMaximumBinaryTree(nums, left, rootIndex - 1);
     root.right = constructMaximumBinaryTree(nums, rootIndex + 1, right);
     return root;
+}
+```
+
+-----
+
+##### 题目示例31 `leetcode 100 相同的树`
+
+```java
+/**
+* 同时在两棵树上进行先序遍历
+ */
+private boolean isSameTree(TreeNode p, TreeNode q) {
+    if(p == null && q == null) {
+        return true;
+    } else if(p == null || q == null || p.val != q.val) {
+        return false;
+    }
+
+    return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
 }
 ```
 
@@ -5067,8 +5089,9 @@ private void dfs(TreeNode root, int depth) {
 	
     /** 
     * 如果当前访问的结点深度与res.size()相等
-    * 表示当前访问的结点是其所在层的最右边结
-    * 点（注意根节点深度为0）
+    * 表示当前访问的结点是该层第一个被访问到的
+    * 节点，又因为遍历顺序是根->右->左，所以
+    * 该节点就是该层最右节点
     */
     if(depth == res.size()) {
         res.add(root.val);

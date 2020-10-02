@@ -1655,7 +1655,7 @@ private TreeNode constructTreee(int[] nums, int start, int end) {
         return null;
     }
 	
-    // 取数组中间元素作为当前树的根节点
+    // 取区间[start, end]的中间元素作为当前子树的根节点
     int mid = start + (end - start) / 2;
     TreeNode root = new TreeNode(nums[mid]);
     root.left = constructTreee(nums, start, mid - 1);
@@ -5831,18 +5831,20 @@ private int findMin(int[] nums) {
 
 ```java
 private int findMin(int[] nums) {
-    if(nums == null || nums.length <= 0)
+    if(nums == null || nums.length <= 0) {
         return -1;
+    }
     
     int left = 0, right = nums.length - 1;
     while(left < right) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] < nums[right])
+        if(nums[mid] < nums[right]) {
             right = mid;
-        else if(nums[mid] > nums[right])
+        } else if(nums[mid] > nums[right]) {
             left = mid + 1;
-        else if(nums[mid] == nums[right])
+        } else if(nums[mid] == nums[right]) {
             right--;
+        }
     }
     return nums[left];
 }
@@ -9710,6 +9712,50 @@ private int[] exchange(int[] nums) {
 -----
 
 ## `leetcode` 未归纳题解（按tag分类）
+
+-----
+
+### 多线程
+
+#### 题目1 `leetcode 1115 交替打印FooBar`
+
+```java
+/**
+* 解决方案1：使用Semaphore
+ */
+class FooBar {
+    private int n;
+
+    public FooBar(int n) {
+        this.n = n;
+    }
+
+    private Semaphore foo = new Semaphore(1);
+    private Semaphore bar = new Semaphore(0);
+
+    public void foo(Runnable printFoo) throws InterruptedException {
+        
+        for (int i = 0; i < n; i++) {
+            foo.acquire();
+        	// printFoo.run() outputs "foo". Do not change or remove this line.
+        	printFoo.run();
+            bar.release();
+        }
+    }
+
+    public void bar(Runnable printBar) throws InterruptedException {
+        
+        for (int i = 0; i < n; i++) {
+            bar.acquire();
+            // printBar.run() outputs "bar". Do not change or remove this line.
+        	printBar.run();
+            foo.release();
+        }
+    }
+}
+```
+
+
 
 ### 跳跃游戏系列
 

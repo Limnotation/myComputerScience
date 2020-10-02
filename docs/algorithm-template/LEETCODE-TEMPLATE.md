@@ -3796,18 +3796,23 @@ private int[] maxSlidingWindow(int[] nums, int k) {
         return new int[0];
     }
     
-    LinkedList<Integer> window = new LinkedList<>();
-    int[] res = new int[nums.length - k + 1];
+    int len = nums.length;
+    Deque<Integer> deque = new LinkedList<>();
+    int[] res = new int[len - k + 1];
     int index = 0;
-    for(int i = 0; i < nums.length; i++) {
-        // 构建一个单调递减栈，栈底元素是窗口范围内的最大元素
-        while(!window.isEmpty() && nums[i] >= nums[window.peekLast()])
-            window.pollLast();
-        window.addLast(i);
-        if(window.peek() <= i - k)
-            window.poll();
-        if(i >= k - 1)
-            res[index++] = nums[window.peekFirst()];
+    for(int i = 0; i < len; i++) {
+        while(!deque.isEmpty() && nums[i] > nums[deque.peekLast()]) {
+            deque.removeLast();
+        }
+        deque.addLast(i);
+
+        if(i - k >= deque.peekFirst()) {
+            deque.removeFirst();
+        }
+        if(i >= k - 1) {
+            res[index] = nums[deque.peekFirst()];
+            index++;
+        }
     }
     return res;
 }

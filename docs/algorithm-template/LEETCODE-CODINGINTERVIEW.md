@@ -1,6 +1,45 @@
 ## 剑指offer
 
-### 面试题03 二维数组中的查找
+### 面试题03 数组中重复的数字
+
+```java
+/**
+* 关键点:正常情况下,下标i位置对应的值应该为i
+* 原地对数组元素交换使得nums[i] == i
+ */
+class Solution {
+    public int findRepeatNumber(int[] nums) {
+        if(nums == null || nums.length == 0) {
+            return -1;
+        }
+
+        int len = nums.length;
+        for(int i = 0; i < len; i++) {
+            if(nums[i] == i) {
+                continue;
+            } else {
+                // 当前位置nums[i] != i
+                // 但是nums[i]对应位置已经满足下标和值相等的条件
+                // 这是唯一的判断元素重复的条件
+                if(nums[nums[i]] == nums[i]) {
+                    return nums[i];
+                } else {
+                    int temp = nums[i];
+                    nums[i] = nums[nums[i]];
+                    nums[temp] = temp;
+                }
+            }
+        }
+        return -1;
+    }
+}
+```
+
+
+
+------
+
+### 面试题04 二维数组中的查找
 
 ```java
 class Solution {
@@ -102,7 +141,8 @@ class CQueue {
             return stack2.removeLast();
         } else if(!stack1.isEmpty()) {
             while(!stack1.isEmpty()) {
-                stack2.addLast(stack1.removeLast());
+                int val = stack1.removeLast();
+                stack2.addLast(val);
             }
             return stack2.removeLast();
         }
@@ -163,6 +203,30 @@ class Solution {
 
 -----
 
+### 面试题18 删除链表的节点
+
+```java
+class Solution {
+    public ListNode deleteNode(ListNode head, int val) {
+        ListNode dummyHead = new ListNode(0);
+        dummyHead.next = head;
+        ListNode runner = dummyHead;
+        while(runner.next != null) { 
+            if(runner.next.val == val) {
+                runner.next = runner.next.next;
+            } else {
+                runner = runner.next;
+            }
+        }
+        return dummyHead.next;
+    }
+}
+```
+
+
+
+------
+
 ### 题目21 调整数组顺序使奇数位于偶数前面
 
 ```java
@@ -188,6 +252,96 @@ class Solution {
             } 
         }
         return nums;
+    }
+}
+```
+
+-----
+
+### 面试题22 链表中倒数第k个节点
+
+```java
+class Solution {
+    public ListNode getKthFromEnd(ListNode head, int k) {
+        ListNode slow = head;
+        ListNode fast = head;
+        for(int i = 0; i < k; i++) {
+            fast = fast.next;
+        }
+        while(fast != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return slow;
+    }
+}
+```
+
+----
+
+### 面试题24 反转链表
+
+```java
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode pre = null;
+        ListNode cur = head;
+        while(cur != null) {
+            ListNode next = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = next;
+        }
+        return pre;
+    }
+}
+```
+
+----
+
+### 面试25 合并两个排序的链表
+
+```java
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode dummyHead = new ListNode(0);
+        ListNode runner = dummyHead;
+        while(l1 != null && l2 != null) {
+            if(l1.val < l2.val) {
+                runner.next = new ListNode(l1.val);
+                l1 = l1.next;
+            } else {
+                runner.next = new ListNode(l2.val);
+                l2 = l2.next;
+            }
+            runner = runner.next;
+        }
+        if(l1 != null) {
+            runner.next = l1;
+        } 
+        if(l2 != null) {
+            runner.next = l2;
+        }
+        return dummyHead.next;
+    }
+}
+```
+
+----
+
+### 面试题27 二叉树的镜像
+
+```java
+class Solution {
+    public TreeNode mirrorTree(TreeNode root) {
+        if(root == null) {
+            return null;
+        }
+
+        TreeNode left = root.left;
+        root.left = mirrorTree(root.right);
+        root.right = mirrorTree(left);
+        return root;
     }
 }
 ```
@@ -263,6 +417,56 @@ class Solution {
 
 -----
 
+### 面试题30 包含min函数的栈
+
+```java
+class MinStack {
+
+    private Deque<Integer> dataStack;
+    private Deque<Integer> minStack;
+
+    /** initialize your data structure here. */
+    public MinStack() {
+        this.dataStack = new LinkedList<>();
+        this.minStack = new LinkedList<>();
+    }
+    
+    public void push(int x) {
+        // push数据到普通栈
+        dataStack.addLast(x);
+        // push数据到min栈
+        if(minStack.isEmpty()) {
+            minStack.addLast(x);
+        } else {
+            // 在栈非空时,放入min栈中的元素为当前栈顶元素和新元素的较小值
+            int curMin = minStack.peekLast();
+            if(curMin < x) {
+                minStack.addLast(curMin);
+            } else {
+                minStack.addLast(x);
+            }
+        }
+    }
+    
+    public void pop() {
+        dataStack.removeLast();
+        minStack.removeLast();
+    }
+    
+    public int top() {
+        return dataStack.peekLast();
+    }
+    
+    public int min() {  
+        return minStack.peekLast();
+    }
+}
+```
+
+
+
+------
+
 ### 面试题39 数组中出现次数超过一半的数字
 
 ```java
@@ -290,6 +494,32 @@ class Solution {
             }
         }
         return majority;
+    }
+}
+```
+
+------
+
+### 面试题50 第一个只出现一次的字符
+
+```java
+class Solution {
+    public char firstUniqChar(String s) {
+        if(s == null || s.length() == 0) {
+            return ' ';
+        }
+
+        int len = s.length();
+        int[] charMap = new int[26];
+        for(char c:s.toCharArray()) {
+            charMap[c - 'a']++;
+        }
+        for(char c:s.toCharArray()) {
+            if(charMap[c - 'a'] == 1) {
+                return c;
+            }
+        }
+        return ' ';
     }
 }
 ```
@@ -379,6 +609,56 @@ public class Solution {
 ```
 
 ----
+
+### 面试题52 两个链表的第一个公共节点
+
+```java
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        // 计算两条链表长度
+        int shortLen = 0;
+        int longLen = 0;
+        ListNode shortList = headA;
+        ListNode longList = headB;
+        while(shortList != null) {
+            shortLen++;
+            shortList = shortList.next;
+        }
+        while(longList != null) {
+            longLen++;
+            longList = longList.next;
+        }
+
+        // 确定链表的长短关系
+        int diff = longLen - shortLen;
+        shortList = headA;
+        longList = headB;
+        if(diff < 0) {
+            shortList = headB;
+            longList = headA;
+            diff = -diff;
+        }
+
+        // 同时移动两条链表上的指针，判断相应节点是否相等
+        for(int i = 0; i < diff; i++) {
+            longList = longList.next;
+        }
+
+        while(shortList != null && longList != null) {
+            if(shortList == longList) {
+                return shortList;
+            }
+            shortList = shortList.next;
+            longList = longList.next;
+        }
+        return null;
+    }
+}
+```
+
+
+
+-----
 
 ### 面试题57  和为s的两个数字
 
@@ -496,7 +776,91 @@ class Solution {
 
 -----
 
-### 面试题66 构建乘积数组
+### 面试题59-I 滑动窗口的最大值
+
+```java
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if(nums == null || k < 1 || nums.length < k) {
+            return new int[0];
+        }
+        
+        int len = nums.length;
+        Deque<Integer> deque = new LinkedList<>();
+        int[] res = new int[len - k + 1];
+        int index = 0;
+        for(int i = 0; i < len; i++) {
+            // 维护一个单调递减的双端队列
+            while(!deque.isEmpty() && nums[i] > nums[deque.peekLast()]) {
+                deque.removeLast();
+            }
+            deque.addLast(i);
+			
+            // 队首元素已经超出范围,应去除
+            if(i - k >= deque.peekFirst()) {
+                deque.removeFirst();
+            }
+            // 显然
+            if(i >= k - 1) {
+                res[index] = nums[deque.peekFirst()];
+                index++;
+            }
+        }
+        return res;
+    }
+}
+```
+
+-----
+
+### 面试题59-II 队列的最大值
+
+```java
+class MaxQueue {
+
+    private Queue<Integer> queue;
+    private Deque<Integer> maxDeque;
+
+    public MaxQueue() {
+        this.queue = new LinkedList<>();
+        this.maxDeque = new LinkedList<>();
+    }
+    
+    public int max_value() {
+        if(maxDeque.isEmpty()) {
+            return -1;
+        }
+        return maxDeque.peekFirst();
+    }
+    
+    public void push_back(int value) {
+        queue.offer(value);
+        // 构建单调递减的双端队列
+        while(!maxDeque.isEmpty() && value > maxDeque.peekLast()) {
+            maxDeque.removeLast();
+        }
+        maxDeque.addLast(value);
+    }
+    
+    public int pop_front() {
+        if(queue.isEmpty()) {
+            return -1;
+        }
+
+        int res = queue.poll();
+        if(res == maxDeque.peekFirst()) {
+            maxDeque.removeFirst();
+        }
+        return res;
+    }
+}
+```
+
+
+
+-----
+
+### 试题66 构建乘积数组
 
 ```java
 class Solution {

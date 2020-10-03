@@ -346,6 +346,28 @@ class Solution {
 }
 ```
 
+-------
+
+### 面试题28 对称的二叉树
+
+```java
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        return isSymmetric(root, root);
+    }
+
+    private boolean isSymmetric(TreeNode t1, TreeNode t2) {
+        if(t1 == null && t2 == null) {
+            return true;
+        } else if(t1 == null || t2 == null || t1.val != t2.val) {
+            return false;
+        }
+
+        return isSymmetric(t1.left, t2.right) && isSymmetric(t1.right, t2.left);
+    }
+}
+```
+
 
 
 -----
@@ -652,6 +674,52 @@ public class Solution {
             longList = longList.next;
         }
         return null;
+    }
+}
+```
+
+-----
+
+### 面试题54 二叉搜索树的第k大节点
+
+```java
+/**
+* 对BST进行中序遍历可以得到递增的有序序列
+ */
+class Solution {
+    private List<Integer> res = new LinkedList<>();
+
+    public int kthLargest(TreeNode root, int k) {
+        inorderTra(root);
+        return res.get(res.size() - k);
+    }
+
+    private void inorderTra(TreeNode root) {
+        if(root == null) {
+            return;
+        }
+        
+        inorderTra(root.left);
+        res.add(root.val);
+        inorderTra(root.right);
+    }
+}
+```
+
+-----
+
+### 面试题55-I 二叉树的深度
+
+```java
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if(root == null) {
+            return 0;
+        }
+
+        int left = maxDepth(root.left);
+        int right = maxDepth(root.right);
+        return 1 + Math.max(left, right);
     }
 }
 ```

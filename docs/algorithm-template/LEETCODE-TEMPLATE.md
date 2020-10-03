@@ -538,7 +538,7 @@ private int maxDepth(TreeNode root) {
 
 -----
 
-##### 题目示例3： `leetcode 124:二叉树中的最大路径和`
+##### 题目示例3 `leetcode 124:二叉树中的最大路径和`
 
 **思路**：分治法，分为三种情况
 
@@ -1012,7 +1012,7 @@ public Node connect(Node root) {
 
 ------
 
-##### 题目示例20： `leetcode 102 二叉树的层序遍历`
+##### 题目示例20 `leetcode 102 二叉树的层序遍历`
 
 ```java
 private List<List<Integer>> levelOrder(TreeNode root) {
@@ -1046,7 +1046,7 @@ private List<List<Integer>> levelOrder(TreeNode root) {
 
 ------
 
-##### 题目示例21 ：`leetcode 107 二叉树的层次遍历II`
+##### 题目示例21 `leetcode 107 二叉树的层次遍历II`
 
 ```java
 private List<List<Integer>> levelOrderBottom(TreeNode root) {
@@ -1079,7 +1079,7 @@ private List<List<Integer>> levelOrderBottom(TreeNode root) {
 
 -------
 
-##### 题目示例22：`leetcode 103 二叉树的锯齿形层次遍历`
+##### 题目示例22`leetcode 103 二叉树的锯齿形层次遍历`
 
 ```java
 public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
@@ -1122,7 +1122,7 @@ public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 
 -----
 
-##### 题目示例23 ：`leetcode 114 二叉树展开为链表`
+##### 题目示例23 `leetcode 114 二叉树展开为链表`
 
 参考题解：https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/solution/114-er-cha-shu-zhan-kai-wei-lian-biao-by-ming-zhi-/
 
@@ -7299,10 +7299,10 @@ class Solution
 
 #### 简单的回溯法模板
 
-```go
+```java
 // 一般把结果设为全局变量，避免传参消耗
 result := []
-func backTrack(选择列表， 路径) {
+private void backTrack(选择列表， 路径) {
     if 满足结束条件 {
         result.add(路径)
         return

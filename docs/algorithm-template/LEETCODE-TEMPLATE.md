@@ -7578,13 +7578,15 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
     }
     
     for(int i = start; i < candidates.length; i++)  {
-        if(target - candidates[i] < 0)
+        if(target - candidates[i] < 0) {
             break;
+        }
         // i > start,是个很重要的细节，思考一下这是如何实现避免
         // 重复选取元素的
         // "在一个for循环中，所有被遍历到的元素都是属于同一层级的"
-        if(i > start && candidates[i] == candidates[i-1])
+        if(i > start && candidates[i] == candidates[i-1]) {
             continue;
+        }
         
         // 做选择
         runner.add(candidates[i]);

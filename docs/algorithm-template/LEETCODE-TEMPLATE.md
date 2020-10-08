@@ -7494,8 +7494,9 @@ private void backTracking(int[] nums, boolean[] used, LinkedList<Integer> runner
 ```java
 List<List<Integer>> res = new LinkedList<>();
 public List<List<Integer>> combine(int n, int k) {
-    if(n < 1 || n < k)
+    if(n < 1 || n < k) {
         return res;
+    }
     
     backTracking(n, k, 1, new LinkedList<Integer>());
     return res;
@@ -7751,6 +7752,12 @@ public List<String> letterCombinations(String digits) {
     return res;
 }
 
+/**
+* 递归求解电话号码可能的字母组合
+* @param digits		电话号码的字符串表示
+* @param index		当前处理到号码串的第index个数字
+* @param runner
+ */
 private void backTracking(String digits, int index, StringBuffer runner) {
     if(index == digits.length()) {
         res.add(runner.toString());
@@ -7822,17 +7829,21 @@ public List<String> generateParenthesis(int n) {
     return res;
 }
 
+/**
+* 递归求解可能的所有括号组合
+* @param left	当前剩余未使用的左括号数量
+* @param right	当前剩余未使用的右括号数量
+* @param s	    当前已经构建好的合法的括号子串
+ */
 private void backTracking(int left, int right, StringBuffer s) {
-    // 剩下的左括号更多，不合法
-    if(left > right) {
+    /**
+    * 递归终止条件：
+    * 1、剩余的左括号数量大于右括号数量或者剩余可用数量小于0
+    * 2、左右括号刚好同时用完，得到的括号子串满足条件
+     */
+    if(left > right || left < 0 || right < 0) {
         return;
-    }
-    // 数量小于0，不合法
-    if(left < 0 || right < 0) {
-        return;
-    }
-    // 所有括号都能用完，得到一个合法的括号组合
-    if(left == 0 && right == 0) {
+    } else if(left == 0 && right == 0) {
         res.add(s.toString());
         return;
     }

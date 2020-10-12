@@ -10,7 +10,7 @@
     - [普通二叉树问题（未仔细分类）](#普通二叉树问题未仔细分类)
       - [题目示例1 `leetcode 104 二叉树的最大深度`](#题目示例1-leetcode-104-二叉树的最大深度)
       - [题目示例2`leetcode 110 平衡二叉树`](#题目示例2leetcode-110-平衡二叉树)
-      - [题目示例3： `leetcode 124:二叉树中的最大路径和`](#题目示例3-leetcode-124二叉树中的最大路径和)
+      - [题目示例3 `leetcode 124:二叉树中的最大路径和`](#题目示例3-leetcode-124二叉树中的最大路径和)
       - [题目示例4  `leetcode 236 二叉树的最近公共祖先`](#题目示例4-leetcode-236-二叉树的最近公共祖先)
       - [题目示例5 `leetcode 543 二叉树的直径`](#题目示例5-leetcode-543-二叉树的直径)
       - [题目示例6 `leetcode 226 翻转二叉树`](#题目示例6-leetcode-226-翻转二叉树)
@@ -27,16 +27,18 @@
       - [题目示例17 `leetcode 105 从前序遍历和中序遍历序列构造二叉树`](#题目示例17-leetcode-105-从前序遍历和中序遍历序列构造二叉树)
       - [题目示例18 `leetcode 116 填充每个节点的下一个右侧节点指针`](#题目示例18-leetcode-116-填充每个节点的下一个右侧节点指针)
       - [题目示例19 `leetcode 117 填充每个节点的下一个右侧节点指针 II`](#题目示例19-leetcode-117-填充每个节点的下一个右侧节点指针-ii)
-      - [题目示例20： `leetcode 102 二叉树的层序遍历`](#题目示例20-leetcode-102-二叉树的层序遍历)
-      - [题目示例21 ：`leetcode 107 二叉树的层次遍历II`](#题目示例21-leetcode-107-二叉树的层次遍历ii)
-      - [题目示例22：`leetcode 103 二叉树的锯齿形层次遍历`](#题目示例22leetcode-103-二叉树的锯齿形层次遍历)
-      - [题目示例23 ：`leetcode 114 二叉树展开为链表`](#题目示例23-leetcode-114-二叉树展开为链表)
+      - [题目示例20 `leetcode 102 二叉树的层序遍历`](#题目示例20-leetcode-102-二叉树的层序遍历)
+      - [题目示例21 `leetcode 107 二叉树的层次遍历II`](#题目示例21-leetcode-107-二叉树的层次遍历ii)
+      - [题目示例22`leetcode 103 二叉树的锯齿形层次遍历`](#题目示例22leetcode-103-二叉树的锯齿形层次遍历)
+      - [题目示例23 `leetcode 114 二叉树展开为链表`](#题目示例23-leetcode-114-二叉树展开为链表)
       - [题目示例24 `leetcode 222 完全二叉树的节点个数`](#题目示例24-leetcode-222-完全二叉树的节点个数)
       - [题目示例25 `leetcode 958 二叉树的完全性检验`](#题目示例25-leetcode-958-二叉树的完全性检验)
       - [题目示例26 `leetcode 1325 删除给定值的叶子结点`](#题目示例26-leetcode-1325-删除给定值的叶子结点)
       - [题目示例27 `leetcode 662 二叉树最大宽度`](#题目示例27-leetcode-662-二叉树最大宽度)
       - [题目示例28  `leetcode 113 路径总和II`](#题目示例28-leetcode-113-路径总和ii)
       - [题目示例29  `leetcode 156 上下翻转二叉树`](#题目示例29-leetcode-156-上下翻转二叉树)
+      - [题目示例30 `leetcode 654 最大二叉树`](#题目示例30-leetcode-654-最大二叉树)
+      - [题目示例31 `leetcode 100 相同的树`](#题目示例31-leetcode-100-相同的树)
     - [二叉搜索树](#二叉搜索树)
       - [题目示例1 `leetcode 98 验证二叉搜索树`](#题目示例1-leetcode-98-验证二叉搜索树)
       - [题目示例2 `leetcode  701  二叉搜索树中的插入操作`](#题目示例2-leetcode-701-二叉搜索树中的插入操作)
@@ -50,7 +52,7 @@
       - [题目示例10 `leetcode 653两数之和IV 输入BST`](#题目示例10-leetcode-653两数之和iv-输入bst)
       - [题目示例 11 `leetcode 530 二叉搜索树的最小绝对差`](#题目示例-11-leetcode-530-二叉搜索树的最小绝对差)
       - [题目示例12 `leetcode 333  最大BST子树`](#题目示例12-leetcode-333-最大bst子树)
-      - [题目示例13 `leetcode 776拆分二叉搜索树`](#题目示例13-leetcode-776拆分二叉搜索树)
+      - [题目示例13 `leetcode 776 拆分二叉搜索树`](#题目示例13-leetcode-776-拆分二叉搜索树)
       - [题目示例14 `leetcode 1214 查找两棵二叉搜索树之和`](#题目示例14-leetcode-1214-查找两棵二叉搜索树之和)
       - [题目示例15 `leetcode 285 二叉搜索树中的顺序后继`](#题目示例15-leetcode-285-二叉搜索树中的顺序后继)
       - [题目示例16 `leetcode 510 二叉搜索树中的中序后继`](#题目示例16-leetcode-510-二叉搜索树中的中序后继)
@@ -212,8 +214,9 @@
       - [题目示例1 `leetcode 1143 最长公共子序列`](#题目示例1-leetcode-1143-最长公共子序列)
       - [题目示例2  `leetcode 712 两个字符串的最小ASCII删除和`](#题目示例2-leetcode-712-两个字符串的最小ascii删除和)
       - [题目示例3 `leetcode 718 最长重复子数组`](#题目示例3-leetcode-718-最长重复子数组)
+      - [题目示例4 `leetcode 97 交错字符串`](#题目示例4-leetcode-97-交错字符串)
     - [0-1背包问题 （10%）](#0-1背包问题-10)
-        - [题目示例1 `leetcode 416分割等和子集`](#题目示例1-leetcode-416分割等和子集)
+        - [题目示例1 `leetcode 416 分割等和子集`](#题目示例1-leetcode-416-分割等和子集)
         - [题目示例2 `leetcode 322零钱兑换`](#题目示例2-leetcode-322零钱兑换)
         - [题目示例3 `leetcode 518 零钱兑换II`](#题目示例3-leetcode-518-零钱兑换ii)
     - [`leetcode 股票买卖系列问题`](#leetcode-股票买卖系列问题)
@@ -322,6 +325,8 @@
       - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
       - [题目示例2 `剑指offer 21 调整数组顺序使奇数位于偶数的前面`](#题目示例2-剑指offer-21-调整数组顺序使奇数位于偶数的前面)
 - [`leetcode` 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
+  - [多线程](#多线程)
+    - [题目1 `leetcode 1115 交替打印FooBar`](#题目1-leetcode-1115-交替打印foobar)
   - [跳跃游戏系列](#跳跃游戏系列)
     - [题目1 `leetcode 55 跳跃游戏`](#题目1-leetcode-55-跳跃游戏)
   - [位运算](#位运算)
@@ -338,6 +343,7 @@
   - [设计](#设计)
     - [题目1 `leetcode 146 LRU缓存机制`](#题目1-leetcode-146-lru缓存机制)
     - [题目2 `leetcode 1206 设计跳表（未完成，感觉机制有点复杂）`](#题目2-leetcode-1206-设计跳表未完成感觉机制有点复杂)
+    - [题目3 `leetcode 380 常数时间插入、删除和获取随机元素`](#题目3-leetcode-380-常数时间插入删除和获取随机元素)
   - [BFS](#bfs)
     - [](#)
 ## 数据结构
@@ -2776,19 +2782,15 @@ public ListNode detectCycle(ListNode head) {
         slow = slow.next;
         fast = fast.next.next;
         if(slow == fast) {
-            break;
+            slow = head;
+            while(slow != fast) {
+                slow = slow.next;
+                fast = fast.next;
+            }
+            return slow;
         }
     }
-
-    if(fast == null || fast.next == null) {
-        return null;
-    }
-    slow = head;
-    while(slow != fast) {
-        slow = slow.next;
-        fast = fast.next;
-    }
-    return slow;
+    return null;
 }
 ```
 
@@ -6844,55 +6846,69 @@ private boolean isInterleave(String s1, String s2, String s3) {
 
 #### 0-1背包问题 （10%）
 
-###### 题目示例1 `leetcode 416分割等和子集`
+###### 题目示例1 `leetcode 416 分割等和子集`
 
 ```java
-// dp[i][j] = var 表示，对于前i个物品，当背包容量为j时，若var = true，表示恰好将背包装满，反之表示装不满
-// base case 1: dp[...][0] = true,表示背包容量为0时相当于装满了
-// base case 2: dp[0][...] = false,表示没有物品可以选择的时候，无论如何无法装满背包
-// return: dp[N][sum/2]
+/**
+* dp[i][j] = var 表示，对于前i个物品，当背包容量为j时，若var = true，表示恰好将背包装满，反之表示装不满
+* base case 1: dp[...][0] = true,表示背包容量为0时相当于装满了
+* base case 2: dp[0][...] = false,表示没有物品可以选择的时候，无论如何无法装满背包
+* return: dp[N][sum/2]
+ */
 // v1
-private boolean canPartition( int[] nums )
-{
+private boolean canPartition(int[] nums) {
     int sum = 0;
-    for( int num:nums )
-        sum += num;
-    if( sum % 2 != 0 )
+    int len = nums.length;
+
+    // 数组元素和必须为偶数
+    for(int i = 0; i < len; i++) {
+        sum += nums[i];
+    }
+    if(sum % 2 != 0) {
         return false;
-    
-    int n = nums.length;
+    }
+
     sum = sum / 2;
-    boolean[][] dp = new boolean[n+1][sum+1];
-    for( int i = 0; i <= n; i++ )
+    boolean[][] dp = new boolean[len+1][sum+1];
+    // 背包容量为0时表示不用装入物品也已经满了
+    for(int i = 0; i <= len; i++) {
         dp[i][0] = true;
-    
-    for( int i = 1; i <= n; i++ )
-        for( int j = 1; j <= sum; j++ )
-            if( j - nums[i-1] < 0 )
+    }
+
+    for(int i = 1; i <= len; i++) {
+        for(int j = 1; j <= sum; j++) {
+            if(j - nums[i-1] < 0) {
                 dp[i][j] = dp[i-1][j];
-    	    else
+            } else {
                 dp[i][j] = dp[i-1][j] | dp[i-1][j-nums[i-1]];
-    return dp[n][sum];
+            }
+        }
+    }
+    return dp[len][sum];
 }
 
 // v2 状态压缩
-private boolean canPartition( int[] nums )
-{
+private boolean canPartition(int[] nums) {
     int sum = 0;
-    for( int num:nums )
-        sum += num;
-    if( sum % 2 != 0 )
+    for(int i = 0; i < len; i++) {
+        sum += nums[i];
+    }
+    if(sum % 2 != 0) {
         return false;
-    
+    }
+
     int n = nums.length;
     sum /= 2;
     boolean[] dp = new boolean[sum+1];
     dp[0] = true;
-    
-    for( int i = 1; i <= n; i++ )
-    	for( int j = sum; j >= 0; j-- )
-            if( j - nums[i-1] >= 0 )
+
+    for(int i = 1; i <= n; i++) {
+        for(int j = sum; j >= 0; j--) {
+            if(j - nums[i-1] >= 0) {
                 dp[j] = dp[j] | dp[j-nums[i-1]];
+            }
+        }
+    }
     return dp[sum];
 }
 ```
@@ -7686,8 +7702,9 @@ private boolean isPalindrome(String s, int left, int right) {
 ```java
 List<String> res = new LinkedList<>();
 public List<String> restoreIpAddresses(String s) {
-    if(s == null || s.length() == 0)
+    if(s == null || s.length() == 0 || s.length() > 12) {
         return res;
+    }
     
     backTracking(s, 0, new LinkedList<>());
     return res;
@@ -7697,23 +7714,27 @@ public List<String> restoreIpAddresses(String s) {
 * 回溯法寻找合适的分段方式
 * @param	s		需要处理的字符串
 * @param	pos 	当前在s中遍历到的位置
-* @param	runner	已经确定好的ip段
+* @param	runner	已经确定好的所有ip段
 */
 private void backTracking(String s, int pos, LinkedList<String> runner) {
-     if(runner.size() == 4) {
-         if(pos == s.length())
-             res.add(String.join(".", runner));
+    /**
+    * 递归终止条件: 字符串刚好能被分成四段并且每段都是合法的ip分段
+     */
+     if(runner.size() == 4 && pos == s.length()) {
+         res.add(String.join(".", runner));
          return;
      }
     
     for(int i = 1; i <= 3; i++) {
-     	if(pos + i > s.length())
+     	if(pos + i > s.length()) {
             break;
+        }
         
         String segment = s.substring(pos, pos + i);
         // 剪枝条件：长度大于一的分段不能以0为起始；任何段的数值结果不能大于255
-        if(segment.length() > 1 && segment.startsWith("0") || ( i == 3 && Integer.parseInt(segment) > 255))
+        if(segment.length() > 1 && segment.startsWith("0") || ( i == 3 && Integer.parseInt(segment) > 255)) {
             continue;
+        }
         
         // 做选择
         runner.add(segment);
@@ -7924,10 +7945,8 @@ private boolean backTracking(char[][] board, String word, int row, int col, int 
                   );
 
         // 撤销选择
-        if(!hasPath) {
-            pathLength--;
-            visited[row][col] = false;
-        }
+        pathLength--;
+        visited[row][col] = false;
     }
     return hasPath;
 }
@@ -7995,10 +8014,8 @@ private boolean backTracking(char[][] board, String word, int row, int col, int 
                   );
 
         // 撤销选择
-        if(!hasPath) {
-            pathLength--;
-            visited[row][col] = false;
-        }
+        pathLength--;
+        visited[row][col] = false;
     }
     return hasPath;
 }
@@ -8071,31 +8088,36 @@ private boolean isValid(char[][] board, int row, int col, char c) {
 ```java
 List<List<String>> res = new LinkedList<>();
 public List<List<String>> solveNQueens(int n) {
-    if(n <= 0)
+    if(n <= 0) {
         return res;
-    
+    }
+
     char[][] board = new char[n][n];
-    for(int i = 0; i < n; i++)
-        for(int j = 0; j < n; j++)
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
             board[i][j] = '.';
+        }
+    }
     backTracking(board, 0);
     return res;
 }
 
 private void backTracking(char[][] board, int row) {
+    // 递归终止条件:棋盘的每一行都放置了一个皇后
     if(row == board.length) {
         List<String> runner = new LinkedList<>();
-        for(char[] line:board)
+        for(char[] line:board) {
             runner.add(new String(line));
+        }
         res.add(runner);
         return;
     }
-    
+
     int lineLength = board[0].length;
     for(int i = 0; i < lineLength; i++) {
         if(!isValid(board, row, i))
             continue;
-        
+
         // 做选择
         board[row][i] = 'Q';
         // 进入下一层决策树
@@ -8105,18 +8127,24 @@ private void backTracking(char[][] board, int row) {
     }
 }
 
+/**
+* 判断当前位置是否可以放置皇后
+* @param	board	表示棋盘的二维数组
+* @param	row		表示当前位置的横坐标
+* @param	col		表示当前位置的纵坐标
+ */
 private boolean isValid(char[][] board, int row, int col) {
     int n = board.length;
     // 检查同一列是否有冲突
     for(int i = 0; i < n; i++)
         if(board[i][col] == 'Q')
             return false;
-    
+
     // 检查右上角是否有冲突
     for(int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++)
         if(board[i][j] == 'Q')
             return false;
-    
+
     // 检查左上角是否有冲突
     for(int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--)
         if(board[i][j] == 'Q')
@@ -10172,16 +10200,71 @@ class Skiplist {
     }
 }
 
-/**
- * Your Skiplist object will be instantiated and called as such:
- * Skiplist obj = new Skiplist();
- * boolean param_1 = obj.search(target);
- * obj.add(num);
- * boolean param_3 = obj.erase(num);
- */
 ```
 
 ----
+
+#### 题目3 `leetcode 380 常数时间插入、删除和获取随机元素`
+
+```java
+class RandomizedSet {
+
+    private List<Integer> dataArr;
+    private Map<Integer, Integer> map;
+    private Random rand;
+
+    /** Initialize your data structure here. */
+    public RandomizedSet() {
+        this.dataArr = new ArrayList<>();
+        this.map = new HashMap<>();
+        this.rand = new Random();
+    }
+    
+    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    public boolean insert(int val) {
+        if(map.containsKey(val)) {
+            return false;
+        }
+        
+        // 添加元素与其所在数组下标的映射
+        map.put(val, dataArr.size());
+        // 新添加元素永远添加在动态数组末尾
+        dataArr.add(val);
+        return true;
+    }
+    
+    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    public boolean remove(int val) {
+        if(!map.containsKey(val)) {
+            return false;
+        }
+
+        // 1、获取动态数组的末尾元素
+        int lastIndex = dataArr.size() - 1;
+        int lastItem = dataArr.get(lastIndex);
+        // 2、获取待删除元素的数组下标
+        int indexOfVal = map.get(val);
+        // 3、使用数组末尾元素覆盖待删除元素
+        dataArr.set(indexOfVal, lastItem);
+        map.put(lastItem, indexOfVal);
+        // 4、删除数组当前的末尾元素
+        dataArr.remove(lastIndex);
+        // 5、删除待删除的元素与下标映射关系
+        map.remove(val);
+        return true;
+    }
+
+    
+    /** Get a random element from the set. */
+    public int getRandom() {
+        return dataArr.get(rand.nextInt(dataArr.size()));
+    }
+}
+```
+
+
+
+------
 
 ### BFS
 

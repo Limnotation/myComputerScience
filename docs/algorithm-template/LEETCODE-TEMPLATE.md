@@ -2251,6 +2251,7 @@ public ListNode partition(ListNode head, int x) {
 
 ```java
 private ListNode swapPairs(ListNode head) {
+    // 递归终止条件
     if(head == null || head.next == null) {
         return head;
     }

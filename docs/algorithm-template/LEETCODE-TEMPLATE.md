@@ -215,8 +215,10 @@
       - [题目示例2  `leetcode 712 两个字符串的最小ASCII删除和`](#题目示例2-leetcode-712-两个字符串的最小ascii删除和)
       - [题目示例3 `leetcode 718 最长重复子数组`](#题目示例3-leetcode-718-最长重复子数组)
       - [题目示例4 `leetcode 97 交错字符串`](#题目示例4-leetcode-97-交错字符串)
-    - [0-1背包问题 （10%）](#0-1背包问题-10)
+    - [背包问题](#背包问题)
+      - [01背包](#01背包)
         - [题目示例1 `leetcode 416 分割等和子集`](#题目示例1-leetcode-416-分割等和子集)
+      - [完全背包](#完全背包)
         - [题目示例2 `leetcode 322零钱兑换`](#题目示例2-leetcode-322零钱兑换)
         - [题目示例3 `leetcode 518 零钱兑换II`](#题目示例3-leetcode-518-零钱兑换ii)
     - [`leetcode 股票买卖系列问题`](#leetcode-股票买卖系列问题)
@@ -6845,7 +6847,9 @@ private boolean isInterleave(String s1, String s2, String s3) {
 
 -------
 
-#### 0-1背包问题 （10%）
+#### 背包问题
+
+##### 01背包
 
 ###### 题目示例1 `leetcode 416 分割等和子集`
 
@@ -6856,6 +6860,7 @@ private boolean isInterleave(String s1, String s2, String s3) {
 * base case 2: dp[0][...] = false,表示没有物品可以选择的时候，无论如何无法装满背包
 * return: dp[N][sum/2]
  */
+
 // v1
 private boolean canPartition(int[] nums) {
     int sum = 0;
@@ -6904,6 +6909,7 @@ private boolean canPartition(int[] nums) {
     dp[0] = true;
 
     for(int i = 1; i <= n; i++) {
+        // 注意这里必须逆序处理
         for(int j = sum; j >= 0; j--) {
             if(j - nums[i-1] >= 0) {
                 dp[j] = dp[j] | dp[j-nums[i-1]];
@@ -6913,6 +6919,10 @@ private boolean canPartition(int[] nums) {
     return dp[sum];
 }
 ```
+
+------
+
+##### 完全背包
 
 ###### 题目示例2 `leetcode 322零钱兑换`
 

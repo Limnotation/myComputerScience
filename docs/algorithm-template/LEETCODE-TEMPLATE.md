@@ -218,9 +218,11 @@
     - [背包问题](#背包问题)
       - [01背包](#01背包)
         - [题目示例1 `leetcode 416 分割等和子集`](#题目示例1-leetcode-416-分割等和子集)
+        - [题目示例2 `leetcode  474 一和零`](#题目示例2-leetcode-474-一和零)
+        - [题目示例3 `leetcode 494 目标和`](#题目示例3-leetcode-494-目标和)
       - [完全背包](#完全背包)
-        - [题目示例2 `leetcode 322零钱兑换`](#题目示例2-leetcode-322零钱兑换)
-        - [题目示例3 `leetcode 518 零钱兑换II`](#题目示例3-leetcode-518-零钱兑换ii)
+        - [题目示例1 `leetcode 322零钱兑换`](#题目示例1-leetcode-322零钱兑换)
+        - [题目示例2	 `leetcode 518 零钱兑换II`](#题目示例2-leetcode-518-零钱兑换ii)
     - [`leetcode 股票买卖系列问题`](#leetcode-股票买卖系列问题)
         - [题目示例1 `leetcode 121 买卖股票的最佳时机`](#题目示例1-leetcode-121-买卖股票的最佳时机)
         - [题目示例2 `leetcode 122 买卖股票的最佳时机II`](#题目示例2-leetcode-122-买卖股票的最佳时机ii)
@@ -6859,6 +6861,7 @@ private boolean isInterleave(String s1, String s2, String s3) {
 * base case 1: dp[...][0] = true,表示背包容量为0时相当于装满了
 * base case 2: dp[0][...] = false,表示没有物品可以选择的时候，无论如何无法装满背包
 * return: dp[N][sum/2]
+* 注意这个问题要求背包恰好被完全装满
  */
 
 // v1
@@ -6922,9 +6925,149 @@ private boolean canPartition(int[] nums) {
 
 ------
 
+###### 题目示例2 `leetcode  474 一和零`
+
+```java
+/**
+* 注意在这个问题中背包由两个维度构成: 1的数量和0的数量
+* dp[i][j][k]表示从strs[0...i]中选取字符串,在背包中可以存放j个1,k个0的情况下，
+* 可以放入背包的最大字符串数量
+ */
+
+// v1
+public int findMaxForm(String[] strs, int m, int n) {
+    int len = strs.length;
+    int[][][] dp = new int[len + 1][m + 1][n + 1];
+    for(int i = 1; i <= len; i++) {
+        int[] counts = countZerosAndOnes(strs[i-1]);
+        int zeros = counts[0];
+        int ones = counts[1];
+        for(int j = 0; j <= m; j++) {
+            for(int k = 0; k <= n; k++) {
+                dp[i][j][k] = dp[i-1][j][k];
+                if(j >= zeros && k >= ones) {
+                    dp[i][j][k] = Math.max(dp[i-1][j][k], dp[i-1][j - zeros][k - ones] + 1);
+                }
+            }
+        }
+    }
+    return dp[len][m][n]; 
+}
+
+private int[] countZerosAndOnes(String str) {
+    int[] res = new int[2];
+    for(char c:str.toCharArray()) {
+        res[c - '0']++;
+    }
+    return res;
+}
+
+// v2
+public int findMaxForm(String[] strs, int m, int n) {
+    int len = strs.length;
+    int[][] dp = new int[m + 1][n + 1];
+    for(int i = 1; i <= len; i++) {
+        int[] counts = countZerosAndOnes(strs[i-1]);
+        int zeros = counts[0];
+        int ones = counts[1];
+        // 遍历背包容量时必须逆序
+        for(int j = m; j >= zeros; j--) {
+            for(int k = n; k >= ones; k--) {
+                dp[j][k] = Math.max(dp[j][k], dp[j - zeros][k - ones] + 1);
+            }
+        }
+    }
+    return dp[m][n]; 
+}
+
+private int[] countZerosAndOnes(String str) {
+    int[] res = new int[2];
+    for(char c:str.toCharArray()) {
+        res[c - '0']++;
+    }
+    return res;
+}
+```
+
+--------
+
+###### 题目示例3 `leetcode 494 目标和`
+
+```java
+/**
+* 一个数学证明：
+* 将数组中需要加负号的元素子集设为N,其余部分设为P
+* 由题条件有sum(P) - sum(N) == S,可推得sum(P) + sum(N) + sum(P) - sum(N) = S + sum(P) + sum(N)
+* -> 2 * sum(P) = S + sum(nums)
+* -> sum(P) = (S + sum(nums)) / 2
+* 故原问题转化为: 找到数组中和为(S + sum(nums)) / 2的一个子集
+*
+* dp[i][j] = var 表示，对于前i个物品，当背包容量为j时，可以装满背包的物品选择方案数为var
+* base case 1: dp[...][0] = 1,表示背包容量为0时,至少有一种选择方案，就是什么都不装
+* base case 2: dp[0][1...] = 0,表示没有物品可以选择的时候，无论如何无法装满背包
+* 注意这个问题要求背包恰好被完全装满
+ */
+
+// v1 
+private int findTargetSumWays(int[] nums, int S) {
+    int sum = 0;
+    int len = nums.length;
+    for(int i = 0; i < len; i++) {
+        sum += nums[i];
+    }
+    if(sum < S || (sum + S) % 2 == 1) {
+        return 0;
+    }
+
+    sum = (sum + S) / 2;
+    int[][] dp = new int[len + 1][sum + 1];
+    for(int i = 0; i <= len; i++) {
+        dp[i][0] = 1;
+    }
+
+    for(int i = 1; i <= len; i++) {
+        // 这里j从0开始的原因是:物品的"体积"可以为0,此时物品也可以参与到选择中
+        for(int j = 0; j <= sum; j++) {
+            if(j < nums[i - 1]) {
+                dp[i][j] = dp[i-1][j];
+            } else {
+                dp[i][j] = dp[i-1][j] + dp[i-1][j - nums[i-1]];
+            }
+        }
+    }
+    return dp[len][sum];
+}
+
+// v2，空间优化
+private int findTargetSumWays(int[] nums, int S) {
+    int sum = 0;
+    for(int num:nums) {
+        sum += num;
+    }
+
+    if(sum < S || (sum + S) % 2 == 1) {
+        return 0;
+    }
+
+    sum = (sum + S) / 2;
+    int[] dp = new int[sum + 1];
+    dp[0] = 1;
+    for(int num:nums) {
+        for(int i = sum; i >= num; i--) {
+            dp[i] += dp[i - num];
+        }
+    }
+    return dp[sum];
+}
+```
+
+
+
+------
+
 ##### 完全背包
 
-###### 题目示例2 `leetcode 322零钱兑换`
+###### 题目示例1 `leetcode 322零钱兑换`
 
 ```java
 // dp[i]定义：当目标金额为i时，最少需要的硬币数量为dp[i]
@@ -6941,7 +7084,7 @@ private int coinChange( int[] coins, int amount )
 }
 ```
 
-###### 题目示例3 `leetcode 518 零钱兑换II`
+###### 题目示例2	 `leetcode 518 零钱兑换II`
 
 ```java
 private int change( int amount, int[] coins )

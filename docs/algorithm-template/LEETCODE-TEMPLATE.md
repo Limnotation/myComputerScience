@@ -7070,33 +7070,40 @@ private int findTargetSumWays(int[] nums, int S) {
 ###### 题目示例1 `leetcode 322零钱兑换`
 
 ```java
+/**
+* dp[i]表示，在总金额为i时，可以凑成金额i使用的最少硬币个数
+ */
 private int coinChange(int[] coins, int amount) {
     int[] dp = new int[amount+1];
     Arrays.fill(dp, amount+1);
+    // 总金额为0时不能选择任何硬币
     dp[0] = 0;
-    for(int i = 0; i < dp.length; i++) {
-        for(int coin:coins) {
-            if(i - coin >= 0) {
-                dp[i] = Math.min(dp[i], dp[i-coin] + 1);
-            }
+    for(int i = 0; i < coins.length; i++) {
+        for(int j = coins[i]; j <= amount; j++) {
+            dp[j] = Math.max(dp[j], dp[j - coins[i]] + 1);
         }
     }
     return dp[amount] == amount + 1? -1:dp[amount];
 }
 ```
 
+-----
+
 ###### 题目示例2	 `leetcode 518 零钱兑换II`
 
 ```java
-private int change( int amount, int[] coins )
-{
-    int n = coins.length;
-    int[] dp = new int[amount+1];
+/**
+* dp[i]表示，在总金额为i时，可以凑成金额i的硬币的组合总数
+ */
+private int change(int amount, int[] coins) {
+    int[] dp = new int[amount + 1];
+    // 总金额为0时只有一种组合，就是没有任何硬币的组合
     dp[0] = 1;
-    for( int i = 0; i < n; i++ )
-        for( int j = 1; j <= amount; j++ )
-            if( j - coins[i] >= 0 )
-                dp[j] = dp[j] + dp[j-coins[i]];
+    for(int i = 0; i < coins.length; i++) {
+        for(int j = coins[i]; j <= amount; j++) {
+            dp[j] += dp[j - coins[i]];
+        }
+    }
     return dp[amount];
 }
 ```

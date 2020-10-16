@@ -107,6 +107,10 @@ private static int partition(int[] arr, int startIndex, int endIndex){
 * @param	arr			待排序数组
 * @param	startIndex	 起始下标
 * @param	endIndex	 结束下标
+* 
+* 循环不变量:
+* 1、[startIndex + 1, mark]内所有元素小于pivot
+* 2、(mark, i]内所有元素大于等于pivot
  */
 private static int partition(int[] arr, int startIndex, int endIndex) {
     int pivot = arr[startIndex];
@@ -121,6 +125,7 @@ private static int partition(int[] arr, int startIndex, int endIndex) {
         }
     }
     // pivot与划分点位置元素交换
+    // 在交换完成之后，有:[left, mark - 1] < pivot, nums[mark] == pivot, [mark + 1, right] >= pivot
     arr[startIndex] = arr[mark];
     arr[mark] = pivot;
     return mark;

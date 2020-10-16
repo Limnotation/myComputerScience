@@ -107,15 +107,11 @@ private static int partition(int[] arr, int startIndex, int endIndex){
 * @param	arr			待排序数组
 * @param	startIndex	 起始下标
 * @param	endIndex	 结束下标
-*/
+ */
 private static int partition(int[] arr, int startIndex, int endIndex) {
     int pivot = arr[startIndex];
     int mark = startIndex;
     
-    /**
-    * 循环不变量:
-    * [startIndex, mark]内的元素小于pivot
-    * */
     for(int i = startIndex + 1; i <= endIndex; i++) {
         if(arr[i] < pivot) {
             mark++;

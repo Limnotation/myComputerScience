@@ -259,6 +259,7 @@
       - [题型四：游戏问题](#题型四游戏问题)
         - [题目示例1 `leetcode37 解数独`](#题目示例1-leetcode37-解数独)
         - [题目示例2 `leetcode 51 N皇后`](#题目示例2-leetcode-51-n皇后)
+        - [题目示例3 `leetcode 52 N皇后II`](#题目示例3-leetcode-52-n皇后ii)
       - [其他题目](#其他题目-1)
         - [题目示例17 `leetcode 113 路径总和II`](#题目示例17-leetcode-113-路径总和ii)
         - [题目示例18 `leetcode 401 二进制手表`](#题目示例18-leetcode-401-二进制手表)
@@ -344,6 +345,7 @@
     - [题目2 `leetcode 54 螺旋矩阵`](#题目2-leetcode-54-螺旋矩阵)
   - [排序](#排序-1)
     - [题目1 `leetcode 179 最大数`](#题目1-leetcode-179-最大数)
+    - [题目2 `leetcode 56 合并区间`](#题目2-leetcode-56-合并区间)
   - [设计](#设计)
     - [题目1 `leetcode 146 LRU缓存机制`](#题目1-leetcode-146-lru缓存机制)
     - [题目2 `leetcode 1206 设计跳表（未完成，感觉机制有点复杂）`](#题目2-leetcode-1206-设计跳表未完成感觉机制有点复杂)
@@ -8256,9 +8258,7 @@ public List<List<String>> solveNQueens(int n) {
 
     char[][] board = new char[n][n];
     for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            board[i][j] = '.';
-        }
+        Arrays.fill(board[i], '.');
     }
     backTracking(board, 0);
     return res;
@@ -8277,8 +8277,9 @@ private void backTracking(char[][] board, int row) {
 
     int lineLength = board[0].length;
     for(int i = 0; i < lineLength; i++) {
-        if(!isValid(board, row, i))
+        if(!isValid(board, row, i)) {
             continue;
+        }
 
         // 做选择
         board[row][i] = 'Q';
@@ -8298,24 +8299,94 @@ private void backTracking(char[][] board, int row) {
 private boolean isValid(char[][] board, int row, int col) {
     int n = board.length;
     // 检查同一列是否有冲突
-    for(int i = 0; i < n; i++)
-        if(board[i][col] == 'Q')
+    for(int i = 0; i < row; i++) {
+        if(board[i][col] == 'Q') {
             return false;
+        }
+    }
 
     // 检查右上角是否有冲突
-    for(int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++)
-        if(board[i][j] == 'Q')
+    for(int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
+        if(board[i][j] == 'Q') {
             return false;
+        }
+    }
 
     // 检查左上角是否有冲突
-    for(int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--)
-        if(board[i][j] == 'Q')
+    for(int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+        if(board[i][j] == 'Q') {
             return false;
+        }
+    }
     return true;
 }
 ```
 
 -----
+
+###### 题目示例3 `leetcode 52 N皇后II`
+
+```java
+private int res = 0;
+public int totalNQueens(int n) {
+    char[][] board = new char[n][n];
+    for(int i = 0; i < n; i++) {
+        Arrays.fill(board[i], '.');
+    }
+    backTracking(board, 0);
+    return res;
+}
+
+private void backTracking(char[][] board, int row) {
+    int m = board.length;
+    int n = board[0].length;
+    if(row == m) {
+        res++;
+    }
+
+    for(int i = 0; i < n; i++) {
+        if(!validPosition(board, row, i)) {
+            continue;
+        }
+
+        board[row][i] = 'Q';
+        backTracking(board, row + 1);
+        board[row][i] = '.';
+    }
+}
+
+private boolean validPosition(char[][] board, int row, int col) {
+    int m = board.length;
+    int n = board[0].length;
+
+    // 检查同一列上是否有皇后
+    for(int i = 0; i < row; i++) {
+        if(board[i][col] == 'Q') {
+            return false;
+        }
+    }
+
+    // 检查左上角是否有皇后
+    for(int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+        if(board[i][j] == 'Q') {
+            return false;
+        }
+    }
+
+    // 检查右上角是否有皇后
+    for(int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
+        if(board[i][j] == 'Q') {
+            return false;
+        }
+    }
+
+    return true;
+}
+```
+
+
+
+-------
 
 ##### 其他题目
 
@@ -10204,6 +10275,31 @@ private String largestNumber(int[] nums) {
         sb.append(s);
     }
     return sb.toString();
+}
+```
+
+-----
+
+#### 题目2 `leetcode 56 合并区间`
+
+```java
+private int[][] merge(int[][] intervals) {
+    // 将区间以起点大小递增的顺序排序
+    Arrays.sort(intervals, (o1, o2) -> (o1[0] - o2[0]));
+    int len = intervals.length;
+    int[][] res = new int[len][2];
+    int index = -1;
+    for(int i = 0; i < len; i++) {
+        if(index == -1 || intervals[i][0] > res[index][1]) {
+            // 1、当前区间为第一个区间或者与前一个区间不相交时，结果数组加上新区间
+            index++;
+            res[index] = intervals[i];
+        } else {
+            // 2、当前区间与前一个区间相交时，区间右边界取当前区间和前一个区间右边界的较大值
+            res[index][1] = Math.max(res[index][1], intervals[i][1]);
+        }
+    }
+    return Arrays.copyOf(res, index + 1);
 }
 ```
 

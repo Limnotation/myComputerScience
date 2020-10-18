@@ -346,6 +346,7 @@
   - [排序](#排序-1)
     - [题目1 `leetcode 179 最大数`](#题目1-leetcode-179-最大数)
     - [题目2 `leetcode 56 合并区间`](#题目2-leetcode-56-合并区间)
+    - [题目3 `leetcode 252 会议室`](#题目3-leetcode-252-会议室)
   - [设计](#设计)
     - [题目1 `leetcode 146 LRU缓存机制`](#题目1-leetcode-146-lru缓存机制)
     - [题目2 `leetcode 1206 设计跳表（未完成，感觉机制有点复杂）`](#题目2-leetcode-1206-设计跳表未完成感觉机制有点复杂)
@@ -4645,7 +4646,10 @@ private List<String> topKFrequent(String[] words, int k) {
 ##### 题目示例2 `leetcode 253 会议室II`
 
 ```java
-public int minMeetingRooms(int[][] intervals) {
+/**
+* 基于优先队列的解法
+ */
+private int minMeetingRooms(int[][] intervals) {
     // 自定义比较规则，将所有时间区间按照起始时间从小到大排列
     Arrays.sort(intervals, (o1, o2) -> (o1[0] - o2[0]));
     /**

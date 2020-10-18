@@ -4647,26 +4647,21 @@ private List<String> topKFrequent(String[] words, int k) {
 ```java
 public int minMeetingRooms(int[][] intervals) {
     // 自定义比较规则，将所有时间区间按照起始时间从小到大排列
-    Arrays.sort(intervals, new Comparator<int[]>() {
-        @Override 
-        public int compare(int[] a, int[] b) {
-            return a[0] - b[0];
-        }
-    });
+    Arrays.sort(intervals, (o1, o2) -> (o1[0] - o2[0]));
     /**
     * 在小根堆中存储每个时间区间的结束时间，基于这样一个规则：
     * 堆顶元素是当前所有已经遍历过的时间区间里最早结束的时间，
     * 如果新遍历到的区间的起始时间大于等于堆顶元素，表示堆顶
     * 元素使用的会议室可以被当前区间使用；否则就要新增一个会
     * 议室，即将当前区间的结束时间加入到堆中
-    */
+     */
     PriorityQueue<Integer> pq = new PriorityQueue<>();
     for(int[] interval:intervals) {
         if(pq.isEmpty()) {
             // 没有已被分配的会议室，新增一个会议室
             pq.offer(interval[1]);
         } else if(pq.peek() <= interval[0]) {
-            // 有会议已经结束，重用其会议室
+            // 有会议已经结束，重用其会议室(将已经过期的会议删除)
             pq.poll();
             pq.offer(interval[1]);
         } else {
@@ -10300,6 +10295,29 @@ private int[][] merge(int[][] intervals) {
         }
     }
     return Arrays.copyOf(res, index + 1);
+}
+```
+
+----
+
+#### 题目3 `leetcode 252 会议室`
+
+```java
+/**
+* 将会议以开始的时间进行排序
+* 检查是否有时间区间相交即可
+ */
+private boolean canAttendMeetings(int[][] intervals) {
+    // 将区间以起点大小递增的顺序排序
+    Arrays.sort(intervals, (o1, o2) -> (o1[0] - o2[0]));
+    boolean canAttendAll = true;
+    // 可以直接从第二个会议时间开始考虑
+    for(int i = 1; i < intervals.length; i++) {
+        if(intervals[i][0] < intervals[i-1][1]) {
+            canAttendAll = false;
+        }
+    }
+    return canAttendAll;
 }
 ```
 

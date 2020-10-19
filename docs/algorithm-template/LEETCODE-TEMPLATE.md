@@ -9055,14 +9055,14 @@ private int characterReplacement(String s, int k) {
     int left = 0;
     int right = 0;
     int occurMost = 0;
-    int maxLen = Integer.MIN_VALUE;
+    int maxLen = 0;
     int[] window = new int[26];
     int len = s.length();
     while(right < len) {
         int index1 = s.charAt(right) - 'A';
         window[index1]++;
         occurMost = Math.max(occurMost, window[index1]);
-        // 窗口移动的条件：当前窗口大小大于重复字符数量与k的和
+        // 窗口移动的条件：当前窗口大小大于最大重复字符数量与k的和
         // 此时需要移动窗口左边界以确保窗口内容满足题目要求
         while((right - left + 1) > occurMost + k) {
             int index2 = s.charAt(left) - 'A';
@@ -9072,7 +9072,7 @@ private int characterReplacement(String s, int k) {
         maxLen = Math.max(maxLen, right - left + 1);
         right++;
     }
-    return maxLen == Integer.MIN_VALUE? 0:maxLen;
+    return maxLen;
 }
 ```
 

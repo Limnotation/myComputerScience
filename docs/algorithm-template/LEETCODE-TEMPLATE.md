@@ -8701,10 +8701,14 @@ public String reverseStr(String s, int k) {
 ##### 1、可变窗口模板
 
 ```java
+/**
+* 窗口边界的移动一般要放在比较靠后的位置，避免影响到与窗口大小相关的计算
+ */
 private void slidingWindow(String s, String t) {
+    // 一般使用HashMap或者数组来存储"窗口"内的内容
     HashMap<Character, Integer> need = new HashMap<>();
     HashMap<Character, Integer> window = new HashMap<>();
-    
+    // need中存储了符合提意的"窗口"应该满足的条件
     for(char c: t.toCharArray()) {
         need.put(c, need.getOrDefault(c, 0) + 1);
     }
@@ -8762,12 +8766,12 @@ private String minWindow(String s, String t) {
     }
     
     // 
-    HashMap<Character, Integer> need = new HashMap<>();
-    HashMap<Character, Integer> window = new HashMap<>();
-    for(char c:t.toCharArray()) {
+    Map<Character, Integer> need = new HashMap<>();
+    Map<Character, Integer> window = new HashMap<>();
+    for(char c : t.toCharArray()) {
         need.put(c, need.getOrDefault(c, 0) + 1);
     }
-    
+   
     int left = 0;
     int right = 0;
     int match = 0;
@@ -8894,11 +8898,12 @@ private boolean checkInclusion(String s1, String s2) {
 // v1
 private List<Integer> findAnagrams(String s, String p) {
     List<Integer> res = new LinkedList<>();
-    if(s == null || p == null || s.length() < p.length())
+    if(s == null || p == null || s.length() < p.length()) {
         return res;
+    }
     
-    HashMap<Character, Integer> need = new HashMap<>();
-    HashMap<Character, Integer> window = new HashMap<>();
+    Map<Character, Integer> need = new HashMap<>();
+    Map<Character, Integer> window = new HashMap<>();
     for(char c:p.toCharArray()) {
         need.put(c, need.getOrDefault(c, 0) + 1);
     }
@@ -8980,13 +8985,11 @@ private List<Integer> findAnagrams(String s, String p) {
 
 ```java
 private int lengthOfLongestSubstring(String s) {
-    if(s == null) {
+    if(s == null || s.length() == 0) {
         return 0;
-    } else if(s.length() <= 1) {
-        return s.length();
-    }
+    } 
     
-    HashMap<Character, Integer> window = new HashMap<>();
+    Map<Character, Integer> window = new HashMap<>();
     int left = 0;
     int right = 0;
     int maxLen = Integer.MIN_VALUE;
@@ -8994,7 +8997,7 @@ private int lengthOfLongestSubstring(String s) {
     while(right < len) {
         char c1 = s.charAt(right);
         window.put(c1, window.getOrDefault(c1, 0) + 1);
-        // 窗口移动的条件是：当前窗口内有字符出现的次数chao'guo
+        // 窗口移动的条件是：当前窗口内有字符出现的次数超过1
         while(window.get(c1) > 1) {
             char c2 = s.charAt(left);
             window.put(c2, window.get(c2) - 1);
@@ -9311,7 +9314,8 @@ private int[] maxSlidingWindow(int[] nums, int k) {
             window.pollFirst();
         }
         if(i >= k - 1) {
-            res[index++] = nums[window.peekFirst()];
+            res[index] = nums[window.peekFirst()];
+            index++;
         }
     }
     return res;
@@ -9946,21 +9950,23 @@ private int findMaxLength(int[] nums) {
 ##### 题目示例1 `leetcode 283 移动零`
 
 ```java
-private void moveZeros(int[] nums) {
+public void moveZeroes(int[] nums) {
     /**
-    * 循环不变量：
-    * [0, j)都为非0
-    * [j, len)都为0
-    * j表示下一个非零元素的位置
-    */
-    int j = 0; 
-    for(int i = 0; i < nums.length; j++) {
+    * 循环不变量:[0, mark]内的元素为非零元素
+     */
+    int mark = -1;
+    for(int i = 0; i < nums.length; i++) {
         if(nums[i] != 0) {
-            int temp = nums[i];
-            nums[i] = nums[j];
-            nums[j] = temp;
+            mark++;
+            swap(nums, i, mark);
         }
     }
+}
+
+private void swap(int[] nums, int i, int j) {
+    int temp = nums[i];
+    nums[i] = nums[j];
+    nums[j] = temp;
 }
 ```
 
@@ -10082,7 +10088,7 @@ private void swap(int[] nums, int i, int j) {
 ##### 题目示例6 `leetcode 215 数组中的第k个最大元素`
 
 ```java
-public int findKthLargest(int[] nums, int k) {
+public nt findKthLargest(int[] nums, int k) {
     int len = nums.length;
     int left = 0;
     int right = len - 1;
@@ -10109,7 +10115,6 @@ private int partition(int[] nums, int left, int right) {
     * [left + 1, mark]内的元素小于pivot
     * (mark, i]内的元素 >= pivot
      */
-
     for(int i = left + 1; i <= right; i++) {
         if(nums[i] < pivot) {
             mark++;
@@ -10118,8 +10123,10 @@ private int partition(int[] nums, int left, int right) {
             nums[i] = temp;
         }
     }
+    // 在循环结束以后，数组内元素关系满足[left + 1, mark] < pivot,且(mark, i] >= pivot
     nums[left] = nums[mark];
     nums[mark] = pivot;
+    // 在经过交换以后，数组内元素关系满足[left, mark - 1] < pivot, [mark] = pivot, [mark + 1, right] >= pivot
     return mark;
 }
 ```

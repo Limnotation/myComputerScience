@@ -329,6 +329,10 @@
     - [典型题目](#典型题目-7)
       - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
       - [题目示例2 `剑指offer 21 调整数组顺序使奇数位于偶数的前面`](#题目示例2-剑指offer-21-调整数组顺序使奇数位于偶数的前面)
+      - [题目示例3 `leetcode 26 删除排序数组中的重复项`](#题目示例3-leetcode-26-删除排序数组中的重复项)
+      - [题目示例4 `leetcode 27 移除元素`](#题目示例4-leetcode-27-移除元素)
+      - [题目示例5 `leetcode 75 颜色分类`](#题目示例5-leetcode-75-颜色分类)
+      - [题目示例6 `leetcode 215 数组中的第k个最大元素`](#题目示例6-leetcode-215-数组中的第k个最大元素)
 - [`leetcode` 未归纳题解（按tag分类）](#leetcode-未归纳题解按tag分类)
   - [多线程](#多线程)
     - [题目1 `leetcode 1115 交替打印FooBar`](#题目1-leetcode-1115-交替打印foobar)
@@ -9980,6 +9984,143 @@ private int[] exchange(int[] nums) {
         }
     }
     return nums;
+}
+```
+
+------
+
+##### 题目示例3 `leetcode 26 删除排序数组中的重复项`
+
+```java
+private int removeDuplicates(int[] nums) {
+    int len = nums.length;
+    if(len <= 1) {
+        return len;
+    }
+
+    /**
+    * 循环不变量: [0, mark]内的元素每个元素只出现一次
+     */
+    int mark = 0;
+    for(int i = 1; i < len; i++) {
+        if(nums[i] != nums[mark]) {
+            mark++;
+            nums[mark] = nums[i];
+        }
+    }
+    return mark + 1;
+}
+```
+
+-----
+
+##### 题目示例4 `leetcode 27 移除元素`
+
+```java
+public int removeElement(int[] nums, int val) {
+    /**
+    * 循环不变量:[0, mark]内的元素都不等于val
+     */
+    int mark = -1;
+    for(int i = 0; i < nums.length; i++) {
+        if(nums[i] != val) {
+            mark++;
+            nums[mark] = nums[i];
+        }
+    }
+    return mark + 1;
+}
+```
+
+------
+
+##### 题目示例5 `leetcode 75 颜色分类`
+
+```java
+/**
+* 问题本质上是三向切分快速排序的一次划分过程，参考切分快排的partition过程即可
+ */
+public void sortColors(int[] nums) {
+    int len = nums.length;
+    int left = 0;
+    int right = len - 1;
+    int less = 0;
+    int i = 0;
+    int great = len - 1;
+
+    /**
+    * 循环不变量:
+    * [left, less)内的元素为0
+    * [less, i)内的元素为1
+    * [i, great]内的元素未知
+    * (great, right]内的元素为2
+     */
+
+    while(i <= great) {
+        if(nums[i] == 0) {
+            swap(nums, less, i);
+            less++;
+            i++;
+        } else if(nums[i] == 1) {
+            i++;
+        } else if(nums[i] == 2) {
+            swap(nums, great, i);
+            great--;
+        }
+    }
+}
+
+private void swap(int[] nums, int i, int j) {
+    int temp = nums[j];
+    nums[j] = nums[i];
+    nums[i] = temp;
+}
+```
+
+---
+
+##### 题目示例6 `leetcode 215 数组中的第k个最大元素`
+
+```java
+public int findKthLargest(int[] nums, int k) {
+    int len = nums.length;
+    int left = 0;
+    int right = len - 1;
+    k = len - k;
+    while(true) {
+        int piIndex = partition(nums, left, right);
+        if(piIndex == k) {
+            return nums[piIndex];
+        } else if(piIndex < k) {
+            left = piIndex + 1;
+        } else {
+            right = piIndex - 1;
+        }
+    }
+
+}
+
+private int partition(int[] nums, int left, int right) {
+    int pivot = nums[left];
+    int mark = left;
+
+    /**
+    * 循环不变量:
+    * [left + 1, mark]内的元素小于pivot
+    * (mark, i]内的元素 >= pivot
+     */
+
+    for(int i = left + 1; i <= right; i++) {
+        if(nums[i] < pivot) {
+            mark++;
+            int temp = nums[mark];
+            nums[mark] = nums[i];
+            nums[i] = temp;
+        }
+    }
+    nums[left] = nums[mark];
+    nums[mark] = pivot;
+    return mark;
 }
 ```
 

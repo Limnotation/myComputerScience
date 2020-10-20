@@ -296,6 +296,7 @@
       - [固定窗口题目](#固定窗口题目)
         - [题目示例1 `leetcode 239 滑动窗口最大值`](#题目示例1-leetcode-239-滑动窗口最大值-1)
         - [题目示例2 `leetcode 1456 定长子串中元音的最大数目`](#题目示例2-leetcode-1456-定长子串中元音的最大数目)
+        - [题目示例3 `leetcode 643 子数组最大平均数`](#题目示例3-leetcode-643-子数组最大平均数)
       - [未分类题目](#未分类题目)
         - [题目示例6 `leetcode 904 水果成篮`](#题目示例6-leetcode-904-水果成篮)
         - [题目示例9 `leetcode 992 K个不同整数的子数组`](#题目示例9-leetcode-992-k个不同整数的子数组)
@@ -5337,23 +5338,27 @@ public int[] findOrder(int numCourses, int[][] prerequisites) {
 ##### 零、二分查找框架
 
 ```java
+/** 
+* 关键点一：分析二分查找算法时，不要出现else,而是把所有情况都用else if写清楚，这样可以清楚的展现所有细节
+* 关键点二：为了防止计算mid时发生溢出，应使用 mid = left + (right - left) / 2来代替mid = (right + left) / 2
+ */
 private int binarySearch(int[] nums, int target) {
-    int left = 0, right = ...;
+    int left = 0;
+    // 在这里right没有明写是因为在不同的情况下right可以有不同的取值
+    int right = ...;
     
     while(...) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] == target)
-            ...;
-        else if(nums[mid] < target)
+        if(nums[mid] == target) {
+            ...,
+        } else if(nums[mid] < target) {
             left = ...;
-        else if(nums[mid] > target)
+        } else if(nums[mid] > target) [
             right = ...;
+        ]
     }
     return ...;
 }
-
-// 关键点一：分析二分查找算法时，不要出现else,而是把所有情况都用else if写清楚，这样可以清楚的展现所有细节
-// 关键点二：为了防止计算mid时发生溢出，应使用 mid = left + (right - left) / 2来代替mid = (right + left) / 2
 ```
 
 ##### 一、寻找一个数（基本的二分搜索）
@@ -5362,18 +5367,21 @@ private int binarySearch(int[] nums, int target) {
 
 ```java
 private int binarySearch(int[] nums, int target) {
-    if(nums == null || nums.length == 0)
+    if(nums == null || nums.length == 0) {
         return -1;
+    }
     
-    int left = 0, right = nums.length - 1;
+    int left = 0;
+    int right = nums.length - 1;
     while(left <= right) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] == target)
+        if(nums[mid] == target) {
             return mid;
-        else if(nums[mid] < target)
+        } else if(nums[mid] < target) {
             left = mid + 1;
-        else if(nums[mid] > target)
+        } else if(nums[mid] > target) {
             right = mid - 1;
+        }
     }
     return -1;
 }
@@ -5381,7 +5389,7 @@ private int binarySearch(int[] nums, int target) {
 
 **1、while循环中条件为left <= right ,而不是left < right 的原因**
 
-因为初始化时`right`赋值为`nums.length - 1`,则每次搜索的区间为闭区间`[left, right]`,循环终止有两个可能：
+因为初始化时`right`赋值为`nums.length - 1`,则每次搜索的区间为闭区间`[left, right]`,退出循环有两个可能：
 
 - 找到目标值，即`nums[mid] == target` 
 - 搜索区间为空，`while(left <= right)`终止条件为 `left == right + 1 `,表示闭区间 `[right + 1, right]`,此时区间为空，`while`循环正确终止
@@ -5400,8 +5408,9 @@ private int binarySearch(int[] nums, int target) {
 
 ```java
 private int leftBound(int[] nums, int target) {
-    if(nums.length == 0)
+    if(nums.length == 0) [
         return -1;
+    ]
     int left = 0;
     int right = nums.length;
     
@@ -5413,7 +5422,8 @@ private int leftBound(int[] nums, int target) {
             left = mid + 1;
         }
     }
-    return left; // 循环的结束条件是left == right,所以也可以返回right
+    // 循环的结束条件是left == right,所以也可以返回right
+    return left; 
 }
 ```
 
@@ -5459,8 +5469,9 @@ return left;
 在 `nums[mid] == target`时，算法的处理方式为：
 
 ```java
-if(nums[mid] >= target)
+if(nums[mid] >= target) {
     right = mid;
+}
 ```
 
 通过不断缩小搜索区间的上界，使得搜索区间不断向左收缩，达到锁定左侧边界的目的
@@ -5475,10 +5486,12 @@ if(nums[mid] >= target)
 
 ```java
 private int rightBound(int[] nums, int target) {
-    if(nums.length == 0)
+    if(nums.length == 0) {
         return -1;
+    }
     
-    int left = 0, right = nums.length;
+    int left = 0;
+    int right = nums.length;
     while(left < right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] <= target) {
@@ -5487,15 +5500,17 @@ private int rightBound(int[] nums, int target) {
             right = mid;
         }
     }
-    return left - 1;// 循环结束的条件是left == right,同时有left = mid + 1；返回值可以是left-1或right-1
+    // 循环结束的条件是left == right,同时有left = mid + 1；返回值可以是left-1或right-1
+    return left - 1;
 }
 ```
 
 **1、算法搜索右侧边界的原理**
 
 ```java
-if(nums[mid] <= target)
+if(nums[mid] <= target) {
     left = mid + 1;
+}
 ```
 
 通过不断增大搜索区间的下界 `left`,使得搜索区间不断向右收缩，达到锁定右侧边界的目的
@@ -5507,8 +5522,9 @@ if(nums[mid] <= target)
 由于在搜索右侧边界时有：
 
 ```java
-if(nums[mid] <= target)
+if(nums[mid] <= target) {
     left = mid + 1;
+}
 ```
 
 所以有 `mid = left - 1`
@@ -5607,7 +5623,8 @@ private int search(int[] nums, int target) {
         return -1;
     }
     
-    int left = 0, right = nums.length - 1;
+    int left = 0;
+    int right = nums.length - 1;
     while(left <= right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] == target) {
@@ -5643,15 +5660,14 @@ private int leftBound(int[] nums, int target) {
         return -1;
     }
 
-    int left = 0, right = nums.length - 1;
-    while(left <= right) {
+    int left = 0;
+    int right = nums.length;
+    while(left < right) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] == target) {
-            right = mid - 1;
-        } else if(nums[mid] < target) {
+        if(nums[mid] >= target) {
+            right = mid;
+        } else {
             left = mid + 1;
-        } else if(nums[mid] > target) {
-            right = mid - 1;
         }
     }
 
@@ -5669,22 +5685,21 @@ private int rightBound(int[] nums, int target) {
         return -1;
     }
 
-    int left  = 0, right = nums.length - 1;
-    while(left <= right) {
+    int left  = 0;
+    int right = nums.length;
+    while(left < right) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] == target) {
+        if(nums[mid] <= target) {
             left = mid + 1;
-        } else if(nums[mid] < target) {
-            left = mid + 1;
-        } else if(nums[mid] > target) {
-            right = mid - 1;
+        } else {
+            right = mid;
         }
     }
-
-    if(right < 0 || nums[right] != target) {
+    
+    if(left == 0 || nums[left - 1] != target) {
         return -1;
     }
-    return right;
+    return left - 1;
 }
 ```
 
@@ -5695,16 +5710,17 @@ private int rightBound(int[] nums, int target) {
 **本质是搜索元素的左边界**
 
 ```java
-public int searchInsert(int[] nums, int target) {
-    int left = 0, right = nums.length - 1;
-    while(left <= right) {
+private int searchInsert(int[] nums, int target) {
+    int left = 0;
+    int right = nums.length;
+    while(left < right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] == target) {
             return mid;
         } else if(nums[mid] < target) {
             left = mid + 1;
-        } else if(nums[mid] > target) {
-            right = mid - 1;
+        } else {
+            right = mid;
         }
     }
     return left;
@@ -5723,19 +5739,19 @@ public int searchInsert(int[] nums, int target) {
 * 由于题目说数字了无重复，举个例子：
 * 1 2 3 4 5 6 7 可以大致分为两类，
 * 第一类 2 3 4 5 6 7 1 这种，也就是 nums[start] <= nums[mid]。此例子中就是 2 <= 5。
-* 这种情况下，前半部分有序。因此如果 nums[start] <=target<nums[mid]，则在前半部分找，否则去后半部分找。
+* 这种情况下，前半部分有序。因此如果 nums[start] <= target < nums[mid]，则在前半部分找，否则去后半部分找。
 * 第二类 6 7 1 2 3 4 5 这种，也就是 nums[start] > nums[mid]。此例子中就是 6 > 2。
-* 这种情况下，后半部分有序。因此如果 nums[mid] <target<=nums[end]，则在后半部分找，否则去前半部分找
-*/
+* 这种情况下，后半部分有序。因此如果 nums[mid] < target <= nums[end]，则在后半部分找，否则去前半部分找
+ */
 private int search(int[] nums, int target) {
     if(nums == null || nums.length == 0) {
         return -1;
     }
     
-    int left = 0, right = nums.length - 1;
+    int left = 0;
+    int right = nums.length - 1;
     while(left <= right) {
         int mid = left + (right - left) / 2;
-        // 命中
         if(nums[mid] == target) {
             return mid;
         }
@@ -5759,6 +5775,8 @@ private int search(int[] nums, int target) {
             }
         }
     }
+    // 由循环条件可知，当循环退出时搜索区间已经没有元素，并且到达此处表示不存在目标元素
+    // 所以只能返回-1
     return -1;
 }
 ```
@@ -5771,23 +5789,24 @@ private int search(int[] nums, int target) {
 /**
 * 举例如下：
 * 第一类
-* 1011110111 和 1110111101 这种。此种情况下 nums[start] == nums[mid]，分不清到底是前面有序还是后面有序，此时 start++ 即* * 可。相当于去掉一个重复的干扰项。
+* 1011110111 和 1110111101 这种。此种情况下 nums[start] == nums[mid]，分不清到底是前面有序还是后面有序
+* 此时 start++ 即可。相当于去掉一个重复的干扰项。
 * 第二类
-* 22 33 44 55 66 77 11 这种，也就是 nums[start] < nums[mid]。此例子中就是 2 < 5；
-* 这种情况下，前半部分有序。因此如果 nums[start] <=target<nums[mid]，则在前半部分找，否则去后半部分找。
+* 22 33 44 55 66 77 11 这种，也就是 nums[start] < nums[mid]。此例子中就是 22 < 55；
+* 这种情况下，前半部分有序。因此如果 nums[start] <= target < nums[mid]，则在前半部分找，否则去后半部分找。
 * 第三类
-* 66 77 11 22 33 44 55 这种，也就是 nums[start] > nums[mid]。此例子中就是 6 > 2；
-* 这种情况下，后半部分有序。因此如果 nums[mid] <target<=nums[end]。则在后半部分找，否则去前半部分找。
+* 66 77 11 22 33 44 55 这种，也就是 nums[start] > nums[mid]。此例子中就是 66 > 22；
+* 这种情况下，后半部分有序。因此如果 nums[mid] < target <= nums[end]。则在后半部分找，否则去前半部分找。
 */
 private boolean search(int[] nums, int target) {
-    if(nums == null || nums.length ==0) {
+    if(nums == null || nums.length == 0) {
         return false;
     }
     
-    int left = 0, right = nums.length - 1;
+    int left = 0;
+    int right = nums.length - 1;
     while(left <= right) {
         int mid = left + (right - left) / 2;
-        
         if(nums[mid] == target) {
             return true;
         }
@@ -5797,7 +5816,7 @@ private boolean search(int[] nums, int target) {
             left++;
             continue;
         }
-        // 左半部分有序
+
         if(nums[left] < nums[mid]) {
             if(nums[left] <= target && target < nums[mid]) {
                 right = mid - 1;
@@ -5826,12 +5845,13 @@ private int findMin(int[] nums) {
         return -1;
     }
     
-    int left = 0, right = nums.length - 1;
+    int left = 0;
+    int right = nums.length - 1;
     while(left < right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] > nums[right]) {
             left = mid + 1;
-        } else if(nums[mid] <= nums[right]) {
+        } else {
             right = mid;
         }
     }
@@ -8855,33 +8875,35 @@ private boolean checkInclusion(String s1, String s2) {
 private boolean checkInclusion(String s1, String s2) {
     int[] need = new int[26];
     int[] window = new int[26];
+    // 统计s1中不同字符的个数以及每个字符对应的数量
     int unique = 0;
     for(char c:s1.toCharArray()) {
-        if(need[c - 'a'] == 0) {
+        int index = c - 'a';
+        if(need[index] == 0) {
             unique++;
         }
-        need[c - 'a']++;
+        need[index]++;
     }
 
     int left = 0;
     int right = 0;
     int match = 0;
     while(right < s2.length()) {
-        char c1 = s2.charAt(right);
-        window[c1 - 'a']++;
-        if(window[c1 - 'a'] == need[c1 - 'a']) {
+        int index1 = s2.charAt(right) - 'a';
+        window[index1]++;
+        if(window[index1] == need[index1]) {
             match++;
         }
 
-        while((right - left + 1) >= s1.length()) {
-            if(match == unique) {
+        while(match == unique) {
+            if((right - left + 1) == s1.length()) {
                 return true;
             }
-            char c2 = s2.charAt(left);
-            if(window[c2 - 'a'] == need[c2 - 'a']) {
+            int index2 = s2.charAt(left) - 'a';
+            if(window[index2] == need[index2]) {
                 match--;
             }
-            window[c2 - 'a']--;
+            window[index2]--;
             left++;
         }
         right++;
@@ -9352,6 +9374,35 @@ private int isVowel(char c) {
 ```
 
 ----
+
+###### 题目示例3 `leetcode 643 子数组最大平均数`
+
+```java
+/**
+* 参考leetcode 239的思路
+ */
+private double findMaxAverage(int[] nums, int k) {
+    double res = -Double.MAX_VALUE;
+    double curSum = 0;
+    Deque<Integer> deque = new LinkedList<>();
+    for(int i = 0; i < nums.length; i++) {
+        deque.addLast(i);
+        curSum += nums[i];
+        if(i - k >= deque.peekFirst()) {
+            int removed = deque.removeFirst();
+            curSum -= nums[removed];
+        }
+        if(i >= k - 1) {
+            res = Math.max(res, curSum);
+        }
+    }
+    return res / k;
+}
+```
+
+
+
+------
 
 ##### 未分类题目
 

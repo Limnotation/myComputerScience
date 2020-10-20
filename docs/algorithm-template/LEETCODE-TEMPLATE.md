@@ -180,6 +180,7 @@
         - [题目示例6  `leetcode 153 寻找旋转排序数组中的最小值`](#题目示例6-leetcode-153-寻找旋转排序数组中的最小值)
         - [题目示例7 `leetcode 154 寻找旋转排序数组中的最小值II`](#题目示例7-leetcode-154-寻找旋转排序数组中的最小值ii)
         - [题目示例8 `leetcode 275 H指数II`](#题目示例8-leetcode-275-h指数ii)
+        - [题目示例9 `leetcode 436 寻找右区间`](#题目示例9-leetcode-436-寻找右区间)
       - [题目示例2 `leetcode 74 搜索二维矩阵`](#题目示例2-leetcode-74-搜索二维矩阵)
       - [题目示例3 `leetcode 278 第一个错误的版本`](#题目示例3-leetcode-278-第一个错误的版本)
       - [题目示例8 `leetcode 162 寻找峰值`](#题目示例8-leetcode-162-寻找峰值)
@@ -5872,14 +5873,17 @@ private int findMin(int[] nums) {
         return -1;
     }
     
-    int left = 0, right = nums.length - 1;
+    int left = 0;
+    int right = nums.length - 1;
     while(left < right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] < nums[right]) {
             right = mid;
         } else if(nums[mid] > nums[right]) {
             left = mid + 1;
-        } else if(nums[mid] == nums[right]) {
+        } else {
+            // 当[mid]和[right]相等时，最小值可能在mid左边也可能在右边
+            // 此时可以直接将[right]去除，因为[right]和[mid]作用是相同的
             right--;
         }
     }
@@ -5892,21 +5896,72 @@ private int findMin(int[] nums) {
 ###### 题目示例8 `leetcode 275 H指数II`
 
 ```java
-// 关键：返回一个数据区间的长度，该区间满足最小的值大于等于该区间的长度
+/**
+* 关键：返回一个数据区间的长度，该区间中最小的值大于等于该区间的长度
+* 即citations[mid] >= len - mid
+ */
 private int hIndex(int[] citations) {
-    if(citations == null || citations.length == 0 || citations[citations.length - 1] == 0)
+    if(citations == null || citations.length == 0 || citations[citations.length - 1] == 0) {
         return 0;
+    }
     
     int len = citations.length;
-    int left = 0, right = len - 1;
+    int left = 0;
+    int right = len - 1;
     while(left < right) {
         int mid = left + (right - left) / 2;
-        if(citations[mid] < len - mid)
+        if(citations[mid] < len - mid) {
             left = mid + 1;
-        else
+        } else {
             right = mid;
+        }
     }
     return len - left;
+}
+```
+
+----
+
+###### 题目示例9 `leetcode 436 寻找右区间`
+
+```java
+public int[] findRightInterval(int[][] intervals) {
+    int len = intervals.length;
+    int[] start = new int[len];
+    int[] res = new int[len];
+    Map<Integer, Integer> map = new HashMap<>();
+    for(int i = 0; i < len; i++) {
+        start[i] = intervals[i][0];
+        map.put(start[i], i);
+    }
+    Arrays.sort(start);
+
+    for(int i = 0; i < len; i++) {
+        int index = leftBound(start, intervals[i][1]);
+        if(index == -1) {
+            res[i] = -1;
+        } else {
+            res[i] = map.get(start[index]);
+        }
+    }
+    return res;
+}
+
+private int leftBound(int[] nums, int target) {
+    int left = 0;
+    int right = nums.length;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(nums[mid] >= target) {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    if(left == nums.length) {
+        return -1;
+    }
+    return left;
 }
 ```
 

@@ -5925,17 +5925,26 @@ private int hIndex(int[] citations) {
 ###### 题目示例9 `leetcode 436 寻找右区间`
 
 ```java
+/**
+* 
+* 
+*/
 public int[] findRightInterval(int[][] intervals) {
     int len = intervals.length;
+    // 在start[]中存储各个区间的起点
     int[] start = new int[len];
     int[] res = new int[len];
+    // 在map中存储各个区间起点与区间所在位置的索引
     Map<Integer, Integer> map = new HashMap<>();
     for(int i = 0; i < len; i++) {
         start[i] = intervals[i][0];
         map.put(start[i], i);
     }
+    // 将区间起点以非递减的规则进行排序
     Arrays.sort(start);
 
+    // 以区间的终点为目标元素在排序好的节点数组中进行二分查找，寻找第一个大于等于
+    // 目标元素的
     for(int i = 0; i < len; i++) {
         int index = leftBound(start, intervals[i][1]);
         if(index == -1) {
@@ -5947,6 +5956,10 @@ public int[] findRightInterval(int[][] intervals) {
     return res;
 }
 
+/**
+* 寻找nums中第一个大于等于target的元素下标
+* 在这个问题中等价于求target的左边界
+ */
 private int leftBound(int[] nums, int target) {
     int left = 0;
     int right = nums.length;

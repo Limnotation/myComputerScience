@@ -103,6 +103,10 @@
       - [题目示例3 `leetcode 394 字符串解码`](#题目示例3-leetcode-394-字符串解码)
       - [题目示例4 `leetcode 20 有效的括号`](#题目示例4-leetcode-20-有效的括号)
       - [题目示例5 `leetcode 32 最长有效括号`](#题目示例5-leetcode-32-最长有效括号)
+      - [题目示例6 `leetcode 71 简化路径`](#题目示例6-leetcode-71-简化路径)
+      - [题目示例7 `leetcode 225 用队列实现栈`](#题目示例7-leetcode-225-用队列实现栈)
+      - [题目示例8  `leetcode 232  用栈实现队列`](#题目示例8-leetcode-232-用栈实现队列)
+      - [题目示例9 `leetcode 316 去除重复字母`](#题目示例9-leetcode-316-去除重复字母)
     - [栈和队列的特殊应用1：单调栈/单调队列](#栈和队列的特殊应用1单调栈单调队列)
       - [概念](#概念)
         - [单调栈：](#单调栈)
@@ -120,7 +124,6 @@
         - [题目示例10 `leetcode 901 股票价格跨度`](#题目示例10-leetcode-901-股票价格跨度)
         - [题目示例11 `leetcode 1019 链表的下一个更大结点`](#题目示例11-leetcode-1019-链表的下一个更大结点)
         - [题目示例12 `leetcode 1124 表现良好的最长时间段`](#题目示例12-leetcode-1124-表现良好的最长时间段)
-        - [题目示例13 `leetcode 316 去除重复字母`](#题目示例13-leetcode-316-去除重复字母)
         - [题目示例14`leetcode 132模式`](#题目示例14leetcode-132模式)
       - [单调队列典型题目](#单调队列典型题目)
         - [题目示例1 `leetcode 239 滑动窗口最大值`](#题目示例1-leetcode-239-滑动窗口最大值)
@@ -181,6 +184,7 @@
         - [题目示例7 `leetcode 154 寻找旋转排序数组中的最小值II`](#题目示例7-leetcode-154-寻找旋转排序数组中的最小值ii)
         - [题目示例8 `leetcode 275 H指数II`](#题目示例8-leetcode-275-h指数ii)
         - [题目示例9 `leetcode 436 寻找右区间`](#题目示例9-leetcode-436-寻找右区间)
+      - [题型二：二分确定一个有范围的整数](#题型二二分确定一个有范围的整数)
       - [题目示例2 `leetcode 74 搜索二维矩阵`](#题目示例2-leetcode-74-搜索二维矩阵)
       - [题目示例3 `leetcode 278 第一个错误的版本`](#题目示例3-leetcode-278-第一个错误的版本)
       - [题目示例8 `leetcode 162 寻找峰值`](#题目示例8-leetcode-162-寻找峰值)
@@ -3136,53 +3140,44 @@ private ListNode plusOne(ListNode head) {
 
 ```java
 class MinStack  {
-    Stack<Integer> dataS;
-    Stack<Integer> minS;
+
+    private Deque<Integer> minStack;
+    private Deque<Integer> dataStack;
+
     /** initialize your data structure here. */
     public MinStack() {
-        dataS = new Stack<>();
-        minS = new Stack<>();
+        this.minStack = new LinkedList<>();
+        this.dataStack = new LinkedList<>();
     }
-    
+
     public void push(int x)  {
-        dataS.push( x );
-        if( minS.size() == 0 )
-            minS.push( x );
-        else
-        {
-            int min = minS.peek() < x ? minS.peek():x;
-            minS.push( min );
+        dataStack.addLast(x);
+        if(minStack.isEmpty()) {
+            minStack.addLast(x);
+        } else {
+            // 每次添加新元素时比较新元素与minStack栈顶元素的大小
+            // 将较小者放入minStack
+            int temp = Math.min(x, minStack.peekLast());
+            minStack.addLast(temp);
         }
     }
-    
-    public void pop() 
-    {
-        dataS.pop();
-        minS.pop();
+
+    public void pop() {
+        minStack.removeLast();
+        dataStack.removeLast();
     }
-    
-    public int top() 
-    {
-        return dataS.peek();
+
+    public int top() {
+        return dataStack.peekLast();
     }
-    
-    public int getMin() 
-    {
-        return minS.peek();
+
+    public int getMin() {
+        return minStack.peekLast();
     }
 }
-
-/**
- * Your MinStack object will be instantiated and called as such:
- * MinStack obj = new MinStack();
- * obj.push(x);
- * obj.pop();
- * int param_3 = obj.top();
- * int param_4 = obj.getMin();
- */
 ```
 
---
+----
 
 ##### 题目示例2 `leetcode 150 逆波兰表达式求值`
 
@@ -3275,13 +3270,26 @@ public String decodeString(String s)
 
 ```java
 private boolean isValid(String s) {
-    if(s == null || s.length() == 0) {
-        return true;
-    } else if(s.length() % 2 != 0) {
+    if(s == null || s.length() < 2) {
         return false;
     }
-    
-    Deque<Character> stack = new Lin
+
+    Deque<Character> stack = new LinkedList<>();
+    for(char c : s.toCharArray()) {
+        if(c == '(' || c == '[' || c == '{') {
+            stack.addLast(c);
+        } else {
+            if(stack.isEmpty()) {
+                return false;
+            } else if(c == ')' && stack.peekLast() != '('
+                      || c == ']' && stack.peekLast() != '['
+                      || c == '}' && stack.peekLast() != '{') {
+                return false;
+            } 
+            stack.removeLast();
+        }
+    }
+    return stack.isEmpty();
 }
 ```
 
@@ -3316,6 +3324,183 @@ public int longestValidParentheses(String s) {
 }
 ```
 
+---
+
+##### 题目示例6 `leetcode 71 简化路径`
+
+```java
+/**
+* 关键点: 碰到".."时如果栈非空则将栈顶元素弹出
+* 如果当前元素非空并且不为"."或"..",则将当前元素入栈
+ */
+private String simplifyPath(String path) {
+    Deque<String> stack = new LinkedList<>();
+    String[] paths = path.split("/");
+    for(String str : paths) {
+        if(str.equals("..") && !stack.isEmpty()) {
+            // 当前元素为"..",表示从当前位置返回上一层目录(即弹出栈顶元素)
+            stack.removeLast();
+        } else if(!str.isEmpty() && !str.equals(".") && !str.equals("..")){
+            // 当前目录名合法且不可省略，则进入当前目录(将当前元素入栈)
+            stack.addLast(str);
+        }
+    }
+
+    String res = "";
+    for(String s : stack) {
+        res += "/" + s;
+    }
+    return res.isEmpty()? "/" : res;
+}
+```
+
+-----
+
+##### 题目示例7 `leetcode 225 用队列实现栈`
+
+```java
+/**
+* 这里的实现方式是:将元素x入队后，把所有比x早入队的元素出队并依次重新入队
+* 此时从队首到队尾的元素排列就等价于栈顶到栈底的元素排列，新加入的元素就是"栈顶元素"
+ */
+class MyStack {
+
+    private Queue<Integer> queue;
+
+    /** Initialize your data structure here. */
+    public MyStack() {
+        this.queue = new LinkedList<>();
+    }
+
+    /** Push element x onto stack. */
+    public void push(int x) {
+        queue.offer(x);
+        for(int i = 0; i < queue.size() - 1; i++) {
+            int temp = queue.poll();
+            queue.offer(temp);
+        }
+    }
+
+    /** Removes the element on top of the stack and returns that element. */
+    public int pop() {
+        return queue.poll();
+    }
+
+    /** Get the top element. */
+    public int top() {
+        return queue.peek();
+    }
+
+    /** Returns whether the stack is empty. */
+    public boolean empty() {
+        return queue.isEmpty();
+    }
+}
+```
+
+-----
+
+##### 题目示例8  `leetcode 232  用栈实现队列`
+
+```java
+class MyQueue {
+
+    private Deque<Integer> stack1;
+    private Deque<Integer> stack2;
+
+    /** Initialize your data structure here. */
+    public MyQueue() {
+        this.stack1 = new LinkedList<>();
+        this.stack2 = new LinkedList<>();
+    }
+    
+    /** Push element x to the back of queue. */
+    public void push(int x) {
+        stack1.addLast(x);
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    public int pop() {
+        if(!stack2.isEmpty()) {
+            return stack2.removeLast();
+        } else if(!stack1.isEmpty()) {
+            while(!stack1.isEmpty()) {
+                int temp = stack1.removeLast();
+                stack2.addLast(temp);
+            }
+            return stack2.removeLast();
+        }
+        return -1;
+    }
+    
+    /** Get the front element. */
+    public int peek() {
+        if(!stack2.isEmpty()) {
+            return stack2.peekLast();
+        } else if(!stack1.isEmpty()) {
+            while(!stack1.isEmpty()) {
+                int temp = stack1.removeLast();
+                stack2.addLast(temp);
+            }
+            return stack2.peekLast();
+        }
+        return -1;
+    }
+    
+    /** Returns whether the queue is empty. */
+    public boolean empty() {
+        return stack1.isEmpty() && stack2.isEmpty();
+    }
+}
+```
+
+----
+
+##### 题目示例9 `leetcode 316 去除重复字母`
+
+```java
+private String removeDuplicateLetters(String s) {
+    if(s == null || s.length() < 2) {
+        return s;
+    }
+    
+    int len = s.length();
+    // 记录字符是否在使用
+    boolean[] charSet = new boolean[26];
+    // 记录每一个字符最后一次出现的位置
+    int[] lastAppearIndex = new int[26];
+    for(int i = 0; i < len; i++) {
+        lastAppearIndex[s.charAt(i) - 'a'] = i;
+    }
+    
+    Deque<Character> stack = new LinkedList<>();
+    for(int i = 0; i < len; i++) {
+        // 如果当前字符已经在栈里出现过，跳过
+        char curChar = s.charAt(i);
+        if(charSet[curChar - 'a']) {
+            continue;
+        }
+        
+        // 维护栈，当前元素比栈顶元素严格小时，当且仅当栈顶元素在之后
+        // 还出现时才舍弃栈顶元素
+        while(!stack.isEmpty() && stack.peekLast() > curChar
+             && lastAppearIndex[stack.peekLast() - 'a'] > i) {
+            charSet[stack.removeLast() - 'a'] = false;
+        }
+        stack.addLast(curChar);
+        charSet[curChar - 'a'] = true;
+    }
+    
+    StringBuffer res = new StringBuffer();
+    while(!stack.isEmpty()) {
+        res.insert(0, stack.removeLast());
+    }
+    return res.toString();
+}
+```
+
+------
+
 
 
 ---
@@ -3328,28 +3513,27 @@ public int longestValidParentheses(String s) {
 
 ###### 单调栈：
 
-**栈中存放的数据都是有序的，元素的分布从栈底到栈顶具有单调性，分为单调递增栈和单调递减栈两种**
+栈中存放的数据都是有序的，元素的分布从栈底到栈顶具有单调性，分为单调递增栈和单调递减栈两种
 
-1. **单调递增栈就是元素的值由栈底到栈顶大小单调递增**
+1. 单调递增栈就是元素的值由栈底到栈顶大小单调递增
+- 单调递增栈可以找到左起第一个比当前数字小的元素
+    - 如果栈是一个单调递增栈，**对于一个刚刚出栈的元素而言**，新的栈顶元素就是其左侧第一个小于自己的元素，即将入栈的元素就是右侧第一个小于自己的元素；如果元素出栈后栈为空表示自己左侧没有更小的元素，如果没有新元素将要入栈，表示自己右侧没有更小的元素。
+    
+2. 单调递减栈就是元素的值由栈底到栈顶大小单调递减
+    - 单调递减栈可以找到左起第一个比当前数字大的元素
+    - 如果栈是一个单调递减栈，**对于一个刚刚出栈的元素而言**，新的栈顶元素就是其左侧第一个大于自己的元素，即将入栈的元素就是右侧第一个大于自己的元素；如果元素出栈后栈为空表示自己左侧没有更大的元素，如果没有新元素将要入栈，表示自己右侧没有更大的元素。
 
-    - **单调递增栈可以找到左起第一个比当前数字小的元素**
-    - **如果栈是一个单调递增栈，对于一个刚刚出栈的元素而言，新的栈顶元素就是其左侧第一个小于自己的元素，即将入栈的元素就是右侧第一个小于自己的元素；如果元素出栈后栈为空表示自己左侧没有更小的元素，如果没有新元素将要入栈，表示自己右侧没有更小的元素。**
+单调栈里可以保存元素的值或者数组下标
 
-2. **单调递减栈就是元素的值由栈底到栈顶大小单调递减**
-    - **单调递减栈可以找到左起第一个比当前数字大的元素**
-    - **如果栈是一个单调递减栈，对于一个刚刚出栈的元素而言，新的栈顶元素就是其左侧第一个大于自己的元素，即将入栈的元素就是右侧第一个大于自己的元素；如果元素出栈后栈为空表示自己左侧没有更大的元素，如果没有新元素将要入栈，表示自己右侧没有更大的元素。**
+单调栈维护的时间复杂度O(n),任何元素只会进出单调栈一次
 
-**单调栈里可以保存元素的值或者数组下标**
-
-**单调栈维护的时间复杂度O(n),任何元素只会进出单调栈一次**
-
-**构建栈的过程从数组的右侧开始时，可以找到当前元素右侧第一个更大或者更小的元素**
+构建栈的过程从数组的右侧开始时，可以找到当前元素右侧第一个更大或者更小的元素
 
 ###### 单调队列：
 
-**某些场景下栈底也需要维护，此时可能需要借助队列或双端队列实现，此时称为单调队列**
+某些场景下栈底也需要维护，此时可能需要借助队列或双端队列实现，此时称为单调队列
 
-**根据题目大小变化元素的遍历顺序和不等号的方向即可**
+根据题目大小变化元素的遍历顺序和不等号的方向即可
 
 ```java
 // 一个简单的单调栈模板
@@ -3375,23 +3559,19 @@ private int[] nextGreaterElement(int[] nums1, int[] nums2) {
     // 在nums2上，从右至左维护单调递减栈，获取每个数字的下一个更大元素
     Deque<Integer> monoStack = new LinkedList<>();
     int len2 = nums2.length;
-    int[] temp = new int[len2];
+    int len1 = nums1.length;
+    Map<Integer, Integer> map = new HashMap<>();
     for(int i = len2 - 1; i >= 0; i--) {
         while(!monoStack.isEmpty() && nums2[i] >= monoStack.peekLast()) {
             monoStack.removeLast();
         }
-        temp[i] = monoStack.isEmpty()? -1 : monoStack.peekLast();
+        int temp = monoStack.isEmpty()? -1 : monoStack.peekLast();
+        map.put(nums2[i], temp);
         monoStack.addLast(nums2[i]);
     }
-	// 遍历nums1和nums2,获取结果
-    int len1 = nums1.length;
     int[] res = new int[len1];
     for(int i = 0; i < len1; i++) {
-        for(int j = 0; j < len2; j++) {
-            if(nums2[j] == nums1[i]) {
-                res[i] = temp[j];
-            }
-        }
+        res[i] = map.get(nums1[i]);
     }
     return res;
 }
@@ -3402,16 +3582,19 @@ private int[] nextGreaterElement(int[] nums1, int[] nums2) {
 ###### 题目示例2 `leetcode 503 下一个更大元素II`
 
 ```java
-// 从右往左维护一个单调递减栈
+/**
+* 从右往左维护一个单调递减栈
+ */
 private int[] nextGreaterElements(int[] nums) {
-    int n = nums.length;
+    int len = nums.length;
     Deque<Integer> monoStack = new LinkedList<>();
-    int[] res = new int[n];
-    for(int i = 2 * n - 1; i >= 0; i--) {
-        while(!monoStack.isEmpty() && nums[i%n] >= monoStack.peekLast())
+    int[] res = new int[len];
+    for(int i = 2 * len - 1; i >= 0; i--) {
+        while(!monoStack.isEmpty() && nums[i%len] >= monoStack.peekLast()) {
             monoStack.removeLast();
-        res[i%n] = monoStack.isEmpty()? -1:monoStack.peekLast();
-        monoStack.addLast(nums[i%n]);
+        }
+        res[i%len] = monoStack.isEmpty()? -1:monoStack.peekLast();
+        monoStack.addLast(nums[i%len]);
     }
     return res;
 }
@@ -3422,7 +3605,9 @@ private int[] nextGreaterElements(int[] nums) {
 ###### 题目示例3 `leetcode 739 每日温度`
 
 ```java
-// 从右往左构建一个单调递减栈
+/**
+* 从右往左维护一个单调递减栈
+ */
 public int[] dailyTemperatures(int[] T) {
     int len = T.length;
     int[] res = new int[len];
@@ -3505,11 +3690,14 @@ private int trap(int[] height) {
 
 ###### 题目示例 6 `leetcode 84 柱状图中最大的矩形`
 
-**以当前遍历到的柱子`i`的高度height作为矩形的高，矩形的宽度边界为向左找到第一个高度小于当前柱体 `i`的柱体 `left_i`，向右找到第一个高度小于当前柱体  `i`的柱体  `right_i` ,矩形面积可以表示为  `height * ( right_i - left_i  - 1 )`**
-
-**从左到右构建一个单调递增的栈，对于一个栈顶元素而言，下一个可以入栈的元素就是它右边第一个小于它的元素，在栈中栈顶元素的下一个元素就是它左边第一个小于它的元素**
-
 ```java
+/**
+* 对于一个刚刚出栈的元素item，设其高度为height
+* 由于维护了栈的单调递增性质，可以知道此时的栈顶元素为item左侧最近的高度小于height的元素(即monoStack.peekLast())
+* 此时即将入栈的元素则是item右侧最近的高度小于height的元素(即 i)
+* 则两侧的元素围成的区间的宽度为(i - monoStack.peekLast() - 1),注意区间不包括这两个边界元素
+* 这个区间的最小高度就是height.二者相乘即可得到这个区间内可以勾勒的最大矩形面积
+ */
 private int largestRectangleArea(int[] heights) {
     if(heights == null || heights.length == 0) {
         return 0;
@@ -3630,23 +3818,23 @@ private int maxChunksToSorted(int[] arr){
 
 ```java
 class StockSpanner {
-	/*当前元素的序号，代表是第几个元素*/
+    /*当前元素的序号，代表是第几个元素*/
     private int index;
     /*存储所有元素的列表*/
     private List<Integer> stock;
     /*单调栈，存储满足单调栈关系的元素的序号*/
     private Deque<Integer> stack;
-    
+
     public StockSpanner() {
         this.index = 0;
-     	this.stock = new ArrayList<>(32);
+        this.stock = new ArrayList<>(32);
         this.stack = new LinkedList<>();
-        
+
         /*放入哨兵，永远不会被弹出*/
         stock.add(Integer.MAX_VALUE);
         stack.addLast(0);
     }
-    
+
     public int next(int price) {
         /*当前放进来的元素的序号*/
         index++;
@@ -3654,7 +3842,7 @@ class StockSpanner {
         while(!stack.isEmpty() && stock.get(stack.peekLast()) <= price) {
             stack.removeLast();
         }
-        
+
         int res = index - stack.peekLast();
         stock.add(price);
         stack.addLast(index);
@@ -3729,50 +3917,6 @@ private int longestWPI(int[] hours) {
     	while(!stack.isEmpty() && preSum[i] > preSum[stack.peekLast()])
             maxL = Math.max(maxL, i - stack.removeLast());
     return maxL;
-}
-```
-
------
-
-###### 题目示例13 `leetcode 316 去除重复字母`
-
-```java
-private String removeDuplicateLetters(String s) {
-    if(s == null || s.length() < 2) 
-        return s;
-    
-    int len = s.length();
-    // 记录字符是否在使用
-    boolean[] charSet = new boolean[26];
-    // 记录每一个字符最后一次出现的位置
-    int[] lastAppearIndex = new int[26];
-    for(int i = 0; i < len; i++) {
-        lastAppearIndex[s.charAt(i) - 'a'] = i;
-    }
-    
-    Deque<Character> stack = new LinkedList<>();
-    for(int i = 0; i < len; i++) {
-        // 如果当前字符已经在栈里出现过，跳过
-        char curChar = s.charAt(i);
-        if(charSet[curChar - 'a']) {
-            continue;
-        }
-        
-        // 构建单调递增栈，当前元素比栈顶元素严格小时，当且仅当栈顶元素在之后
-        // 还出现时才舍弃栈顶元素
-        while(!stack.isEmpty() && stack.peekLast() > curChar
-             && lastAppearIndex[stack.peekLast() - 'a'] >= i) {
-            charSet[stack.removeLast() - 'a'] = false;
-        }
-        stack.addLast(curChar);
-        charSet[curChar - 'a'] = true;
-    }
-    
-    StringBuffer res = new StringBuffer();
-    while(!stack.isEmpty()) {
-        res.insert(0, stack.removeLast());
-    }
-    return res.toString();
 }
 ```
 
@@ -5554,7 +5698,8 @@ return left - 1;
 ```java
 // 基本的二分搜索模板，判断元素存在与否
 private int binarySearch(int[] nums, int target) {
-    int left = 0, right = nums.length - 1;
+    int left = 0;
+    int right = nums.length - 1;
     while(left <= right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] == target)
@@ -5925,10 +6070,6 @@ private int hIndex(int[] citations) {
 ###### 题目示例9 `leetcode 436 寻找右区间`
 
 ```java
-/**
-* 
-* 
-*/
 public int[] findRightInterval(int[][] intervals) {
     int len = intervals.length;
     // 在start[]中存储各个区间的起点
@@ -5944,7 +6085,7 @@ public int[] findRightInterval(int[][] intervals) {
     Arrays.sort(start);
 
     // 以区间的终点为目标元素在排序好的节点数组中进行二分查找，寻找第一个大于等于
-    // 目标元素的
+    // 目标元素的数组元素的下标
     for(int i = 0; i < len; i++) {
         int index = leftBound(start, intervals[i][1]);
         if(index == -1) {
@@ -5978,6 +6119,10 @@ private int leftBound(int[] nums, int target) {
 }
 ```
 
+------
+
+##### 题型二：二分确定一个有范围的整数
+
 
 
 ---
@@ -5987,13 +6132,15 @@ private int leftBound(int[] nums, int target) {
 ```java
 // 普通二分搜索问题
 // 关键：将二维矩阵上的搜索转化为一维矩阵上的搜索
-private boolean searchMatrix(int[][] matrix, int target)
-{
-    if(matrix == null || matrix.length == 0 || matrix[0].length == 0)
+private boolean searchMatrix(int[][] matrix, int target) {
+    if(matrix == null || matrix.length == 0 || matrix[0].length == 0) {
         return false;
+    }
     
-    int rowLen = matrix.length, colLen = matrix[0].length;
-    int start = 0, end = rowLen * colLen - 1;
+    int rowLen = matrix.length;
+    int colLen = matrix[0].length;
+    int start = 0;
+    int end = rowLen * colLen - 1;
     while(start <= end)
     {
         int mid = start + (end - start) / 2;

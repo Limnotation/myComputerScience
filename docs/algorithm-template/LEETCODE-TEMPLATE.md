@@ -107,6 +107,9 @@
       - [题目示例7 `leetcode 225 用队列实现栈`](#题目示例7-leetcode-225-用队列实现栈)
       - [题目示例8  `leetcode 232  用栈实现队列`](#题目示例8-leetcode-232-用栈实现队列)
       - [题目示例9 `leetcode 316 去除重复字母`](#题目示例9-leetcode-316-去除重复字母)
+    - [队列](#队列)
+      - [题目示例1 `leetcode 622 设计循环队列`](#题目示例1-leetcode-622-设计循环队列)
+      - [题目示例2 `leetcode 641 设计循环双端队列`](#题目示例2-leetcode-641-设计循环双端队列)
     - [栈和队列的特殊应用1：单调栈/单调队列](#栈和队列的特殊应用1单调栈单调队列)
       - [概念](#概念)
         - [单调栈：](#单调栈)
@@ -3501,6 +3504,180 @@ private String removeDuplicateLetters(String s) {
 
 ------
 
+#### 队列
+
+##### 题目示例1 `leetcode 622 设计循环队列`
+
+```java
+class MyCircularQueue {
+    /**
+    * capacity == 队列最多可存放元素数量 + 1
+    * front: 指向队列头部第一个有效数据的位置
+    * rear: 指向队列尾部(即最后一个有效数据)的下一个位置
+    * 
+    * 需要注意的可能导致越界的细节:
+    * 1、指针后移的时候需要将当前索引 + 1，取模   (index + 1) % capacity
+    * 2、指针前移的时候，为了循环到数组末尾，需要先-1并加上数组长度，再对数组长度取模 (index - 1 + capacity) % capacity
+    * 
+    * 队列为空的条件为: rear == front
+    * 队列为满的条件为: (rear + 1) % capacity == front
+    * 队尾元素的下标为: (rear - 1 + capacity) % capacity
+    * 队列中的元素数量为: (rear - front + capacity) % capacity
+     */
+    private int front;
+    private int rear;
+    private int capacity;
+    private int[] queue;
+
+    /** Initialize your data structure here. Set the size of the queue to be k. */
+    public MyCircularQueue(int k) {
+        this.capacity = k + 1;
+        this.queue = new int[capacity];
+        this.front = 0;
+        this.rear = 0;
+    }
+    
+    /** Insert an element into the circular queue. Return true if the operation is successful. */
+    public boolean enQueue(int value) {
+        if(isFull()) {
+            return false;
+        }
+
+        queue[rear] = value;
+        rear = (rear + 1) % capacity;
+        return true;
+    }
+    
+    /** Delete an element from the circular queue. Return true if the operation is successful. */
+    public boolean deQueue() {
+        if(isEmpty()) {
+            return false;
+        }
+
+        front = (front + 1) % capacity;
+        return true;
+    }
+    
+    /** Get the front item from the queue. */
+    public int Front() {
+        if(isEmpty()) {
+            return -1;
+        }
+        return queue[front];
+    }
+    
+    /** Get the last item from the queue. */
+    public int Rear() {
+        if(isEmpty()) {
+            return -1;
+        }
+
+        return queue[(rear - 1 + capacity) % capacity];
+    }
+    
+    /** Checks whether the circular queue is empty or not. */
+    public boolean isEmpty() {
+        return rear == front;
+    }
+    
+    /** Checks whether the circular queue is full or not. */
+    public boolean isFull() {
+        return (rear + 1) % capacity == front;
+    }
+}
+```
+
+-----
+
+##### 题目示例2 `leetcode 641 设计循环双端队列`
+
+```java
+class MyCircularDeque {
+
+    private int capacity;
+    private int front;
+    private int rear;
+    private int[] deQue;
+
+    /** Initialize your data structure here. Set the size of the deque to be k. */
+    public MyCircularDeque(int k) {
+        this.capacity = k + 1;
+        this.deQue = new int[capacity];
+        this.front = 0;
+        this.rear = 0;
+    }
+    
+    /** Adds an item at the front of Deque. Return true if the operation is successful. */
+    public boolean insertFront(int value) {
+        if(isFull()) {
+            return false;
+        }
+
+        front = (front - 1 + capacity) % capacity;
+        deQue[front] = value;
+        return true;
+    }
+    
+    /** Adds an item at the rear of Deque. Return true if the operation is successful. */
+    public boolean insertLast(int value) {
+        if(isFull()) {
+            return false;
+        }
+
+        deQue[rear] = value;
+        rear = (rear + 1) % capacity;
+        return true;
+    }
+    
+    /** Deletes an item from the front of Deque. Return true if the operation is successful. */
+    public boolean deleteFront() {
+        if(isEmpty()) {
+            return false;
+        }
+
+        front = (front + 1) % capacity;
+        return true;
+    }
+    
+    /** Deletes an item from the rear of Deque. Return true if the operation is successful. */
+    public boolean deleteLast() {
+        if(isEmpty()) {
+            return false;
+        }
+
+        rear = (rear - 1 + capacity) % capacity;
+        return true;
+    }
+    
+    /** Get the front item from the deque. */
+    public int getFront() {
+        if(isEmpty()) {
+            return -1;
+        }
+        return deQue[front];
+    }
+    
+    /** Get the last item from the deque. */
+    public int getRear() {
+        if(isEmpty()) {
+            return -1;
+        }
+
+        return deQue[(rear - 1 + capacity) % capacity];
+    }
+    
+    /** Checks whether the circular deque is empty or not. */
+    public boolean isEmpty() {
+        return rear == front;
+    }
+    
+    /** Checks whether the circular deque is full or not. */
+    public boolean isFull() {
+        return (rear + 1) % capacity == front;
+    }
+}
+```
+
 
 
 ---
@@ -3665,7 +3842,7 @@ private int trap(int[] height) {
     int res = 0;
     Deque<Integer> monoStack = new LinkedList<>();
     for(int i = 0; i < height.length; i++) {
-        // 构建一个单调递减栈
+        // 维护一个递减栈
         while(!monoStack.isEmpty() && height[monoStack.peekLast()] < height[i]) {
             int bottomIndex  = monoStack.removeLast();
             // 栈顶元素与bottom相等时应该pop出栈，因为无法形成蓄水的凹槽
@@ -3674,8 +3851,9 @@ private int trap(int[] height) {
             }
 
             if(!monoStack.isEmpty()) {
-                // leftEdge指向蓄水凹槽的左侧边界
-                // 蓄水凹槽的右边界即为i
+                // leftEdge指向蓄水凹槽的左侧边界(此时height[leftEdge] > height[bottomIndex])
+                // 蓄水凹槽的右边界即为i(此时height[i] > height[bottomIndex])
+                // 左右边界围城的区间宽度为(i - leftEdge - 1),区间不包括两个边界点
                 int leftEdge = monoStack.peekLast();
                 res += (Math.min(height[leftEdge], height[i]) - height[bottomIndex]) * (i - leftEdge - 1);
             }

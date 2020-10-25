@@ -495,7 +495,7 @@ private List<Integer> postorderTraversal(TreeNode root) {
         
         TreeNode node = stack.peekLast();
         if(node.right == null || node.right == lastVisit) {
-            // 根节点必须在没有有子节点或者其右子节点已经弹出的情况下才能弹出
+            // 栈顶节点必须在没有有右子节点或者其右子节点已经被访问的情况下才能弹出
             stack.removeLast();
             res.add(node.val);
             lastVisit = node;
@@ -1004,7 +1004,9 @@ private Node connect(Node root) {
 ##### 题目示例19 `leetcode 117 填充每个节点的下一个右侧节点指针 II`
 
 ```java
-// BFS解决
+/**
+* BFS解决
+ */
 public Node connect(Node root) {
     if(root == null) {
         return root;
@@ -5005,6 +5007,179 @@ private int minMeetingRooms(int[][] intervals) {
 }
 ```
 
+----
+
+##### 题目示例3 `leetcode 23 合并升序链表`
+
+```java
+private ListNode mergeKLists(ListNode[] lists) {
+    // 使用小根堆存储所有链表元素
+    PriorityQueue<Integer> pq = new PriorityQueue<>();
+    for(ListNode list : lists) {
+        while(list != null) {
+            pq.offer(list.val);
+            list = list.next;
+        }
+    }
+
+    ListNode dummyHead = new ListNode(0);
+    ListNode runner = dummyHead;
+    while(!pq.isEmpty()) {
+        int temp = pq.poll();
+        runner.next = new ListNode(temp);
+        runner = runner.next;
+    }
+    return dummyHead.next;
+}
+```
+
+----
+
+##### 题目示例4 `leetcode 215 数组中的第K个最大元素`
+
+```java
+private int findKthLargest(int[] nums, int k) {
+    PriorityQueue<Integer> pq = new PriorityQueue<>();
+    for(int i = 0; i < nums.length; i++) {
+        pq.offer(nums[i]);
+        // 维护一个大小为k的小根堆
+        if(pq.size() > k) {
+            pq.poll();
+        }
+    }
+    // 符合条件的元素就是最后的堆顶元素
+    return pq.peek();
+}
+```
+
+---
+
+##### 题目示例5 `leetcode 295 数据流的中位数`
+
+```java
+class MedianFinder {
+
+    private PriorityQueue<Integer> firstHalf;
+    private PriorityQueue<Integer> secondHalf;
+    private int dataSize;
+
+    /** initialize your data structure here. */
+    public MedianFinder() {
+        this.firstHalf = new PriorityQueue<>((o1, o2) -> (o2 - o1));
+        this.secondHalf = new PriorityQueue<>();
+        this.dataSize = 0;
+    }
+    
+    public void addNum(int num) {
+        dataSize++;
+        firstHalf.offer(num);
+        secondHalf.offer(firstHalf.poll());
+        if((dataSize & 1) != 0) {
+            firstHalf.offer(secondHalf.poll());
+        }
+    }
+    
+    public double findMedian() {
+        if(dataSize == 0 || dataSize % 2 == 0) {
+            int a = firstHalf.peek();
+            int b = secondHalf.peek();
+            return (a + b) * 1.0 / 2;
+        } else {
+            return (double)firstHalf.peek();
+        }
+    }
+}
+```
+
+-----
+
+##### 题目示例6 `leetcode 347 前K个高频元素`
+
+```java
+public int[] topKFrequent(int[] nums, int k) {
+    Map<Integer, Integer> map = new HashMap<>();
+    for(int i = 0; i < nums.length; i++) {
+        map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+    }
+
+    PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> (map.get(o1) - map.get(o2)));
+    for(Integer item : map.keySet()) {
+        pq.offer(item);
+        if(pq.size() > k) {
+            pq.poll();
+        }
+    }
+    int[] res = new int[k];
+    int index = 0;
+    while(!pq.isEmpty()) {
+        res[index] = pq.poll();
+        index++;
+    }
+    return res;
+}
+```
+
+----
+
+##### 题目示例7 `leetcode 703 数据流中的第k大元素`
+
+```java
+private int capacity;
+private PriorityQueue<Integer> pq;
+
+public KthLargest(int k, int[] nums) {
+    this.capacity = k;
+    this.pq = new PriorityQueue<>();
+    for(int i = 0; i < nums.length; i++) {
+        pq.offer(nums[i]);
+        if(pq.size() > k) {
+            pq.poll();
+        }
+    }
+}   
+
+public int add(int val) {
+    // 注意：必须先将val放入优先队列并删除可能的多余元素
+    pq.offer(val);
+    if(pq.size() > capacity) {
+        pq.poll();
+    }
+    return pq.peek();
+}
+```
+
+-----
+
+##### 题目示例8 `leetcode 973 离原点最近的K个点`
+
+```java
+private int[][] kClosest(int[][] points, int K) {
+    // 关键就是重写比较器
+    PriorityQueue<int[]> pq = new PriorityQueue<>(new Comparator<int[]>() {
+        @Override
+        public int compare(int[] a, int[] b) {
+            int d1 = a[0] * a[0] + a[1] * a[1];
+            int d2 = b[0] * b[0] + b[1] * b[1];
+            return d1 < d2? 1 : d1 == d2? 0 : -1;
+        }
+    });
+
+    for(int[] point : points) {
+        pq.offer(point);
+        if(pq.size() > K) {
+            pq.poll();
+        }
+    }
+    int[][] res = new int[K][2];
+    int index = 0;
+    while(!pq.isEmpty()) {
+        res[index] = pq.poll();
+        index++;
+    }
+    return res;
+}
+```
+
 
 
 ------
@@ -5458,25 +5633,28 @@ private void dfs(TreeNode root, int depth) {
 ```java
 List<String> res = new LinkedList<>();
 public List<String> binaryTreePaths(TreeNode root) {
-    dfs(root, "");
+    preTraversal(root, "");
     return res;
 }
 
 /**
-* 在这里传String的原因是，每次改变都会创建一个新对象
+* 二叉树的先序遍历，存储遍历过程中从根节点到叶子节点的路径
+* @param root
+* @param s
+* 这里传参使用String的原因是每次传入的都必须是一个新的独立的对象
 */
-private void dfs(TreeNode root, String s) {
+private void preTraversal(TreeNode root, String path) {
     if(root == null) {
         return;
     }
 
-    s += Integer.toString(root.val);
+    path += Integer.toString(root.val);
     if(root.left == null && root.right == null) {
-        res.add(s);
+        res.add(path);
     }
-    s += "->";
-    dfs(root.left, s);
-    dfs(root.right, s);
+    path += "->";
+    preTraversal(root.left, path);
+    preTraversal(root.right, path);
 }
 ```
 

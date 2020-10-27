@@ -1601,17 +1601,17 @@ public int kthSmallest(TreeNode root, int k) {
 * @param root
 * @param k
  */
-private int select(TreeNode root, int k) {
+private int select(TreeNode root, int rank) {
     if(root == null) {
         return 0;
     }
     int leftSize = size(root.left);
-    if(leftSize == k - 1) {
+    if(leftSize == rank - 1) {
         return root.val;
-    } else if(leftSize < k - 1) {
-        return select(root.right, k - leftSize - 1);
+    } else if(leftSize < rank - 1) {
+        return select(root.right, rank - leftSize - 1);
     } else {
-        return select(root.left, k);
+        return select(root.left, rank);
     }
 }
 
@@ -1679,7 +1679,7 @@ public TreeNode sortedArrayToBST(int[] nums) {
 
 private TreeNode constructTreee(int[] nums, int start, int end) {
     // 递归终止条件
-    if(nums == null || nums.length == 0 || start > end) {
+    if(start > end) {
         return null;
     }
 	
@@ -5604,7 +5604,7 @@ public List<Integer> rightSideView(TreeNode root) {
 
 /**
 * 节点访问顺序：根节点，右子节点，左子节点
-*/
+ */
 private void dfs(TreeNode root, int depth) {
     if(root == null) {
         return;
@@ -5615,7 +5615,7 @@ private void dfs(TreeNode root, int depth) {
     * 表示当前访问的结点是该层第一个被访问到的
     * 节点，又因为遍历顺序是根->右->左，所以
     * 该节点就是该层最右节点
-    */
+     */
     if(depth == res.size()) {
         res.add(root.val);
     }
@@ -8157,9 +8157,9 @@ private void backTracking(int[] nums, int start, LinkedList<Integer> runner) {
     
     for(int i = start; i < nums.length; i++) {
         /*
-        * 注意：nums[i]==nums[i-1]是作用在同一层决策树上的
+        * 注意：i> start && nums[i]==nums[i-1]是作用在同一层决策树上的(同一次循环内)
         * 避免出现相同的两条路径，同时有 i > start
-        */
+         */
         if(i > start && nums[i] == nums[i-1])
             continue;
         // 做选择
@@ -8183,8 +8183,7 @@ public List<List<Integer>> permute(int[] nums) {
         return res;
     }
     
-    int len = nums.length;
-    backTracking(nums, new boolean[len], new LinkedList<Integer>());
+    backTracking(nums, new boolean[nums.length], new LinkedList<Integer>());
     return res;
 }
 
@@ -8202,7 +8201,7 @@ private void backTracking(int[] nums, boolean[] used, LinkedList<Integer> runner
         }
         
         // 1、做选择
-        runner.add(nums[i]);
+        runner.addLast(nums[i]);
         used[i] = true;
         // 2、进入下一层决策树
         backTracking(nums, used, runner);
@@ -8224,10 +8223,9 @@ public List<List<Integer>> permuteUnique(int[] nums) {
         return res;
     }
     
-    int len = nums.length;
     // 排序是必须的！！！！！！
     Arrays.sort(nums);
-    backTracking(nums, used, new boolean[len], new LinkedList<Integer>());
+    backTracking(nums, new boolean[nums.length], new LinkedList<Integer>());
     return res;
 }
 
@@ -8240,11 +8238,11 @@ private void backTracking(int[] nums, boolean[] used, LinkedList<Integer> runner
     
     for(int i = 0; i < nums.length; i++) {
         /**
-        * 在这里的一个思想是：如果当前元素存在重复元素，且其前一个元素未被使用
+        * 在这里的一个思想是：在同一个循环内，如果当前元素与前一个元素相等并且前一个元素未被使用
         * 那么在决策树的下一层就会有重复的可选项，则会出现错误的重复情况。
-        * 所以第一个剪枝条件为i > 0 && nums[i]==nums[i-1] && !used[index-1]
+        * 所以其中一个剪枝条件为i > 0 && nums[i]==nums[i-1] && !used[index-1]
         * 当某个元素已经被使用了当然也不需要在当前分支继续寻找
-        */
+         */
         if(used[i] || (i > 0 && nums[i] == nums[i-1] && !used[i-1])) {
             continue;
         }
@@ -8317,8 +8315,9 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
     }
     
     for(int i = start; i < candidates.length; i++) {
-        if(target - candidates[i] < 0)
+        if(target - candidates[i] < 0) {
             break;
+        }
         
         // 做选择
         runner.add(candidates[i]);
@@ -8380,8 +8379,9 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
 ```java
 List<List<Integer>> res = new LinkedList<>();
 public List<List<Integer>> combinationSum3(int k, int n) {
-    if(n <= 0 || k <= 0)
+    if(n <= 0 || k <= 0) {
         return res;
+    }
     
     backTracking(k, n, 1, new LinkedList<Integer>());
     return res;
@@ -8390,8 +8390,9 @@ public List<List<Integer>> combinationSum3(int k, int n) {
 private void backTracking(int k, int n, int start, LinkedList<Integer> runner) {
     // 终止条件
     if(k == 0) {
-        if(n == 0)
+        if(n == 0) {
             res.add(new LinkedList(runner));
+        }
     	return;       
     }
 
@@ -8699,8 +8700,7 @@ private boolean backTracking(char[][] board, String word, int row, int col, int 
         hasPath = (backTracking(board, word, row, col - 1, pathLength) 
                    || backTracking(board, word, row - 1, col, pathLength)
                    || backTracking(board, word, row, col + 1, pathLength)
-                   || backTracking(board, word, row + 1, col, pathLength)
-                  );
+                   || backTracking(board, word, row + 1, col, pathLength));
 
         // 撤销选择
         pathLength--;
@@ -8789,34 +8789,37 @@ private boolean backTracking(char[][] board, String word, int row, int col, int 
 
 ```java
 public void solveSudoku(char[][] board){
-    backTracking( board, 0, 0 );
+    backTracking(board, 0, 0);
 }
 
-private boolean backTracking(char[][] board, int i, int j) {
-    int row = 9, col = 9;
-    
-    // 穷举到最后一列，进入下一行重新开始
-    if(j == col)
-        return backTracking(board, i + 1, 0);
-    
+private boolean backTracking(char[][] board, int row, int col) {
+    int rowLen = board.length;
+    int colLen = board[0].length;
+
     // 找到一个可行解，触发base case
-    if(i == row)
+    if(rowLen == row) {
         return true;
+    }
+    if(col == colLen) {
+        return backTracking(board, row + 1, 0);
+    } else if(board[row][col] != '.') {
+        return backTracking(board, row, col + 1);
+    }
     
-    // 当前位置已经有数字，不再穷举数字
-    if(board[i][j] != '.')
-        return backTracking(board, i, j + 1);
     for(char c = '1'; c <= '9'; c++) {
-        if(!isValid(board, i, j, c))
+        // 剪枝操作
+        if(!isValid(board, row, col, c)) {
             continue;
-        
+        }
+
         // 做选择
-        board[i][j] = c;
+        board[row][col] = c;
         // 进入下一层决策树
-        if(backTracking(board, i, j + 1))
+        if(backTracking(board, row, col + 1)) {
             return true;
+        }
         // 撤销选择
-        board[i][j] = '.';
+        board[row][col] = '.';
     }
     return false;
 }
@@ -8824,20 +8827,21 @@ private boolean backTracking(char[][] board, int i, int j) {
 private boolean isValid(char[][] board, int row, int col, char c) {
     for(int i = 0; i < 9; i++) {
         // 判断行是否有重复
-        if(board[row][i] == c)
+        if(board[row][i] == c) {
             return false;
+        }
         // 判断列是否有重复
-        if(board[i][col] == c)	
+        if(board[i][col] == c) {
             return false;
+        }
         // 判断3x3方框是否存在重复
-        if(board[(row/3)*3 + i/3][(col/3)*3 + i%3] == c)
+        if(board[(row/3)*3 + i/3][(col/3)*3 + i%3] == c) {
             return false;
+        }
     }
     return true;
 }
 ```
-
-
 
 ----
 

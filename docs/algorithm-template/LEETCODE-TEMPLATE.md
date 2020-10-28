@@ -148,6 +148,12 @@
     - [典型题目](#典型题目-1)
       - [题目示例1 `leetcode 692 前K个高频单词`](#题目示例1-leetcode-692-前k个高频单词)
       - [题目示例2 `leetcode 253 会议室II`](#题目示例2-leetcode-253-会议室ii)
+      - [题目示例3 `leetcode 23 合并升序链表`](#题目示例3-leetcode-23-合并升序链表)
+      - [题目示例4 `leetcode 215 数组中的第K个最大元素`](#题目示例4-leetcode-215-数组中的第k个最大元素)
+      - [题目示例5 `leetcode 295 数据流的中位数`](#题目示例5-leetcode-295-数据流的中位数)
+      - [题目示例6 `leetcode 347 前K个高频元素`](#题目示例6-leetcode-347-前k个高频元素)
+      - [题目示例7 `leetcode 703 数据流中的第k大元素`](#题目示例7-leetcode-703-数据流中的第k大元素)
+      - [题目示例8 `leetcode 973 离原点最近的K个点`](#题目示例8-leetcode-973-离原点最近的k个点)
 - [基础算法](#基础算法)
   - [排序](#排序)
   - [深度优先搜索](#深度优先搜索)
@@ -2136,6 +2142,34 @@ public class Codec {
 3. 快慢指针
 
     对于寻找链表的某个特定位置，或者判断链表是否有环等问题时，可以使用两个指针变量 fast和slow,两个指针以不同的策略移动
+    
+    在使用快慢指针获取链表中点时常见代码逻辑如下：
+    
+    ```java
+    
+    private ListNode getMid(ListNode head) {
+        if(head == null || head.next == null) {
+            return head;
+        }
+    
+        /**
+        * ListNode slow = head;
+        * ListNode fast = head.next;
+        * 上述两行代码最终达到的目的就是定位到下标为(n/2)的链表元素，其中n为链表长度
+        * 所以在链表个数为偶数时，slow定位到前一半链表的最后一个元素
+        * 链表个数为奇数时，slow定位到链表的中点元素
+    	 */
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while(fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+    ```
+    
+    
 
 -----
 
@@ -2340,7 +2374,7 @@ public void reorderList(ListNode head) {
     if(head == null) { 
         return;
     }
-    ListNode preMid = getPreMid(head);
+    ListNode preMid = getMid(head);
     ListNode tail = reverseList(preMid.next);
     // 注意将两部分断开，否则会形成循环
     preMid.next = null;
@@ -2350,7 +2384,7 @@ public void reorderList(ListNode head) {
 /**
 * 获取链表中点的前一个结点
 */
-private ListNode getPreMid(ListNode head) {
+private ListNode getMid(ListNode head) {
     ListNode slow = head;
     ListNode fast = head.next;
     while(fast != null && fast.next != null) {
@@ -2443,7 +2477,7 @@ public ListNode sortList(ListNode head) {
 /**
 * 找到链表的中点的前一个节点
  */
-private ListNode getPreMid(ListNode head) {
+private ListNode getMid(ListNode head) {
     ListNode slow = head;
     ListNode fast = head.next;
     while(fast != null && fast.next != null) {
@@ -2488,7 +2522,7 @@ private ListNode mergeSort(ListNode head) {
         return head;
     }
     
-    ListNode preMid = getPreMid(head);
+    ListNode preMid = getMid(head);
     ListNode secondHalf = preMid.next;
     // 断开两个部分，避免链表成环
     preMid.next = null;
@@ -2828,7 +2862,7 @@ public boolean isPalindrome(ListNode head) {
     }
     
     // 将链表切分成两半，并将第二部分反转
-    ListNode preMid = getPreMiddle(head);
+    ListNode preMid = getMiddle(head);
     ListNode secondHalf = preMid.next;
     preMid.next = null;
     secondHalf = reverse(secondHalf);
@@ -2850,7 +2884,7 @@ public boolean isPalindrome(ListNode head) {
 * 链表个数为偶数，返回前半部分最后一个节点
 * 链表个数为奇数，返回中点
 */
-private ListNode getPreMiddle(ListNode head) {
+private ListNode getMiddle(ListNode head) {
     if(head == null) {
         return null;
     }

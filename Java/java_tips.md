@@ -34,4 +34,28 @@
     };
     ```
 
+4. 2020.10.28 19：48
+
+    将数组表示的边转换成邻接表的一般操作(主要是针对leetcode)
+
+    ```java
+    List<Integer>[] adj = new ArrayList[n];
+    for(int[] edge : graph) {
+        int from = edge[0];
+        int to = edge[1];
+        if(adj[from] == null) {
+            adj[from] = new ArrayList<>();
+        }
+        adj[from].add(to);
+    }
+    ```
+
+5. 2020.10.28 22:15
+
+    将`List<T>`接口对象转换成数组对象的操作：
+
+    ```java
+    list.toArray(new T[list.size()]);
+    ```
+
     

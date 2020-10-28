@@ -645,3 +645,392 @@ public int popAt(int index) {
 }
 ```
 
+----
+
+### 03.04 化栈为队
+
+```java
+private Deque<Integer> stack1;
+private Deque<Integer> stack2;
+
+/** Initialize your data structure here. */
+public MyQueue() {
+    this.stack1 = new LinkedList<>();
+    this.stack2 = new LinkedList<>();
+}
+
+/** Push element x to the back of queue. */
+public void push(int x) {
+    stack1.addLast(x);
+}
+
+/** Removes the element from in front of queue and returns that element. */
+public int pop() {
+    if(!stack2.isEmpty()) {
+        return stack2.removeLast();
+    } else if(!stack1.isEmpty()) {
+        while(!stack1.isEmpty()) {
+            int val = stack1.removeLast();
+            stack2.addLast(val);
+        }
+        return stack2.removeLast();
+    }
+    return -1;
+}
+
+/** Get the front element. */
+public int peek() {
+    if(!stack2.isEmpty()) {
+        return stack2.peekLast();
+    } else if(!stack1.isEmpty()) {
+        while(!stack1.isEmpty()) {
+            int val = stack1.removeLast();
+            stack2.addLast(val);
+        }
+        return stack2.peekLast();
+    }
+    return -1;
+}
+
+/** Returns whether the queue is empty. */
+public boolean empty() {
+    return stack1.isEmpty() && stack2.isEmpty();
+}
+```
+
+----
+
+### 03.05 栈排序
+
+```java
+private Deque<Integer> sortedStack;
+private Deque<Integer> helper;
+
+public SortedStack() {
+    this.sortedStack = new LinkedList<>();
+    this.helper = new LinkedList<>();
+}
+
+public void push(int val) {
+    if(sortedStack.isEmpty()) {
+        sortedStack.addLast(val);
+        return;
+    }
+    // 在压入新元素前，将栈中小于新元素的所有元素压到辅助栈
+    // 压入新元素后将辅助栈中元素压回原栈
+    while(!sortedStack.isEmpty() && val > sortedStack.peekLast()) {
+        int temp = sortedStack.removeLast();
+        helper.addLast(temp);
+    }
+    sortedStack.addLast(val);
+    while(!helper.isEmpty()) {
+        int temp = helper.removeLast();
+        sortedStack.addLast(temp);
+    }
+}
+
+public void pop() {
+    if(sortedStack.isEmpty()) {
+        return;
+    }
+    sortedStack.removeLast();
+}
+
+public int peek() {
+    if(sortedStack.isEmpty()) {
+        return -1;
+    }
+    return sortedStack.peekLast();
+}
+
+public boolean isEmpty() {
+    return sortedStack.isEmpty();
+}
+```
+
+----
+
+### 03.06 动物收容所
+
+```java
+/**
+* 队列的简单应用
+ */
+private Queue<int[]> catQueue;
+private Queue<int[]> dogQueue;
+
+public AnimalShelf() {
+    this.catQueue = new LinkedList<>();
+    this.dogQueue = new LinkedList<>();
+}
+
+public void enqueue(int[] animal) {
+    if(animal[1] == 0) {
+        catQueue.offer(animal);
+    } else {
+        dogQueue.offer(animal);
+    }
+}
+
+public int[] dequeueAny() {
+    if(catQueue.isEmpty() && dogQueue.isEmpty()) {
+        return new int[]{-1, -1};
+    } else if(catQueue.isEmpty() && !dogQueue.isEmpty()) {
+        return dogQueue.poll();
+    } else if(!catQueue.isEmpty() && dogQueue.isEmpty()) {
+        return catQueue.poll();
+    }
+
+    int[] dog = dogQueue.peek();
+    int[] cat = catQueue.peek();
+    if(dog[0] < cat[0]) {
+        dogQueue.poll();
+        return dog;
+    } else {
+        catQueue.poll();
+        return cat;
+    }
+}
+
+public int[] dequeueDog() {
+    if(dogQueue.isEmpty()) {
+        return new int[]{-1, -1};
+    }
+    return dogQueue.poll();
+}
+
+public int[] dequeueCat() {
+    if(catQueue.isEmpty()) {
+        return new int[]{-1, -1};
+    }
+    return catQueue.poll();
+}
+```
+
+-----
+
+------
+
+## Section 4 
+
+### 04.01 节点间通路
+
+```java
+/**
+* 关键：邻接表、广度优先搜索
+* 算是模板题
+ */
+public boolean findWhetherExistsPath(int n, int[][] graph, int start, int target) {
+    List<Integer>[] adj = new ArrayList[n];
+    for(int[] edge : graph) {
+        int from = edge[0];
+        int to = edge[1];
+        if(adj[from] == null) {
+            adj[from] = new ArrayList<>();
+        }
+        adj[from].add(to);
+    }
+
+    boolean[] visited = new boolean[n];
+    Deque<Integer> queue = new LinkedList<>();
+    queue.offer(start);
+    visited[start] = true;
+    while(!queue.isEmpty()) {
+        int node = queue.poll();
+        if(adj[node] == null) {
+            continue;
+        } 
+        for(int des : adj[node]) {
+            if(des == target) {
+                return true;
+            } else if(!visited[des]) {
+                visited[des] = true;
+                queue.offer(des);
+            }
+        }
+    }
+    return false;
+}
+```
+
+----
+
+### 04.02 最小高度树
+
+```java
+public TreeNode sortedArrayToBST(int[] nums) {
+    return sortedArrayToBST(nums, 0, nums.length - 1);
+}
+
+private TreeNode sortedArrayToBST(int[] nums, int left, int right) {
+    if(left > right) {
+        return null;
+    }
+
+    int mid = left + (right - left) / 2;
+    TreeNode root = new TreeNode(nums[mid]);
+    root.left = sortedArrayToBST(nums, left, mid - 1);
+    root.right = sortedArrayToBST(nums, mid + 1, right);
+    return root;
+}
+```
+
+----
+
+### 04.03 特定深度节点链表
+
+```java
+/**
+* 只需要对树的层序遍历进行一些调整即可
+ */
+public ListNode[] listOfDepth(TreeNode tree) {
+    List<ListNode> res = new LinkedList<>();
+    if(tree == null) {
+        return res.toArray(new ListNode[0]);
+    }
+
+    Deque<TreeNode> queue = new LinkedList<>();
+    queue.offer(tree);
+    while(!queue.isEmpty()) {
+        ListNode head = new ListNode(0);
+        ListNode runner = head;
+        int levelSize = queue.size();
+        while(levelSize > 0) {
+            TreeNode node = queue.poll();
+            levelSize--;
+            runner.next = new ListNode(node.val);
+            runner = runner.next;
+            if(node.left != null) {
+                queue.offer(node.left);
+            }
+            if(node.right != null) {
+                queue.offer(node.right);
+            }
+        }
+        res.add(head.next);
+    }
+    return res.toArray(new ListNode[res.size()]);
+}
+```
+
+----
+
+### 04.04 检查平衡性
+
+```java
+public boolean isBalanced(TreeNode root) {
+    if(root == null) {
+        return true;
+    }
+    int left = height(root.left);
+    int right = height(root.right);
+    if(Math.abs(left - right) > 1) {
+        return false;
+    }
+
+    return isBalanced(root.left) && isBalanced(root.right);
+}
+
+private int height(TreeNode root) {
+    if(root == null) {
+        return 0;
+    }
+
+    int left = height(root.left);
+    int right = height(root.right);
+    return 1 + Math.max(left, right);
+}
+```
+
+----
+
+### 04.05 合法二叉搜索树
+
+```java
+public boolean isValidBST(TreeNode root) {
+    return isValidBST(root, null, null);
+}
+
+private boolean isValidBST(TreeNode root, TreeNode min, TreeNode max) {
+    if(root == null) {
+        return true;
+    } else if(min != null && root.val <= min.val
+              || max != null && root.val >= max.val) {
+        return false;
+    }
+
+    return isValidBST(root.left, min, root) && isValidBST(root.right, root, max);
+}
+```
+
+------
+
+### 04.06 后继者
+
+```java
+/**
+* 所谓 p 的后继节点，就是这串升序数字中，比 p 大的下一个。
+*
+* 如果 p 大于当前节点的值，说明后继节点一定在 RightTree
+* 如果 p 等于当前节点的值，说明后继节点一定在 RightTree
+* 如果 p 小于当前节点的值，说明后继节点一定在 LeftTree 或自己就是
+* 递归调用 LeftTree，如果是空的，说明当前节点就是答案
+* 如果不是空的，则说明在 LeftTree 已经找到合适的答案，直接返回即可
+ */
+public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+    if(root == null) {
+        return null;
+    }
+
+    if(p.val >= root.val) {
+        return inorderSuccessor(root.right, p);
+    } else {
+        TreeNode node = inorderSuccessor(root.left, p);
+        if(node == null) {
+            return root;
+        } else {
+            return node;
+        }
+    }
+}
+```
+
+----
+
+### 04.08 首个共同祖先
+
+```java
+public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    if(root == null || root == p || root == q) {
+        return root;
+    }
+
+    TreeNode left = lowestCommonAncestor(root.left, p, q);
+    TreeNode right = lowestCommonAncestor(root.right, p, q);
+    return left == null? right : right == null? left : root;
+}
+```
+
+----
+
+### 04.10  检查子树
+
+```java
+public boolean checkSubTree(TreeNode t1, TreeNode t2) {
+    if(t1 == null) {
+        return false;
+    }
+    return isSubTree(t1, t2) || checkSubTree(t1.left, t2) || checkSubTree(t1.right, t2);
+}
+
+private boolean isSubTree(TreeNode t1, TreeNode t2) {
+    if(t1 == null && t2 == null) {
+        return true;
+    } else if(t1 == null || t2 == null || t1.val != t2.val) {
+        return false;
+    }
+
+    return isSubTree(t1.left, t2.left) && isSubTree(t1.right, t2.right);
+}
+```
+

@@ -1152,3 +1152,442 @@ private void backTracking(int[] nums, int start, LinkedList<Integer> runner) {
 }
 ```
 
+----
+
+### 08.05 递归乘法
+
+```java
+/**
+* 参考教材思路
+ */
+public int multiply(int A, int B) {
+    int smallerNum = A < B? A : B;
+    int largerNum = A < B? B : A;
+    return minProduct(smallerNum, largerNum);
+}
+
+/**
+* 递归求解两个数的乘积
+ */
+private int minProduct(int smallerNum, int largerNum) {
+    // 基线条件
+    if(smallerNum == 0) {
+        return 0;
+    } else if(smallerNum == 1) {
+        return largerNum;
+    }
+
+    int s = smallerNum >> 1;
+    int halfPro = minProduct(s, largerNum);
+    if(smallerNum % 2 == 0) {
+        return 2 * halfPro;
+    } else {
+        return halfPro * 2 + largerNum;
+    }
+}
+```
+
+----
+
+### 08.06 汉诺塔问题
+
+```java
+/**
+* 递归
+ */
+public void hanota(List<Integer> A, List<Integer> B, List<Integer> C) {
+    movePlates(A.size(), A, B, C);
+}
+
+private void movePlates(int plateNum, List<Integer> storage, List<Integer> auxiliary, List<Integer> target) {
+    if(plateNum == 1) {
+        int plate = storage.remove(storage.size() - 1);
+        target.add(plate);
+        return;
+    }
+
+    // 使用target作为缓冲区，将storage上部的plateNum - 1个盘子移到auxiliary
+    movePlates(plateNum - 1, storage, target, auxiliary);
+    // 将storage剩余的最后一个盘子移动到target
+    int plate = storage.remove(storage.size() - 1);
+    target.add(plate);
+    // 使用storage作为缓冲区，将auxiliary上部剩余的plateNum - 1个盘子移到target
+    movePlates(plateNum - 1, auxiliary, storage, target);
+}
+```
+
+----
+
+### 08.07 无重复字符串的排列组合
+
+```java
+/**
+* 经典回溯问题
+ */
+private List<String> res = new LinkedList<>();
+
+public String[] permutation(String S) {
+    if(S == null || S.length() == 0) {
+        return new String[0];
+    }
+
+    char[] charArr = S.toCharArray();
+    int len = charArr.length;
+    backTracking(charArr, new boolean[len], new char[len], 0);
+    return res.toArray(new String[res.size()]);
+}
+
+private void backTracking(char[] charArr, boolean[] visited, char[] runner, int index) {
+    if(index == charArr.length) {
+        res.add(String.valueOf(runner));
+        return;
+    }
+
+    for(int i = 0; i < charArr.length; i++) {
+        if(visited[i]) {
+            continue;
+        }
+
+        runner[index] = charArr[i];
+        visited[i] = true;
+        backTracking(charArr, visited, runner, index + 1);
+        visited[i] = false;
+        // 这里不需要再“还原”runner[index]的内容，因为后续可以直接覆盖这个位置
+    }
+}
+```
+
+----
+
+### 08.08 有重复字符串的排列组合
+
+```java
+/**
+* 典型回溯问题，注意去重即可
+ */
+private List<String> res = new LinkedList<>();
+
+public String[] permutation(String S) {
+    if(S == null || S.length() == 0) {
+        return new String[0];
+    }
+
+    char[] charArr = S.toCharArray();
+    Arrays.sort(charArr);
+    int len = charArr.length;
+    backTracking(charArr, new boolean[len], new char[len], 0);
+    return res.toArray(new String[res.size()]);
+}   
+
+private void backTracking(char[] charArr, boolean[] visited, char[] runner, int index) {
+    if(index == charArr.length) {
+        res.add(String.valueOf(runner));
+        return;
+    }
+
+    for(int i = 0; i < charArr.length; i++) {
+        if(visited[i] || (i > 0 && charArr[i] == charArr[i-1] && !visited[i-1])) {
+            continue;
+        }
+
+        runner[index] = charArr[i];
+        visited[i] = true;
+        backTracking(charArr, visited, runner, index + 1);
+        visited[i] = false;
+    }
+}
+```
+
+----
+
+### 08.09 括号
+
+```java
+/**
+* 典型回溯问题
+ */
+List<String> res = new LinkedList<>();
+public List<String> generateParenthesis(int n) {
+    if(n <= 0) {
+        return res;
+    }
+
+    backTracking(n, n, new StringBuffer());
+    return res;
+}
+
+private void backTracking(int left, int right, StringBuffer runner) {
+    if(left > right || left < 0 || right < 0) {
+        return;
+    } else if(left == 0 && right == 0) {
+        res.add(runner.toString());
+        return;
+    }
+
+    runner.append('(');
+    backTracking(left - 1, right, runner);
+    runner.deleteCharAt(runner.length() - 1);
+
+    runner.append(')');
+    backTracking(left, right - 1, runner);
+    runner.deleteCharAt(runner.length() - 1);
+}
+```
+
+----
+
+### 08.10 颜色填充
+
+```java
+/**
+* 典型深度优先搜索问题
+ */
+public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+    int oldColor = image[sr][sc];
+    if(newColor == oldColor) {
+        return image;
+    }
+
+    dfs(image, sr, sc, oldColor, newColor);
+    return image;
+}
+
+private void dfs(int[][] image, int sr, int sc, int oldColor, int newColor) {
+    if(sr < 0 || sr >= image.length || sc < 0 || sc >= image[0].length
+       || image[sr][sc] != oldColor) {
+        return;
+    }
+
+    image[sr][sc] = newColor;
+    dfs(image, sr - 1, sc, oldColor, newColor);
+    dfs(image, sr, sc - 1, oldColor, newColor);
+    dfs(image, sr + 1, sc, oldColor, newColor);
+    dfs(image, sr, sc + 1, oldColor, newColor);
+}
+```
+
+----
+
+### 08.11 硬币
+
+```java
+/**
+* 完全背包问题
+ */
+public int waysToChange(int n) {
+    int[] dp = new int[n+1];
+    int[] coins = new int[]{1, 5, 10, 25};
+    dp[0] = 1;
+    for(int coin : coins) {
+        for(int j = coin; j <= n; j++) {
+            dp[j] = (dp[j] + dp[j - coin]) % 1000000007;
+        }
+    }
+    return dp[n];
+}
+```
+
+----
+
+### 08.12 八皇后
+
+```java
+/**
+* 回溯
+ */
+List<List<String>> res = new LinkedList<>();
+public List<List<String>> solveNQueens(int n) {
+    if(n <= 0) {
+        return res;
+    }
+
+    char[][] board = new char[n][n];
+    for(char[] line : board) {
+        Arrays.fill(line, '.');
+    }
+    backTracking(board, 0);
+    return res;
+}
+
+private void backTracking(char[][] board, int row) {
+    if(row == board.length) {
+        List<String> runner = new LinkedList<>();
+        for(char[] line : board) {
+            runner.add(String.valueOf(line));
+        }
+        res.add(runner);
+    }
+
+    for(int i = 0; i < board[0].length; i++) {
+        if(!isValid(board, row, i)) {
+            continue;
+        }
+
+        board[row][i] = 'Q';
+        backTracking(board, row + 1);
+        board[row][i] = '.';
+    }
+}
+
+private boolean isValid(char[][] board, int row, int col) {
+    int m = board.length;
+    int n = board[0].length;
+    for(int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+        if(board[i][j] == 'Q') {
+            return false;
+        }
+    }
+    for(int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
+        if(board[i][j] == 'Q') {
+            return false;
+        }
+    }
+    for(int i = row - 1, j = col; i >= 0; i--) {
+        if(board[i][j] == 'Q') {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+----
+
+### 08.13 堆箱子
+
+**设dp[i]表示以第i个箱子为结尾的上升子序列的最大总高度**
+
+![堆箱子.png](../../../mdPics/1e8cdd8cda12d2c02b6a0a470e3fe84d3ebf30b967f871e12c519657b233abc8-%E5%A0%86%E7%AE%B1%E5%AD%90.png)
+
+```java
+/**
+* 动态规划，最长上升子序列的变种问题
+ */
+public int pileBox(int[][] box) {
+    // 将每个箱子按照高度非递减排列(其实按照任意维度排列都允许)
+    Arrays.sort(box, (o1, o2) -> (o1[2] - o2[2]));
+    int len = box.length;
+    int[] dp = new int[len];
+    dp[0] = box[0][2];
+    int res = dp[0];
+
+    for(int i = 1; i < len; i++) {
+        int preMax = 0;
+        for(int j = 0; j < i; j++) {
+            if(largerBox(box[j], box[i])) {
+                preMax = Math.max(preMax, dp[j]);
+            }
+        }
+        dp[i] = preMax + box[i][2];
+        res = Math.max(res, dp[i]);
+    }
+    return res;
+}
+
+private boolean largerBox(int[] a, int[] b) {
+    return a[0] < b[0] && a[1] < b[1] && a[2] < b[2];
+}
+```
+
+----
+
+### 08.14 布尔运算
+
+> https://leetcode-cn.com/problems/boolean-evaluation-lcci/solution/java-ji-yi-hua-sou-suo-by-npe_tle/
+
+```java
+/**
+* 区间动态规划
+* dp[start][end][result] = 索引start到end值为result的方案总数
+ */
+private char[] charArr;
+private int[][][] dp;
+
+public int countEval(String s, int result) {
+    if(s == null || s.length() == 0) {
+        return 0;
+    }
+
+    this.charArr = s.toCharArray();
+    int len = charArr.length;
+    this.dp = new int[len][len][2];
+    for(int i = 0; i < len; i++) {
+        for(int j = 0; j < len; j++) {
+            Arrays.fill(dp[i][j], -1);
+        }
+    }
+
+    return checkForRes(0, len - 1, result);
+}
+
+/**
+* 计算区间start到end内值为result的方案数
+ */
+private int checkForRes(int start, int end, int result) {
+    // 基线条件
+    if(start == end) {
+        return charArr[start] - '0' == result? 1 : 0;
+    } else if(dp[start][end][result] != -1) {
+        return dp[start][end][result];
+    }
+
+    int res = 0;
+    for(int i = start; i < end; i += 2) {
+        char operator = charArr[i + 1];
+        for(int j = 0; j <= 1; j++) {
+            for(int k = 0; k <= 1; k++) {
+                if(getRightBoolRes(j, k, operator) == result) {
+                    res += checkForRes(start, i, j) * checkForRes(i + 2, end, k);
+                }
+            }
+        }
+    }
+    dp[start][end][result] = res;
+    return res;
+}
+
+/**
+* 计算逻辑表达式结果
+ */
+private int getRightBoolRes(int valA, int valB, char operator) {
+    switch (operator) {
+        case '&':
+            return valA & valB;
+        case '|':
+            return valA | valB;
+        case '^':
+            return valA ^ valB;
+    }
+    return valA & valB;
+}
+```
+
+-----
+
+-----
+
+## Section 10
+
+### 10.01 合并排序的数组
+
+```java
+/**
+* 教材的思路很棒
+ */
+public void merge(int[] A, int m, int[] B, int n) {
+    int tailA = m - 1;
+    int tailB = n - 1;
+    int lastIndex = m + n - 1;
+    while(tailB >= 0) {
+        if(tailA >= 0 && A[tailA] > B[tailB]) {
+            A[lastIndex] = A[tailA];
+            tailA--;
+        } else {
+            A[lastIndex] = B[tailB];
+            tailB--;
+        }
+        lastIndex--;
+    }
+}
+```
+

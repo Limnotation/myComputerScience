@@ -39,6 +39,7 @@
       - [题目示例29  `leetcode 156 上下翻转二叉树`](#题目示例29-leetcode-156-上下翻转二叉树)
       - [题目示例30 `leetcode 654 最大二叉树`](#题目示例30-leetcode-654-最大二叉树)
       - [题目示例31 `leetcode 100 相同的树`](#题目示例31-leetcode-100-相同的树)
+      - [题目示例32 `leetcode 129 求根到叶子节点数字之和`](#题目示例32-leetcode-129-求根到叶子节点数字之和)
     - [二叉搜索树](#二叉搜索树)
       - [题目示例1 `leetcode 98 验证二叉搜索树`](#题目示例1-leetcode-98-验证二叉搜索树)
       - [题目示例2 `leetcode  701  二叉搜索树中的插入操作`](#题目示例2-leetcode-701-二叉搜索树中的插入操作)
@@ -171,6 +172,7 @@
       - [题目示例9 `leetcode 199 二叉树的右视图`](#题目示例9-leetcode-199-二叉树的右视图)
       - [题目示例10 `leetcode 257 二叉树的所有路径`](#题目示例10-leetcode-257-二叉树的所有路径)
       - [题目示例11 `面试题 16.19 水域大小`](#题目示例11-面试题-1619-水域大小)
+      - [题目示例12 `leetcode 463 岛屿的周长`](#题目示例12-leetcode-463-岛屿的周长)
   - [广度优先搜索](#广度优先搜索)
     - [典型题目](#典型题目-3)
       - [题目1 `leetcode 207 课程表`](#题目1-leetcode-207-课程表)
@@ -1435,6 +1437,35 @@ private boolean isSameTree(TreeNode p, TreeNode q) {
     }
 
     return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+}
+```
+
+-----
+
+##### 题目示例32 `leetcode 129 求根到叶子节点数字之和`
+
+```java
+/**
+* 在先序遍历基础上进行一些调整
+ */
+private int res = 0;
+public int sumNumbers(TreeNode root) {
+    inorderTra(root, 0);
+    return res;
+}
+
+private void inorderTra(TreeNode root, int curVal) {
+    if(root == null) {
+        return;
+    }
+
+    curVal = 10 * curVal + root.val;
+    if(root.left == null && root.right == null) {
+        res += curVal;
+    }
+    inorderTra(root.left, curVal);
+    inorderTra(root.right, curVal);
+
 }
 ```
 
@@ -5746,6 +5777,43 @@ private int dfs(int[][] land, int i, int j) {
         + dfs(land, i - 1, j + 1)
         + dfs(land, i + 1, j - 1)
         + dfs(land, i + 1, j + 1);
+}
+```
+
+----
+
+##### 题目示例12 `leetcode 463 岛屿的周长`
+
+```java
+public int islandPerimeter(int[][] grid) {
+    for(int i = 0; i < grid.length; i++) {
+        for(int j = 0; j < grid[0].length; j++) {
+            // 因为只有一个岛屿，所以通过DFS最终会把整个岛屿都沉没掉，可以在这里直接返回结果
+            if(grid[i][j] == 1) {
+                return dfs(grid, i, j);
+            }
+        }
+    }
+    return 0;
+}
+
+/**
+* dfs遍历求出岛屿的周长，这里使用了沉岛思想
+* 算法成功的关键：在DFS遍历过程中，每从一个岛屿方格走向一个非岛屿方格，周长加一
+* 非岛屿方格包括了地图中的水域以及与网格边界相邻的外部区域
+ */
+private int dfs(int[][] grid, int row, int col) {
+    if(row < 0 || row >= grid.length || col < 0 || col >= grid[0].length || grid[row][col] == 0) {
+        return 1;
+    } else if(grid[row][col] != 1) {
+        return 0;
+    }
+
+    grid[row][col] = 2;
+    return dfs(grid, row - 1, col)
+        + dfs(grid, row, col - 1)
+        + dfs(grid, row + 1, col)
+        + dfs(grid, row, col + 1);
 }
 ```
 

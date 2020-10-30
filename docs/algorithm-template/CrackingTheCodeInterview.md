@@ -1034,3 +1034,121 @@ private boolean isSubTree(TreeNode t1, TreeNode t2) {
 }
 ```
 
+------
+
+-------
+
+
+
+## Section 8
+
+### 08.01 三步问题
+
+```java
+/**
+* 斐波那契问题的简单变形
+ */
+public int waysToStep(int n) {
+    int threeStepsBefore = 1;
+    int twoStepsBefore = 2;
+    int oneStepsBefore = 4;
+    if(n < 3) {
+        return n;
+    } else if(n == 3) {
+        return 4;
+    }
+
+    int steps = 0;
+    for(int i = 4; i <= n; i++) {
+        steps = (threeStepsBefore + (twoStepsBefore + oneStepsBefore) % 1000000007) % 1000000007;
+        threeStepsBefore = twoStepsBefore;
+        twoStepsBefore = oneStepsBefore;
+        oneStepsBefore = steps;
+    }
+    return steps;
+}
+```
+
+----
+
+### 08.02 迷路的机器人
+
+```java
+private int rowLen;
+private int colLen;
+private int[][] grid;
+private List<List<Integer>> res = new LinkedList<>();
+
+public List<List<Integer>> pathWithObstacles(int[][] obstacleGrid) {
+    if(obstacleGrid == null || obstacleGrid.length == 0) {
+        return res;
+    }
+
+    this.grid = obstacleGrid;
+    this.rowLen = grid.length;
+    this.colLen = grid[0].length;
+
+    backTracking(0, 0, new boolean[rowLen][colLen]);
+    return res;
+}
+
+/**
+* 回溯法
+ */
+private boolean backTracking(int curRow, int curCol, boolean[][] visited) {
+    // 访问到的节点不合法，直接返回
+    if(curRow >= rowLen || curCol >= colLen || grid[curRow][curCol] == 1 || visited[curRow][curCol]) {
+        return false;
+    }
+
+    // 选择(将当前节点加入到路径中)
+    res.add(Arrays.asList(curRow, curCol));
+    visited[curRow][curCol] = true;
+	// 若已到达终点，则直接返回，否则进入下一层决策树
+    if(curRow == rowLen - 1 && curCol == colLen - 1) {
+        return true;
+    } else if(backTracking(curRow + 1, curCol, visited) || backTracking(curRow, curCol + 1, visited)) {
+        return true;
+    }
+	// 到达这里时表示由(curRow, curCol)的节点无法到达终点，于是撤销选择
+    // 这里未重置 visited[curRow][curCol]的原因是：由这个节点无法到达终
+    // 点，并且机器人只能往下或者往右走，则这个点一定不可能出现在结果路径
+    // 所以不会重置其访问状态
+    res.remove(res.size() - 1);
+    return false;
+}
+```
+
+-------
+
+
+
+------
+
+### 08.04 幂集
+
+```java
+/**
+* 回溯法典型题目
+ */
+List<List<Integer>> res = new LinkedList<>();
+public List<List<Integer>> subsets(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return res;
+    }
+
+    backTracking(nums, 0, new LinkedList<Integer>());
+    return res;
+}
+
+private void backTracking(int[] nums, int start, LinkedList<Integer> runner) {
+    res.add(new LinkedList(runner));
+
+    for(int i = start; i < nums.length; i++) {
+        runner.addLast(nums[i]);
+        backTracking(nums, i + 1, runner);
+        runner.removeLast();
+    }
+}
+```
+

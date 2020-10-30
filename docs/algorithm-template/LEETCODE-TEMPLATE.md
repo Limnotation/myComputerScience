@@ -9256,18 +9256,6 @@ private void backTracking(int N, int pos, boolean[] used) {
 
 **这种双指针类型常用在链表问题中**
 
------
-
-##### 题目示例1  `leetcode 19 删除链表的倒数第N个节点`
-
-```java
- 
-```
-
------
-
-题目示例
-
 ------
 
 #### 左右指针（对撞指针）
@@ -9366,6 +9354,66 @@ public String reverseStr(String s, int k) {
         }
     }
     return String.valueOf(charArr);
+}
+```
+
+-----
+
+##### 题目示例4 `leetcode 1616 分割两个字符串获得回文串`
+
+```java
+public boolean checkPalindromeFormation(String a, String b) {
+    // 两个字符串的前缀都要试一遍
+    return check(a, b) || check(b, a);
+}
+
+/**
+* 分别从前往后以及从后往前遍历字符串a和b直到遇到不相等的字符
+* 1、如果leftIndex指针已经越过了字符串长度的一半，表示a的前半部分与b的后半部分重叠并且可以组成回文
+* 2、如果leftIndex为越过字符串的一半，则如果a或b的[leftIndex, rightIndex + 1]子串是回文，则也可以
+* 	拼接出回文串
+ */
+private boolean check(String a, String b) {
+    if(a == null || b == null || a.length() != b.length()) {
+        return false;
+    }
+
+    int len = a.length();
+    int leftIndex = 0;
+    int rightIndex = len - 1;
+    while(leftIndex < rightIndex) {
+        if(a.charAt(leftIndex) == b.charAt(rightIndex)) {
+            leftIndex++;
+            rightIndex--;
+        } else {
+            break;
+        }
+    }
+    if(leftIndex >= len / 2) {
+        return true;
+    }
+    return isPalindrome(a.substring(leftIndex, rightIndex + 1)) 
+        || isPalindrome(b.substring(leftIndex, rightIndex + 1));
+}
+
+/**
+* 判断字符串是否为回文串
+ */
+private boolean isPalindrome(String str) {
+    if(str == null || str.length() == 0) {
+        return false;
+    }
+
+    int left = 0;
+    int right = str.length() - 1;
+    while(left < right) {
+        if(str.charAt(left) != str.charAt(right)) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+    return true;
 }
 ```
 

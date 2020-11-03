@@ -1591,3 +1591,106 @@ public void merge(int[] A, int m, int[] B, int n) {
 }
 ```
 
+-----
+
+### 10.02 变位词组
+
+```java
+/**
+* 哈希表问题，需要多熟悉一些API的使用
+ */
+public List<List<String>> groupAnagrams(String[] strs) {
+    Map<String, List<String>> map = new HashMap<>();
+    for(String str : strs) {
+        char[] temp = str.toCharArray();
+        Arrays.sort(temp);
+        map.computeIfAbsent(String.valueOf(temp), unused -> new LinkedList<>()).add(str);
+    }
+    return new LinkedList(map.values());
+}
+```
+
+----
+
+### 10.03 搜索旋转数组
+
+> https://leetcode-cn.com/problems/search-rotate-array-lcci/solution/
+
+```java
+public int search(int[] arr, int target) {
+    int len = arr.length;
+    int left = 0;
+    int right = len - 1;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(arr[left] < arr[mid]) {
+            if(arr[left] <= target && target <= arr[mid]) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        } else if(arr[left] > arr[mid]){
+            if(arr[left] <= target || target <= arr[mid]) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        } else if(arr[left] == arr[mid]){
+            if(arr[left] != target) {
+                left++;
+            } else {
+                right = left;
+            }
+        }
+    }
+    return (arr[left] == target)? left : -1;
+}
+```
+
+---
+
+### 10.05 稀疏矩阵搜索
+
+```java
+/**
+* 直接暴力法解决
+ */
+public int findString(String[] words, String s) {
+    for(int i = 0; i < words.length; i++) {
+        if(words[i].equals(s)) {
+            return i;
+        }
+    }
+    return -1;
+}
+```
+
+---
+
+### 10.09 排序矩阵查找
+
+```java
+/**
+* 跟教材解法1思路一致
+ */
+public boolean searchMatrix(int[][] matrix, int target) {
+    if(matrix == null || matrix.length == 0) {
+        return false;
+    }
+    int rowLen = matrix.length;
+    int colLen = matrix[0].length;
+    int row = 0;
+    int col = colLen - 1;
+    while(row < rowLen && col >= 0) {
+        if(matrix[row][col] == target) {
+            return true;
+        } else if(matrix[row][col] < target) {
+            row++;
+        } else {
+            col--;
+        }
+    }
+    return false;
+}
+```
+

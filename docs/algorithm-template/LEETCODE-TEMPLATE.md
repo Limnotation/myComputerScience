@@ -6417,7 +6417,7 @@ private boolean search(int[] nums, int target) {
         
         // 无法判断哪部分有序时，直接移动左边界
         if(nums[left] == nums[mid]) {
-            left++;
+            left++;	
             continue;
         }
 
@@ -7116,9 +7116,29 @@ private int lengthOfLIS(int[] nums) {
 ##### 题目示例6 `leetcode 139 单词拆分`
 
 ```java
-private boolean wordBreak( String s, List<String> wordDict )
-{
-    
+/**
+* dp[i]表示字符串前i个字符是否可以拆分成字典中的单词
+* 状态转移方程: dp[i] = dp[j] & set.contains(s.substring(j, i)) (0 <= j < i)
+ */
+private boolean wordBreak(String s, List<String> wordDict) {
+    Set<String> set = new HashSet<>();
+    for(String word : wordDict) {
+        set.add(word);
+    }
+
+    int len = s.length();
+    boolean[] dp = new boolean[len + 1];
+    // 空字符串被认为可以拆分
+    dp[0] = true;
+    for(int i = 1; i <= len; i++) {
+        for(int j = 0; j < i; j++) {
+            dp[i] = dp[j] & set.contains(s.substring(j, i));
+            if(dp[i]) {
+                break;
+            }
+        }
+    }
+    return dp[len];
 }
 ```
 

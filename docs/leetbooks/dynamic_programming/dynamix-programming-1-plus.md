@@ -1,3 +1,20 @@
+- [线性动态规划](#线性动态规划)
+  - [单串](#单串)
+    - [LIS系列](#lis系列)
+      - [题目1 `leetcode 300 最长上升子序列`](#题目1-leetcode-300-最长上升子序列)
+      - [题目2 `leetcode 673 最长递增子序列的个数`](#题目2-leetcode-673-最长递增子序列的个数)
+      - [题目3 `leetcode 354 俄罗斯套娃信封问题`](#题目3-leetcode-354-俄罗斯套娃信封问题)
+    - [最大子数组和系列](#最大子数组和系列)
+      - [题目1 `leetcode 53 最大子序和`](#题目1-leetcode-53-最大子序和)
+      - [题目2 `leetcode 152 乘积最大子数组`](#题目2-leetcode-152-乘积最大子数组)
+      - [题目3 `leetcode 918 环形子数组的最大和`](#题目3-leetcode-918-环形子数组的最大和)
+      - [题目4 `面试题17.24 最大子矩阵`](#题目4-面试题1724-最大子矩阵)
+      - [题目5 `leetcode 363 矩形区域不超过K的最大数值和`](#题目5-leetcode-363-矩形区域不超过k的最大数值和)
+    - [打家劫舍系列](#打家劫舍系列)
+      - [题目1 `leetcode 198 打家劫舍`](#题目1-leetcode-198-打家劫舍)
+      - [题目2 `leetcode 213 打家劫舍II`](#题目2-leetcode-213-打家劫舍ii)
+      - [题目3 `leetcode 740 删除与获得点数`](#题目3-leetcode-740-删除与获得点数)
+      - [题目4 `leetcode 1388 3n块披萨`](#题目4-leetcode-1388-3n块披萨)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -477,7 +494,7 @@ private int rob(int[] nums, int left, int right) {
 *		  countPoints[i]表示个数(countPoints[i] = k表示点数i一共出现了k次)
 *		3、对于codePoints数组而言，选取下标为i的元素就等价于选择了nums中的一个元素，此时与该
 *		  元素相邻的其他元素都必须删除，即选取下标i后相邻的元素都不可以再选取，但是下标i的所有
-*		  元素都可以被选取
+*		  元素都可以被选取(因为相邻的元素已经被全部删除)
 *	如上提出的解决方案最后一个步骤的实现思路与题目1 打家劫舍 一致
 */
 private int deleteAndEarn(int[] nums) {
@@ -497,14 +514,28 @@ private int deleteAndEarn(int[] nums) {
     for(int i = 0; i < len; i++) {
         countPoints[nums[i]]++;
     }
+    
     int[] dp = new int[maxVal + 1];
     dp[0] = 0;
     dp[1] = countPoints[1] * 1;
-
     for(int i = 2; i <= maxVal; i++) {
         dp[i] = Math.max(dp[i-1], dp[i-2] + countPoints[i] * i);
     }
     return dp[maxVal];
 }
 ```
+
+----
+
+##### 题目4 `leetcode 1388 3n块披萨`
+
+```java
+/**
+* to-do
+ */
+```
+
+-----
+
+-----
 

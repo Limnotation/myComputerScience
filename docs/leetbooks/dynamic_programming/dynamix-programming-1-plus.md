@@ -15,6 +15,9 @@
       - [题目2 `leetcode 213 打家劫舍II`](#题目2-leetcode-213-打家劫舍ii)
       - [题目3 `leetcode 740 删除与获得点数`](#题目3-leetcode-740-删除与获得点数)
       - [题目4 `leetcode 1388 3n块披萨`](#题目4-leetcode-1388-3n块披萨)
+    - [单串问题变形:需要两个位置的情况](#单串问题变形需要两个位置的情况)
+      - [题目1 `leetcode 873 最长的斐波那契子序列的长度`](#题目1-leetcode-873-最长的斐波那契子序列的长度)
+      - [题目2 `leetcode 1027 最长等差数列`](#题目2-leetcode-1027-最长等差数列)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -538,4 +541,114 @@ private int deleteAndEarn(int[] nums) {
 -----
 
 -----
+
+#### 单串问题变形:需要两个位置的情况
+
+> `dp[i][j]`表示某个以`i,j`对应元素作为结尾的序列`(i < j)`的某种值的表示
+
+##### 题目1 `leetcode 873 最长的斐波那契子序列的长度`
+
+```java
+/**
+* 参考官方题解的表述:
+* 	将斐波那契式的子序列中的两个连续项 A[i], A[j] 视为单个结点 (i, j)，整个子序列是这些连续结点之间的路径。
+* 	例如，对于斐波那契式的子序列 (A[1] = 2, A[2] = 3, A[4] = 5, A[7] = 8, A[10] = 13)，结点之间的路径
+* 	为 (1, 2) <-> (2, 4) <-> (4, 7) <-> (7, 10)。
+* 	这样做的动机是，只有当 A[i] + A[j] == A[k] 时，两结点 (i, j) 和 (j, k) 才是连通的，我们需要这些信息
+*   才能知道这一连通。现在我们得到一个类似于 最长上升子序列 的问题。
+
+* 定义状态：dp[i][j]表示以A[i]、A[j]结尾的斐波那契子序列的最大长度
+*           其中i < j,即A[i]、A[j]分别是该序列倒数第2、1位置的元素
+* 
+* 设i之前有k: 0 <= k < i,且A[k] + A[i] = A[j],则满足条件的k、i代表的
+* 最大斐波那契子序列的长度加上1就是以A[i]、A[j]结尾的最长子序列长度
+* 状态转移方程为：
+*  	dp[i][j] = max{dp[k][i] + 1 | 0 <= k < i, i < j, A[k] + A[i] = A[j]}
+* 在这个状态转移方程中，因为i < j && A[i] < A[j],理论上任何A[i],A[j]都可以组成
+* 斐波那契式序列，故将A[i][j]初始化为2(i < j表示只初始化对角线以上的部分)
+ */
+
+/**
+* 需要注意：题目需要求的是满足f(n) = f(n - 1) + f(n - 2)这样一个斐波那契式递增关系的序列
+* 		并不是求斐波那契序列的一部分！
+ */
+private int lenLongestFibSubseq(int[] A) {
+    if(A == null || A.length == 0) {
+        return 0;
+    }
+
+    int len = A.length;
+    // 建立一个数组值到下标的映射，方便根据值找寻对应下标
+    Map<Integer, Integer> valToIndexMap = new HashMap<>();
+    for(int i = 0; i < len; i++) {
+        valToIndexMap.put(A[i], i);
+    }
+	// dp数组的意义在上面已经说明，其实这里只需关注上三角部分
+    int[][] dp = new int[len][len];
+    for(int i = 0; i < len; i++) {
+        for(int j = i + 1; j < len; j++) {
+            dp[i][j] = 2;
+        }
+    }
+    
+    int res = 0;
+    for(int i = 0; i < len; i++) {
+        for(int j = i + 1; j < len; j++) {
+            // diff的值就是期望寻找的A[k]的值
+            int diff = A[j] - A[i];
+            if(valToIndexMap.containsKey(diff)) {
+                int k = valToIndexMap.get(diff);
+                dp[i][j] = Math.max(dp[i][j], dp[k][i] + 1);
+            }
+            res = Math.max(res, dp[i][j]);
+        }
+    }
+    return res > 2? res : 0;
+}
+```
+
+----
+
+##### 题目2 `leetcode 1027 最长等差数列`
+
+```java
+/**
+* 思路与题目1 相同
+* 定义状态: dp[i][j]表示以A[i]、A[j]结尾的最长等差子序列的长度
+* 
+* 设i之前有k：满足 0 <= k < i, A[i] - A[k] = A[j] - A[i] -> A[k] = 2 * A[i] - A[j]
+* 则满足条件的k、i代表的最长等差子序列长度加上1就是以A[i],A[j]结尾的最长等差子序列长度
+ */
+private int longestArithSeqLength(int[] A) {
+    if(A == null || A.length == 0) {
+        return 0;
+    }
+
+    int len = A.length;
+    int[][] dp = new int[len][len];
+    for(int i = 0; i < len; i++) {
+        for(int j = i + 1; j < len; j++) {
+            dp[i][j] = 2;
+        }
+    }
+
+    Map<Integer, Integer> valToIndexMap = new HashMap<>();
+    int res = 0;
+    for(int i = 0; i < len; i++) {
+        for(int j = i + 1; j < len; j++) {
+            int target = 2 * A[i] - A[j];
+            if(valToIndexMap.containsKey(target)) {
+                int k = valToIndexMap.get(target);
+                dp[i][j] = Math.max(dp[i][j], dp[k][i] + 1);
+            }
+            res = Math.max(res, dp[i][j]);
+        }
+        // 在这一步才更新数组值到下标的映射原因是:
+        // 数组是无序的状态，可能存在多个重复元素；
+        // 通过一个哈希表记录每个在i之前的数出现的最后一个下标，就可以在O(1)的时间内找到target所在的下标。
+        valToIndexMap.put(A[i], i);
+    }
+    return res;
+}
+```
 

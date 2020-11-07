@@ -18,6 +18,9 @@
     - [单串问题变形:需要两个位置的情况](#单串问题变形需要两个位置的情况)
       - [题目1 `leetcode 873 最长的斐波那契子序列的长度`](#题目1-leetcode-873-最长的斐波那契子序列的长度)
       - [题目2 `leetcode 1027 最长等差数列`](#题目2-leetcode-1027-最长等差数列)
+    - [单串问题：带维度单串，`dpi`,`i`为位置，`k`为附加维度](#单串问题带维度单串dpii为位置k为附加维度)
+      - [题目1 `leetcode 813 最大平均值和的分组`](#题目1-leetcode-813-最大平均值和的分组)
+      - [题目2 `leetcode `](#题目2-leetcode-)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -650,5 +653,139 @@ private int longestArithSeqLength(int[] A) {
     }
     return res;
 }
+```
+
+-----
+
+----
+
+#### 单串问题：带维度单串，`dp[i][k]`,`i`为位置，`k`为附加维度
+
+
+
+##### 题目1 `leetcode 813 最大平均值和的分组`
+
+```java
+/**
+* 定义状态:
+*   dp[i][k]表示前i个数构成k个子数组时的最大平均值和，那么对于所有0 <= j <= i-1
+*   有如下的状态转移方程:
+*       dp[i][k] = Math.max(dp[i][k], dp[j][k-1] + (A[j] + ... + A[i-1]) / (i - j))
+*/
+private double largestSumOfAverages(int[] A, int K) {
+    if(A == null || A.length == 0) {
+        return 0;
+    }
+
+    int len = A.length;
+    // dp数组
+    double[][] dp = new double[len + 1][K + 1];
+    // 前缀和数组,preSum[i]等于数组前i个数字的和 ==> preSum[i] = A[0] + .. + A[i-1]
+    // preSum[i] - preSum[j] = A[j] + .. + A[i-1]
+    double[] preSum = new double[len + 1];
+    preSum[0] = 0;
+    for(int i = 1; i <= len; i++) {
+        preSum[i] = preSum[i-1] + A[i-1];
+        dp[i][1] = preSum[i] / i;
+    }
+
+    for(int i = 1; i <= len; i++) {
+        for(int j = 0; j < i; j++) {
+            for(int k = 2; k <= K; k++) {
+                dp[i][k] = Math.max(dp[i][k], dp[j][k-1] + (preSum[i] - preSum[j]) / (i - j));
+            }
+        }
+    }
+    return dp[len][K];
+}
+```
+
+-------
+
+##### 题目2 `leetcode 887 鸡蛋掉落`
+
+```java
+/**
+* to-do
+ */
+```
+
+-----
+
+##### 题目3 `leetcode 256 粉刷房子`
+
+```java
+/**
+* 定义状态：
+*   dp[i][k]表示使用第k种颜色粉刷第i个房子时，粉刷从第0到第i间房子所需的最小花费
+* 状态转移：
+*	设K为颜色种类
+*   dp[i][k] = cost[i][k] + Math.min(dp[i-1][(k+1) % K], dp[i-1][(k+2) % K])
+*/
+private int minCost(int[][] costs) {
+    if(costs == null || costs.length == 0) {
+        return 0;
+    }
+
+    int row = costs.length;
+    int col = costs[0].length;
+    int[][] dp = new int[row][col];
+    dp[0] = costs[0];
+    for(int i = 1; i < row; i++) {
+        for(int k = 0; k < col; k++) {
+            dp[i][k] = costs[i][k] + Math.min(dp[i-1][(k+1) % col], dp[i-1][(k+2) % col]);
+        }
+    }
+
+    int res = Integer.MAX_VALUE;
+    for(int i = 0; i < col; i++) {
+        res = Math.min(res, dp[row-1][i]);
+    }
+    return res;
+}
+```
+
+-----
+
+##### 题目4 `leetcode 265 粉刷房子II`
+
+```java
+/**
+* 基本思路与leetcode 256一致
+* 区别在于由于颜色的种类可能比较多，所以需要加一层循环，每选择一种颜色涂当前房子(序号为i)时，需要求出上一个房子(i-1)
+* 使用不相同颜色时粉刷[0..i-1]的房子花费的最小值
+ */
+private int minCostII(int[][] costs) {
+    if(costs == null || costs.length == 0) {
+        return 0;
+    }
+
+    int row = costs.length;
+    int col = costs[0].length;
+    int[][] dp = new int[row][col];
+    dp[0] = costs[0];
+    for(int i = 1; i < row; i++) {
+        for(int j = 0; j < col; j++) {
+            int minCost = Integer.MAX_VALUE;
+            for(int k = 0; k < col; k++) {
+                // 求出上一个房子使用不相同颜色时花费最小值
+                if(j != k) {
+                    minCost = Math.min(minCost, dp[i-1][k]);
+                }
+            }
+            dp[i][j] = costs[i][j] + minCost;
+        }
+    }
+
+    int res = Integer.MAX_VALUE;
+    for(int i = 0; i < col; i++) {
+        res = Math.min(res, dp[row-1][i]);
+    }
+    return res;
+}
+
+/**
+* 优化: to-do
+ */
 ```
 

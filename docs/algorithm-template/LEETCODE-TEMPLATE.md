@@ -2949,7 +2949,7 @@ private ListNode reverse(ListNode head) {
 ###### 题目示例7 `leetcode 328 奇偶链表`
 
 ```java
-public ListNode oddEvenList(ListNode head) {
+private ListNode oddEvenList(ListNode head) {
     if(head == null || head.next == null) {
         return head;
     }

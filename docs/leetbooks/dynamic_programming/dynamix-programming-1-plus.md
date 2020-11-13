@@ -237,7 +237,7 @@ private int maxSubArray(int[] nums) {
 }
 
 /**
-* 根据解法1可知，当前状态(dp[i])只与前一个状态有关，所以可以压缩空间
+* 根据解法1可知，当前状态(dp[i])只与前一个状态(dp[i-1])有关，可以压缩空间
  */
 private int maxSubArray(int[] nums) {    
     if(nums == null || nums.length == 0) {
@@ -312,6 +312,7 @@ private int maxProduct(int[] nums) {
 ```java
 /**
 * 弄了一个O(n^2)的算法，超时了
+* to-do
  */
 ```
 

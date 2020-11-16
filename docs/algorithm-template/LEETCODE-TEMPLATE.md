@@ -448,7 +448,7 @@ private List<Integer> preorderTraversal(TreeNode root) {
             // 由先序遍历的规则可知(左子节点)
             root = root.left;
         }
-        // pop(右子节点)
+        // pop
         root = stack.removeLast();
         root = root.right;
     }
@@ -502,7 +502,7 @@ private List<Integer> postorderTraversal(TreeNode root) {
         
         TreeNode node = stack.peekLast();
         if(node.right == null || node.right == lastVisit) {
-            // 栈顶节点必须在没有有右子节点或者其右子节点已经被访问的情况下才能弹出
+            // 栈顶节点必须在没有有右子节点或者其右子节点刚刚被访问的情况下才能弹出
             stack.removeLast();
             res.add(node.val);
             lastVisit = node;

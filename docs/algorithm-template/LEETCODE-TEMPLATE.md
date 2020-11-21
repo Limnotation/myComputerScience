@@ -1089,13 +1089,15 @@ public Node connect(Node root) {
 ##### 题目示例20 `leetcode 102 二叉树的层序遍历`
 
 ```java
+/**
+* 借助队列实现BFS
+ */
 private List<List<Integer>> levelOrder(TreeNode root) {
     List<List<Integer>> res = new LinkedList<>();
     if(root == null) {
         return res;
     }
     
-    // BFS
     Deque<TreeNode> queue = new LinkedList<>();
     queue.offerLast(root);
     while(!queue.isEmpty()) {
@@ -1123,6 +1125,9 @@ private List<List<Integer>> levelOrder(TreeNode root) {
 ##### 题目示例21 `leetcode 107 二叉树的层次遍历II`
 
 ```java
+/**
+* 借助队列实现BFS，注意结果的添加顺序即可
+ */
 private List<List<Integer>> levelOrderBottom(TreeNode root) {
     List<List<Integer>> res = new LinkedList<>();
     if(root == null) {
@@ -1156,7 +1161,10 @@ private List<List<Integer>> levelOrderBottom(TreeNode root) {
 ##### 题目示例22`leetcode 103 二叉树的锯齿形层次遍历`
 
 ```java
-public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+/**
+* 借助队列实现BFS，注意结果的添加顺序即可
+ */
+private List<List<Integer>> zigzagLevelOrder(TreeNode root) {
     List<List<Integer>> res = new LinkedList<>();
     if(root == null) {
         return res;
@@ -1177,7 +1185,6 @@ public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
                 temp.addFirst(node.val);
             }
 
-            // 查看当前节点是否还有子节点
             if(node.left != null) {
                 queue.offer(node.left);
             }
@@ -1198,9 +1205,16 @@ public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 
 ##### 题目示例23 `leetcode 114 二叉树展开为链表`
 
-参考题解：https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/solution/114-er-cha-shu-zhan-kai-wei-lian-biao-by-ming-zhi-/
-
 ```java
+/**
+* 对二叉树进行后序遍历
+* 在遍历到当前节点时有：
+* 	1、当前节点的左子树已经展开为链表
+*	2、当前节点的右子树已经展开为链表
+* 之后的步骤为：
+* 	1、将左链表连接到当前节点的右子树，并且node.left = null
+* 	2、将右子树连接到当前节点右子树的最右侧
+ */
 private void flatten(TreeNode root) {
     // 递归终止条件
     if(root == null) {
@@ -1211,17 +1225,16 @@ private void flatten(TreeNode root) {
     flatten(root.left);
     // 步骤二：将根节点的右子树展开为链表
     flatten(root.right);
-    
     // 步骤三：将变成链表的左子树挂到根节点的右子树位置
-    TreeNode temp = root.right;
+    TreeNode right = root.right;
     root.right = root.left;
     root.left = null;
-    
     // 步骤四：将变成链表的右子树挂在变成链表的左子树的最右边
-    while(root.right != null) {
-        root = root.right;
+    TreeNode utmost = root;
+    while(utmost.right != null) {
+        utmost = utmost.right;
     }
-    root.right = temp;
+    utmost.right = right;
 }
 ```
 
@@ -1231,7 +1244,7 @@ private void flatten(TreeNode root) {
 
 ```java
 /**
-* 一定要注意理解完全二叉树的性质：若完全二叉树的层数为h，则总节点数为：2^h - 1.
+* 完全二叉树的性质：若完全二叉树为满二叉树，且层数为h，则总节点数为：2^h - 1.
 */
 public int countNodes(TreeNode root) {
     if(root == null) {
@@ -1265,10 +1278,17 @@ private int level(TreeNode root) {
 
 ----
 
-##### 题目示例25 `leetcode 958 二叉树的完全性检验`
+##### 题目示
+
+##### 例25 `leetcode 958 二叉树的完全性检验`
 
 ```java
-public boolean isCompleteTree(TreeNode root) {
+/**
+* 层序遍历二叉树，在碰到某节点子结点为null时也一并放入
+* 完全二叉树的层序遍历不可能出现空结点出现在非空结点之
+* 前，靠这个性质来判断二叉树完全性
+ */
+private boolean isCompleteTree(TreeNode root) {
     if(root == null) {
         return true;
     }
@@ -1276,11 +1296,6 @@ public boolean isCompleteTree(TreeNode root) {
     Deque<TreeNode> queue = new LinkedList<>();
     queue.offerLast(root);
     boolean hasPrevNull = false;
-    /**
-    * 层序遍历二叉树，在碰到某节点子结点为null时也一并放入
-    * 完全二叉树的层序遍历不可能出现空结点出现在非空结点之
-    * 前，靠这个性质来判断二叉树完全性
-    */
     while(!queue.isEmpty()) {
         TreeNode node = queue.pollFirst();
         if(node != null) {

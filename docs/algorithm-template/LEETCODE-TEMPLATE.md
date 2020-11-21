@@ -531,7 +531,6 @@ private int maxDepth(TreeNode root) {
         return 0;
     }
     
-    // divide 
     int left = maxDepth(root.left);
     int right = maxDepth(root.right);
     return Math.max(left, right) + 1;
@@ -543,7 +542,10 @@ private int maxDepth(TreeNode root) {
 ##### 题目示例2`leetcode 110 平衡二叉树`
 
 ```java
-private boolean isBalanced(TreeNode root) {
+/**
+* 自顶向下对每个节点代表的子树检查其平衡性，思路直接但是多了很多重复计算
+ */
+public boolean isBalanced(TreeNode root) {
     if(root == null) {
         return true;
     }
@@ -551,11 +553,7 @@ private boolean isBalanced(TreeNode root) {
     int left = maxDepth(root.left);
     int right = maxDepth(root.right);
     int absDiff = Math.abs(left - right);
-    if(absDiff > 1) {
-        return false;
-    }
-    
-    return isBalanced(root.left) && isBalanced(root.right);
+    return absDiff <= 1 && isBalanced(root.left) && isBalanced(root.right);
 }
 
 private int maxDepth(TreeNode root) {
@@ -567,27 +565,51 @@ private int maxDepth(TreeNode root) {
     int right = maxDepth(root.right);
     return Math.max(left, right) + 1;
 }
+
+/**
+* 先对二叉树进行先序遍历，递归返回前计算子树的平衡性
+* 参考题解：https://leetcode-cn.com/problems/balanced-binary-tree/solution/balanced-binary-tree-di-gui-fang-fa-by-jin40789108/
+ */
+public boolean isBalanced(TreeNode root) {
+    if(root == null) {
+        return true;
+    }
+
+    int flag = traverse(root);
+    return flag != -1;
+}
+
+private int traverse(TreeNode root) {
+    if(root == null) {
+        return 0;
+    }
+
+    int left = traverse(root.left);
+    int right = traverse(root.right);
+    if(left == -1 || right == -1) {
+        return -1;
+    }
+
+    return Math.abs(left - right) <= 1? Math.max(left, right) + 1 : -1;
+}
 ```
 
 -----
 
 ##### 题目示例3 `leetcode 124:二叉树中的最大路径和`
 
-**思路**：分治法，分为三种情况
-
-- 具有最大路径和的路径在左子树
-- 具有最大路径和的路径在右子树
-- 具有最大路径和的路径经过当前的根节点
-
-需要保存两个变量：
-
-- 第一个变量为全局变量res，保存最大路径和
-
-- 第二个变量保存左右子树单向路径和加上根节点值，为当前子树的经过根节点的路径的最大值
-
-    比较两个变量取最大值
-
 ```java
+/**
+* 思路：分治法，分为三种情况
+* 1、具有最大路径和的路径在左子树
+* 2、具有最大路径和的路径在右子树
+* 3、具有最大路径和的路径经过当前的根节点
+* 
+* 需要保存两个变量：
+* 第一个变量为全局变量res，保存当前找到的最大路径和
+* 第二个变量保存左右子树单向路径和加上根节点值，为当前子树的经过子树根节点的路径最大值
+* 比较两个变量取最大值，更新全局变量res
+*/
 int res = Integer.MIN_VALUE;
 public int maxPathSum(TreeNode root) {
     oneSideMax(root);
@@ -634,16 +656,17 @@ private TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 ```java
 private int maxDiameter = 0;
 public int diameterOfBinaryTree(TreeNode root) {
-    findMaxDiameter(root);
+    oneSideMax(root);
     return maxDiameter;
 }
 
-private int findMaxDiameter(TreeNode root) {
-    if(root == null)
+private int oneSideMax(TreeNode root) {
+    if(root == null) {
         return 0;
+    }
     
-    int left = findMaxDiameter(root.left);
-    int right = findMaxDiameter(root.right);
+    int left = oneSideMax(root.left);
+    int right = oneSideMax(root.right);
   	maxDiameter = Math.max(maxDiameter, left + right);
     return Math.max(left, right) + 1;
 }
@@ -675,6 +698,9 @@ private TreeNode invertTree(TreeNode root) {
 ##### 题目示例7 `leetcode 617 合并二叉树`
 
 ```java
+/**
+* 同时对两棵树进行先序遍历，合并遍历节点即可
+ */
 private TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
 	if(t1 == null && t2 == null) {
         return null;
@@ -686,7 +712,7 @@ private TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
     
     TreeNode node = new TreeNode(t1.val + t2.val);
     node.left = mergeTrees(t1.left, t2.left);
-    node.right = mergeTrees(t1.right, t2.right	);
+    node.right = mergeTrees(t1.right, t2.right);
     return node;
 }
 ```
@@ -730,11 +756,12 @@ private int pathSumStartsWithRoot(TreeNode root, int sum) {
         return 0;
     }
     
-    int res = 0;
-    if(root.val == sum) {
-        res++;
-    }
-    res += pathSumStartsWithRoot(root.left, sum - root.val) + pathSumStartsWithRoot(root.right, sum - root.val);
+	sum -= root.val;
+    int res = (sum == 0)? 1 : 0;
+    // 在这里res与左右子树可能的结果需要进行相加操作，原因是即使当前节点作为路径尾结点
+    // 已经满足题目要求，如果出现其子节点值为0，此时子节点加入的路径也满足题目要求，但
+    // 与以当前节点为尾结点的路径是相互独立的
+    res += pathSumStartsWithRoot(root.left, sum) + pathSumStartsWithRoot(root.right, sum);
     return res;
 }
 ```
@@ -751,11 +778,13 @@ public boolean isSubtree(TreeNode s, TreeNode t) {
     return isSubTreeWithRoot(s, t) || isSubtree(s.left, t) || isSubtree(s.right, t);
 }
 
+/**
+* 同时对两棵树进行先序遍历并比较
+ */
 private boolean isSubTreeWithRoot(TreeNode s, TreeNode t) {
     if(s == null && t == null) {
         return true;
-    }
-    if(s == null || t == null || s.val != t.val) {
+    } else if(s == null || t == null || s.val != t.val) {
         return false;
     }
     return isSubTreeWithRoot(s.left, t.left) && isSubTreeWithRoot(s.right, t.right);
@@ -768,10 +797,7 @@ private boolean isSubTreeWithRoot(TreeNode s, TreeNode t) {
 
 ```java
 public boolean isSymmetric(TreeNode root) {
-    if(root == null) {
-        return true;
-    }
-    return isSymmetric(root.left, root.right); 
+	return isSymmetric(root, root);
 }
 
 private boolean isSymmetric(TreeNode t1, TreeNode t2) {
@@ -789,6 +815,13 @@ private boolean isSymmetric(TreeNode t1, TreeNode t2) {
 ##### 题目示例12 `leetcode 111 二叉树的最小深度`
 
 ```java
+/**
+* 注：最小深度是从根节点到最近叶子节点的最短路径上的节点数量!!!
+* 叶子节点的定义是左孩子和右孩子都为 null 时叫做叶子节点
+* 1、当 root 节点左右孩子都为空时，返回 1
+* 2、当 root 节点左右孩子有一个为空时，返回不为空的孩子节点的深度
+* 3、当 root 节点左右孩子都不为空时，返回左右孩子较小深度的节点值
+ */
 private int minDepth(TreeNode root) {
     if(root == null) {
         return 0;
@@ -807,6 +840,9 @@ private int minDepth(TreeNode root) {
 ##### 题目示例13 `leetcode 404 左叶子之和`
 
 ```java
+/**
+* 左叶子：如果当前节点的左子节点为叶子节点，称该叶子节点为左叶子
+ */
 public int sumOfLeftLeaves(TreeNode root) {
     if(root == null) {
         return 0;
@@ -829,6 +865,9 @@ private boolean isLeaf(TreeNode root) {
 ##### 题目示例14 `leetcode 687 最长同值路径`
 
 ```java
+/**
+* 与leetcode 124 最大路径和的思路类似
+ */
 private int res = 0;
 public int longestUnivaluePath(TreeNode root) {
     arrowLength(root);
@@ -857,16 +896,19 @@ private int arrowLength(TreeNode root) {
 ##### 题目示例15 `leetcode 671 二叉树中第二小的节点`
 
 ```java
+/**
+* 方法一
+* 最简单的思路：遍历去重 + 排序
+ */
 public int findSecondMinimumValue(TreeNode root) {
     ArrayList<Integer> reL = new ArrayList<Integer>();
     inOrderTraverse(root, reL);
 
     if(reL.size() < 2) {
         return -1;
-    } else {
-        Collections.sort(reL);
-        return reL.get(1);
-    } 
+    }
+    Collections.sort(reL);
+    return reL.get(1);
 }
 
 private void inOrderTraverse(TreeNode root, ArrayList<Integer> list) {
@@ -1029,10 +1071,7 @@ public Node connect(Node root) {
             levelSize--;
             if(levelSize > 0) {
                 node.next = queue.peekFirst();
-            } else {
-                node.next = null;
-            }
-
+            } 
             if(node.left != null) {
                 queue.offerLast(node.left);
             }
@@ -1333,6 +1372,9 @@ private int widthOfBinaryTree(TreeNode root) {
 ##### 题目示例28  `leetcode 113 路径总和II`
 
 ```java
+/**
+* 回溯问题
+ */
 List<List<Integer>> res = new LinkedList<>();
 public List<List<Integer>> pathSum(TreeNode root, int sum) {
     backTracking(root, sum, new LinkedList<Integer>());
@@ -2481,7 +2523,7 @@ private ListNode insertionSortList(ListNode head) {
         // 保存未排序部分的链表
         ListNode next = cur.next;
         // 确定插入位置
-        while(pre.next != null && pre.next.val < cur.val) {
+        while(pre.next != null && pre.next.val <= cur.val) {
             pre = pre.next;
         }
         // 插入新节点
@@ -2505,7 +2547,30 @@ public ListNode sortList(ListNode head) {
 }
 
 /**
-* 找到链表的中点的前一个节点
+* 对链表进行归并排序
+ */
+private ListNode mergeSort(ListNode head) {
+    // 递归终止条件
+    if(head == null || head.next == null) {
+        return head;
+    }
+    
+    ListNode mid = getMid(head);
+    ListNode secondHalf = mid.next;
+    // 断开两个部分，避免链表成环
+    preMid.next = null;
+    // 递归地对两部分链表进行排序
+    ListNode firstHalf = mergeSort(head);
+    secondHalf = mergeSort(secondHalf);
+    // 将排序好的两条链表进行合并
+    head = mergeTwoLists(firstHalf, secondHalf);
+    return head;
+}
+
+/**
+* 找到链表的中间节点
+* 当链表长度为2n时，中间节点就是从链表头部开始数第n个节点
+* 当链表长度为2n + 1时，中间节点就是第n + 1个节点
  */
 private ListNode getMid(ListNode head) {
     ListNode slow = head;
@@ -2536,31 +2601,10 @@ private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
     
     if(l1 != null) {
         head.next = l1;
-    }
-    if( l2 != null ) {
+    } else if(l2 != null) {
         head.next = l2;
     }
     return dummy.next;
-}
-
-/**
-* 对链表进行归并排序
- */
-private ListNode mergeSort(ListNode head) {
-    // 递归终止条件
-    if(head == null || head.next == null) {
-        return head;
-    }
-    
-    ListNode preMid = getMid(head);
-    ListNode secondHalf = preMid.next;
-    // 断开两个部分，避免链表成环
-    preMid.next = null;
-    
-    ListNode firstHalf = mergeSort(head);
-    secondHalf = mergeSort(secondHalf);
-    head = mergeTwoLists(firstHalf, secondHalf);
-    return head;
 }
 ```
 

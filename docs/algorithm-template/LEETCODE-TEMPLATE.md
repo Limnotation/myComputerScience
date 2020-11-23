@@ -1278,9 +1278,7 @@ private int level(TreeNode root) {
 
 ----
 
-##### 题目示
-
-##### 例25 `leetcode 958 二叉树的完全性检验`
+##### 题目示例25 `leetcode 958 二叉树的完全性检验`
 
 ```java
 /**
@@ -1346,23 +1344,28 @@ private TreeNode postTraAndDelete(TreeNode root, int target) {
 ##### 题目示例27 `leetcode 662 二叉树最大宽度`
 
 ```java
+/**
+* 层序遍历二叉树
+ */
 private int widthOfBinaryTree(TreeNode root) {
     if(root == null) {
         return 0;
     }
 	
-    // 层次遍历二叉树，获取每层的第一个和最后一个结点的距离即为该层
+    // list存储树中每个非空节点的“坐标”，父节点和子节点坐标关系与将树按数组方式存储时一致
+    // 即leftChild = 2 * parent, rightChild = 2 * parent + 1，其中把根节点坐标设为1
     LinkedList<Integer> list = new LinkedList<>();
     Deque<TreeNode> queue = new LinkedList<>();
-    int index = 1;
+    int curIndex = 1;
     int res = 1;
     queue.addLast(root);
-    list.addLast(index);
+    list.addLast(curIzndex);
     while(!queue.isEmpty()) {
         int levelSize = queue.size();
         while(levelSize > 0) {
             TreeNode node = queue.pollFirst();
             int curIndex = list.removeFirst();
+            levelSize--;
             if(node.left != null) {
                 queue.addLast(node.left);
                 list.addLast(2 * curIndex);
@@ -1371,7 +1374,6 @@ private int widthOfBinaryTree(TreeNode root) {
                 queue.addLast(node.right);
                 list.addLast(2 * curIndex + 1);
             }
-            levelSize--;
         }
 
         if(list.size() >= 2) {
@@ -1435,12 +1437,13 @@ private TreeNode upsideDownBinaryTree(TreeNode root) {
     TreeNode parent = null;
     TreeNode brother = null;
     while(root != null) {
-        TreeNode left = root.left;
+        TreeNode tempLeft = root.left;
+        TreeNode tempRight = root.right;
         root.left = brother;
-        brother = root.right;
         root.right = parent;
         parent = root;
-        root = left;
+        brother = tempRight;
+        root = tempLeft;
     }
     return parent;
 }

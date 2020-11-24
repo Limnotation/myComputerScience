@@ -1509,11 +1509,11 @@ private boolean isSameTree(TreeNode p, TreeNode q) {
  */
 private int res = 0;
 public int sumNumbers(TreeNode root) {
-    inorderTra(root, 0);
+    preorderTra(root, 0);
     return res;
 }
 
-private void inorderTra(TreeNode root, int curVal) {
+private void preorderTra(TreeNode root, int curVal) {
     if(root == null) {
         return;
     }
@@ -1522,9 +1522,8 @@ private void inorderTra(TreeNode root, int curVal) {
     if(root.left == null && root.right == null) {
         res += curVal;
     }
-    inorderTra(root.left, curVal);
-    inorderTra(root.right, curVal);
-
+    preorderTra(root.left, curVal);
+    preorderTra(root.right, curVal);
 }
 ```
 
@@ -1586,8 +1585,11 @@ private boolean isValidBST(TreeNode root, TreeNode min, TreeNode max) {
 #####  题目示例2 `leetcode  701  二叉搜索树中的插入操作`
 
 ```java
+/**
+* 搜索到一个空结点，创建一个新的节点并返回其引用即可
+ 
+ */
 private TreeNode insertIntoBST(TreeNode root, int val) {
-    // 搜索到一个空结点，创建一个新的节点并返回其引用即可
     if(root == null) {
         root = new TreeNode(val);
     } else if(val < root.val) {
@@ -1688,6 +1690,9 @@ private TreeNode trimBST(TreeNode root, int low, int high) {
 ##### 题目示例5 `leetcode 230 二叉搜索树中第K小的元素`
 
 ```java
+/**
+* 方法一：计数法
+ */
 public int kthSmallest(TreeNode root, int k) {
     return select(root, k);
 }
@@ -1717,12 +1722,36 @@ private int select(TreeNode root, int rank) {
  */
 private int size(TreeNode root) {
     if(root == null) {
-         return 0;
+        return 0;
     }
-    
+
     int left = size(root.left);
     int right = size(root.right);
     return left + right + 1;
+}
+
+/**
+* 方法二：中序遍历
+ */
+private int count = 0;
+private int res = 0;
+public int kthSmallest(TreeNode root, int k) {
+    inorderTra(root, k);
+    return res;
+}
+
+private void inorderTra(TreeNode root, int k) {
+    if(root == null) {
+        return;
+    }
+
+    inorderTra(root.left, k);
+    count++;
+    if(count == k) {
+        res = root.val;
+        return;
+    }
+    inorderTra(root.right, k);
 }
 ```
 
@@ -1731,6 +1760,9 @@ private int size(TreeNode root) {
 ##### 题目示例6 `leetcode 538 把二叉搜索树转换为累加树`
 
 ```java
+/**
+* 调整二叉树遍历顺序：右子节点 -> 根节点 -> 左子节点
+ */
 private int sum = 0;
 public TreeNode convertBST(TreeNode root) {
     morrisTraversal(root);
@@ -1754,13 +1786,12 @@ private void morrisTraversal(TreeNode root) {
 
 ```java
 private TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-	if(root.val < p.val && root.val < q.val) {
-        return lowestCommonAncestor(root.right, p, q);
-    } else if(root.val > p.val && root.val > q.val) {
+    if(p.val < root.val && q.val < root.val) {
         return lowestCommonAncestor(root.left, p, q);
-    } else {
-        return root;
+    } else if(p.val > root.val && q.val > root.val) {
+        return lowestCommonAncestor(root.right, p, q);
     }
+    return root;
 }
 ```
 
@@ -1828,8 +1859,6 @@ private ListNode preMid(ListNode head) {
 ---
 
 ##### 题目示例10 `leetcode 653两数之和IV 输入BST`
-
-也有前缀和的思想
 
 ```java
 public boolean findTarget(TreeNode root, int k) {

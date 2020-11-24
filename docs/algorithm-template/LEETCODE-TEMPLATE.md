@@ -1858,7 +1858,7 @@ private ListNode preMid(ListNode head) {
 
 ---
 
-##### 题目示例10 `leetcode 653两数之和IV 输入BST`
+##### 题目示例10 `leetcode 653 两数之和IV 输入BST`
 
 ```java
 public boolean findTarget(TreeNode root, int k) {
@@ -1950,6 +1950,9 @@ private int size(TreeNode root) {
 ##### 题目示例13 `leetcode 776 拆分二叉搜索树`
 
 ```java
+/**
+* 参考官方题解
+ */
 private TreeNode[] splitBST(TreeNode root, int V) {
     // 递归终止条件
     if(root == null) {
@@ -1962,7 +1965,7 @@ private TreeNode[] splitBST(TreeNode root, int V) {
         res = splitBST(root.right, V);
         root.right = res[0];
         res[0] = root;
-    } else if(root.val > V) {
+    } else {
         // 根节点小于V，则其左子树可能被划分
         res = splitBST(root.left, V);
         root.left = res[1];
@@ -1977,28 +1980,25 @@ private TreeNode[] splitBST(TreeNode root, int V) {
 ##### 题目示例14 `leetcode 1214 查找两棵二叉搜索树之和`
 
 ```java
-public boolean twoSumBSTs(TreeNode root1, TreeNode root2, int target)
-{
-    if(root1 == null)
+public boolean twoSumBSTs(TreeNode root1, TreeNode root2, int target) {
+    if(root1 == null) {
         return false;
-    return findNode(root2, target - root1.val) || twoSumBSTs(root1.left, root2, target) || 
-        twoSumBSTs(root1.right, root2, target);
+    }
+    return findNode(root2, target - root1.val) 
+        || twoSumBSTs(root1.left, root2, target) 
+        || twoSumBSTs(root1.right, root2, target);
 }
 
 /**
 * 在BST中找到有特定值的结点
 */
-private boolean findNode(TreeNode root, int target)
-{
-    if(root == null)
+private boolean findNode(TreeNode root, int target) {
+    if(root == null) {
         return false;
-
-    if(root.val == target)
+    } else if(root.val == target) {
         return true;
-    else if(root.val < target)
-        return findNode(root.right, target);
-    else
-        return findNode(root.left, target);
+    }
+	return find(root.left, target) || find(root.right, target);
 }
 ```
 
@@ -2007,6 +2007,13 @@ private boolean findNode(TreeNode root, int target)
 ##### 题目示例15 `leetcode 285 二叉搜索树中的顺序后继`
 
 ```java
+/**
+* 方法一:
+* 将p.val与当前的root.val进行比较
+* 1、如果p.val < root.val,由BST特性可知，大于p.val的最小值可能在root的左子树中，也可能就是root
+*	所以此时要记录root为目前的答案
+* 2、如果p.val >= root.val,则大于p.val的最小值一定在root的右子树中
+ */
 private TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
     TreeNode res = null;
     while(root != null) {
@@ -2019,6 +2026,10 @@ private TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
     }
     return res;
 }
+
+/**
+* 方法二：中序遍历
+ */
 ```
 
 -----
@@ -2026,17 +2037,25 @@ private TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
 ##### 题目示例16 `leetcode 510 二叉搜索树中的中序后继`
 
 ```java
+/**
+* 对任意节点而言，有以下两种情况讨论
+* 1、当前节点存在右子树，则该节点的中序后继为右子树中最小的节点（最左侧的节点）
+* 2、如果当前节点不存在右子树，则从该节点开始向上追溯，直至找到第一个满足这样条件的节点：
+* 	这个节点是其父节点的左子节点，则对应节点的父节点就是满足题意的节点
+ */
 private Node inorderSuccessor(Node node) {
+    if(node == null) {
+        return null;
+    }
+
     if(node.right != null) {
-        // 目标节点右子树不为空，则其中序后继为其右子树中的最小节点
         node = node.right;
-        while(node.left != null) { 
+        while(node.left != null) {
             node = node.left;
         }
         return node;
     } else {
-        // 否则向上找到第一个这样的节点，目标节点存在于其左子树中
-        while(node.parent != null && node.parent.val < node.val) {
+        while(node.parent != null && node != node.parent.left) {
             node = node.parent;
         }
         return node.parent;
@@ -2048,31 +2067,32 @@ private Node inorderSuccessor(Node node) {
 
 ##### 题目示例17  `leetcode 426 将二叉搜索树转化为排序的双向链表`
 
-参考题解：https://leetcode-cn.com/problems/er-cha-sou-suo-shu-yu-shuang-xiang-lian-biao-lcof/solution/mian-shi-ti-36-er-cha-sou-suo-shu-yu-shuang-xian-5/
-
 ```java
-private Node curNode;
+/**
+* 中序遍历
+ */
+private Node dummyHead = new Node(-1, null, null);
+private Node runner = dummyHead;
 public Node treeToDoublyList(Node root) {
-    Node dummyHead = new Node(-1, null, null);
-    curNode = dummyHead;
-    if(root != null) {
-        inorderTraversal(root);
-        // 将链表头尾结点相连，构成循环双向链表
-        curNode.right = dummyHead.right;
-        dummyHead.right.left = curNode;
+    if(root == null) {
+        return null;
     }
+    inorderTra(root);
+    runner.right = dummyHead.right;
+    dummyHead.right.left = runner;
     return dummyHead.right;
 }
 
-private void inorderTraversal(Node root) {
-    if(root != null) {
-        inorderTraversal(root.left);
-        // 调整指针指向，将遍历过的部分调整为双向链表
-        curNode.right = root;
-        root.left = curNode;
-        curNode = root;
-        inorderTraversal(root.right);
+private void inorderTra(Node root) {
+    if(root == null) {
+        return;
     }
+
+    inorderTra(root.left);
+    runner.right = root;
+    root.left = runner;
+    runner = root;
+    inorderTra(root.right);
 }
 ```
 
@@ -2081,9 +2101,22 @@ private void inorderTraversal(Node root) {
 ##### 题目示例18 `leetcode 99 恢复二叉搜索树`
 
 ```java
+/**
+* 由BST性质可知：中序遍历序列为一个单调递增的序列；
+* 当两个节点被错误地交换时，一定会出现这样的情况：中序遍历中存在一个元素大于其顺序后继元素
+* 	当失序的两个元素相邻时，这样的情况出现一次；当失序的两个元素不相邻时，这样的情况出现两次
+* 	只出现一次失序的情况可以看作两次失序的重合
+* 
+* 对该BST进行中序遍历，寻找这样的两个节点：
+* 	1、中序遍历过程中第一次出现前一个节点的值大于后一个节点的情况，此时选取前一个节点为firstNode
+* 	2、在找到firstNode之后，出现前一个节点大于后一个节点的情况，此时选取后一个节点为secondNode
+*		// 注意步骤1中的情况也包括在步骤2寻找的情况之内
+* 交换firstNode和secondNode的值
+*/
 private void recoverTree(TreeNode root) {
     Deque<TreeNode> stack = new LinkedList<>();
-    TreeNode firstNode = null, secondNode = null;
+    TreeNode firstNode = null;
+    TreeNode secondNode = null;
     TreeNode pre = new TreeNode(Integer.MIN_VALUE);
     TreeNode cur = root;
     
@@ -2092,13 +2125,15 @@ private void recoverTree(TreeNode root) {
             stack.addLast(cur);
             cur = cur.left;
         }
-        cur = stack.removeLast();
-        if(firstNode == null && pre.val > cur.val)
+        TreeNode node = stack.removeLast();
+        if(firstNode == null && pre.val > node.val) {
             firstNode = pre;
-        if(firstNode != null && pre.val > cur.val)
-            secondNode = cur;
-        pre = cur;
-        cur = cur.right;
+        }
+        if(firstNode != null && pre.val > node.val) {
+            secondNode = node;
+        }
+        pre = node;
+        cur = node.right;
     }
     int temp = firstNode.val;
     firstNode.val = secondNode.val;

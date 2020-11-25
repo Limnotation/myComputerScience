@@ -2336,7 +2336,9 @@ public class Codec {
 ###### 题目示例1`leetcode 203 移除链表元素`
 
 ```java
-// 使用哑节点，所有节点被删除的流程都是一致的
+/**
+* 使用哑节点，所有节点被删除的流程都是一致的
+*/
 private ListNode removeElements(ListNode head, int val) {
     ListNode dummyHead = new ListNode(-1);
     dummyHead.next = head;
@@ -2357,14 +2359,12 @@ private ListNode removeElements(ListNode head, int val) {
 ###### 题目示例2 `leetcode 237 删除链表中的节点`
 
 ```java
-// 将待删除节点的后继节点的值移到当前节点，之后将后继节点删除即可
+/**
+* 将待删除节点的后继节点的值移到当前节点，之后将后继节点删除即可
+*/
 private void deleteNode(ListNode node) {
-    if(node == null) {
-        return;
-    }
     node.val = node.next.val;
     node.next = node.next.next;
-    return;
 }
 ```
 
@@ -2387,10 +2387,11 @@ private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
         runner = runner.next;
     }
     
-    if(l1 != null)
+    if(l1 != null) {
         runner.next = l1;
-    if(l2 != null)
+    } else if(l2 != null) {
         runner.next = l2;
+    }
     return dummy.next;
 }
 ```
@@ -2400,6 +2401,9 @@ private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
 ###### 题目示例4 `leetcode 23 合并K个排序链表`
 
 ```java
+/**
+* 使用优先队列
+ */
 private ListNode mergeKLists(ListNode[] lists) {
     if(lists == null || lists.length == 0) {
         return null;
@@ -2429,7 +2433,7 @@ private ListNode mergeKLists(ListNode[] lists) {
 ###### 题目示例5 `leetcode 86 分隔链表`
 
 ```java
-public ListNode partition(ListNode head, int x) {
+private ListNode partition(ListNode head, int x) {
     if(head == null || head.next == null) {
         return head;
     }
@@ -2441,16 +2445,17 @@ public ListNode partition(ListNode head, int x) {
     ListNode runner2 = dummy2;
     while(head != null) {
         if(head.val < x) {
-            runner1.next = new ListNode(head.val);
+            runner1.next = head;
             runner1 = runner1.next;
         } else {
-            runner2.next = new ListNode(head.val);
+            runner2.next = head;
             runner2 = runner2.next;
         }
         head = head.next;
     }
 
     runner1.next = dummy2.next;
+    dummy2.next = null;
     return dummy1.next;
 }
 ```
@@ -2479,7 +2484,7 @@ private ListNode swapPairs(ListNode head) {
 
 双指针
 
-注意其中的数学关系: k  = k % length
+注意其中的数学关系: k  = k  % length
 
 ```java
 private ListNode rotateRight(ListNode head, int k) {
@@ -2487,20 +2492,20 @@ private ListNode rotateRight(ListNode head, int k) {
         return head;
     }
 
-    // 获取链表长度，求余取得需要被反转的结点数量
+    // 获取链表长度，求余取得真正需要反转的结点数量
     int length = 0;
     ListNode runner = head;
     while(runner != null) {
         length++;
         runner = runner.next;
     }
-    int gap = k % length;
+    int times = k % length;
     
     // 双指针，slow 指针最终指向被翻转部分的前一个结点
     // fast指针最终指向链表最后一个结点
     ListNode slow = head;
     ListNode fast = head;
-    for(int i = 0; i < gap; i++)  {
+    for(int i = 0; i < times; i++)  {
         fast = fast.next;
     }
     while(fast.next != null) {
@@ -2521,24 +2526,29 @@ private ListNode rotateRight(ListNode head, int k) {
 ###### 题目示例8 `leetcode 143 重排链表`
 
 ```java
-// 1、将链表从中间断开
-// 2、将后半部分反转
-// 3、交叉将两个链表节点放入新链表中
+/**
+* 1、将链表从中间断开
+* 2、将后半部分反转
+* 3、交叉将两个链表节点放入新链表中
+ */
 public void reorderList(ListNode head) {
     if(head == null) { 
         return;
     }
-    ListNode preMid = getMid(head);
-    ListNode tail = reverseList(preMid.next);
+    ListNode mid = getMid(head);
+    ListNode secondHalf = reverseList(mid.next);
     // 注意将两部分断开，否则会形成循环
-    preMid.next = null;
-    head = mergeTwoLists(head, tail);
+    mid.next = null;
+    head = mergeTwoLists(head, secondHalf);
 }
 
 /**
-* 获取链表中点的前一个结点
+* 获取链表中点
 */
 private ListNode getMid(ListNode head) {
+    if(head == null || head.next == null) {
+        return head;
+    }
     ListNode slow = head;
     ListNode fast = head.next;
     while(fast != null && fast.next != null) {
@@ -2553,24 +2563,18 @@ private ListNode getMid(ListNode head) {
 */
 private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
     ListNode dummy = new ListNode(-1);
-    ListNode head = dummy;
-    boolean toggle = true;
-    while(l1 != null && l2 != null) {
-        if(toggle) {
-            head.next = l1;
+    ListNode runner = dummy;
+   	while(l1 != null || l2 != null) {
+        if(l1 != null) {
+            runner.next = l1;
             l1 = l1.next;
-        } else {
-            head.next = l2;
-            l2 = l2.next;
+            runner = runner.next;
         }
-        toggle = !toggle;
-        head = head.next;
-    }
-    
-	if(l1 != null) {
-        head.next = l1;
-    } else if(l2 != null) {
-        head.next = l2;
+        if(l2 != null) {
+            runner.next = l2;
+            l2 = l2.next;
+            runner = runner.next;
+        }
     }
     return dummy.next;
 }
@@ -2579,6 +2583,10 @@ private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
 * 反转链表
 */
 private ListNode reverseList(ListNode head) {
+    if(head == null || head.next == null) {
+        return head;
+    }
+    
     ListNode pre = null;
     ListNode cur = head;
     while(cur != null) {
@@ -2695,7 +2703,7 @@ private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
 ###### 题目示例11 `leetcode 2 两数相加`
 
 ```java
-public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+private ListNode addTwoNumbers(ListNode l1, ListNode l2) {
     int carry = 0;
     ListNode dummyHead = new ListNode(0);
     ListNode runner = dummyHead;
@@ -2729,7 +2737,8 @@ public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
     int carry = 0;
     // 因为数字高位位于链表头部，而相加需要从尾部开始
     // 需要利用栈来进行“反转”
-    Deque<Integer> stack1 = new LinkedList<Integer>(), stack2 = new LinkedList<>();
+    Deque<Integer> stack1 = new LinkedList<Integer>();
+    Deque<Integer> stack2 = new LinkedList<>();
     while(l1 != null) {
         stack1.addLast(l1.val);
         l1 = l1.next;
@@ -2795,7 +2804,7 @@ private ListNode reverseList(ListNode head) {
 ###### 题目示例2 `leetcode 92 反转链表II`
 
 ```java
-public ListNode reverseBetween(ListNode head, int m, int n) {
+private ListNode reverseBetween(ListNode head, int m, int n) {
     // 定位到被反转的第一个节点以及其前置节点
     ListNode pre = null;
     ListNode cur = head;
@@ -2816,6 +2825,7 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
         cur = next;
         n--;
     }
+    tail.next = cur;
 
     // con = null表示链表头结点也被反转了
     if(con != null) {
@@ -2823,7 +2833,6 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
     } else {
         head = pre;
     }
-    tail.next = cur;
     return head;
 }
 ```
@@ -2837,29 +2846,26 @@ public ListNode reverseKGroup(ListNode head, int k) {
     if(head == null || k <= 0) {
         return head;
     }
-
-    // 确定反转区间，如果区间小于k，直接返回即可
-    ListNode a = head;
-    ListNode b = head;
-    for(int i = 0; i < k; i++) {
-        if(b == null) {
-            return a;
+	// 如果剩余链表的部分长度不足k,则不需要反转，直接返回
+    ListNode next = head;
+    for(int i = 1; i <= k; i++) {
+        if(next == null) {
+            return head;
         }
-        b = b.next;
+        next = next.next;
     }
-	
-    // 递归反转
-    ListNode newHead = reverseWithinRange(a, b);
-    a.next = reverseKGroup(b, k);
+
+    ListNode newHead = reverseList(head, next);
+    head.next = reverseKGroup(next, k);
     return newHead;
 }
 
 /**
-* 翻转[a,b)间的链表
+* 翻转链表head中到b之前的部分
 */
-private ListNode reverseWithinRange(ListNode a, ListNode b) {
+private ListNode reverseList(ListNode head, ListNode b) {
     ListNode pre = null;
-    ListNode cur = a;
+    ListNode cur = head;
     while(cur != b) {
         ListNode next = cur.next;
         cur.next = pre;
@@ -2935,18 +2941,17 @@ private ListNode deleteDuplicates(ListNode head) {
             cur = cur.next;
             isDuplicate = true;
         } else {
-            // 当前元素与后继元素不相等，并且当前元素存在重复
-            // 移动指针，不再管当前元素的值
             if(isDuplicate) {
-                cur = cur.next;
+                // 当前元素与后继元素不相等，并且当前元素存在重复
+                // 重置标记值，表示当前元素不需要再考虑
                 isDuplicate = false;
             } else {
                 // 当前元素与后继元素不相等，并且当前元素唯一
-                // 在结果中存储当前元素，移动指针
+                // 在结果中存储当前元素
                 pre.next = new ListNode(cur.val);
                 pre = pre.next;
-                cur = cur.next;
             }
+            cur = cur.next;
         }
     }
     // 处理链表最后一个节点
@@ -2963,12 +2968,13 @@ private ListNode deleteDuplicates(ListNode head) {
 
 ```java
 private boolean hasCycle(ListNode head) {
-    ListNode dummyHead = new ListNode(0);
-    dummyHead.next = head;
-    ListNode slow = dummyHead;
-    ListNode fast = dummyHead;
-
-    while(fast.next != null && fast.next.next != null) {
+	if(head == null || head.next == null) {
+        return false;
+    }
+    
+    ListNode slow = head;
+    ListNode fast = head;
+    while(fast != null && fast.next != null) {
         slow = slow.next;
         fast = fast.next.next;
         if(slow == fast) {
@@ -2984,7 +2990,7 @@ private boolean hasCycle(ListNode head) {
 ###### 题目示例5  `leetcode 142 环形链表II`
 
 ```java
-public ListNode detectCycle(ListNode head) {
+private ListNode detectCycle(ListNode head) {
     if(head == null || head.next == null) {
         return null;
     }

@@ -2241,21 +2241,16 @@ public class Codec {
 
         while(cursor < vals.length) {
             TreeNode node = queue.poll();
-            if(cursor < vals.length) {
-                if(!vals[cursor].equals("null")) {
-                    TreeNode left = new TreeNode(Integer.parseInt(vals[cursor]));
-                    node.left = left;
-                    queue.offer(left);
-                }
+            if(cursor < vals.length && !vals[cursor].equals("null")) {
+                TreeNode left = new TreeNode(Integer.parseInt(vals[cursor]));
+                node.left = left;
+                queue.offer(left);
             }
-            if(cursor + 1 < vals.length) {
-                if(!vals[cursor + 1].equals("null")) {
-                    TreeNode right = new TreeNode(Integer.parseInt(vals[cursor + 1]));
-                    node.right = right;
-                    queue.offer(right);
-                }
+            if(cursor + 1 < vals.length && !vals[cursor + 1].equals("null")) {
+                TreeNode right = new TreeNode(Integer.parseInt(vals[cursor + 1]));
+                node.right = right;
+                queue.offer(right);
             }
-
             cursor += 2;
         }
         return root;
@@ -2279,7 +2274,7 @@ public class Codec {
 
 2. dummy node 哑巴节点
 
-    dummy node就是在链表的head前加一个节点指向head，即 `dummyHead ->head`.可以理解成一个虚拟节点。有了dummy node就使得操作head节点与操作其他节点没有区别。特别适合用在链表的head可能发生变化的情况下，譬如删除或者被修改等
+    dummy node就是在链表的head前加一个节点指向head，即 `dummyHead -> head`.可以理解成一个虚拟节点。有了dummy node就使得操作head节点与操作其他节点没有区别。特别适合用在链表的head可能发生变化的情况下，譬如删除或者被修改等
 
     一个最简单的dummy node使用框架如下：
 
@@ -2295,12 +2290,11 @@ public class Codec {
 
 3. 快慢指针
 
-    对于寻找链表的某个特定位置，或者判断链表是否有环等问题时，可以使用两个指针变量 fast和slow,两个指针以不同的策略移动
+    对于寻找链表的某个特定位置，或者判断链表是否有环等问题时，可以使用两个指针变量 fast和slow,两个指针以不同的策略移动，一般情况是fast每次走两步，slow每次走一步	
     
     在使用快慢指针获取链表中点时常见代码逻辑如下：
     
     ```java
-    
     private ListNode getMid(ListNode head) {
         if(head == null || head.next == null) {
             return head;
@@ -2312,13 +2306,19 @@ public class Codec {
         * 上述两行代码最终达到的目的就是定位到下标为(n/2)的链表元素，其中n为链表长度
         * 所以在链表个数为偶数时，slow定位到前一半链表的最后一个元素
         * 链表个数为奇数时，slow定位到链表的中点元素
+        * 
+        * 如果在循环中加入pre = slow; 最终pre指向上述的中点元素的前一个元素
+        * 主要应用于需要将中点元素两侧的链表分开的情况
     	 */
+        // ListNode pre = head;
         ListNode slow = head;
         ListNode fast = head.next;
         while(fast != null && fast.next != null) {
+            // pre = slow;
             slow = slow.next;
             fast = fast.next.next;
         }
+        // return pre;
         return slow;
     }
     ```

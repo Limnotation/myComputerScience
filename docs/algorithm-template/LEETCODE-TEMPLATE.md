@@ -8291,6 +8291,7 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
     }
     
     for(int i = start; i < candidates.length; i++) {
+        // 剪枝
         if(target - candidates[i] < 0) {
             break;
         }
@@ -8358,22 +8359,19 @@ public List<List<Integer>> combinationSum3(int k, int n) {
     if(n <= 0 || k <= 0) {
         return res;
     }
-    
+
     backTracking(k, n, 1, new LinkedList<Integer>());
     return res;
 }
 
 private void backTracking(int k, int n, int start, LinkedList<Integer> runner) {
     // 终止条件
-    if(k == 0) {
-        if(n == 0) {
-            res.add(new LinkedList(runner));
-        }
-    	return;       
+    if(k == 0 && n == 0) {
+        res.add(new LinkedList(runner));
+        return;       
     }
 
-    
-    for(int i = start; i < 10; i++) {
+    for(int i = start; i <= 9; i++) {
         // 做选择
         runner.add(i);
         // 进入下一层决策树
@@ -8950,171 +8948,11 @@ private boolean validPosition(char[][] board, int row, int col) {
     // 检查右上角是否有皇后
     for(int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
         if(board[i][j] == 'Q') {
-            return false;
+          return false;
         }
     }
 
     return true;
-}
-```
-
-
-
--------
-
-##### 其他题目
-
-###### 题目示例17 `leetcode 113 路径总和II`
-
-```java
-List<List<Integer>> res = new LinkedList<>();
-public List<List<Integer>> pathSum(TreeNode root, int sum) {
-    backTracking(root, sum, new LinkedList<Integer>());
-    return res;
-}
-
-private void backTracking(TreeNode root, int sum, LinkedList<Integer> path) {
-    if(root == null) {
-        return;
-    }
-
-    // 做选择
-    sum -= root.val;
-    path.addLast(root.val);
-    if(sum == 0 && root.left == null && root.right == null) {
-        res.add(new LinkedList(path));
-    } else {
-        // 进入下一层决策树
-        backTracking(root.left, sum, path);
-        backTracking(root.right, sum, path);
-    }
-    // 撤销选择
-    sum += root.val;
-    path.removeLast();
-}
-```
-
-----
-
-###### 题目示例18 `leetcode 401 二进制手表`
-
-**感觉用回溯做还更难了**
-
-```java
-private List<String> res = new LinkedList<>();
-private int[] hourNum = {8, 4, 2, 1};
-private int[] minuteNum = {32, 16, 8, 4, 2, 1};
-
-public List<String> readBinaryWatch(int num) {
-    if(num > 10 || num < 0)
-        return res;
-
-    for(int i = 0; i <= num; i++) {
-        List<Integer> hourCombination = findCombination(hourNum, i);
-        List<Integer> minuteCombination = findCombination(minuteNum, num - i);
-
-        for(int j = 0; j < hourCombination.size(); j++) {
-            if(hourCombination.get(j) > 11)
-                continue;
-            for(int k = 0; k < minuteCombination.size(); k++) {
-                if(minuteCombination.get(k) > 59)
-                    continue;
-                res.add(hourCombination.get(j) + ":" + (minuteCombination.get(k) < 10?
-                        "0" + minuteCombination.get(k):minuteCombination.get(k)));
-            }
-        }
-    }
-    return res;
-}
-
-private List<Integer> findCombination(int[] arr, int num) {
-    LinkedList<Integer> tempRes = new LinkedList<>();
-    backTracking(arr, num, 0, new LinkedList<>(), tempRes);
-    return tempRes;
-}
-
-private void backTracking(int[] arr, int num, int start, LinkedList<Integer> stack, LinkedList<Integer> runner) {
-    if(stack.size() == num) {
-        runner.add(sum(stack));
-        return;
-    }
-    
-    for(int i = start; i < arr.length; i++) {
-        // 选择
-        stack.addLast(arr[i]);
-        // 进入下一层决策树
-        backTracking(arr, num, i + 1, stack, runner);
-        // 撤销选择
-        stack.removeLast();
-    }
-}
-private Integer sum(List<Integer> pre) {
-    int sum = 0;
-    for (int i = 0; i < pre.size(); i++) {
-        sum += pre.get(i);
-    }
-    return sum;
-}
-```
-
------
-
-###### 题目示例19 `leetcode 1079 活字印刷`
-
-```java
-public int numTilePossibilities(String tiles) {
-    int[] counter = new int[26];
-    for(int i = 0; i < tiles.length(); i++)
-        counter[ tiles.charAt(i) - 'A']++;
-    return backTracking(counter);
-}
-
-private int backTracking(int[] counter) {
-    int result = 0;
-    for(int i = 0; i < counter.length; i++) {
-        if(counter[i] == 0)
-            continue;
-
-        // 做选择
-        result++;
-        counter[i]--;
-        // 进入下一层决策树
-        result += backTracking(counter);
-        // 撤销选择
-        counter[i]++;
-    }
-    return result;
-}
-```
-
-------
-
-###### 题目示例20 `leetcode 526 优美的排列`
-
-```java
-private int counter = 0;
-public int countArrangement(int N) {
-    boolean[] used = new boolean[N + 1];
-    backTracking(N, 1, used);
-    return counter;
-}
-
-private void backTracking(int N, int pos, boolean[] used) {
-    if(N < pos) {
-        counter++;
-        return;
-    }
-
-    for(int i = 1; i <= N; i++) {
-        if(!used[i] && (i % pos == 0 || pos % i == 0)) {
-            // 做选择
-            used[i] = true;
-            // 进入下一层决策树
-            backTracking(N, pos + 1, used);
-            // 撤销选择
-            used[i] = false;
-        }
-    }
 }
 ```
 
@@ -9650,8 +9488,7 @@ private int lengthOfLongestSubstringTwoDistinct(String s) {
     // 特判
     if(s == null) {
         return 0;
-    }
-    if(s.length() <= 2) {
+    } else if(s.length() <= 2) {
         return s.length();
     }
     
@@ -9690,7 +9527,9 @@ private int lengthOfLongestSubstringTwoDistinct(String s) {
 ###### 题目示例11 `leetcode 340 至多包含K个不同字符的最长子串`
 
 ```java
-// leetcode 340是leetcode 159的一般化形式
+/**
+* leetcode 340是leetcode 159的一般化形式
+ */
 private int lengthOfLongestSubstringKDistinct(String s, int k) {
     // 特判
     if(s == null || k <= 0) {

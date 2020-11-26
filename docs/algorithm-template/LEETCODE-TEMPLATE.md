@@ -9380,10 +9380,11 @@ private List<Integer> findAnagrams(String s, String p) {
     int[] window = new int[26];
     int unique = 0;
     for(char c:p.toCharArray()) {
-        if(need[c - 'a'] == 0) {
+        int index = c - 'a';
+        if(need[index] == 0) {
             unique++;
         }
-        need[c - 'a']++;
+        need[index]++;
     }
 
     int left = 0;
@@ -9391,8 +9392,9 @@ private List<Integer> findAnagrams(String s, String p) {
     int match = 0;
     while(right < s.length()) {
         char c1 = s.charAt(right);
-        window[c1 - 'a']++;
-        if(window[c1 - 'a'] == need[c1 - 'a']) {
+        int index1 = c1 - 'a';
+        window[index1]++;
+        if(window[index1] == need[index1]) {
             match++;
         }
 
@@ -9402,10 +9404,11 @@ private List<Integer> findAnagrams(String s, String p) {
             }
 
             char c2 = s.charAt(left);
-            if(need[c2 - 'a'] == window[c2 - 'a']) {
+            int index2 = c2 - 'a';
+            if(need[index2] == window[index2]) {
                 match--;
             }
-            window[c2 - 'a']--;
+            window[index2]--;
             left++;
         }
         right++;

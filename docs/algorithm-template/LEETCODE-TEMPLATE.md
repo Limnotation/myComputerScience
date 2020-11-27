@@ -182,9 +182,9 @@
       - [一、寻找一个数（基本的二分搜索）](#一寻找一个数基本的二分搜索)
       - [二、寻找左侧边界的二分搜索](#二寻找左侧边界的二分搜索)
       - [三、寻找右侧边界的二分查找](#三寻找右侧边界的二分查找)
-      - [四、逻辑统一](#四逻辑统一)
+      - [四、建议](#四建议)
     - [典型题目](#典型题目-4)
-      - [题型1：二分求满足条件的元素](#题型1二分求满足条件的元素)
+      - [题型1：二分求满足条件的元素下标/元素值](#题型1二分求满足条件的元素下标元素值)
         - [题目示例1 `leetcode 704 二分查找`](#题目示例1-leetcode-704-二分查找)
         - [题目示例2 `leetcode 34 在排序数组中查找元素的第一个和最后一个位置`](#题目示例2-leetcode-34-在排序数组中查找元素的第一个和最后一个位置)
         - [题目示例3 `leetcode 35 搜索插入位置`](#题目示例3-leetcode-35-搜索插入位置)
@@ -194,11 +194,11 @@
         - [题目示例7 `leetcode 154 寻找旋转排序数组中的最小值II`](#题目示例7-leetcode-154-寻找旋转排序数组中的最小值ii)
         - [题目示例8 `leetcode 275 H指数II`](#题目示例8-leetcode-275-h指数ii)
         - [题目示例9 `leetcode 436 寻找右区间`](#题目示例9-leetcode-436-寻找右区间)
+        - [题目示例10 `leetcode 74 搜索二维矩阵`](#题目示例10-leetcode-74-搜索二维矩阵)
+        - [题目示例11 `leetcode 278 第一个错误的版本`](#题目示例11-leetcode-278-第一个错误的版本)
+        - [题目示例12 `leetcode 162 寻找峰值`](#题目示例12-leetcode-162-寻找峰值)
       - [题型二：二分确定一个有范围的整数](#题型二二分确定一个有范围的整数)
-      - [题目示例2 `leetcode 74 搜索二维矩阵`](#题目示例2-leetcode-74-搜索二维矩阵)
-      - [题目示例3 `leetcode 278 第一个错误的版本`](#题目示例3-leetcode-278-第一个错误的版本)
-      - [题目示例8 `leetcode 162 寻找峰值`](#题目示例8-leetcode-162-寻找峰值)
-      - [题目示例10  `leetcode 287 寻找重复数`](#题目示例10--leetcode-287-寻找重复数)
+        - [题目示例10  `leetcode 287 寻找重复数`](#题目示例10--leetcode-287-寻找重复数)
       - [题目示例11 `leetcode 315 计算右侧小于当前元素的个数`](#题目示例11-leetcode-315-计算右侧小于当前元素的个数)
       - [题目示例12 `leetcode 69 X的平方根`](#题目示例12-leetcode-69-x的平方根)
       - [题目示例13 `leetcode 374 猜数字大小`](#题目示例13-leetcode-374-猜数字大小)
@@ -6232,74 +6232,15 @@ return left - 1;
 
 ----
 
-##### 四、逻辑统一
+##### 四、建议
 
-在之前的分析中，普通的二分搜索与左右边界的二分搜索在形式上有所区别，在这里对其进行统一，规定使用两端封闭的搜索区间来实现
-
-```java
-// 基本的二分搜索模板，判断元素存在与否
-private int binarySearch(int[] nums, int target) {
-    int left = 0;
-    int right = nums.length - 1;
-    while(left <= right) {
-        int mid = left + (right - left) / 2;
-        if(nums[mid] == target) {
-            return mid;
-        } else if(nums[mid] < target) {
-            left = mid + 1;
-        } else if(nums[mid] > target) {
-            right = mid - 1;
-        }
-    }
-    return -1;
-}
-
-// 搜索左侧边界的二分搜索模板
-private int leftBound(int[] nums, int target) {
-    int left = 0;
-    int right = nums.length - 1;
-    while(left <= right) {
-        int mid = left + (right - left) / 2;
-        if(nums[mid] >= target) {
-            right = mid - 1;
-        } else {
-            left = mid + 1;
-        }
-    }
-
-    // 检查left 越界情况
-    if(left >= nums.length || nums[left] != target) {
-        return -1;
-    }
-    return left;
-}
-
-// 搜索右侧边界的二分搜索模板
-private int rightBound(int[] nums, int target) {
-    int left = 0;
-    int right = nums.length - 1;
-    while(left <= right) {
-        int mid = left + (right - left) / 2;
-        if(nums[mid] <= target) {
-            left = mid + 1;
-        } else {
-            right = mid;
-        }
-    }
-
-    // 检查right越界情况
-    if(left == 0 || nums[left - 1] != target) {
-        return -1;
-    }
-    return left - 1;
-}
-```
+**建议是：当只需要搜索一个满足条件的元素而对位置没有要求时，使用全闭的搜索区间；当搜索目标的位置也重要时（比如边界元素），使用左闭右开的搜索区间**
 
 ----
 
 #### 典型题目
 
-##### 题型1：二分求满足条件的元素
+##### 题型1：二分求满足条件的元素下标/元素值
 
 二分法确定**满足条件**的元素的下标/或元素本身
 
@@ -6504,11 +6445,8 @@ private boolean search(int[] nums, int target) {
         
         // 无法判断哪部分有序时，直接移动左边界
         if(nums[left] == nums[mid]) {
-            left++;	
-            continue;
-        }
-
-        if(nums[left] < nums[mid]) {
+            left++;
+        } else if(nums[left] < nums[mid]) {
             if(nums[left] <= target && target < nums[mid]) {
                 right = mid - 1;
             } else {
@@ -6537,6 +6475,7 @@ private int findMin(int[] nums) {
     }
     
     int left = 0;
+    // 这里使用了两端闭合的搜索区间，是为了方便比较右值
     int right = nums.length - 1;
     while(left < right) {
         int mid = left + (right - left) / 2;
@@ -6588,7 +6527,7 @@ private int findMin(int[] nums) {
 ```java
 /**
 * 关键：返回一个数据区间的长度，该区间中最小的值大于等于该区间的长度
-* 即citations[mid] >= len - mid
+* 即citations[mid] >= len - mid，取满足条件的mid的最小值
  */
 private int hIndex(int[] citations) {
     if(citations == null || citations.length == 0 || citations[citations.length - 1] == 0) {
@@ -6597,7 +6536,7 @@ private int hIndex(int[] citations) {
     
     int len = citations.length;
     int left = 0;
-    int right = len - 1;
+    int right = len;
     while(left < right) {
         int mid = left + (right - left) / 2;
         if(citations[mid] < len - mid) {
@@ -6666,17 +6605,13 @@ private int leftBound(int[] nums, int target) {
 
 ------
 
-##### 题型二：二分确定一个有范围的整数
-
-
-
----
-
-##### 题目示例2 `leetcode 74 搜索二维矩阵`
+###### 题目示例10 `leetcode 74 搜索二维矩阵`
 
 ```java
-// 普通二分搜索问题
-// 关键：将二维矩阵上的搜索转化为一维矩阵上的搜索
+/** 
+* 普通二分搜索问题
+* 关键：将二维矩阵上的搜索转化为一维矩阵上的搜索
+*/
 private boolean searchMatrix(int[][] matrix, int target) {
     if(matrix == null || matrix.length == 0 || matrix[0].length == 0) {
         return false;
@@ -6686,8 +6621,7 @@ private boolean searchMatrix(int[][] matrix, int target) {
     int colLen = matrix[0].length;
     int start = 0;
     int end = rowLen * colLen - 1;
-    while(start <= end)
-    {
+    while(start <= end) {
         int mid = start + (end - start) / 2;
         int curVal = matrix[mid / colLen][mid % colLen];
         if(curVal == target)
@@ -6701,48 +6635,64 @@ private boolean searchMatrix(int[][] matrix, int target) {
 }
 ```
 
-----
+------
 
-##### 题目示例3 `leetcode 278 第一个错误的版本`
-
-```java
-// 寻找左侧边界的二分搜索问题
-private int firstBadVersion(int n)
-{
-    int left = 1, right = n;
-    while(left <= right)
-    {
-        int mid = left + (right - left) / 2;
-        if(isBadVersion(mid))
-            right = mid - 1;
-        else if(!isBadVersion(mid))
-            left = mid + 1;
-    }
-    return left;
-}
-```
-
------
-
-##### 题目示例8 `leetcode 162 寻找峰值`
+###### 题目示例11 `leetcode 278 第一个错误的版本`
 
 ```java
-private int findPeakElement(int[] nums) {
-    int left = 0, right = nums.length - 1;
+/**
+* 寻找true的左侧边界
+ */
+private int firstBadVersion(int n) {
+    int left = 1;
+    int right = n;
     while(left < right) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] < nums[mid + 1])
-            left = mid + 1;
-        else
+        if(isBadVersion(mid)) {
             right = mid;
+        } else {
+            left = mid + 1;
+        }
     }
     return left;
 }
 ```
 
+------
+
+###### 题目示例12 `leetcode 162 寻找峰值`
+
+```java
+/**
+* 过程：
+* 首先要注意题目条件，在题目描述中出现了 nums[-1] = nums[n] = -∞，这就代表着：只要数组中存在一个元素比相邻元素大，那么沿着它一定可以找到一个峰值
+* 根据上述结论，我们就可以使用二分查找找到峰值
+* 查找时，左指针 l，右指针 r，以其保持左右顺序为循环条件
+* 根据左右指针计算中间位置 m，并比较 m 与 m+1 的值，如果 m 较大，则左侧存在峰值，r = m，如果 m + 1 较大，则右侧存在峰值，l = m + 1
+*/
+private int findPeakElement(int[] nums) {
+    int left = 0;
+    // 因为比较过程可能会需要右值，所以搜索区间为闭区间
+    int right = nums.length - 1;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(nums[mid] < nums[mid + 1]) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return left;
+}
+```
+
+
+
+##### 题型二：二分确定一个有范围的整数
+
 ----
 
-##### 题目示例10  `leetcode 287 寻找重复数`
+###### 题目示例10  `leetcode 287 寻找重复数`
 
 ```java
 private int findDuplicate(int[] nums)

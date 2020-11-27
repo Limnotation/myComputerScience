@@ -156,7 +156,6 @@
       - [题目示例7 `leetcode 703 数据流中的第k大元素`](#题目示例7-leetcode-703-数据流中的第k大元素)
       - [题目示例8 `leetcode 973 离原点最近的K个点`](#题目示例8-leetcode-973-离原点最近的k个点)
 - [基础算法](#基础算法)
-  - [排序](#排序)
   - [深度优先搜索](#深度优先搜索)
     - [概念](#概念-2)
       - [1、沉岛思想](#1沉岛思想)
@@ -5340,8 +5339,6 @@ private int[][] kClosest(int[][] points, int K) {
 
 ## 基础算法
 
-### 排序
-
 ------
 
 -----
@@ -6030,7 +6027,7 @@ public int[] findOrder(int numCourses, int[][] prerequisites) {
 ```java
 /** 
 * 关键点一：分析二分查找算法时，不要出现else,而是把所有情况都用else if写清楚，这样可以清楚的展现所有细节
-* 关键点二：为了防止计算mid时发生溢出，应使用 mid = left + (right - left) / 2来代替mid = (right + left) / 2
+* 关键点二：为了防止计算mid时发生溢出，应使用 mid = left + (right - left) / 2来代替 mid = (right + left) / 2
  */
 private int binarySearch(int[] nums, int target) {
     int left = 0;
@@ -6098,12 +6095,12 @@ private int binarySearch(int[] nums, int target) {
 
 ```java
 private int leftBound(int[] nums, int target) {
-    if(nums.length == 0) [
+    if(nums == null || nums.length == 0) {
         return -1;
-    ]
+    }
+    
     int left = 0;
     int right = nums.length;
-    
     while(left < right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] >= target) {
@@ -6127,7 +6124,7 @@ private int leftBound(int[] nums, int target) {
 
 **2、算法在数组中不存在target值的情况下返回结果的含义**
 
-**左侧边界**的含义：**左侧边界的值表示严格小于target的元素的数量**
+**左侧边界**的含义：**左侧边界的值表示数组中严格小于target的元素的数量**
 
 ![](../../../mdPics/1.jpg)
 
@@ -6152,7 +6149,7 @@ return left;
 
 **3、`left = mid + 1, right = mid`的变化规律**
 
-因为算法搜索区间为 `[left, right)`的半开半闭区间，当发现 `mid`对应位置不是目标值时，搜索区间应该为 `mid`分割的两个子区间 `[left, mid )`或 `[mid + 1, right)`
+因为算法搜索区间为 `[left, right)`的半开半闭区间，当发现 `mid`对应位置不是目标值时，搜索区间应该为 `mid`分割的两个子区间 `[left, mid)`或 `[mid + 1, right)`
 
 **4、算法搜索左侧边界的原理**
 
@@ -6224,8 +6221,7 @@ if(nums[mid] <= target) {
 与左侧边界搜索相同，因为 `while`的终止条件为 `left == right`,也就是 left 的取值范围为 `[0, nums.length]`,可以添加如下代码处理边界条件
 
 ```java
-while(left < right)
-{
+while(left < right) {
     //...
 }
 if(left == 0 || nums[left - 1] != target) {
@@ -6247,19 +6243,21 @@ private int binarySearch(int[] nums, int target) {
     int right = nums.length - 1;
     while(left <= right) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] == target)
+        if(nums[mid] == target) {
             return mid;
-        else if(nums[mid] < target)
+        } else if(nums[mid] < target) {
             left = mid + 1;
-        else if(nums[mid] > target)
+        } else if(nums[mid] > target) {
             right = mid - 1;
+        }
     }
     return -1;
 }
 
 // 搜索左侧边界的二分搜索模板
 private int leftBound(int[] nums, int target) {
-    int left = 0, right = nums.length - 1;
+    int left = 0;
+    int right = nums.length - 1;
     while(left <= right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] >= target) {
@@ -6268,16 +6266,18 @@ private int leftBound(int[] nums, int target) {
             left = mid + 1;
         }
     }
-    
+
     // 检查left 越界情况
-    if(left >= nums.length || nums[left] != target)
+    if(left >= nums.length || nums[left] != target) {
         return -1;
+    }
     return left;
 }
 
 // 搜索右侧边界的二分搜索模板
 private int rightBound(int[] nums, int target) {
-    int left = 0, right = nums.length - 1;
+    int left = 0;
+    int right = nums.length - 1;
     while(left <= right) {
         int mid = left + (right - left) / 2;
         if(nums[mid] <= target) {
@@ -6286,10 +6286,11 @@ private int rightBound(int[] nums, int target) {
             right = mid;
         }
     }
-    
+
     // 检查right越界情况
-    if(left == 0 || nums[left - 1] != target)
+    if(left == 0 || nums[left - 1] != target) {
         return -1;
+    }
     return left - 1;
 }
 ```
@@ -6406,12 +6407,10 @@ private int searchInsert(int[] nums, int target) {
     int right = nums.length;
     while(left < right) {
         int mid = left + (right - left) / 2;
-        if(nums[mid] == target) {
-            return mid;
-        } else if(nums[mid] < target) {
-            left = mid + 1;
-        } else {
+        if(nums[mid] >= target) {
             right = mid;
+        } else {
+            left = mid + 1;
         }
     }
     return left;
@@ -6428,11 +6427,11 @@ private int searchInsert(int[] nums, int target) {
 /*
 * 重点就是在判断mid分割出的两个搜索区间哪个是有序的，先去有序的部分搜索
 * 由于题目说数字了无重复，举个例子：
-* 1 2 3 4 5 6 7 可以大致分为两类，
-* 第一类 2 3 4 5 6 7 1 这种，也就是 nums[start] <= nums[mid]。此例子中就是 2 <= 5。
-* 这种情况下，前半部分有序。因此如果 nums[start] <= target < nums[mid]，则在前半部分找，否则去后半部分找。
-* 第二类 6 7 1 2 3 4 5 这种，也就是 nums[start] > nums[mid]。此例子中就是 6 > 2。
-* 这种情况下，后半部分有序。因此如果 nums[mid] < target <= nums[end]，则在后半部分找，否则去前半部分找
+* 	设原数组为：1 2 3 4 5 6 7 ，旋转情况可以大致分为两类，
+* 	第一类 2 3 4 5 6 7 1 这种，也就是 nums[start] <= nums[mid]。此例子中就是 2 < 5。
+* 	这种情况下，前半部分有序。因此如果 nums[start] <= target < nums[mid]，则在前半部分找，否则去后半部分找。
+* 	第二类 6 7 1 2 3 4 5 这种，也就是 nums[start] > nums[mid]。此例子中就是 6 > 2。
+* 	这种情况下，后半部分有序。因此如果 nums[mid] < target <= nums[end]，则在后半部分找，否则去前半部分找
  */
 private int search(int[] nums, int target) {
     if(nums == null || nums.length == 0) {
@@ -6448,6 +6447,7 @@ private int search(int[] nums, int target) {
         }
 
         // 小于等于号是为了适应只有两个元素的特殊情况
+        // 当只剩两个元素时(mid = left + (right - left)) == left	
         if(nums[left] <= nums[mid]) {
             // 前半部分有序且目标在范围内，则搜索范围为前半部分
             // 否则搜索范围为后半部分
@@ -8382,6 +8382,9 @@ public List<List<String>> partition(String s) {
     return res;
 }
 
+/**
+* 从start索引位置开始，找到所有从start开始的回文字符串
+ */
 private void backTracking(String s, int start, LinkedList<String> runner) {
     if(start == s.length()) {
         res.add(new LinkedList(runner));
@@ -8389,8 +8392,9 @@ private void backTracking(String s, int start, LinkedList<String> runner) {
     }
     
     for(int i = start; i < s.length(); i++) {
-        if(!isPalindrome(s, start, i))
+        if(!isPalindrome(s, start, i)) {
             continue;
+        }
         
         // 选择
         runner.add(s.substring(start, i + 1));
@@ -8425,7 +8429,7 @@ public List<String> restoreIpAddresses(String s) {
     if(s == null || s.length() == 0 || s.length() > 12) {
         return res;
     }
-    
+
     backTracking(s, 0, new LinkedList<>());
     return res;
 }
@@ -8437,27 +8441,26 @@ public List<String> restoreIpAddresses(String s) {
 * @param	runner	已经确定好的所有ip段
 */
 private void backTracking(String s, int pos, LinkedList<String> runner) {
-    /**
-    * 递归终止条件: 字符串刚好能被分成四段并且每段都是合法的ip分段
-     */
-     if(runner.size() == 4 && pos == s.length()) {
-         res.add(String.join(".", runner));
-         return;
-     }
-    
+    //递归终止条件: 字符串刚好能被分成四段并且每段都是合法的ip分段
+    if(runner.size() == 4 && pos == s.length()) {
+        res.add(String.join(".", runner));
+        return;
+    }
+
     for(int i = 1; i <= 3; i++) {
-     	if(pos + i > s.length()) {
+        // 剪枝
+        if(pos + i > s.length()) {
             break;
         }
-        
+
         String segment = s.substring(pos, pos + i);
         // 剪枝条件：长度大于一的分段不能以0为起始；任何段的数值结果不能大于255
-        if(segment.length() > 1 && segment.startsWith("0") || ( i == 3 && Integer.parseInt(segment) > 255)) {
+        if(segment.length() > 1 && segment.startsWith("0") || (i == 3 && Integer.parseInt(segment) > 255)) {
             continue;
         }
-        
+
         // 做选择
-        runner.add(segment);
+        runner.addLast(segment);
         // 进入下一层决策树
         backTracking(s, pos + i, runner);
         // 撤销选择

@@ -20,7 +20,12 @@
       - [题目2 `leetcode 1027 最长等差数列`](#题目2-leetcode-1027-最长等差数列)
     - [单串问题：带维度单串，`dpi`,`i`为位置，`k`为附加维度](#单串问题带维度单串dpii为位置k为附加维度)
       - [题目1 `leetcode 813 最大平均值和的分组`](#题目1-leetcode-813-最大平均值和的分组)
-      - [题目2 `leetcode `](#题目2-leetcode-)
+      - [题目2 `leetcode 887 鸡蛋掉落`](#题目2-leetcode-887-鸡蛋掉落)
+      - [题目3 `leetcode 256 粉刷房子`](#题目3-leetcode-256-粉刷房子)
+      - [题目4 `leetcode 265 粉刷房子II`](#题目4-leetcode-265-粉刷房子ii)
+      - [题目5 `leetcode 975 奇偶跳`](#题目5-leetcode-975-奇偶跳)
+      - [题目6 `leetcode 403 青蛙过河`](#题目6-leetcode-403-青蛙过河)
+      - [题目7 `leetcode 安排邮筒`](#题目7-leetcode-安排邮筒)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -47,6 +52,8 @@
 
     时间复杂度O(n),空间复杂度`O(n)`并可以进一步优化为`O(1)`
 
+    通常`dp[n]`即为所求的结果
+
 2. 依赖比`i`小的`O(n)`个子问题
 
     `dp[i]`与此前更小规模的所有子问题`dp[i-1], dp[i-2], .. dp[0]`都可能有关系
@@ -54,10 +61,14 @@
     状态的推导过程为: `dp[i] = f(dp[i-1], dp[i-2], .. d[0])`
 
     常见的f可能为 max或min
+    
+    所求的结果为`dp[0],...dp[n]`中的最值
 
 ------
 
 #### LIS系列
+
+> 这一类题目需要依赖比`i`更小的`O(n)`个子问题,结果是dp数组中的最大值
 
 ##### 题目1 `leetcode 300 最长上升子序列`
 
@@ -80,7 +91,8 @@ private int lengthOfLIS(int[] nums) {
 
     int len = nums.length;
     int[] dp = new int[len];
-    // 使用一个变量res在每次遍历时记录最大值，避免了结束后再次遍历数组获得最大值
+    // 对于最外层for循环而言，每一轮结束后，对应位置i处表示的LIS长度就确定了
+    // 所以在离开最外层循环前就可以比较当前结果与i位置表示的LIS长度的较大值
     int res = 1;
     Arrays.fill(dp, 1);
     for(int i = 1; i < len; i++) {
@@ -178,7 +190,6 @@ private int maxEnvelopes(int[][] envelopes) {
             return a[0] - b[0];
         }
     });
-
     int len = envelopes.length;
     int[] dp = new int[len];
     Arrays.fill(dp, 1);
@@ -348,9 +359,7 @@ private int[] getMaxMatrix(int[][] matrix) {
 
     for(int i = 0; i < rowLen; i++) {
         // 改变上界时需要重置lineSum
-        for(int j = 0; j < colLen; j++) {
-            lineSum[j] = 0;
-        }
+        Arrays.fill(lineSum, 0);
         // 不断变化下界
         for(int j = i; j < rowLen; j++) {
             // 这个循环内的步骤与求最大子序和的思路一致
@@ -407,7 +416,8 @@ private int[] getMaxMatrix(int[][] matrix) {
 *		  i间房子的金额
 *		2、如果选择不偷当前房子，则此时偷前i间房子的金额为偷前i-1间房子获得的金额
 *	在上述两种选择中选取获利最大的
-*		dp[i] = max(dp[i-1], dp[i-2] + nums[i-1]
+*		dp[i] = max(dp[i-1], dp[i-2] + nums[i-1])
+* 	base: dp[0] = 0; dp[1] = nums[0];
 * 	最终返回结果为dp[n](共有n间房子)
  */
 
@@ -507,8 +517,6 @@ private int rob(int[] nums, int left, int right) {
 private int deleteAndEarn(int[] nums) {
     if(nums == null || nums.length == 0) {
         return 0;
-    } else if(nums.length == 1) {
-        return nums[0];
     }
 
     int len = nums.length;
@@ -522,13 +530,15 @@ private int deleteAndEarn(int[] nums) {
         countPoints[nums[i]]++;
     }
     
-    int[] dp = new int[maxVal + 1];
-    dp[0] = 0;
-    dp[1] = countPoints[1] * 1;
-    for(int i = 2; i <= maxVal; i++) {
-        dp[i] = Math.max(dp[i-1], dp[i-2] + countPoints[i] * i);
+    int res = 0;
+    int resMinusTwo = 0;
+    int resMinusOne = 0;
+    for(int i = 0; i <= maxVal; i++) {
+        res = Math.max(resMinusOne, resMinusTwo + countPoints[i] * i);
+        resMinusTwo = resMinusOne;
+        resMinusOne = res;
     }
-    return dp[maxVal];
+    return res;
 }
 ```
 
@@ -558,7 +568,7 @@ private int deleteAndEarn(int[] nums) {
 * 	将斐波那契式的子序列中的两个连续项 A[i], A[j] 视为单个结点 (i, j)，整个子序列是这些连续结点之间的路径。
 * 	例如，对于斐波那契式的子序列 (A[1] = 2, A[2] = 3, A[4] = 5, A[7] = 8, A[10] = 13)，结点之间的路径
 * 	为 (1, 2) <-> (2, 4) <-> (4, 7) <-> (7, 10)。
-* 	这样做的动机是，只有当 A[i] + A[j] == A[k] 时，两结点 (i, j) 和 (j, k) 才是连通的，我们需要这些信息
+* 	这样做的动机是，只有当 A[i] + A[k] == A[j] 时，两结点 (i, k) 和 (k, j) 才是连通的，我们需要这些信息
 *   才能知道这一连通。现在我们得到一个类似于 最长上升子序列 的问题。
 
 * 定义状态：dp[i][j]表示以A[i]、A[j]结尾的斐波那契子序列的最大长度
@@ -569,7 +579,7 @@ private int deleteAndEarn(int[] nums) {
 * 状态转移方程为：
 *  	dp[i][j] = max{dp[k][i] + 1 | 0 <= k < i, i < j, A[k] + A[i] = A[j]}
 * 在这个状态转移方程中，因为i < j && A[i] < A[j],理论上任何A[i],A[j]都可以组成
-* 斐波那契式序列，故将A[i][j]初始化为2(i < j表示只初始化对角线以上的部分)
+* 斐波那契式序列的最初两个元素，故将A[i][j]初始化为2(i < j表示只初始化对角线以上的部分)
  */
 
 /**
@@ -622,6 +632,8 @@ private int lenLongestFibSubseq(int[] A) {
 * 
 * 设i之前有k：满足 0 <= k < i, A[i] - A[k] = A[j] - A[i] -> A[k] = 2 * A[i] - A[j]
 * 则满足条件的k、i代表的最长等差子序列长度加上1就是以A[i],A[j]结尾的最长等差子序列长度
+* 状态转移方程为：
+*	dp[i][j] = max{dp[k][i] + 1 | 0 <= k < i, i < j, A[k] = 2 * A[i] + A[j]}
  */
 private int longestArithSeqLength(int[] A) {
     if(A == null || A.length == 0) {
@@ -669,12 +681,12 @@ private int longestArithSeqLength(int[] A) {
 ```java
 /**
 * 定义状态:
-*   dp[i][k]表示前i个数构成k个子数组时的最大平均值和，那么对于所有0 <= j <= i-1
+*   dp[i][k]表示前i个数构成k个子数组时的最大平均值和，那么对于所有0 <= j < i-1
 *   有如下的状态转移方程:
 *       dp[i][k] = Math.max(dp[i][k], dp[j][k-1] + (A[j] + ... + A[i-1]) / (i - j))
 */
 private double largestSumOfAverages(int[] A, int K) {
-    if(A == null || A.length == 0) {
+    if(A == null || A.length == 0 || K <= 0) {
         return 0;
     }
 
@@ -756,6 +768,11 @@ private int minCost(int[][] costs) {
 * 区别在于由于颜色的种类可能比较多，所以需要加一层循环，每选择一种颜色涂当前房子(序号为i)时，需要求出上一个房子(i-1)
 * 使用不相同颜色时粉刷[0..i-1]的房子花费的最小值
  */
+
+/**
+* 方法一
+* 时间复杂度：O(nk^2)
+ */
 private int minCostII(int[][] costs) {
     if(costs == null || costs.length == 0) {
         return 0;
@@ -787,6 +804,78 @@ private int minCostII(int[][] costs) {
 
 /**
 * 优化: to-do
+ */
+```
+
+-----
+
+##### 题目5 `leetcode 975 奇偶跳`
+
+```java
+/**
+* 假设dp[i][0/1]表示从A[i]开始，先进行 奇跳跃/偶跳跃 ，能否到达终点，则状态转移方程为：
+* 	dp[i][0] = dp[A[i]通过奇跳跃到达的下一个索引j(j>i)][1]
+* 	dp[i][1] = dp[A[i]通过偶跳跃到达的下一个索引j(j>i)][0]
+* 则最后要求的答案为：dp[i][0]= true的起始点i的个数
+* 
+* 因此，现在要解决的问题就是：如何求A[i]通过 偶跳跃/奇跳跃 后到达的下一个索引j
+* 观察发现，从后往前遍历A[i]，A[i]下一步会跳到的地方只与已经遍历过的A[i+1,...]的值以及当前是奇跳跃还是偶跳跃有关：
+* 	奇跳跃：跳到大于A[i]的(大于A[i]的数里最小的)、索引最小的值,即ceiling(A[i])
+* 	偶跳跃：跳到小于A[i]的(小于A[i]的数里最大的)、索引最小的值,即floor(A[i])
+ */
+
+private int oddEvenJumps(int[] A) {
+    if(A == null || A.length == 0) {
+        return 0;
+    }
+
+    int len = A.length;
+    boolean[][] dp = new boolean[len][2];
+    Arrays.fill(dp[len - 1], true);
+    int res = 1;
+    TreeMap<Integer, Integer> tMap = new TreeMap<>();
+    for(int i = len - 1; i >= 0; i--) {
+        // 从当前位置奇数跳移动到下一个大于等于A[i]的最小元素(ceiling(A[i]))
+        // 当前位置能否到达终点与ceiling直接相关，若从ceiling处可以进行偶数跳
+        // 移动到终点，则当前位置的索引是“好”的，结果加一
+        Map.Entry<Integer, Integer> ceiling = tMap.ceilingEntry(A[i]);
+        if(ceiling != null && dp[ceiling.getValue()][1]) {
+            dp[i][0] = true;
+            res++;
+        }
+
+        // 从当前位置偶数跳到下一个小于等于A[i]的最大元素(floor(A[i]))
+        // 当前位置能否到达终点与floor直接相关，若从floor处可以进行奇数
+        // 跳移动到终点，则从当前位置偶数跳移动到终点的可能性为true
+        Map.Entry<Integer, Integer> floor = tMap.floorEntry(A[i]);
+        if(floor != null && dp[floor.getValue()][0]) {
+            dp[i][1] = true;
+        }
+        // 总是更新值到下标的映射，在存在重复元素时，总是会跳跃到索引值
+        // 最小的位置
+        tMap.put(A[i], i);
+    }
+    return res;
+}
+```
+
+----
+
+##### 题目6 `leetcode 403 青蛙过河`
+
+```java
+/**
+* to-do
+ */
+```
+
+------
+
+##### 题目7 `leetcode 安排邮筒`
+
+```java
+/**
+* to-do 
  */
 ```
 

@@ -7703,36 +7703,39 @@ private int change(int amount, int[] coins) {
 ```java
 /**
 * 构建如下的dp数组
-* 0 <= n <= n - 1, 1 <= k <= K
+* 0 <= i <= n - 1, 1 <= k <= K
 * n为天数,K为最大可交易次数
 * 题目最多有n X K X 2种状态，可以全部穷举
 * 0和1表示持有状态，0表示不持有股票，1表示持有股票
-*/
+ */
 dp[i][k][0 or 1];
-for( int i = 0; i < n; i++ )
-    for( int k = 1; k <= K; k++ )
-        for( int s :{0, 1} )
-            dp[i][k][s] = Math.max( buy, sell, rest );
+for(int i = 0; i < n; i++) {
+    for(int k = 1; k <= K; k++) {
+        for(int s :{0, 1}) {
+            dp[i][k][s] = Math.max(buy, sell, rest);
+        }
+    }
+}
 // 最终需要求解得到的答案是:dp[n-1][K][0]
-    
+
 // 根据分析得到如下的状态转移方程
 /**
-* 解释：今天不持有股票(s = 0 )有两种原因：
+* 解释：今天不持有股票(s = 0)有两种原因：
 * 1.昨天就未持有股票，今天选择rest(不参与购买股票),今天仍然未持有股票
 * 2.昨天就持有股票，今天选择售出
 */
-dp[i][k][0] = Math.max( dp[i-1][k][0], dp[i-1][k][1] + prices[i] );
-    		= Math.max(  选择rest     ,         选择sell          );
+dp[i][k][0] = Math.max(dp[i-1][k][0], dp[i-1][k][1] + prices[i]);
+		   = Math.max(选择rest, 选择sell);
 
 /**
-* 解释：今天持有股票( s = 1 )有两种原因：
+* 解释：今天持有股票(s = 1)有两种原因：
 * 1.昨天就持有股票，今天选择rest(不参与售出股票),今天仍然持有股票
 * 2.昨天未持有股票，今天选择buy(购入股票)
 * 这个状态转移方程中出现了k-1的原因是：把一次购入股票和售出股票的操作作为一次完整的交易，
 * 以购入股票为标志代表使用了一次交易机会，可用交易次数减一
 */
-dp[i][k][1] = Math.max( dp[i-1][k][1], dp[i-1][k-1][0] - prices[i] );
-		   = Math.max(  选择rest     ,         选择buy             );
+dp[i][k][1] = Math.max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i]);
+= Math.max(选择rest, 选择buy);
 
 /**
 * 定义base case 
@@ -7750,8 +7753,8 @@ dp[i][0][1] = Integer.MIN_VALUE;	 // 不允许进行任何交易的情况下不�
 dp[-1][k][0] = dp[i][0][0] = 0;
 dp[-1][k][1] = dp[i][0][1] = Integer.MIN_VALUE;
 // 状态转移
-dp[i][k][0] = Math.max( dp[i-1][k][0], dp[i-1][k][1] + prices[i] );
-dp[i][k][1] = Math.max( dp[i-1][k][1], dp[i-1][k-1][0] - prices[i] );
+dp[i][k][0] = Math.max(dp[i-1][k][0], dp[i-1][k][1] + prices[i]);
+dp[i][k][1] = Math.max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i]);
 ```
 
 ###### 题目示例1 `leetcode 121 买卖股票的最佳时机`
@@ -7759,19 +7762,53 @@ dp[i][k][1] = Math.max( dp[i-1][k][1], dp[i-1][k-1][0] - prices[i] );
 **分析**：K =  1，可以不考虑其影响
 
 ```java
-class Solution 
-{
-    public int maxProfit(int[] prices) 
-    {
-        int n = prices.length;
-        int dpI0 = 0, dpI1 = Integer.MIN_VALUE;
-        for( int i = 0; i < n; i++ )
-        {
-            dpI0 = Math.max( dpI0, dpI1 + prices[i] );
-            dpI1 = Math.max( dpI1, -prices[i] );
-        }
-        return dpI0;
+/**
+* dp[i][1][0] = max(dp[i-1][1][0], dp[i-1][1][1] + prices[i])
+* dp[i][1][1] = max(dp[i-1][1][1], dp[i-1][0][0] - prices[i]) 
+              = max(dp[i-1][1][1], -prices[i])
+* 解释：k = 0 的 base case，所以 dp[i-1][0][0] = 0。
+* 
+* 现在发现 k 都是 1，不会改变，即 k 对状态转移已经没有影响了。
+* 可以进行进一步化简去掉所有 k：
+* 	dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
+* 	dp[i][1] = max(dp[i-1][1], -prices[i])
+ */
+
+/**
+* 常规dp解法
+ */
+private int maxProfit(int[] prices) {
+    if(prices == null || prices.length == 0) {
+        return 0;
     }
+    
+    int len = prices.length;
+    int[][] dp = new int[len][2];
+    dp[0][0] = 0;
+    dp[0][1] = -prices[0];
+    for(int i = 1; i < len; i++) {
+        dp[i][0] = Math.max(dp[i-1][0], dp[i-1][1] + prices[i]);
+        dp[i][1] = Math.max(dp[i-1][1], -prices[i]);
+    }
+    return dp[len - 1][0];
+}
+
+/**
+* 压缩空间解法
+ */
+private int maxProfit(int[] prices) {
+    if(prices == null || prices.length == 0) {
+        return 0;
+    }
+    
+    int len = prices.length;
+    int dpI0 = 0;
+    int dpI1 = -prices[0];
+    for(int i = 1; i < len; i++) {
+        dpI0 = Math.max(dpI0, dpI1 + prices[i]);
+        dpI1 = Math.max(dpI1, -prices[i]);
+    }
+    return dpI0;
 }
 ```
 
@@ -7780,20 +7817,54 @@ class Solution
 **分析**：K = infinity,可以不考虑其影响
 
 ```java
-class Solution 
-{
-    public int maxProfit(int[] prices) 
-    {
-        int n = prices.length;
-        int dpI0 = 0, dpI1 = Integer.MIN_VALUE;
-        for( int i = 0; i < n; i++ )
-        {
-            int temp = dpI0;
-            dpI0 = Math.max( dpI0, dpI1 + prices[i] );
-            dpI1 = Math.max( dpI1, temp - prices[i] );
-        }
-        return dpI0;
+/**
+* k = infinity时k与k-1并无区别
+* dp[i][k][0] = max(dp[i-1][k][0], dp[i-1][k][1] + prices[i])
+* dp[i][k][1] = max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i])
+*             = max(dp[i-1][k][1], dp[i-1][k][0] - prices[i])
+* 
+* 我们发现数组中的 k 已经不会改变了，也就是说不需要记录 k 这个状态了：
+* 	dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
+* 	dp[i][1] = max(dp[i-1][1], dp[i-1][0] - prices[i])
+ */
+
+/**
+* 常规dp解法
+ */
+private int maxProfit(int[] prices) {
+    if(prices == null || prices.length == 0) {
+        return 0;
     }
+    
+    int len = prices.length;
+    int[][] dp = new int[len][2];
+    dp[0][0] = 0;
+    dp[0][1] = -prices[0];
+    for(int i = 1; i < len; i++) {
+        dp[i][0] = Math.max(dp[i-1][0], dp[i-1][1] + prices[i]);
+        dp[i][1] = Math.max(dp[i-1][1], dp[i-1][0] - prices[i]);
+    }
+    return dp[len - 1][0];
+}
+
+/**
+* 压缩空间解法
+ */
+private int maxProfit(int[] prices) {
+    if(prices == null || prices.length == 0) {
+        return 0;
+    }
+    
+    int len = prices.length;
+    int dpI0 = 0;
+    int dpI1 = -prices[0];
+    for(int i = 1; i < len; i++) {
+        int newDpI0 = Math.max(dpI0, dpI1 + prices[i]);
+        int newDpI1 = Math.max(dpI0, dpI1 - prices[i]);
+        dpI0 = newDpI0;
+        dpI1 = newDpI1;
+    }
+    return dpI0;
 }
 ```
 

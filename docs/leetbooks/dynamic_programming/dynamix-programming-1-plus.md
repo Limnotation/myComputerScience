@@ -910,7 +910,62 @@ public boolean canCross(int[] stones) {
 
 ```java
 /**
-* to-do 
+* 前提:由绝对值不等式可知，给定一个数组，如果只安排一个邮局，那么把邮箱放到数组的
+*     中位数位置上，此时房屋到邮筒的距离之和最小
+*
+* 当有K个邮局时，使用动态规划求解
+* 考虑最后一个邮箱的覆盖范围，设dp[i][j]表示在前i个房间放置j个邮筒时的最小距离之和
+* 
+* 最后一个邮箱的覆盖范围：
+*	当前j-1个邮箱分别负责一个房屋时，第j个邮箱需要负责(j ~ i)所有房子
+*	当前j-1个邮箱负责(1~i-1)的所有房子时，第j个邮箱只需要负责第i间房子
+* 设rec[i][j]表示第i间房子到第j间房子只放置一个邮箱时的最小距离之和
+* 则本题的递推方程如下：
+* 	dp[i][j] = Math.min(dp[k][j-1] + rec[k][i], dp[i][j]) 其中k >= j && k <= i-1
+*
+ */
+
+private int minDistance(int[] houses, int k) {
+	if(houses == null || houses.length == 0) {
+        return Integer.MIN_VALUE;
+    }
+    
+    int len = houses.length;
+    
+}
+```
+
+----
+
+##### 题目8 `leetcode 1230 抛掷硬币`
+
+```java
+/**
+* to-do
  */
 ```
+
+----
+
+##### 题目9 `leetcode 410 分割数组的最大值`
+
+```java
+/**
+* to-do
+ */
+```
+
+----
+
+##### 题目10 `leetcode 1473 给房子涂色`
+
+```java
+/**
+* to-do
+ */
+```
+
+------
+
+#### 单串问题：股票系列：`dp[i][k][state],i是时间，k是次数，state是状态`
 

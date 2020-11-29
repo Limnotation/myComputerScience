@@ -26,6 +26,17 @@
       - [题目5 `leetcode 975 奇偶跳`](#题目5-leetcode-975-奇偶跳)
       - [题目6 `leetcode 403 青蛙过河`](#题目6-leetcode-403-青蛙过河)
       - [题目7 `leetcode 1478 安排邮筒`](#题目7-leetcode-1478-安排邮筒)
+      - [题目8 `leetcode 1230 抛掷硬币`](#题目8-leetcode-1230-抛掷硬币)
+      - [题目9 `leetcode 410 分割数组的最大值`](#题目9-leetcode-410-分割数组的最大值)
+      - [题目10 `leetcode 1473 给房子涂色`](#题目10-leetcode-1473-给房子涂色)
+    - [单串问题：股票系列：`dpi,i是时间，k是次数，state是状态`](#单串问题股票系列dpistatei是时间k是次数state是状态)
+      - [问题分析](#问题分析)
+      - [题目1 `leetcode 121 买卖股票的最佳时机`](#题目1-leetcode-121-买卖股票的最佳时机)
+      - [题目2 `leetcode 122 买卖股票的最佳时机II`](#题目2-leetcode-122-买卖股票的最佳时机ii)
+      - [题目3 `leetcode 123 买卖股票的最佳时机III`](#题目3-leetcode-123-买卖股票的最佳时机iii)
+      - [题目4 `leetcode 188 买卖股票的最佳时机IV`](#题目4-leetcode-188-买卖股票的最佳时机iv)
+      - [题目5 `leetcode 309 买卖股票的最佳时机含冷冻期`](#题目5-leetcode-309-买卖股票的最佳时机含冷冻期)
+      - [题目6 `leetcode 714 买卖股票的最佳时机含手续费`](#题目6-leetcode-714-买卖股票的最佳时机含手续费)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -968,4 +979,328 @@ private int minDistance(int[] houses, int k) {
 ------
 
 #### 单串问题：股票系列：`dp[i][k][state],i是时间，k是次数，state是状态`
+
+##### 问题分析
+
+```java
+/**
+* 状态：天数、允许交易的最大次数、股票的持有状态
+* 选择：买入股票、卖出股票、无操作
+* 
+* 构建如下的dp数组
+* 0 <= i <= n - 1, 1 <= k <= K
+* n为天数,K为最大可交易次数
+* 题目最多有n X K X 2种状态，可以全部穷举
+* 0和1表示持有状态，0表示不持有股票，1表示持有股票
+ */
+dp[i][k][0 or 1];
+for(int i = 0; i < n; i++) {
+    for(int k = 1; k <= K; k++) {
+        for(int s :{0, 1}) {
+            dp[i][k][s] = Math.max(buy, sell, rest);
+        }
+    }
+}
+// 最终需要求解得到的答案是:dp[n-1][K][0]
+// 答案的意义为在第n天结束时，最多可进行K次交易的情况下，可以获得的最大利润
+
+// 根据分析得到如下的状态转移方程
+/**
+* 解释：今天不持有股票(s = 0)有两种原因：
+* 1.昨天就未持有股票，今天选择rest(不参与购买股票),今天仍然未持有股票
+* 2.昨天就持有股票，今天选择售出
+*/
+dp[i][k][0] = Math.max(dp[i-1][k][0], dp[i-1][k][1] + prices[i]);
+		   = Math.max(选择rest, 选择sell);
+
+/**
+* 解释：今天持有股票(s = 1)有两种原因：
+* 1.昨天就持有股票，今天选择rest(不参与售出股票),今天仍然持有股票
+* 2.昨天未持有股票，今天选择buy(购入股票)
+* 这个状态转移方程中出现了k-1的原因是：把一次购入股票和售出股票的操作作为一次完整的交易，
+* 以购入股票为标志代表使用了一次交易机会，可用交易次数减一
+*/
+dp[i][k][1] = Math.max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i]);
+= Math.max(选择rest, 选择buy);
+
+/**
+* 定义base case 
+*/
+dp[-1][k][0] = 0;					// i从0开始，故i < 0意味着从未进行任何交易，利润为0
+dp[-1][k][1] = Integer.MIN_VALUE;	 // 未进行交易时不可能持有任何股票，用负无穷表示
+dp[i][0][0] = 0;    				// k从1开始，k < 1代表不允许进行任何交易，利润为0
+dp[i][0][1] = Integer.MIN_VALUE;	 // 不允许进行任何交易的情况下不可能持有股票，用负无穷表示
+
+
+/**
+* 状态转移方程总结
+*/
+// base case
+dp[-1][k][0] = dp[i][0][0] = 0;
+dp[-1][k][1] = dp[i][0][1] = Integer.MIN_VALUE;
+// 状态转移
+dp[i][k][0] = Math.max(dp[i-1][k][0], dp[i-1][k][1] + prices[i]);
+dp[i][k][1] = Math.max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i]);
+```
+
+------
+
+##### 题目1 `leetcode 121 买卖股票的最佳时机`
+
+**分析**：K =  1，可以不考虑其影响
+
+```java
+/**
+* dp[i][1][0] = max(dp[i-1][1][0], dp[i-1][1][1] + prices[i])
+* dp[i][1][1] = max(dp[i-1][1][1], dp[i-1][0][0] - prices[i]) 
+              = max(dp[i-1][1][1], -prices[i])
+* 解释：k = 0 的 base case，所以 dp[i-1][0][0] = 0。
+* 
+* 现在发现 k 都是 1，不会改变，即 k 对状态转移已经没有影响了。
+* 可以进行进一步化简去掉所有 k：
+* 	dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
+* 	dp[i][1] = max(dp[i-1][1], -prices[i])
+ */
+
+/**
+* 常规dp解法
+ */
+private int maxProfit(int[] prices) {
+    if(prices == null || prices.length == 0) {
+        return 0;
+    }
+    
+    int len = prices.length;
+    int[][] dp = new int[len][2];
+    dp[0][0] = 0;
+    dp[0][1] = -prices[0];
+    for(int i = 1; i < len; i++) {
+        dp[i][0] = Math.max(dp[i-1][0], dp[i-1][1] + prices[i]);
+        dp[i][1] = Math.max(dp[i-1][1], -prices[i]);
+    }
+    return dp[len - 1][0];
+}
+
+/**
+* 压缩空间解法
+ */
+private int maxProfit(int[] prices) {
+    if(prices == null || prices.length == 0) {
+        return 0;
+    }
+    
+    int len = prices.length;
+    int dpI0 = 0;
+    int dpI1 = -prices[0];
+    for(int i = 1; i < len; i++) {
+        dpI0 = Math.max(dpI0, dpI1 + prices[i]);
+        dpI1 = Math.max(dpI1, -prices[i]);
+    }
+    return dpI0;
+}
+```
+
+-----
+
+##### 题目2 `leetcode 122 买卖股票的最佳时机II`
+
+**分析**：K = infinity,可以不考虑其影响
+
+```java
+/**
+* k = infinity时k与k-1并无区别
+* dp[i][k][0] = max(dp[i-1][k][0], dp[i-1][k][1] + prices[i])
+* dp[i][k][1] = max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i])
+*             = max(dp[i-1][k][1], dp[i-1][k][0] - prices[i])
+* 
+* 我们发现数组中的 k 已经不会改变了，也就是说不需要记录 k 这个状态了：
+* 	dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
+* 	dp[i][1] = max(dp[i-1][1], dp[i-1][0] - prices[i])
+ */
+
+/**
+* 常规dp解法
+ */
+private int maxProfit(int[] prices) {
+    if(prices == null || prices.length == 0) {
+        return 0;
+    }
+    
+    int len = prices.length;
+    int[][] dp = new int[len][2];
+    dp[0][0] = 0;
+    dp[0][1] = -prices[0];
+    for(int i = 1; i < len; i++) {
+        dp[i][0] = Math.max(dp[i-1][0], dp[i-1][1] + prices[i]);
+        dp[i][1] = Math.max(dp[i-1][1], dp[i-1][0] - prices[i]);
+    }
+    return dp[len - 1][0];
+}
+
+/**
+* 压缩空间解法
+ */
+private int maxProfit(int[] prices) {
+    if(prices == null || prices.length == 0) {
+        return 0;
+    }
+    
+    int len = prices.length;
+    int dpI0 = 0;
+    int dpI1 = -prices[0];
+    for(int i = 1; i < len; i++) {
+        int newDpI0 = Math.max(dpI0, dpI1 + prices[i]);
+        int newDpI1 = Math.max(dpI1, dpI0 - prices[i]);
+        dpI0 = newDpI0;
+        dpI1 = newDpI1;
+    }
+    return dpI0;
+}
+```
+
+-----
+
+##### 题目3 `leetcode 123 买卖股票的最佳时机III`
+
+**分析**：Ｋ　＝　２，遍历所有的K值
+
+```java
+/**
+* 注意：交易次数K是指允许的最大交易次数，并不是要求一定要交易K次
+* 	所以要遍历所有K值找到可以获取最大理论的交易次数
+ */
+
+/**
+* 常规dp解法
+ */
+private int maxProfit(int[] prices) {
+    if(prices == null || prices.length == 0) {
+        return 0;
+    }
+
+    int len = prices.length;
+    int[][][] dp = new int[len][3][2];
+    dp[0][1][0] = 0;
+    dp[0][1][1] = -prices[0];
+    dp[0][2][0] = 0;
+    dp[0][2][1] = -prices[0];
+    for(int i = 1; i < len; i++) {
+        for(int k = 1; k <= 2; k++) {
+            dp[i][k][0] = Math.max(dp[i-1][k][0], dp[i-1][k][1] + prices[i]);
+            dp[i][k][1] = Math.max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i]);
+        }
+    }
+    return dp[len-1][2][0];
+}
+```
+
+------
+
+##### 题目4 `leetcode 188 买卖股票的最佳时机IV`
+
+**分析**：K = infinity,一次完整的交易至少需要两天时间，所以n天之内最多可以完成n / 2次交易，如果K > = n / 2,解决方案与 K = infinity时一致
+
+```java
+public int maxProfit(int k, int[] prices) {
+    if(prices == null || prices.length == 0) {
+        return 0;
+    }
+
+    int len = prices.length;
+    if(len / 2 <= k) {
+        return maxProfitWithInfiniteK(prices);
+    } else {
+        return maxProfitWithK(prices, k);
+    }
+}
+
+/**
+* 参照leetcode 122 
+ */
+private int maxProfitWithInfiniteK(int[] prices) {
+    int len = prices.length;
+    int dpI0 = 0;
+    int dpI1 = -prices[0];
+    for(int i = 1; i < len; i++) {
+        int newDpI0 = Math.max(dpI0, dpI1 + prices[i]);
+        int newDpI1 = Math.max(dpI1, dpI0 - prices[i]);
+        dpI0 = newDpI0;
+        dpI1 = newDpI1;
+    }
+    return dpI0;
+}
+
+/**
+* 参照leetcode 123
+ */
+private int maxProfitWithK(int[] prices, int K) {
+    int len = prices.length;
+    int[][][] dp = new int[len][K+1][2];
+    for(int i = 1; i <= K; i++) {
+        dp[0][i][0] = 0;
+        dp[0][i][1] = -prices[0];
+    }
+
+    for(int i = 1; i < len; i++) {
+        for(int k = 1; k <= K; k++) {
+            dp[i][k][0] = Math.max(dp[i-1][k][0], dp[i-1][k][1] + prices[i]);
+            dp[i][k][1] = Math.max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i]);
+        }
+    }
+    return dp[len-1][K][0];
+}
+```
+
+------
+
+##### 题目5 `leetcode 309 买卖股票的最佳时机含冷冻期`
+
+**分析**：每次sell操作完成之后要隔一天才能进行下一次交易
+
+```java
+/**
+* 常规dp解法
+ */
+private int maxProfit(int[] prices) {
+    if(prices == null || prices.length == 0) {
+        return 0;
+    }
+
+    int len = prices.length;
+    int[][] dp = new int[len][2];
+    dp[0][0] = 0;
+    dp[0][1] = -prices[0];
+    for(int i = 1; i < len; i++) {
+        dp[i][0] = Math.max(dp[i-1][0], dp[i-1][1] + prices[i]);
+        dp[i][1] = Math.max(dp[i-1][1], ((i-2) >= 0? dp[i-2][0] : 0) - prices[i]);
+    }
+    return dp[len-1][0];
+}
+```
+
+------
+
+##### 题目6 `leetcode 714 买卖股票的最佳时机含手续费`
+
+```java
+/**
+* 常规dp解法，将fee加入到股票的购买成本中
+ */
+private int maxProfit(int[] prices, int fee) {
+    if(prices == null || prices.length == 0) {
+        return 0;
+    }
+
+    int len = prices.length;
+    int dpI0 = 0;
+    int dpI1 = -prices[0] - fee;
+    for(int i = 1; i < len; i++) {
+        int newDpI0 = Math.max(dpI0, dpI1 + prices[i]);
+        int newDpI1 = Math.max(dpI1, dpI0 - prices[i]- fee);
+        dpI0 = newDpI0;
+        dpI1 = newDpI1;
+    }
+    return dpI0;
+}
+```
 

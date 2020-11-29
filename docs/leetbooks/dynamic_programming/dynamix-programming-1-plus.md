@@ -25,7 +25,7 @@
       - [题目4 `leetcode 265 粉刷房子II`](#题目4-leetcode-265-粉刷房子ii)
       - [题目5 `leetcode 975 奇偶跳`](#题目5-leetcode-975-奇偶跳)
       - [题目6 `leetcode 403 青蛙过河`](#题目6-leetcode-403-青蛙过河)
-      - [题目7 `leetcode 安排邮筒`](#题目7-leetcode-安排邮筒)
+      - [题目7 `leetcode 1478 安排邮筒`](#题目7-leetcode-1478-安排邮筒)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -865,13 +865,48 @@ private int oddEvenJumps(int[] A) {
 
 ```java
 /**
-* to-do
+* 定义dp数组：dp[i][k]表示是否能从(0 <= j <= i - 1)中某个节点跳跃k个单位
+*           到达i节点
+* 那么对于节点j而言，从其前一个节点到达j可能的跳跃方式为 k-1 || k || k + 1
+* 由此可以得到如下的递推方程：
+*       dp[i][k] = dp[j][k-1] || dp[j][k] || dp[j][k+1]
  */
+public boolean canCross(int[] stones) {
+    if(stones[1] != 1) {
+        return false;
+    }
+
+    int len = stones.length;
+    boolean[][] dp = new boolean[len][len + 1];
+    dp[0][0] = true;
+    for(int i = 1; i < len; i++) {
+        for(int j = 0; j < i; j++) {
+            int gap = stones[i] - stones[j];
+            /**
+            * 为什么有这么个判断？
+            * 	因为其他石头跳到第 i 个石头跳的步数 k 必定满足 k <= i
+            * 这又是为什么？
+            * 	1、比如 nums = [0,1,3,5,6,8,12,17]
+            * 	  那么第 0 个石头跳到第 1 个石头，步数肯定为 1，然后由于后续最大的步数是 k + 1，因此第 1 个石头最大只能跳 2 个单位
+            *     因此如果逐个往上加，那么第 2 3 4 5 ... 个石头最多依次跳跃的步数是 3 4 5 6...
+            * 	2、 第 i 个石头能跳的最大的步数是 i + 1，那么就意味着其他石头 j 跳到第 i 个石头的最大步数只能是 i 或者 j + 1
+            *     而 这个 k 表示从j跳到 i 上所需要的步数，因此 k 必须 <= i （或者是 k <= j + 1）
+             */
+            if(gap <= i) {
+                dp[i][gap] = dp[j][gap - 1] || dp[j][gap] || dp[j][gap + 1];
+                if(i == len - 1 && dp[i][gap]) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
 ```
 
 ------
 
-##### 题目7 `leetcode 安排邮筒`
+##### 题目7 `leetcode 1478 安排邮筒`
 
 ```java
 /**

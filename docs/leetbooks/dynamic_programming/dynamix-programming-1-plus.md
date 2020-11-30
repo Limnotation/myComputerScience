@@ -37,6 +37,15 @@
       - [题目4 `leetcode 188 买卖股票的最佳时机IV`](#题目4-leetcode-188-买卖股票的最佳时机iv)
       - [题目5 `leetcode 309 买卖股票的最佳时机含冷冻期`](#题目5-leetcode-309-买卖股票的最佳时机含冷冻期)
       - [题目6 `leetcode 714 买卖股票的最佳时机含手续费`](#题目6-leetcode-714-买卖股票的最佳时机含手续费)
+    - [单串问题：与其它算法配合](#单串问题与其它算法配合)
+      - [题目1 `leetcode 1055 形成字符串的最短路径`](#题目1-leetcode-1055-形成字符串的最短路径)
+      - [题目2 `leetcode 368 最大整除子集`](#题目2-leetcode-368-最大整除子集)
+    - [单串问题：其它单串`dp[i]`问题](#单串问题其它单串dpi问题)
+  - [双串](#双串)
+    - [双串问题：最经典双串LCS系列](#双串问题最经典双串lcs系列)
+      - [题目1 `leetcode 1143 最长公共子序列`](#题目1-leetcode-1143-最长公共子序列)
+      - [题目2  `leetcode 712 两个字符串的最小ASCII删除和`](#题目2--leetcode-712-两个字符串的最小ascii删除和)
+      - [题目3 `leetcode 718 最长重复子数组`](#题目3-leetcode-718-最长重复子数组)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -1232,6 +1241,8 @@ private int maxProfitWithInfiniteK(int[] prices) {
 
 /**
 * 参照leetcode 123
+* 关键在于所有可能的交易次数都要遍历一遍，因为并不是把交易次数
+* 用完利润最大
  */
 private int maxProfitWithK(int[] prices, int K) {
     int len = prices.length;
@@ -1301,6 +1312,143 @@ private int maxProfit(int[] prices, int fee) {
         dpI1 = newDpI1;
     }
     return dpI0;
+}
+```
+
+------
+
+#### 单串问题：与其它算法配合
+
+##### 题目1 `leetcode 1055 形成字符串的最短路径`
+
+```java
+/**
+* to-do
+ */
+```
+
+-----
+
+##### 题目2 `leetcode 368 最大整除子集`
+
+```java
+/**
+* to-do
+ */
+```
+
+-----
+
+#### 单串问题：其它单串`dp[i]`问题
+
+----
+
+-------
+
+### 双串
+
+#### 双串问题：最经典双串LCS系列
+
+##### 题目1 `leetcode 1143 最长公共子序列`
+
+```java
+/**
+* 定义dp数组：dp[i][j]表示text1的前i个字符与text2的前j个字符组成的LCS的长度
+* 状态转移方程为：
+*	1、dp[i][j] = dp[i-1][j-1] + 1     			  if(text1.charAt(i-1) == text2.charAt(j-1))
+*	2、dp[i][j] = Math.max(dp[i][j-1], dp[i-1][j])  else
+*
+* 结果为dp[len1][len2];
+ */
+private int longestCommonSubsequence(String text1, String text2) {
+    int len1 = text1.length();
+    int len2 = text2.length();
+    int[][] dp = new int[len1 + 1][len2 + 1];
+    for(int i = 1; i <= len1; i++) {
+        for(int j = 1; j <= len2; j++) {
+            if(text1.charAt(i-1) == text2.charAt(j-1)) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+    }
+    return dp[len1][len2];
+}
+```
+
+-----
+
+##### 题目2  `leetcode 712 两个字符串的最小ASCII删除和`
+
+```java
+/**
+* 两个字符串的ascii码之和是定值，分别设为asciiSum1, asciiSum2
+* 删除字符使得两个字符串相等，可以理解为得到两个字符串的LCS,设LCS的ascii码值为asciiLCS
+* 则待删除字符的ascii码值可以表示为：asciiSum1 + asciiSum2 - 2 * asciiLCS
+* 由公式可知，只要获取ascii值最大的LCS，就可以得到最小删除和
+* 
+* 定义dp数组：dp[i][j]表示s1的前i个字符与s2的前j个字符的LCS的ascii码值之和
+* 状态转移方程为：
+*	1、dp[i][j] = dp[i-1][j-1] + s1.charAt(i-1)     if(s1.charAt(i-1) == s2.charAt(j-1))
+*	2、dp[i][j] = Math.max(dp[i][j-1], dp[i-1][j])  else
+* */
+private int minimumDeleteSum(String s1, String s2) {
+    int len1 = s1.length();
+    int len2 = s2.length();
+    int[][] dp = new int[len1 + 1][len2 + 1];
+    for(int i = 1; i <= len1; i++) {
+        for(int j = 1; j <= len2; j++) {
+            if(s1.charAt(i-1) == s2.charAt(j-1)) {
+                dp[i][j] = dp[i-1][j-1] + s1.charAt(i-1);
+            } else {
+                dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+    }
+
+    int asciiSum1 = 0;
+    int asciiSum2 = 0;
+    for(char c : s1.toCharArray()) {
+        asciiSum1 += c;
+    }
+    for(char c : s2.toCharArray()) {
+        asciiSum2 += c;
+    }
+    // 显然
+    return asciiSum1 + asciiSum2 - 2 * dp[len1][len2];
+}
+```
+
+----
+
+##### 题目3 `leetcode 718 最长重复子数组`
+
+```java
+/**
+* 注意：子数组是连续序列
+* dp[i][j] ：长度为 i，末尾项为A[i−1] 的子数组，与长度为j，末尾项为B[j−1]的子数组，二者
+* 的最大公共后缀子数组长度。
+* 状态转移方程：
+* 	如果 A[i-1] != B[j-1]， 有 dp[i][j] = 0
+* 	如果 A[i-1] == B[j-1] ， 有 dp[i][j] = dp[i-1][j-1] + 1
+* base case：如果i==0||j==0，其中一个子数组长度为 0，没有公共部分，dp[i][j] = 0
+* 最长公共子数组以哪一项为末尾项都有可能，即每个 dp[i][j] 都可能是最大值。需要保存结果全局变量
+ */
+private int findLength(int[] A, int[] B) {
+    int len1 = A.length;
+    int len2 = B.length;
+    int[][] dp = new int[len1+1][len2+1];
+    int res = 0;
+    for(int i = 1; i <= len1; i++) {
+        for(int j = 1; j <= len2; j++) {
+            if(A[i-1] == B[j-1]) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+            }
+            res = Math.max(res, dp[i][j]);
+        }
+    }
+    return res;
 }
 ```
 

@@ -46,6 +46,9 @@
       - [题目1 `leetcode 1143 最长公共子序列`](#题目1-leetcode-1143-最长公共子序列)
       - [题目2  `leetcode 712 两个字符串的最小ASCII删除和`](#题目2--leetcode-712-两个字符串的最小ascii删除和)
       - [题目3 `leetcode 718 最长重复子数组`](#题目3-leetcode-718-最长重复子数组)
+    - [双串问题：字符串匹配系列](#双串问题字符串匹配系列)
+      - [题目1 `leetcode 72 编辑距离`](#题目1-leetcode-72-编辑距离)
+      - [题目2 `leetcode 44 通配符匹配`](#题目2-leetcode-44-通配符匹配)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -1431,7 +1434,7 @@ private int minimumDeleteSum(String s1, String s2) {
 * 的最大公共后缀子数组长度。
 * 状态转移方程：
 * 	如果 A[i-1] != B[j-1]， 有 dp[i][j] = 0
-* 	如果 A[i-1] == B[j-1] ， 有 dp[i][j] = dp[i-1][j-1] + 1
+* 	如果 A[i-1] == B[j-1]， 有 dp[i][j] = dp[i-1][j-1] + 1
 * base case：如果i==0||j==0，其中一个子数组长度为 0，没有公共部分，dp[i][j] = 0
 * 最长公共子数组以哪一项为末尾项都有可能，即每个 dp[i][j] 都可能是最大值。需要保存结果全局变量
  */
@@ -1449,6 +1452,88 @@ private int findLength(int[] A, int[] B) {
         }
     }
     return res;
+}
+```
+
+-----
+
+#### 双串问题：字符串匹配系列
+
+##### 题目1 `leetcode 72 编辑距离`
+
+```java
+/**
+* 定义dp数组：dp[i][j]表示将word1前i个字符编辑成word2的前j个字符需要的最小
+* 			编辑次数
+* 状态推导参考liweiwei的题解，图解较为详细
+ */
+private int minDistance(String word1, String word2) {
+    int len1 = word1.length();
+    int len2 = word2.length();
+    int[][] dp = new int[len1 + 1][len2 + 1];
+    for(int i = 0; i <= len1; i++) {
+        dp[i][0] = i;
+    }
+    for(int i = 0; i <= len2; i++) {
+        dp[0][i] = i;
+    }
+
+    for(int i = 1; i <= len1; i++) {
+        for(int j = 1; j <= len2; j++) {
+            if(word1.charAt(i-1) == word2.charAt(j-1)) {
+                dp[i][j] = dp[i-1][j-1];
+            } else {
+                dp[i][j] = Math.min(dp[i-1][j], Math.min(dp[i-1][j-1], dp[i][j-1])) + 1;
+            }
+        }
+    }
+    return dp[len1][len2];
+}
+```
+
+-----
+
+##### 题目2 `leetcode 44 通配符匹配`
+
+```java
+/**
+* 定义dp数组：dp[i][j]表示p的前i个字符与s的前j个字符的匹配结果
+* 状态转移：
+*	1、如果p[i-1] == s[j-1]或者p[i-1] == '?',表示当前的字符串匹配，dp[i][j]
+*	  由dp[i-1][j-1]转移而来
+*	2、如果p[i-1] == '*',那么dp[i][j]可以由dp[i-1][j]转移而来，表示此时'*'不匹配
+*	  任何字符；或者由dp[i][j-1]转移而来，表示'*'匹配了当前字符
+* 状态转移方程可以表示为：
+* 	dp[i][j] = dp[i-1][j-1]              if(p[i-1] == s[j-1] || p[i-1] == '?')
+*		    = dp[i-1][j] || dp[i][j-1]   else if(dp[i-1] == '*')
+*/
+private boolean isMatch(String s, String p) {
+    int len1 = p.length();
+    int len2 = s.length();
+    boolean[][] dp = new boolean[len1 + 1][len2 + 1];
+    dp[0][0] = true;
+    int loseMatch = 1;
+    // 这个循环作用是：
+    // 当p的前缀是由至少一个'*'组成时，这个前缀可以和任意长度
+    // 的字符串匹配，所以此时dp[i][j] = true
+    for(int i = 1; i <= len1; i++) {
+        if(p.charAt(i-1) != '*') {
+            break;
+        }
+        Arrays.fill(dp[i], true);
+        loseMatch++;
+    }
+
+    for(int i = loseMatch; i <= len1; i++) {
+        for(int j = 1; j <= len2; j++) {
+            if(p.charAt(i-1) == s.charAt(j-1) || p.charAt(i-1) == '?') {
+                dp[i][j] = dp[i-1][j-1];
+            } else if(p.charAt(i-1) == '*') {
+                dp[i][j] = dp[i-1][j] || dp[i][j-1];
+            }
+        }
+    }
+    return dp[len1][len2];
 }
 ```
 

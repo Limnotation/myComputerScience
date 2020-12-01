@@ -73,6 +73,7 @@
   - [数据结构维护前缀和问题：`HashMap`维护(1)](#数据结构维护前缀和问题hashmap维护1)
     - [题目1 `leetcode 325 和等于K的最长子数组长度`](#题目1-leetcode-325-和等于k的最长子数组长度)
     - [题目2 `leetcode 525 连续数组`](#题目2-leetcode-525-连续数组)
+    - [题目3 `leetcode 1371 每个元音包含偶数次的最长子字符串`](#题目3-leetcode-1371-每个元音包含偶数次的最长子字符串)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -1974,6 +1975,55 @@ private int findMaxLength(int[] nums) {
             curSum += 1;
         } else {
             curSum -= 1;
+        }
+
+        if(!preSumMap.containsKey(curSum)) {
+            preSumMap.put(curSum, i);
+        } else {
+            res = Math.max(res, i - preSumMap.get(curSum));
+        }
+    }
+    return res;
+}
+```
+
+----
+
+#### 题目3 `leetcode 1371 每个元音包含偶数次的最长子字符串`
+
+```java
+/**
+* 1、使用int的最低5位分别表示a, e, i, o, u的出现次数，bit = 1表示字符
+* 	出现了奇数次，bit = 0表示字符出现了偶数次
+* 2、curSum表示前缀的“异或前缀和”，其中仅使用了最低的5位：当该位为0表示
+*	字符出现偶数次，否则字符出现奇数次。通过每次字符出现时将对应位与1进
+*	行异或可以反应前缀中对应字符的出现情况
+* 3、如果同样的异或前缀和的值出现了两次，那么可以肯定这个区间之内一定有
+*	元音字符出现了偶数次(只有这样该位的异或结果为0)
+*
+* preSumMap：
+*	key的值表示一个字符串前缀的异或前缀和
+* 	value的值则表示相应的前缀和第一次出现时该前缀的最后一个元素的数组下标
+* 		value的值之所以被这样设置是因为要求最长长度时，重复出现的前缀值并不会
+* 		使得结果更大，只需要关注相同前缀和第一次出现的情况即可
+ */
+private int findTheLongestSubstring(String s) {
+    if(s == null || s.length() == 0) {
+        return 0;
+    }
+
+    int res = 0;
+    int curSum = 0;
+    Map<Integer, Integer> preSumMap = new HashMap<>();
+    preSumMap.put(0, -1);
+    for(int i = 0; i < s.length(); i++) {
+        char c = s.charAt(i);
+        switch(c) {
+            case 'a': curSum ^= 1; break;
+            case 'e': curSum ^= 2; break;
+            case 'i': curSum ^= 4; break;
+            case 'o': curSum ^= 8; break;
+            case 'u': curSum ^= 16; break;
         }
 
         if(!preSumMap.containsKey(curSum)) {

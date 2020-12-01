@@ -49,6 +49,30 @@
     - [双串问题：字符串匹配系列](#双串问题字符串匹配系列)
       - [题目1 `leetcode 72 编辑距离`](#题目1-leetcode-72-编辑距离)
       - [题目2 `leetcode 44 通配符匹配`](#题目2-leetcode-44-通配符匹配)
+      - [题目3 `leetcode 10 正则表达式匹配`](#题目3-leetcode-10-正则表达式匹配)
+    - [双串问题：带维度双串`dpi`](#双串问题带维度双串dpik)
+      - [题目1 `leetcode 87 扰乱字符串`](#题目1-leetcode-87-扰乱字符串)
+    - [双串问题：其他双串`dpi`问题](#双串问题其他双串dpi问题)
+      - [题目1 `leetcode 97 交错字符串`](#题目1-leetcode-97-交错字符串)
+      - [题目2 `leetcode 115 不同的子序列`](#题目2-leetcode-115-不同的子序列)
+  - [矩阵](#矩阵)
+    - [矩阵问题：矩阵`dpi`](#矩阵问题矩阵dpi)
+      - [题目1 `leetcode 120 三角形最小路径和`](#题目1-leetcode-120-三角形最小路径和)
+      - [题目2 `leetcode 64 最小路径和`](#题目2-leetcode-64-最小路径和)
+      - [题目3 `leetcode 174 地下城游戏`](#题目3-leetcode-174-地下城游戏)
+      - [题目4 `leetcode 221 最大正方形`](#题目4-leetcode-221-最大正方形)
+      - [题目5 `leetcode 931 下降路径最小和`](#题目5-leetcode-931-下降路径最小和)
+    - [矩阵问题：矩阵`dpi`](#矩阵问题矩阵dpik)
+      - [题目1 `leetcode 363 矩形区域不超过K的最大数值和`](#题目1-leetcode-363-矩形区域不超过k的最大数值和)
+      - [题目2 `leetcode 1444 切披萨的方案数`](#题目2-leetcode-1444-切披萨的方案数)
+- [前缀和](#前缀和)
+  - [前缀和概念](#前缀和概念)
+  - [实现前缀和问题](#实现前缀和问题)
+    - [题目1 `leetcode 303 区域和检索-数组不可变`](#题目1-leetcode-303-区域和检索-数组不可变)
+    - [题目2 `leetcode 304 二维区域和检索`](#题目2-leetcode-304-二维区域和检索)
+  - [数据结构维护前缀和问题：`HashMap`维护(1)](#数据结构维护前缀和问题hashmap维护1)
+    - [题目1 `leetcode 325 和等于K的最长子数组长度`](#题目1-leetcode-325-和等于k的最长子数组长度)
+    - [题目2 `leetcode 525 连续数组`](#题目2-leetcode-525-连续数组)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -1534,6 +1558,431 @@ private boolean isMatch(String s, String p) {
         }
     }
     return dp[len1][len2];
+}
+```
+
+-----
+
+##### 题目3 `leetcode 10 正则表达式匹配`
+
+```java
+/**
+* to-do
+ */
+```
+
+------
+
+#### 双串问题：带维度双串`dp[i][j][k]`
+
+##### 题目1 `leetcode 87 扰乱字符串`
+
+```java
+/**
+* to-do
+ */
+```
+
+-----
+
+#### 双串问题：其他双串`dp[i][j]`问题
+
+##### 题目1 `leetcode 97 交错字符串`
+
+```java
+/**
+* to-do
+ */
+```
+
+-----
+
+##### 题目2 `leetcode 115 不同的子序列`
+
+```java
+/**
+* to-do
+ */
+```
+
+-----
+
+----
+
+### 矩阵
+
+#### 矩阵问题：矩阵`dp[i][j]`
+
+##### 题目1 `leetcode 120 三角形最小路径和`
+
+```java
+/**
+* 定义dp数组：dp[i][j]表示点(i, j)到底边的最小路径和
+* 根据题目条件，状态转移方程为：
+* 	dp[i][j] = Math.min(dp[i+1][j], dp[i+1][j+1]) + triangle.get(i).get(j)
+ */
+
+/**
+* 常规dp解法
+ */
+private int minimumTotal(List<List<Integer>> triangle) {
+    int len = triangle.size();
+    int[][] dp = new int[len + 1][len + 1];
+    for(int i = len - 1; i >= 0; i--) {
+        for(int j = 0; j <= i;j++) {
+            dp[i][j] = Math.min(dp[i+1][j], dp[i+1][j+1]) + triangle.get(i).get(j);
+        }
+    }
+    return dp[0][0];
+}
+
+/**
+* 压缩空间的解法
+ */
+private int minimumTotal(List<List<Integer>> triangle) {
+    int len = triangle.size();
+    int[] dp = new int[len + 1];
+    for(int i= len - 1; i >= 0; i--) {
+        for(int j = 0; j <= i; j++) {
+            dp[j] = Math.min(dp[j], dp[j+1]) + triangle.get(i).get(j);
+        }
+    }
+    return dp[0];
+}
+```
+
+----
+
+##### 题目2 `leetcode 64 最小路径和`
+
+```java
+/**
+* dp[i][j] 表示从起点(0, 0)走到（i,j）的最短路径长度
+* 状态转移方程：
+* 	dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+* 	return dp[rowLen-1][colLen-1]
+* 注意处理边界条件即可
+ */
+
+/**
+* 常规dp解法
+ */
+private int minPathSum(int[][] grid) {
+    int m = grid.length;
+    int n = grid[0].length;
+    int[][] dp = new int[m][n];
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            if(i == 0 && j == 0) {
+                dp[i][j] = grid[i][j];
+                continue;
+            } else if(i == 0) {
+                dp[i][j] = dp[i][j-1];
+            } else if(j == 0) {
+                dp[i][j] = dp[i-1][j];
+            } else {
+                dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1]);
+            }
+            dp[i][j] += grid[i][j];
+        }
+    }
+    return dp[m-1][n-1];
+}
+
+/**
+* 采用空间压缩的解法
+ */
+private int minPathSum(int[][] grid) {
+    if(grid == null || grid.length == 0) {
+        return 0;
+    }
+
+    int m = grid.length;
+    int n = grid[0].length;
+    int[] dp = new int[n];
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            if(j == 0) {
+                // 当前在第一列。只能从上方位置到达
+                dp[j] = dp[j];
+            } else if(i == 0) {
+                // 当前在第一行。只能从左侧位置到达
+                dp[j] = dp[j-1];
+            } else {
+                // 当前在边界之外的位置。可以从左侧或者上方位置到达
+                dp[j] = Math.min(dp[j-1], dp[j]);
+            }
+            // 加上当前位置的路径代价
+            dp[j] += grid[i][j];
+        }
+    }
+    return dp[n-1];
+}
+```
+
+----
+
+##### 题目3 `leetcode 174 地下城游戏`
+
+```java
+/**
+* to-do
+ */
+```
+
+-----
+
+##### 题目4 `leetcode 221 最大正方形`
+
+```java
+/**
+* 定义dp数组：dp[i][j]表示以matrix[i-1][j-1]为右下角的正方形的最大边长
+* 具体的思路参考题解：
+* 	https://leetcode-cn.com/problems/maximal-square/solution/li-jie-san-zhe-qu-zui-xiao-1-by-lzhlyle/
+ */
+private int maximalSquare(char[][] matrix) {
+    if(matrix == null || matrix.length == 0) {
+        return 0;
+    }
+
+    int maxSide = 0;
+    int row = matrix.length;
+    int col = matrix[0].length;
+    int[][] dp = new int[row + 1][col + 1];
+    for(int i = 1; i <= row; i++) {
+        for(int j = 1; j <= col; j++) {
+            if(matrix[i-1][j-1] == '1') {
+                dp[i][j] = Math.min(dp[i-1][j], Math.min(dp[i][j-1], dp[i-1][j-1])) + 1;
+                maxSide = Math.max(dp[i][j], maxSide);
+            }
+        }
+    }
+    return maxSide * maxSide;
+}
+```
+
+-----
+
+##### 题目5 `leetcode 931 下降路径最小和`
+
+```java
+/**
+* 定义dp数组：dp[i][j]表示从(i, j)开始到达底部的最小和
+* 根据题目要求,(i, j)可以到达的位置有：(i+1, j-1), (i+1，j), (i+1, j+1)
+* 状态转移方程为：
+* 	dp[i][j] = A[i][j] + min(dp[i+1][j-1], dp[i+1][j], dp[i+1][j+1])
+*	// 注意判断边界条件即可，第一列和最后一列的位置并不能有三个选项
+* 根据分析可知，对A的遍历应该从倒数第二行往上遍历
+* */
+private int minFallingPathSum(int[][] A) {
+    int row = A.length;
+    int col = A[0].length;
+    for(int i = row - 2; i >= 0; i--) {
+        for(int j = 0; j < col; j++) {
+            int suffixCost = A[i+1][j];
+            if(j > 0) {
+                suffixCost = Math.min(suffixCost, A[i+1][j-1]);
+            }
+            if(j + 1 < col) {
+                suffixCost = Math.min(suffixCost, A[i+1][j+1]);
+            }
+            A[i][j] += suffixCost;
+        }
+    }
+
+    int res = Integer.MAX_VALUE;
+    for(int i : A[0]) {
+        res = Math.min(i, res);
+    }
+    return res;
+}
+```
+
+------
+
+#### 矩阵问题：矩阵`dp[i][j][k]`
+
+##### 题目1 `leetcode 363 矩形区域不超过K的最大数值和`
+
+```java
+/**
+* to-do
+ */
+```
+
+-----
+
+##### 题目2 `leetcode 1444 切披萨的方案数`
+
+```java
+/**
+* to-do 
+ */
+```
+
+-----
+
+-----
+
+## 前缀和
+
+### 前缀和概念
+
+```java
+int n = nums.length;
+int[] preSum = new int[n+1];
+preSum[0] = 0;
+for(int i = 0; i < n; i++) {
+    preSum[i+1] = preSum[i] + nums[i];
+}
+// preSum[0]表示数组没有数字被选中,值为0
+// preSum[i]表示nums[0..i-1]的和
+// nums[i..j]的和可以表示为preSum[j+1] - preSum[i]
+// 前缀和主要的实现方式是使用hashMap,元素基数较小时且范围较小时也可使用数组
+```
+
+-----
+
+### 实现前缀和问题
+
+#### 题目1 `leetcode 303 区域和检索-数组不可变`
+
+```java
+/**
+* 前缀和定义的直接使用
+ */
+private int[] preSum;
+public NumArray(int[] nums) {
+    int len = nums.length;
+    this.preSum = new int[len + 1];
+    this.preSum[0] = 0;
+    for(int i = 0; i < len; i++) {
+        preSum[i+1] = preSum[i] + nums[i];
+    }
+}
+
+public int sumRange(int i, int j) { 
+    return preSum[j+1] - preSum[i];
+}
+```
+
+-----
+
+#### 题目2 `leetcode 304 二维区域和检索`
+
+```java
+/**
+* 对二维矩阵先求其各行的前缀和，再求各列的前缀和，得到前缀和矩阵preSumMatrix
+* 两步计算之后,preSumMatrix[i][j]表示(0, 0)和(i-1, j-1)表示的矩阵的和
+*/
+private int[][] preSumMatrix;
+public NumMatrix(int[][] matrix) {
+    if(matrix == null || matrix.length == 0) {
+        return;
+    }
+    int row = matrix.length;    
+    int col = matrix[0].length;
+    this.preSumMatrix = new int[row+1][col+1];
+    // 求矩阵的行前缀和
+    for(int i = 1; i <= row; i++) {
+        for(int j = 1; j <= col; j++) {
+            preSumMatrix[i][j] = preSumMatrix[i][j-1] + matrix[i-1][j-1];
+        }
+    }
+	// 求矩阵的列前缀和
+    for(int j = 1; j <= col; j++) {
+        for(int i = 1; i <= row; i++) {
+            preSumMatrix[i][j] += preSumMatrix[i-1][j];
+        }
+    }
+}
+
+public int sumRegion(int row1, int col1, int row2, int col2) {
+    if(preSumMatrix == null || preSumMatrix.length == 0) {
+        return 0;
+    }
+    return preSumMatrix[row2+1][col2+1] - preSumMatrix[row1][col2+1] - preSumMatrix[row2+1][col1]
+        + preSumMatrix[row1][col1];
+}
+```
+
+-----
+
+### 数据结构维护前缀和问题：`HashMap`维护(1)
+
+> 以下若干组题目都是利用数据结构维护前缀和，实现统计数组中的某个指标的目的。
+> `HashMap` 维护，键是前缀和（状态）的值，值为第一次出现时的索引
+
+#### 题目1 `leetcode 325 和等于K的最长子数组长度`
+
+```java
+/**
+* curSum表示到当前元素为止的数组前缀和
+* preSumMap：
+*	key的值表示一个数组的前缀值
+* 	value的值则表示相应的前缀和第一次出现时该前缀的最后一个元素的数组下标
+* 		value的值之所以被这样设置是因为要求最长长度时，重复出现的前缀值并不会
+* 		使得结果更大，只需要关注相同前缀和第一次出现的情况即可
+ */
+private int maxSubArrayLen(int[] nums, int k) {
+    if(nums == null || nums.length == 0) {
+        return 0;
+    }
+
+    int res = 0;
+    int curSum = 0;
+    Map<Integer, Integer> preSumMap = new HashMap<>();
+    preSumMap.put(0, -1);
+    for(int i = 0; i < nums.length; i++) {
+        curSum += nums[i];
+        if(!preSumMap.containsKey(curSum)) {
+            preSumMap.put(curSum, i);
+        }
+        if(preSumMap.containsKey(curSum - k)) {
+            res = Math.max(res, i - preSumMap.get(curSum - k));
+        }
+    }
+    return res;
+}
+```
+
+----
+
+#### 题目2 `leetcode 525 连续数组`
+
+```java
+/** 
+* 把1记作 +1, 把0记作 -1，此时curSum表示前缀数组的和
+* curSum == 0则表示该前缀中1和0的数量相等
+* preSumMap：
+*	key的值表示一个数组的前缀值
+* 	value的值则表示相应的前缀和第一次出现时该前缀的最后一个元素的数组下标
+* 		value的值之所以被这样设置是因为要求最长长度时，重复出现的前缀值并不会
+* 		使得结果更大，只需要关注相同前缀和第一次出现的情况即可
+*/
+private int findMaxLength(int[] nums) {
+    if(nums == null || nums.length <= 1) {
+        return 0;
+    }
+
+    int res = 0;
+    int curSum = 0;
+    Map<Integer, Integer> preSumMap = new HashMap<>();
+    preSumMap.put(0, -1);
+    for(int i = 0; i < nums.length; i++) {
+        if(nums[i] == 1) {
+            curSum += 1;
+        } else {
+            curSum -= 1;
+        }
+
+        if(!preSumMap.containsKey(curSum)) {
+            preSumMap.put(curSum, i);
+        } else {
+            res = Math.max(res, i - preSumMap.get(curSum));
+        }
+    }
+    return res;
 }
 ```
 

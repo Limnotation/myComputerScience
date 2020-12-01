@@ -6846,62 +6846,7 @@ private int peakIndexInMountainArray(int[] nums) {
 ##### 题目示例1 `leetcode 64 最小路径和`
 
 ```java
-// dp[i][j] 表示从起点走到（i,j）的最短路径长度
-// dp[i][j] = min( dp[i-1][j], dp[i][j-1] ) + grid[i][j]
-// base case:dp[0][0] = grid[0][0], dp[i][0] = sum( 0, 0 -> i, 0 ), dp[0][i] = sum( 0, 0 -> 0, i )
-// return dp[rowLen-1][colLen-1]
-// 注意处理边界条件即可
 
-// v1，未使用空间压缩的方法
-private int minPathSum(int[][] grid) {
-    int m = grid.length;
-    int n = grid[0].length;
-    int[][] dp = new int[m][n];
-    for(int i = 0; i < m; i++) {
-        for(int j = 0; j < n; j++) {
-            if(i == 0 && j == 0) {
-                dp[i][j] = grid[i][j];
-                continue;
-            } else if(i == 0) {
-                dp[i][j] = dp[i][j-1];
-            } else if(j == 0) {
-                dp[i][j] = dp[i-1][j];
-            } else {
-                dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1]);
-            }
-            dp[i][j] += grid[i][j];
-        }
-    }
-    return dp[m-1][n-1];
-}
-
-// 根据v1的解法可以知道，dp[i][j]的值只依赖其左侧，上侧的值和当前所在位置的值
-// 可以压缩使用的空间，得到如下解法
-// v2
-private int minPathSum( int[][] grid ) {
-    if(grid == null || grid.length == 0 || grid[0].length == 0)
-        return 0;
-    
-    int m = grid.length, n = grid[0].length;
-    int[] dp = new int[n];
-    for(int i = 0; i < m; i++) {
-        for(int j = 0; j < n; j++) {
-            if(j == 0) {
-                // 当前在第一列。只能从上方位置到达
-                dp[j] = dp[j];
-            } else if(i == 0) {
-                // 当前在第一行。只能从左侧位置到达
-                dp[j] = dp[j-1];
-            } else {
-                // 当前在边界之外的位置。可以从左侧或者上方位置到达
-                dp[j] = Math.max(dp[j-1], dp[j]);
-            }
-            // 加上当前位置的路径代价
-            dp[j] += grid[i][j];
-        }
-    }
-    return dp[n-1];
-}
 ```
 
 ##### 题目示例2 `leetcode 62 不同路径`
@@ -9423,8 +9368,9 @@ private String minWindow(String S, String T)
 int n = nums.length;
 int[] preSum = new int[n+1];
 preSum[0] = 0;
-for(int i = 0; i < n; i++)
+for(int i = 0; i < n; i++) {
     preSum[i+1] = preSum[i] + nums[i];
+}
 // preSum[0]表示数组没有数字被选中,值为0
 // preSum[i]表示nums[0..i-1]的和
 // nums[i..j]的和可以表示为preSum[j+1] - preSum[i]
@@ -9603,61 +9549,6 @@ private int numSubarraysWithSum(int[] A, int S)
 
 ---
 
-##### 题目示例7 `leetcode 303 区域和检索-数组不可变`
-
-```java
-private int[] preSum;
-public NumArray(int[] nums) {
-    this.preSum = new int[nums.length+1];
-    for(int i = 0; i < nums.length; i++)
-        preSum[i+1] = preSum[i] + nums[i];
-}
-
-public int sumRange(int i, int j) {
-    return preSum[j+1] - preSum[i];
-}
-```
-
----
-
-##### 题目示例8 `leetcode 304 二维区域和检索-矩阵不可变`
-
-```java
-private int[][] preSumMatrix;
-public NumMatrix(int[][] matrix)  {
-    if(matrix == null || matrix.length == 0 || matrix[0].length == 0)
-		return;
-    int n = matrix.length;
-    int m = matrix[0].length;
-    preSumMatrix = new int[n+1][m+1];
-    // 求行前缀和
-    for(int i = 1; i <= m; i++) {
-        for(int j = 1; j <= n; j++) {
-            preSumMatrix[i][j] += preSumMatrix[i][j-1] + matrix[i-1][j-1];
-        }
-    }
-    // 求列前缀和
-    // 注意：在完成列前缀和的计算之后，preSum[i][j]的值代表的是[0,0]、[i-1,j-1]
-    // 为边界的矩阵的区域元素和
-    for(int j = 1; j <= n; j++) {
-        for(int i = 1; i <= m; i++) {
-            preSumMatrix[i][j] += preSumMatrix[i-1][j];
-        }
-    }
-
-}
-
-public int sumRegion(int row1, int col1, int row2, int col2) {
-    if(preSumMatrix == null || preSumMatrix.length == 0) {
-        return 0;
-    }
-    return preSumMatrix[row2+1][col2+1] - preSumMatrix[row1][col2+1] - preSumMatrix[row2+1][col1] + 
-        preSumMatrix[row1][col1];
-}
-```
-
----
-
 ##### 题目示例9 `leetcode 307 区域和检索-数组可修改`
 
 ```java
@@ -9794,35 +9685,6 @@ private boolean carPooling(int[][] trips, int capacity)
             return false;
     }
     return true;
-}
-```
-
--------
-
-##### 题目示例14 `leetcode 325 和等于k的最长子数组长度`
-
-```java
-public int maxSubArrayLen(int[] nums, int k) {
-    if(nums == null || nums.length == 0) {
-        return 0;
-    }
-
-    int maxLen = 0;
-    int curSum = 0;
-    HashMap<Integer, Integer> preSum = new HashMap<>();
-    preSum.put(0, 0);
-    for(int i = 0; i < nums.length; i++) {
-        curSum += nums[i];
-        // preSum的key表示当前前缀和
-        // preSum的value表示前缀和第一次出现在第几个位置
-        if(!preSum.containsKey(curSum)) {
-            preSum.put(curSum, i + 1);
-        } 
-        if(preSum.containsKey(curSum - k)){
-            maxLen = Math.max(maxLen, i + 1 - preSum.get(curSum - k));
-        }
-    }
-    return maxLen;
 }
 ```
 

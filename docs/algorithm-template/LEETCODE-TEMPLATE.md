@@ -9688,39 +9688,6 @@ private boolean carPooling(int[][] trips, int capacity)
 }
 ```
 
----
-
-##### 题目示例15 `leetcode 525 连续数组`
-
-```java
-private int findMaxLength(int[] nums) {
-    if(nums == null || nums.length == 0) {
-        return 0;
-    }
-
-    int maxLen = 0;
-    int curSum = 0;
-    HashMap<Integer, Integer> preSum = new HashMap<>();
-    preSum.put(0, -1);
-    for(int i = 0; i < nums.length; i++) {
-        int temp = nums[i];
-        if(temp == 1) {
-            curSum += 1;
-        } else {
-            curSum += -1;
-        }
-	    // preSum的key表示当前前缀和
-        // preSum的value表示前缀和第一次出现时的元素下标
-        if(!preSum.containsKey(curSum)) {
-            preSum.put(curSum, i);
-        } else {
-            maxLen = Math.max(maxLen, i - preSum.get(curSum));
-        }
-    }
-    return maxLen;
-}
-```
-
 
 
 -----

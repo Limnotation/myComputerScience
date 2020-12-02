@@ -74,6 +74,17 @@
     - [题目1 `leetcode 325 和等于K的最长子数组长度`](#题目1-leetcode-325-和等于k的最长子数组长度)
     - [题目2 `leetcode 525 连续数组`](#题目2-leetcode-525-连续数组)
     - [题目3 `leetcode 1371 每个元音包含偶数次的最长子字符串`](#题目3-leetcode-1371-每个元音包含偶数次的最长子字符串)
+  - [数据结构维护前缀和问题：`HashMap维护(2)`](#数据结构维护前缀和问题hashmap维护2)
+    - [题目1 `leetcode 560 和为K的子数组`](#题目1-leetcode-560-和为k的子数组)
+    - [题目2 `leetcode 1248 统计优美子数组`](#题目2-leetcode-1248-统计优美子数组)
+  - [数据结构维护前缀和问题：`HashMap维护(3)`](#数据结构维护前缀和问题hashmap维护3)
+    - [题目1 `leetcode 523 连续的子数组和`](#题目1-leetcode-523-连续的子数组和)
+    - [题目2 `leetcode 974 和可被K整除的子数组`](#题目2-leetcode-974-和可被k整除的子数组)
+  - [数据结构维护前缀和问题：前缀和(积)与后缀和(积)均需要](#数据结构维护前缀和问题前缀和积与后缀和积均需要)
+    - [题目1 `leetcode 238 除自身以外数组的乘积`](#题目1-leetcode-238-除自身以外数组的乘积)
+    - [题目2 `leetcode 724 寻找数组的中心索引`](#题目2-leetcode-724-寻找数组的中心索引)
+    - [题目3 `leetcode 1477 找两个和为目标值且不重叠的子数组`](#题目3-leetcode-1477-找两个和为目标值且不重叠的子数组)
+  - [数据结构维护前缀和问题：二维前缀和](#数据结构维护前缀和问题二维前缀和)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -2035,4 +2046,231 @@ private int findTheLongestSubstring(String s) {
     return res;
 }
 ```
+
+-----
+
+### 数据结构维护前缀和问题：`HashMap维护(2)`
+
+> `HashMap` 维护，键是前缀和（前缀状态）的值，值为出现次数
+
+#### 题目1 `leetcode 560 和为K的子数组`
+
+```java
+/**
+* presumMap的key表示前缀和的值，value表示对应前缀和出现的次数
+ */
+private int subarraySum(int[] nums, int k) {
+    if(nums == null || nums.length == 0) {
+        return 0;
+    }
+
+    int res = 0;
+    int curSum = 0;
+    Map<Integer, Integer> preSumMap = new HashMap<>();
+    preSumMap.put(0, 1);
+    for(int num : nums) {
+        curSum += num;
+        res += preSumMap.containsKey(curSum - k)? preSumMap.get(curSum - k) : 0;
+        preSumMap.put(curSum, preSumMap.getOrDefault(curSum, 0) + 1);
+    }
+    return res;
+}
+```
+
+---
+
+#### 题目2 `leetcode 1248 统计优美子数组`
+
+```java
+/**
+* presumMap的下标表示前缀和的值，值表示对应前缀和出现的次数
+ */
+private int numberOfSubarrays(int[] nums, int k) {
+    if(nums == null || nums.length < k) {
+        return 0;
+    }
+
+    int len = nums.length;
+    int[] preSumMap = new int[len+1];
+    preSumMap[0] = 1;
+    int curSum = 0;
+    int res = 0;
+    for(int i = 0; i < len; i++) {
+        curSum += nums[i] & 1;
+        preSumMap[curSum]++;
+        if(curSum >= k) {
+            res += preSumMap[curSum - k];
+        }
+    }
+    return res;
+}
+```
+
+----
+
+### 数据结构维护前缀和问题：`HashMap维护(3)`
+
+> `HashMap` 维护，键是前缀和模 K 的余数（可以理解为前缀状态，状态为前缀和模 K）
+
+#### 题目1 `leetcode 523 连续的子数组和`
+
+```java
+/**
+* 关键公式：
+* 	(preSum[i+1] - preSum[j]) % k == 0 <==> preSum[i+1] % k == preSum[j] % k
+* 由上述公式可知，如果存在两个不同的前缀和针对同一个数求余结果相等，那么两个前缀和相减
+* 所表示的子数组的和就可以被k整除，即：这个子数组的和为k的倍数
+* 
+* 1、为了方便计算，curSum保存当前位置的前缀和；
+* 2、preSumMap中，key为前缀和对k的求余结果，value存储对应的求余结果第一次出现的位置
+* 3、每次对sum取余，判断在位置i之前是否存在位置使得前缀和取余后也等于preSum%k如存在，且
+*	位置之差>1（至少有两个数）则返回true
+* 4、如果一直遍历完，说明不符合条件，返回false
+ */
+private boolean checkSubarraySum(int[] nums, int k) {
+    if(nums == null || nums.length < 2) {
+        return false;
+    }
+
+    int len = nums.length;
+    int curSum = 0;
+    Map<Integer, Integer> preSumMap = new HashMap<>();
+    preSumMap.put(0, -1);
+    for(int i = 0; i < len; i++) {
+        curSum += nums[i];
+        if(k != 0) {
+            curSum %= k;
+        }
+        if(preSumMap.containsKey(curSum)) {
+            if(i - preSumMap.get(curSum) > 1) {
+                return true;
+            }
+        } else {
+            preSumMap.put(curSum, i);
+        }
+    }
+    return false;
+}
+```
+
+----
+
+#### 题目2 `leetcode 974 和可被K整除的子数组`
+
+```java
+/**
+* 1、为了方便计算，curSum保存当前位置的前缀和；
+* 2、preSumMap中，下标为前缀和对k的求余结果，值存储对应的求余结果出现的次数
+* 3、每次对curSum取余，判断在位置i之前是否存在位置使得前缀和取余后也等于preSum%k
+ */
+private int subarraysDivByK(int[] A, int K) {
+    if(A == null || A.length == 0) {
+        return 0;
+    }
+
+    int len = A.length;
+    int res = 0;
+    int curSum = 0;
+    int[] preSumMap = new int[K + 1];
+    preSumMap[0] = 1;
+    for(int i = 0; i < len; i++) {
+        curSum = (curSum + A[i]) % K;
+        if(curSum < 0) {
+            curSum += K;
+        }
+        if(preSumMap[curSum] > 0) {
+            res += preSumMap[curSum];
+            preSumMap[curSum]++;
+        } else {
+            preSumMap[curSum] = 1;
+        }
+    }
+    return res;
+}
+```
+
+-----
+
+### 数据结构维护前缀和问题：前缀和(积)与后缀和(积)均需要
+
+#### 题目1 `leetcode 238 除自身以外数组的乘积`
+
+```java
+private int[] productExceptSelf(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return nums;
+    }
+
+    int len = nums.length;
+    int[] res = new int[len];
+    // preProduct表示当前元素左侧的前缀子数组的
+    // 元素乘积，初始值为1
+    int preProduct = 1;
+    for(int i = 0; i < len; i++) {
+        res[i] = preProduct;
+        preProduct *= nums[i];
+    }
+    // sufProduct表示当前元素右侧的后缀子数组的
+    // 元素乘积，初始值为1
+    int sufProduct = 1;
+    for(int i = len - 1; i >= 0; i--) {
+        res[i] *= sufProduct;
+        sufProduct *= nums[i];
+    }
+    return res;
+}
+```
+
+----
+
+#### 题目2 `leetcode 724 寻找数组的中心索引`
+
+```java
+private int pivotIndex(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return -1;
+    }
+
+    int res = 0;
+    int len = nums.length;
+    // sumOfPrefix表示当前元素左侧的前缀子数组的
+    // 元素之和，初始值为0
+    int[] sumOfPrefix = new int[len];
+    int preSum = 0;
+    for(int i = 0; i < len; i++) {
+        sumOfPrefix[i] = preSum;
+        preSum += nums[i];
+    }
+
+    // sumOfSuffix表示当前元素右侧的后缀子数组的
+    // 元素之和，初始值为0
+    int[] sumOfSuffix = new int[len];
+    int sufSum = 0;
+    for(int i = len - 1; i >= 0; i--) {
+        sumOfSuffix[i] += sufSum;
+        sufSum += nums[i];
+    }
+
+    for(int i = 0; i < len; i++) {
+        if(sumOfPrefix[i] == sumOfSuffix[i]) {
+            return i;
+        }
+    }
+    return -1;
+}
+```
+
+-----
+
+#### 题目3 `leetcode 1477 找两个和为目标值且不重叠的子数组`
+
+```java
+/**
+* to-do
+ */
+```
+
+-----
+
+### 数据结构维护前缀和问题：二维前缀和
 

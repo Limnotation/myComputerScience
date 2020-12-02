@@ -221,9 +221,6 @@
       - [题目示例8 `面试题17.24 最大子矩阵`](#题目示例8-面试题1724-最大子矩阵)
       - [题目示例13 `leetcode 740 删除与获得点数`](#题目示例13-leetcode-740-删除与获得点数)
     - [双序列（字符串）DP类型 （40%）](#双序列字符串dp类型-40)
-      - [题目示例1 `leetcode 1143 最长公共子序列`](#题目示例1-leetcode-1143-最长公共子序列)
-      - [题目示例2  `leetcode 712 两个字符串的最小ASCII删除和`](#题目示例2--leetcode-712-两个字符串的最小ascii删除和)
-      - [题目示例3 `leetcode 718 最长重复子数组`](#题目示例3-leetcode-718-最长重复子数组)
       - [题目示例4 `leetcode 97 交错字符串`](#题目示例4-leetcode-97-交错字符串)
     - [背包问题](#背包问题)
       - [01背包](#01背包)
@@ -297,23 +294,15 @@
         - [题目示例17 `leetcode 1052 爱生气的书店老板`](#题目示例17-leetcode-1052-爱生气的书店老板)
         - [题目示例19 `leetcode 727 最小窗口子序列`](#题目示例19-leetcode-727-最小窗口子序列)
   - [前缀和](#前缀和)
-    - [前缀和概念](#前缀和概念)
     - [题目示例](#题目示例)
       - [题目示例1 `leetcode 1 两数之和`](#题目示例1-leetcode-1-两数之和)
-      - [题目示例2 `leetcode 560 和为K的子数组`](#题目示例2-leetcode-560-和为k的子数组)
-      - [题目示例3 `leetcode 1248 统计优美子数组`](#题目示例3-leetcode-1248-统计优美子数组)
-      - [题目示例4 `leetcode 974 和可被K整除的子数组`](#题目示例4-leetcode-974-和可被k整除的子数组)
       - [题目示例5 `leetcode 1074 元素和为目标值的子矩阵数量`](#题目示例5-leetcode-1074-元素和为目标值的子矩阵数量)
       - [题目示例6 `leetcode 930 和相同的二元子数组`](#题目示例6-leetcode-930-和相同的二元子数组)
-      - [题目示例7 `leetcode 303 区域和检索-数组不可变`](#题目示例7-leetcode-303-区域和检索-数组不可变)
-      - [题目示例8 `leetcode 304 二维区域和检索-矩阵不可变`](#题目示例8-leetcode-304-二维区域和检索-矩阵不可变)
       - [题目示例9 `leetcode 307 区域和检索-数组可修改`](#题目示例9-leetcode-307-区域和检索-数组可修改)
       - [题目示例10 `leetcode 554 砖墙`](#题目示例10-leetcode-554-砖墙)
       - [题目示例11 `leetcode 1124 表现良好的最长时间段`](#题目示例11-leetcode-1124-表现良好的最长时间段)
       - [题目示例12  `leetcode 1109 航班预定`](#题目示例12--leetcode-1109-航班预定)
       - [题目示例13 `leetcode 1094 拼车`](#题目示例13-leetcode-1094-拼车)
-      - [题目示例14 `leetcode 325 和等于k的最长子数组长度`](#题目示例14-leetcode-325-和等于k的最长子数组长度)
-      - [题目示例15 `leetcode 525 连续数组`](#题目示例15-leetcode-525-连续数组)
   - [循环不变量](#循环不变量)
     - [典型题目](#典型题目-7)
       - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
@@ -4094,23 +4083,30 @@ private int largestRectangleArea(int[] heights) {
 ###### 题目示例8 `leetcode 402 移掉K位数字`
 
 ```java
-// 删除数字的原则：给定一个数字序列[D1, D2, ..Dn].如果数字D2小于其做邻居D1，应该删除其
-// 左邻居D1
+/**
+* 前置条件：两个相同位数的数字大小关系取决于第一个不同的位的数的大小
+* 因为结果的长度是确定的，所以应保证每个位都能放尽可能小的数字
+* 删除数字的原则：
+*	给定一个数字序列[D1, D2, ..Dn].如果数字D2小于其左邻居D1，应删除D1
+ */
 private String removeKdigits(String num, int K) {
     StringBuffer s = new StringBuffer();
-    int n = num.length(), m = n - k;
+    int n = num.length();
+    int m = n - k;
     for(char c:num.toCharArray()) {
-        // 构建一个“单调递增栈”
-        while(k > 0 && s.length() > 0 && s.charAt( s.length() - 1 ) > c) {
+        // 维护一个“单调递增栈”
+        while(k > 0 && s.length() > 0 && s.charAt(s.length() - 1) > c) {
             s.deleteCharAt(s.length() - 1);
             k--;
         }
         s.append(c);
     }
-    
+    // 删除多余部分
     s.delete(m, s.length());
-    while(s.length() > 0 && s.charAt(0) == '0')
+    // 经过单调栈维护之后结果可能出现前导0，需要删除
+    while(s.length() > 0 && s.charAt(0) == '0') {
         s.deleteCharAt(0);
+    }
     return s.length() == 0? "0":s.toString();
 }
 ```
@@ -9362,21 +9358,6 @@ private String minWindow(String S, String T)
 
 ### 前缀和
 
-#### 前缀和概念
-
-```java
-int n = nums.length;
-int[] preSum = new int[n+1];
-preSum[0] = 0;
-for(int i = 0; i < n; i++) {
-    preSum[i+1] = preSum[i] + nums[i];
-}
-// preSum[0]表示数组没有数字被选中,值为0
-// preSum[i]表示nums[0..i-1]的和
-// nums[i..j]的和可以表示为preSum[j+1] - preSum[i]
-// 前缀和主要的实现方式是使用hashMap,元素基数较小时且范围较小时也可使用数组
-```
-
 ---
 
 #### 题目示例
@@ -9395,96 +9376,6 @@ private int[] towSum(int[] nums, int target) {
         hashmap.put(nums[i], i);
     }
     return new int[2];
-}
-```
-
----
-
-##### 题目示例2 `leetcode 560 和为K的子数组`
-
-```java
-public int subarraySum(int[] nums, int k) {
-    if(nums == null || nums.length == 0) {
-        return 0;
-    }
-
-    /**
-    * presum的key表示前缀和的值，value表示对应前缀和出现的次数
-    */
-    HashMap<Integer, Integer> preSum = new HashMap<>();
-    preSum.put(0, 1);
-    int curSum = 0;
-    int res = 0;
-    for(int i = 0; i < nums.length; i++) {
-        curSum += nums[i];
-        if(preSum.containsKey(curSum - k)) {
-            res += preSum.get(curSum - k);
-        }
-        preSum.put(curSum, preSum.getOrDefault(curSum, 0) + 1);
-    }
-    return res;
-}
-```
-
-----
-
-##### 题目示例3 `leetcode 1248 统计优美子数组`
-
-```java
-/*
-* 使用了前缀和数组preSum[],下标(key)是前缀和（即到当前元素为止奇数的个数），值(value)是前缀和的个数 
-* 还是要好好理解
-*/
-private int numberOfSubArrays(int[] nums, int k) {
-    // 特判
-    if(nums == null || nums.length < k) {
-        return 0;
-    }
-    
-    int n = nums.length;
-    int[] preSum = new int[n+1];
-    preSum[0] = 1;
-    int res = 0;
-    int curSum = 0;
-    
-    for(int num:nums) {
-        curSum += num & 1;
-        preSum[curSum]++;
-        if(curSum >= k)
-            res += preSum[curSum-k];
-    }
-    return res;
-}
-```
-
-----
-
-##### 题目示例4 `leetcode 974 和可被K整除的子数组`
-
-参考题解：https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/solution/you-jian-qian-zhui-he-na-jiu-zai-ci-dai-ni-da-tong/
-
-```java
-/**
-* 步骤：
-* 1.根据当前的(preSum mod K)的值，在哈希表中找到与之相等的key,并得到相应的value,
-*	该value表示满足条件的历史(preSum mod K)出现的次数，也代表当前preSum能找到的
-* 	历史前缀和，与之形成value个不同形式的子数组，满足子数组元素和能被K整除
-* 2.遍历数组A的每一项，重复步骤1，统计累计结果到res,最终返回res
-*/
-private int subarrayDivByK(int[] A, int K) {
-    int[] preSum = new int[K];
-    preSum[0] = 1;
-    int curSumModK = 0;
-    int res = 0;
-    
-    for(int i = 0; i < A.length; i++) {
-    	curSumModK = (curSumModK + A[i]) % K;
-        if(curSumModK < 0)
-            curSumModK += K;
-        res += preSum[curSumModK];
-        preSum[curSumModK]++;
-    }
-    return res;
 }
 ```
 

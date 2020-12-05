@@ -172,10 +172,6 @@
       - [题目示例10 `leetcode 257 二叉树的所有路径`](#题目示例10-leetcode-257-二叉树的所有路径)
       - [题目示例11 `面试题 16.19 水域大小`](#题目示例11-面试题-1619-水域大小)
       - [题目示例12 `leetcode 463 岛屿的周长`](#题目示例12-leetcode-463-岛屿的周长)
-  - [广度优先搜索](#广度优先搜索)
-    - [典型题目](#典型题目-3)
-      - [题目1 `leetcode 207 课程表`](#题目1-leetcode-207-课程表)
-      - [题目示例2 `leetcode 210 课程表II`](#题目示例2-leetcode-210-课程表ii)
   - [二分搜索](#二分搜索)
     - [二分搜索讲解](#二分搜索讲解)
       - [零、二分查找框架](#零二分查找框架)
@@ -183,7 +179,7 @@
       - [二、寻找左侧边界的二分搜索](#二寻找左侧边界的二分搜索)
       - [三、寻找右侧边界的二分查找](#三寻找右侧边界的二分查找)
       - [四、建议](#四建议)
-    - [典型题目](#典型题目-4)
+    - [典型题目](#典型题目-3)
       - [题型1：二分求满足条件的元素下标/元素值](#题型1二分求满足条件的元素下标元素值)
         - [题目示例1 `leetcode 704 二分查找`](#题目示例1-leetcode-704-二分查找)
         - [题目示例2 `leetcode 34 在排序数组中查找元素的第一个和最后一个位置`](#题目示例2-leetcode-34-在排序数组中查找元素的第一个和最后一个位置)
@@ -197,6 +193,10 @@
         - [题目示例10 `leetcode 74 搜索二维矩阵`](#题目示例10-leetcode-74-搜索二维矩阵)
         - [题目示例11 `leetcode 278 第一个错误的版本`](#题目示例11-leetcode-278-第一个错误的版本)
         - [题目示例12 `leetcode 162 寻找峰值`](#题目示例12-leetcode-162-寻找峰值)
+        - [题目示例13  `leetcode 1095 山脉数组中查找目标值`](#题目示例13--leetcode-1095-山脉数组中查找目标值)
+        - [题目示例14 `leetcode 4 寻找两个有序数组的中位数`](#题目示例14-leetcode-4-寻找两个有序数组的中位数)
+        - [题目示例15 `leetcode 1237 找出给定方程的正整数解`](#题目示例15-leetcode-1237-找出给定方程的正整数解)
+        - [题目示例16 `leetcode 1300 转变数组后最接近目标值的数组和`](#题目示例16-leetcode-1300-转变数组后最接近目标值的数组和)
       - [题型二：二分确定一个有范围的整数](#题型二二分确定一个有范围的整数)
         - [题目示例10  `leetcode 287 寻找重复数`](#题目示例10--leetcode-287-寻找重复数)
       - [题目示例11 `leetcode 315 计算右侧小于当前元素的个数`](#题目示例11-leetcode-315-计算右侧小于当前元素的个数)
@@ -209,17 +209,13 @@
     - [矩阵类型( 10% )](#矩阵类型-10-)
       - [题目示例1 `leetcode 64 最小路径和`](#题目示例1-leetcode-64-最小路径和)
       - [题目示例2 `leetcode 62 不同路径`](#题目示例2-leetcode-62-不同路径)
-      - [题目示例3 `leetcode 63不同路径II`](#题目示例3-leetcode-63不同路径ii)
-      - [题目示例4 `leetcode 120 三角形最小路径和`](#题目示例4-leetcode-120-三角形最小路径和)
+      - [题目示例3 `leetcode 63 不同路径II`](#题目示例3-leetcode-63-不同路径ii)
     - [序列类型（40%）](#序列类型40)
       - [题目示例1 `leetcode 70 爬楼梯`](#题目示例1-leetcode-70-爬楼梯)
       - [题目示例2 `leetcode 55跳跃游戏`](#题目示例2-leetcode-55跳跃游戏)
       - [题目示例3 `leetcode 45跳跃游戏II`](#题目示例3-leetcode-45跳跃游戏ii)
       - [题目示例4 `leetcode 132 分割回文串`](#题目示例4-leetcode-132-分割回文串)
       - [题目示例6 `leetcode 139 单词拆分`](#题目示例6-leetcode-139-单词拆分)
-      - [题目示例7 `leetcode 647 回文子串`](#题目示例7-leetcode-647-回文子串)
-      - [题目示例8 `面试题17.24 最大子矩阵`](#题目示例8-面试题1724-最大子矩阵)
-      - [题目示例13 `leetcode 740 删除与获得点数`](#题目示例13-leetcode-740-删除与获得点数)
     - [双序列（字符串）DP类型 （40%）](#双序列字符串dp类型-40)
       - [题目示例4 `leetcode 97 交错字符串`](#题目示例4-leetcode-97-交错字符串)
     - [背包问题](#背包问题)
@@ -230,12 +226,10 @@
       - [完全背包](#完全背包)
         - [题目示例1 `leetcode 322零钱兑换`](#题目示例1-leetcode-322零钱兑换)
         - [题目示例2	 `leetcode 518 零钱兑换II`](#题目示例2-leetcode-518-零钱兑换ii)
-    - [`leetcode 打家劫舍系列问题`](#leetcode-打家劫舍系列问题)
-      - [题目示例2 `leetcode 337 打家劫舍III`](#题目示例2-leetcode-337-打家劫舍iii)
 - [算法思维](#算法思维)
   - [回溯法](#回溯法)
     - [简单的回溯法模板](#简单的回溯法模板)
-    - [典型题目](#典型题目-5)
+    - [典型题目](#典型题目-4)
       - [题型1：基本回溯问题，在数组上进行回溯搜索](#题型1基本回溯问题在数组上进行回溯搜索)
         - [题目示例1 `leetcode 78 子集 `](#题目示例1-leetcode-78-子集-)
         - [题目示例2 `leetcode 90 子集II`](#题目示例2-leetcode-90-子集ii)
@@ -265,7 +259,7 @@
     - [简单的滑动窗口模板](#简单的滑动窗口模板)
       - [1、可变窗口模板](#1可变窗口模板)
       - [2、固定窗口模板](#2固定窗口模板)
-    - [典型题目](#典型题目-6)
+    - [典型题目](#典型题目-5)
       - [可变窗口题目](#可变窗口题目)
         - [题目示例1 `leetcode 76 最小覆盖子串`](#题目示例1-leetcode-76-最小覆盖子串)
         - [题目示例2 `leetcode 567 字符串的排列`](#题目示例2-leetcode-567-字符串的排列)
@@ -304,7 +298,7 @@
       - [题目示例12  `leetcode 1109 航班预定`](#题目示例12--leetcode-1109-航班预定)
       - [题目示例13 `leetcode 1094 拼车`](#题目示例13-leetcode-1094-拼车)
   - [循环不变量](#循环不变量)
-    - [典型题目](#典型题目-7)
+    - [典型题目](#典型题目-6)
       - [题目示例1 `leetcode 283 移动零`](#题目示例1-leetcode-283-移动零)
       - [题目示例2 `剑指offer 21 调整数组顺序使奇数位于偶数的前面`](#题目示例2-剑指offer-21-调整数组顺序使奇数位于偶数的前面)
       - [题目示例3 `leetcode 26 删除排序数组中的重复项`](#题目示例3-leetcode-26-删除排序数组中的重复项)
@@ -5890,119 +5884,6 @@ private int dfs(int[][] grid, int row, int col) {
 }
 ```
 
-
-
-------
-
-------
-
-### 广度优先搜索
-
-#### 典型题目
-
-##### 题目1 `leetcode 207 课程表`
-
-```java
-public boolean canFinish(int numCourses, int[][] prerequisites) {
-    // 课程数目为0，肯定不能完成学习
-    if(numCourses <= 0) {
-        return false;
-    }
-
-    if(prerequisites.length == 0) {
-        return true;
-    }
-
-    int[] inDegree = new int[numCourses];
-    HashSet<Integer>[] adj = new HashSet[numCourses];
-    for(int i = 0; i < numCourses; i++) {
-        adj[i] = new HashSet<>();
-    }
-
-    for(int[] p:prerequisites) {
-        inDegree[p[0]]++;
-        adj[p[1]].add(p[0]);
-    }
-
-    Queue<Integer> queue = new LinkedList<>();
-
-    // 首先加入入度为0的节点
-    for(int i = 0; i < numCourses; i++) {
-        if(inDegree[i] == 0) {
-            queue.offer(i);
-        }
-    }
-
-    // 记录已经出队的课程数量
-    int counter = 0;
-    while(!queue.isEmpty()) {
-        int top = queue.poll();
-        counter++;
-        // 遍历当前出队节点的所有后继节点
-        for(int successor:adj[top]) {
-            inDegree[successor]--;
-            if(inDegree[successor] == 0) {
-                queue.offer(successor);
-            }
-        }
-    }
-    return counter == numCourses;
-}
-```
-
-----
-
-##### 题目示例2 `leetcode 210 课程表II`
-
-```java
-public int[] findOrder(int numCourses, int[][] prerequisites) {
-    if(numCourses == 0) {
-        return new int[0];
-    }
-
-    int[] inDegree = new int[numCourses];
-    HashSet<Integer>[] adj = new HashSet[numCourses];
-    int[] res = new int[numCourses];
-    int index = 0;
-    for(int i = 0; i < numCourses; i++) {
-        adj[i] = new HashSet<>();
-    }
-
-    for(int[] p:prerequisites) {
-        inDegree[p[0]]++;
-        adj[p[1]].add(p[0]);
-    }
-
-    Queue<Integer> queue = new LinkedList<>();
-
-    // 首先加入入度为0的节点
-    for(int i = 0; i < numCourses; i++) {
-        if(inDegree[i] == 0) {
-            queue.offer(i);
-        }
-    }
-
-    // 
-    while(!queue.isEmpty()) {
-        int top = queue.poll();
-        res[index] = top;
-        index++;
-        for(int successor:adj[top]) {
-            inDegree[successor]--;
-            if(inDegree[successor] == 0) {
-                queue.offer(successor);
-            }
-        }
-    }
-    if(index == numCourses) {
-        return res;
-    }
-    return new int[0];
-}
-```
-
-
-
 -----
 
 -----
@@ -6026,7 +5907,7 @@ private int binarySearch(int[] nums, int target) {
     while(...) {
         int mid = left + (right - left) / 2;
         if(nums[mid] == target) {
-            ...,
+            ...;
         } else if(nums[mid] < target) {
             left = ...;
         } else if(nums[mid] > target) [
@@ -6039,9 +5920,10 @@ private int binarySearch(int[] nums, int target) {
 
 ##### 一、寻找一个数（基本的二分搜索）
 
-搜索一个数，如果存在，返回其索引，否则返回-1
-
 ```java
+/**
+* 搜索一个数，如果存在，返回其索引，否则返回-1
+ */
 private int binarySearch(int[] nums, int target) {
     if(nums == null || nums.length == 0) {
         return -1;
@@ -6223,7 +6105,8 @@ return left - 1;
 
 ##### 四、建议
 
-**建议是：当只需要搜索一个满足条件的元素而对位置没有要求时，使用全闭的搜索区间；当搜索目标的位置也重要时（比如边界元素），使用左闭右开的搜索区间**
+- **搜索区间：当只需要搜索一个满足条件的元素而对位置没有要求时，使用全闭的搜索区间；当搜索目标的位置也重要时（比如边界元素），使用左闭右开的搜索区间**
+- **边界：**
 
 ----
 
@@ -6333,6 +6216,10 @@ private int rightBound(int[] nums, int target) {
 
 ```java
 private int searchInsert(int[] nums, int target) {
+    if(nums == null || nums.length == 0) {
+        return 0;
+    }
+    
     int left = 0;
     int right = nums.length;
     while(left < right) {
@@ -6573,8 +6460,9 @@ public int[] findRightInterval(int[][] intervals) {
 /**
 * 寻找nums中第一个大于等于target的元素下标
 * 在这个问题中等价于求target的左边界
+* 与模板中的求左边界问题有区别，注意区分，不要乱套模板
  */
-private int leftBound(int[] nums, int target) {
+private int search(int[] nums, int target) {
     int left = 0;
     int right = nums.length;
     while(left < right) {
@@ -6602,10 +6490,10 @@ private int leftBound(int[] nums, int target) {
 * 关键：将二维矩阵上的搜索转化为一维矩阵上的搜索
 */
 private boolean searchMatrix(int[][] matrix, int target) {
-    if(matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+    if(matrix == null || matrix.length == 0) {
         return false;
     }
-    
+
     int rowLen = matrix.length;
     int colLen = matrix[0].length;
     int start = 0;
@@ -6613,12 +6501,13 @@ private boolean searchMatrix(int[][] matrix, int target) {
     while(start <= end) {
         int mid = start + (end - start) / 2;
         int curVal = matrix[mid / colLen][mid % colLen];
-        if(curVal == target)
+        if(curVal == target) {
             return true;
-        else if(curVal < target)
+        } else if(curVal < target) {
             start = mid + 1;
-        else if(curVal > target)
+        } else if(curVal > target) {
             end = mid - 1;
+        }
     }
     return false;
 }
@@ -6657,8 +6546,8 @@ private int firstBadVersion(int n) {
 * 首先要注意题目条件，在题目描述中出现了 nums[-1] = nums[n] = -∞，这就代表着：只要数组中存在一个元素比相邻元素大，那么沿着它一定可以找到一个峰值
 * 根据上述结论，我们就可以使用二分查找找到峰值
 * 查找时，左指针 l，右指针 r，以其保持左右顺序为循环条件
-* 根据左右指针计算中间位置 m，并比较 m 与 m+1 的值，如果 m 较大，则左侧存在峰值，r = m，如果 m + 1 较大，则右侧存在峰值，l = m + 1
-*/
+* 根据左右指针计算中间位置 m，并比较 m 与 m+1 的值，如果 m 较大，则左侧存在峰值，r = m;如果 m + 1 较大，则右侧存在峰值，l = m + 1
+ */
 private int findPeakElement(int[] nums) {
     int left = 0;
     // 因为比较过程可能会需要右值，所以搜索区间为闭区间
@@ -6673,6 +6562,114 @@ private int findPeakElement(int[] nums) {
     }
     return left;
 }
+```
+
+-----
+
+###### 题目示例13  `leetcode 1095 山脉数组中查找目标值`
+
+```java
+/**
+* 1、这道题目涉及三次可能的二分搜索：在数组中查找最大值的索引、在递增序列查找目标值、在递减序列查找目标值
+* 2、基本的搜索规则与常见的二分搜索题目并没有区别，唯一需要注意的地方是：题目要求对mountainArr接口的调用
+* 	次数需要尽可能少，所以在二分搜索时，循环条件都是(left < right). 这样做的意义是：每次排除目标元素不可
+*	能存在的区间，在只剩一个元素时退出循环并判断元素是否与目标值相等，则每个循环内部只需要调用一次接口。如
+*	果使用(left <= right)的条件，则每次循环都需要至少调用两次接口
+ */
+public int findInMountainArray(int target, MountainArray mountainArr) {
+    int len = mountainArr.length();
+    if(len < 3) {
+        return -1;
+    }
+
+    int topIndex = findTopIndex(mountainArr, 0, len - 1);
+    int res = searchLeftSpace(mountainArr, 0, topIndex, target);
+    if(res != -1) {
+        return res;
+    }
+    return searchRightSpace(mountainArr, topIndex + 1, len - 1, target);
+}
+
+/**
+* 在山脉数组中查找最大值
+ */
+private int findTopIndex(MountainArray mountainArr, int left, int right) {
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(mountainArr.get(mid) < mountainArr.get(mid + 1)) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return left;
+}
+
+/**
+* 在递增序列中查找目标值
+ */
+private int searchLeftSpace(MountainArray mountainArr, int left, int right, int target) {
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(mountainArr.get(mid) < target) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    if(mountainArr.get(left) != target) {
+        return -1;
+    }
+    return left;
+}
+
+/**
+* 在递减序列中查找目标值
+ */
+private int searchRightSpace(MountainArray mountainArr, int left, int right, int target) {
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(mountainArr.get(mid) > target) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    if(mountainArr.get(left) != target) {
+        return -1;
+    }
+    return left;
+}
+```
+
+-----
+
+###### 题目示例14 `leetcode 4 寻找两个有序数组的中位数`
+
+```java
+/**
+* to-do 
+ */
+```
+
+-----
+
+###### 题目示例15 `leetcode 1237 找出给定方程的正整数解`
+
+```java
+/**
+* to-do
+ */
+```
+
+-------
+
+###### 题目示例16 `leetcode 1300 转变数组后最接近目标值的数组和`
+
+```java
+/**
+* to-do
+ */
 ```
 
 
@@ -6864,7 +6861,7 @@ private int uniquePaths( int m, int n )
 }
 ```
 
-##### 题目示例3 `leetcode 63不同路径II`
+##### 题目示例3 `leetcode 63 不同路径II`
 
 ```java
 // dp[][]数组的含义与示例二相同
@@ -6911,44 +6908,6 @@ private int uniquePathWithObstacles( int[][] obstacleGrid )
             	dp[j] += dp[j-1];
     }
     return dp[n-1];
-}
-```
-
------
-
-##### 题目示例4 `leetcode 120 三角形最小路径和`
-
-```java
-/**
-* 状态定义：dp[i][j]表示从点（i, j）到底边的最小路径和
-* 状态转移方程： dp[i][j] = min(dp[i+1][j], dp[i+1][j+1]) + triangle[i][j];
-* 自底向上求解dp矩阵
-*/
-
-// 二维矩阵dp
-private int minimumTotal(List<List<Integer>> triangle) {
-    int n = triangle.size();
-
-    int[][] dp = new int[n+1][n+1];
-    for(int i = n - 1; i >= 0; i--) {
-        for(int j = 0; j <= i; j++) {
-            dp[i][j] = Math.min(dp[i+1][j], dp[i+1][j+1]) + triangle.get(i).get(j);
-        }
-    }
-    return dp[0][0];
-}
-
-// 空间压缩
-private int minimumTotal(List<List<Integer>> triangle) {
-    int n = triangle.size();
-
-    int[] dp = new int[n+1];
-    for(int i = n - 1; i >= 0; i--) {
-        for(int j = 0; j <= i; j++) {
-            dp[j] = Math.min(dp[j], dp[j+1]) + triangle.get(i).get(j);
-        }
-    }
-    return dp[0];
 }
 ```
 
@@ -7077,154 +7036,6 @@ private boolean wordBreak(String s, List<String> wordDict) {
         }
     }
     return dp[len];
-}
-```
-
------
-
-##### 题目示例7 `leetcode 647 回文子串`
-
-**参考题解：**https://leetcode-cn.com/problems/palindromic-substrings/solution/647-hui-wen-zi-chuan-dong-tai-gui-hua-fang-shi-qiu/
-
-```java
-// dp[i][j]表示字符串中[i, j]所划分的子串是否为回文子串
-/**
-* 使用中心扩散法，设dp[i+1][j-1]已知，则
-* 	若s.charAt(i) == s.charAt(j),则只要dp[i+1][j-1]为真，则dp[i][j]也为真
-*	若s.charAt(i) != s.charAt(j),dp[i][j]必为假
-*/
-public int countSubstrings(String s) {
-    if(s == null || s.length() == 0) {
-        return 0;
-    }
-
-    int len = s.length();
-    // 每个单独的字符都是一个回文串
-    int res = len;
-    boolean[][] dp = new boolean[len][len];
-    for(int i = 0; i < len; i++) {
-        dp[i][i] = true;
-    }
-
-    for(int i = len - 1; i >= 0; i--) {
-        for(int j = i + 1; j < len; j++) {
-            if(s.charAt(i) == s.charAt(j)) {
-                // i与j相邻时， dp[i+1][j-1]是不存在的，需要特判
-                if(j - i == 1) {
-                    dp[i][j] = true;
-                } else {
-                    dp[i][j] = dp[i+1][j-1];
-                }
-            } else {
-                dp[i][j] = false;
-            }
-
-            if(dp[i][j]) {
-                res++;
-            }
-        }
-    }
-    return res;
-}
-```
-
-----
-
-##### 题目示例8 `面试题17.24 最大子矩阵`
-
-参考题解：https://leetcode-cn.com/problems/max-submatrix-lcci/solution/zhe-yao-cong-zui-da-zi-xu-he-shuo-qi-you-jian-dao-/
-
-```java
-public int[] getMaxMatrix(int[][] matrix) {
-    if(matrix == null || matrix.length == 0) {
-        return new int[0];
-    }
-
-    // 结果数组,保存最大子矩阵的左上角和右下角坐标
-    int[] res = new int[4];
-    // 原矩阵的行列大小
-    int m = matrix.length;
-    int n = matrix[0].length;
-    // 记录当前第i~j行组成的子矩阵的每一列的和，将二维转化为一维
-    int[] lineSum = new int[n];             
-    // 相当于dp[i]
-    int curSum = 0;
-    // 记录目前最大的子矩阵和
-    int maxSum = Integer.MIN_VALUE;
-    // 记录当前找到的最大子矩阵的左上角坐标
-    int bestr1 = 0;
-    int bestc1 = 0;
-
-    for(int i = 0; i < m; i++) {
-        // 上界变化时要清空，重新计算每列的和
-        for(int t = 0; t < n; t++) {
-            lineSum[t] = 0;
-        }
-        // 以当前i所指向的行作为子矩阵上界，不断增大下界
-        for(int j = i; j < m; j++) {
-            // 从头开始求dp
-            curSum = 0;
-            // 在lineSum数组上求出最大子序和
-            for(int k = 0; k < n; k++) {
-                lineSum[k] += matrix[j][k];
-                if(curSum > 0) {
-                    curSum += lineSum[k];
-                } else {
-                    curSum = lineSum[k];
-                    bestr1 = i;
-                    bestc1 = k;
-                }
-
-                // 记录下遍历过程中的子矩阵最大值
-                // 以及对应的边界下标                    
-                if(curSum > maxSum) {
-                    maxSum = curSum;
-                    res[0] = bestr1;
-                    res[1] = bestc1;
-                    res[2] = j;
-                    res[3] = k;
-                }
-            }
-        }
-    }
-    return res;
-}
-```
-
------
-
-##### 题目示例13 `leetcode 740 删除与获得点数`
-
-```java
-public int deleteAndEarn(int[] nums) {
-    // 边界特判
-    if(nums == null || nums.length == 0) {
-        return 0;
-    } else if(nums.length == 1) {
-        return nums[0];
-    }
-	
-    // 记录每个数字的出现次数
-    int len = nums.length;
-    int maxVal = nums[0];
-    for(int i = 0; i < len; i++) {
-        maxVal = Math.max(maxVal, nums[i]);
-    }
-
-    int[] countPoints = new int[maxVal + 1];
-    for(int i = 0; i < len; i++) {
-        countPoints[nums[i]]++;
-    }
-
-    // 根据题目条件，相邻的数字不可以同时取
-    // dp思路与打家劫舍第一题相同
-    int[] dp = new int[maxVal + 1];
-    dp[1] = countPoints[1] * 1;
-    dp[2] = Math.max(dp[1], dp[2] * 2);
-    for(int i = 2; i <= maxVal; i++) {
-        dp[i] = Math.max(dp[i-1], dp[i-2] + countPoints[i] * i);
-    }
-    return dp[maxVal];
 }
 ```
 
@@ -7540,48 +7351,6 @@ private int change(int amount, int[] coins) {
         }
     }
     return dp[amount];
-}
-```
-
-#### `leetcode 打家劫舍系列问题`
-
-##### 题目示例2 `leetcode 337 打家劫舍III`
-
-```java
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
-class Solution 
-{
-    public int rob(TreeNode root) 
-    {
-        int[] res = robInTree( root );
-        return Math.max( res[0], res[1] );
-    }
-
-    /**
-    * 返回一个大小为2的数组arr
-    * arr[0]表示不抢当前root的话，得到最大钱数
-    * arr[1]表示抢当前root的话，得到最大钱数
-    */
-    private int[] robInTree( TreeNode root )
-    {
-        if( root == null )
-            return new int[]{ 0, 0 };
-        
-        int[] leftSub = robInTree( root.left );
-        int[] rightSub = robInTree( root.right );
-
-        int notRob = Math.max( leftSub[0], leftSub[1] ) + Math.max( rightSub[0], rightSub[1] );
-        int rob = root.val + leftSub[0] + rightSub[0];
-        return new int[]{ notRob, rob };
-    }
 }
 ```
 

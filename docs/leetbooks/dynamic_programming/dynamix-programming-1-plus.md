@@ -85,6 +85,10 @@
     - [题目2 `leetcode 724 寻找数组的中心索引`](#题目2-leetcode-724-寻找数组的中心索引)
     - [题目3 `leetcode 1477 找两个和为目标值且不重叠的子数组`](#题目3-leetcode-1477-找两个和为目标值且不重叠的子数组)
   - [数据结构维护前缀和问题：二维前缀和](#数据结构维护前缀和问题二维前缀和)
+- [区间动态规划](#区间动态规划)
+  - [回文相关问题](#回文相关问题)
+    - [题目1 `leetcode 5 最长回文子串`](#题目1-leetcode-5-最长回文子串)
+    - [题目2 `leetcode 647 回文子串`](#题目2-leetcode-647-回文子串)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -2273,4 +2277,144 @@ private int pivotIndex(int[] nums) {
 -----
 
 ### 数据结构维护前缀和问题：二维前缀和
+
+----
+
+----
+
+## 区间动态规划
+
+### 回文相关问题
+
+#### 题目1 `leetcode 5 最长回文子串`
+
+```java
+/**
+* dp[i][j]表示s(i, j)是否是一个回文子串
+* 由回文串定义可知：dp[i][j] = (s.charAt(i) == s.charAt(j)) && d[i+1][j-1]
+* 状态转移：
+* 	1、如果s.charAt(i) != s.charAt(j),则s(i, j)不是回文串，dp[i][j] = false;
+*	2、如果s.charAt(i) == s.charAt(j)
+*		(1) 如果j - i < 3,则此时s(i, j)一定是一个回文串，不需要依靠其他dp状态的推断
+*		(2) 否则dp[i][j]的状态要依靠dp[i+1][j-1]的状态来推断
+ */
+private String longestPalindrome(String s) {
+    if(s == null || s.length() == 0) {
+        return "";
+    }
+
+    int len = s.length();
+    int start = 0;
+    int maxLen = 1;
+    boolean[][] dp = new boolean[len][len];
+    for(int i = 0; i < len; i++) {
+        dp[i][i] = true;
+    }
+    for(int i = len - 2; i >= 0; i--) {
+        for(int j = i + 1; j < len; j++) {
+            if(s.charAt(i) != s.charAt(j)) {
+                dp[i][j] = false;
+            } else {
+                if(j - i < 3) {
+                    dp[i][j] = true;
+                } else {
+                    dp[i][j] = dp[i+1][j-1];
+                }
+            }
+            // 及时更新最长回文串的起点和长度值
+            if(dp[i][j] && j - i + 1 > maxLen) {
+                maxLen = j - i + 1;
+                start = i;
+            }
+        }
+    }
+    return s.substring(start, start + maxLen);
+}
+```
+
+----
+
+#### 题目2 `leetcode 647 回文子串`
+
+```java
+/**
+* dp[i][j]表示s(i, j)是否是一个回文子串
+* 由回文串定义可知：dp[i][j] = (s.charAt(i) == s.charAt(j)) && d[i+1][j-1]
+* 状态转移：
+* 	1、如果s.charAt(i) != s.charAt(j),则s(i, j)不是回文串，dp[i][j] = false;
+*	2、如果s.charAt(i) == s.charAt(j)
+*		(1) 如果j - i < 3,则此时s(i, j)一定是一个回文串，不需要依靠其他dp状态的推断
+*		(2) 否则dp[i][j]的状态要依靠dp[i+1][j-1]的状态来推断
+*/
+private int countSubstrings(String s) {
+    if(s == null || s.length() == 0) {
+        return 0;
+    }
+
+    int len = s.length();
+    // 每个字符都是一个回文串
+    int res = len;
+    boolean[][] dp = new boolean[len][len];
+    for(int i = 0; i < len; i++) {
+        dp[i][i] = true;
+    } 
+
+    for(int i = len - 2; i >= 0; i--) {
+        for(int j = i + 1; j < len; j++) {
+            if(s.charAt(i) != s.charAt(j)) {
+                dp[i][j] = false;
+            } else {
+                if(j - i < 3) {
+                    dp[i][j] = true;
+                } else {
+                    dp[i][j] = dp[i+1][j-1];
+                }
+            }
+            
+            if(dp[i][j]) {
+                res++;
+            }
+        }
+    }
+    return res;
+}
+```
+
+------
+
+#### 题目3 `leetcode 516 最长回文子序列`
+
+```java
+/**
+* dp[i][j]表示s(i, j)内最长回文子序列的长度
+* 状态转移方程：
+*   if(s.charAt(i) == s.charAt(j))
+*       dp[i][j] = dp[i+1][j-1] + 2
+*   else 
+*       dp[i][j] = Math.max(dp[i+1][j], dp[i][j-1])
+ */
+private int longestPalindromeSubseq(String s) {
+    if(s == null || s.length() == 0) {
+        return 0;
+    }
+
+    int len = s.length();
+    int[][] dp = new int[len][len];
+    int res = 1;
+    for(int i = 0; i < len; i++) {
+        dp[i][i] = 1;
+    }
+
+    for(int i = len - 2; i >= 0; i--) {
+        for(int j = i + 1; j < len; j++) {
+            if(s.charAt(i) == s.charAt(j)) {
+                dp[i][j] = dp[i+1][j-1] + 2;
+            } else {
+                dp[i][j] = Math.max(dp[i+1][j], dp[i][j-1]);
+            }
+        }
+    }
+    return dp[0][len-1];
+}
+```
 

@@ -748,6 +748,7 @@ private boolean isSymmetric(TreeNode t1, TreeNode t2) {
 
 ```java
 /**
+* DFS解决方案
 * 注：最小深度是从根节点到最近叶子节点的最短路径上的节点数量!!!
 * 叶子节点的定义是左孩子和右孩子都为 null 时叫做叶子节点
 * 1、当 root 节点左右孩子都为空时，返回 1
@@ -764,6 +765,39 @@ private int minDepth(TreeNode root) {
         return left + right + 1;
     }
     return Math.min(left, right) + 1;
+}
+
+/**
+* BFS解决方案
+* 对二叉树进行层序遍历找到的第一个叶子节点就是离根节点最近的
+* 叶子节点
+ */
+private int minDepth(TreeNode root) {
+    if(root == null) {
+        return 0;
+    }
+
+    Queue<TreeNode> queue = new LinkedList<>();
+    queue.offer(root);
+    int res = 1;
+    while(!queue.isEmpty()) {
+        int levelSize = queue.size();
+        for(int i = 0; i < levelSize; i++) {
+            TreeNode node = queue.poll();
+            // 判断是否已经找到一个叶节点，在找到第一个叶节点时就会返回
+            if(node.left == null && node.right == null) {
+                return res;
+            }
+            if(node.left != null) {
+                queue.offer(node.left);
+            }
+            if(node.right != null) {
+                queue.offer(node.right);
+            }
+        }
+        res++;
+    }
+    return res;
 }
 ```
 
@@ -3057,6 +3091,24 @@ private ListNode getKthFromEnd(ListNode head, int k) {
 
 -----
 
+###### 题目示例9 `leetcode 876 链表的中间节点`
+
+```java
+private ListNode middleNode(ListNode head) {
+    if(head == null || head.next == null) {
+        return head;
+    }
+
+    ListNode slow = head;
+    ListNode fast = head;
+    while(fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    return slow;
+}
+```
+
 
 
 ##### 其他题目
@@ -3100,26 +3152,6 @@ private Node copyRandomList( Node head )
         cur = temp;
     }
     return cloneHead;
-}
-```
-
----
-
-###### 题目示例 12 `leetcode 876 链表的中间结点`
-
-```java
-private ListNode middleNode( ListNode head )
-{
-    if( head == null || head.next == null )
-        return head;
-    
-    ListNode slow = head, fast = head;
-    while( fast != null && fast.next != null )
-    {
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-    return slow;
 }
 ```
 
@@ -8360,7 +8392,6 @@ private void slidingWindow(String s, String t) {
 
 ```java
 private String minWindow(String s, String t) {
-    // 特判
     if(s == null || t == null || s.length() < t.length()) {
         return "";
     }
@@ -8409,48 +8440,6 @@ private String minWindow(String s, String t) {
 ###### 题目示例2 `leetcode 567 字符串的排列`
 
 ```java
-// v1:使用HashMap设置窗口
-private boolean checkInclusion(String s1, String s2) {
-    // 特判
-    if(s1 == null || s2 == null || s2.length() < s1.length()) {
-        return false;
-    }
-    
-    HashMap<Character, Integer> need = new HashMap<>();
-    HashMap<Character, Integer> window = new HashMap<>();
-    for(char c:s1.toCharArray()) {
-        need.put(c, need.getOrDefault(c, 0) + 1);
-    }
-    
-    int left = 0;
-    int right = 0;
-    int match = 0;
-    int len1 = s1.length();
-    int len2 = s2.length();
-    while(right < len2) {
-        char c1 = s2.charAt(right);
-        window.put(c1, window.getOrDefault(c1, 0) + 1);
-        if(window.get(c1).equals(need.get(c1))) {
-            match++;
-        }
-        
-        // 窗口移动的条件是：当前窗口大小大于s1的长度，这时候需要检查窗口内容
-        // 是否满足题目要求，并设置相应返回结果并移动窗口左边界
-        while((right - left + 1) >= len1) {
-            if(match == need.size())
-                return true;
-            char c2 = s2.charAt(left);
-            if(window.get(c2).equals(need.get(c2)))
-                match--;
-            window.put(c2, window.get(c2) - 1);
-            left++;
-        }
-        right++;
-    }
-    return false;
-}
-
-// v2:因为字符串只包含小写字符，可以使用数组代替HashMap
 private boolean checkInclusion(String s1, String s2) {
     int[] need = new int[26];
     int[] window = new int[26];
@@ -8496,56 +8485,16 @@ private boolean checkInclusion(String s1, String s2) {
 ###### 题目示例3 `leetcode 438 找到字符串中所有字母异位词`
 
 ```java
-// v1
 private List<Integer> findAnagrams(String s, String p) {
     List<Integer> res = new LinkedList<>();
     if(s == null || p == null || s.length() < p.length()) {
         return res;
     }
-    
-    Map<Character, Integer> need = new HashMap<>();
-    Map<Character, Integer> window = new HashMap<>();
-    for(char c:p.toCharArray()) {
-        need.put(c, need.getOrDefault(c, 0) + 1);
-    }
-    
-    int left = 0;
-    int right = 0;
-    int match = 0;
-    int len1 = s.length();
-    int len2 = p.length();
-    while(right < len1) {
-        char c1 = s.charAt(right);
-        window.put(c1, window.getOrDefault(c1, 0) + 1);
-        if(window.get(c1).equals(need.get(c1))) {
-            match++;
-        }
-        // 窗口移动的条件是：当前窗口的大小等于模式串的长度
-        // 此时需要查看窗口内容是否满足题目要求并设置结果
-        // 并且移动窗口左边界
-        while((right - left + 1) == len2) {
-            if(match == need.size()) {
-                res.add(left);
-            }
-            char c2 = s.charAt(left);
-            if(window.get(c2).equals(need.get(c2))) {
-                match--;
-            }
-            window.put(c2, window.get(c2) - 1);
-            left++;
-        }
-        right++;
-    }
-    return res;
-}
 
-// v2:由于字符的范围只包括了小写字符，可以使用数组代替哈希表
-private List<Integer> findAnagrams(String s, String p) {
-    List<Integer> res = new LinkedList<>();
     int[] need = new int[26];
     int[] window = new int[26];
     int unique = 0;
-    for(char c:p.toCharArray()) {
+    for(char c : p.toCharArray()) {
         int index = c - 'a';
         if(need[index] == 0) {
             unique++;
@@ -8553,25 +8502,22 @@ private List<Integer> findAnagrams(String s, String p) {
         need[index]++;
     }
 
+    int match = 0;
     int left = 0;
     int right = 0;
-    int match = 0;
     while(right < s.length()) {
-        char c1 = s.charAt(right);
-        int index1 = c1 - 'a';
+        int index1 = s.charAt(right) - 'a';
         window[index1]++;
         if(window[index1] == need[index1]) {
             match++;
         }
 
-        while((right - left + 1) == p.length()) {
-            if(match == unique) {
+        while(match == unique) {
+            if(right - left + 1 == p.length()) {
                 res.add(left);
             }
-
-            char c2 = s.charAt(left);
-            int index2 = c2 - 'a';
-            if(need[index2] == window[index2]) {
+            int index2 = s.charAt(left) - 'a';
+            if(window[index2] == need[index2]) {
                 match--;
             }
             window[index2]--;

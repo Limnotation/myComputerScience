@@ -90,9 +90,9 @@
         - [题目示例6 `leetcode 234 回文链表`](#题目示例6-leetcode-234-回文链表)
         - [题目示例7 `leetcode 328 奇偶链表`](#题目示例7-leetcode-328-奇偶链表)
         - [题目示例8 `剑指offer 22 链表中倒数第k个结点`](#题目示例8-剑指offer-22-链表中倒数第k个结点)
+        - [题目示例9 `leetcode 876 链表的中间节点`](#题目示例9-leetcode-876-链表的中间节点)
       - [其他题目](#其他题目)
         - [题目示例11 `leetcode 138 复制带随机指针的链表`](#题目示例11-leetcode-138-复制带随机指针的链表)
-        - [题目示例 12 `leetcode 876 链表的中间结点`](#题目示例-12-leetcode-876-链表的中间结点)
         - [题目示例15 `leetcode 1171 从链表中删去总和值为零的连续节点`](#题目示例15-leetcode-1171-从链表中删去总和值为零的连续节点)
         - [题目示例16 `leetcode 708 循环有序链表的插入`](#题目示例16-leetcode-708-循环有序链表的插入)
         - [题目示例17 `leetcode 1474 删链表M个节点之后的N个节点`](#题目示例17-leetcode-1474-删链表m个节点之后的n个节点)
@@ -6137,8 +6137,17 @@ return left - 1;
 
 ##### 四、建议
 
-- **搜索区间：当只需要搜索一个满足条件的元素而对位置没有要求时，使用全闭的搜索区间；当搜索目标的位置也重要时（比如边界元素），使用左闭右开的搜索区间**
+- **搜索区间：**
+
+    **当只需要搜索一个满足条件的元素而对位置没有要求时，使用左闭右闭的搜索区间；**
+
+    **当搜索目标的位置也需要考虑时（比如边界元素），使用左闭右开的搜索区间**
+
 - **边界：**
+
+    **在使用左闭右闭的搜索区间时，一般左边界取第一个元素的下标，右边界取最后一个元素的下标**
+
+    **在使用左闭右开的区间时，一般左边界取第一个元素的下标，右边界取最后一个元素的下标加一，如果最右侧元素也需要用于比较时，则右边界取最后一个元素的下标**
 
 ----
 
@@ -6180,10 +6189,16 @@ private int search(int[] nums, int target) {
 
 ###### 题目示例2 `leetcode 34 在排序数组中查找元素的第一个和最后一个位置`
 
-**左右边界查找算法的综合使用**
+
 
 ```java
+/** 
+* 左右边界查找算法的综合使用
+ */
 public int[] searchRange(int[] nums, int target) {
+    if(nums == null || nums.length == 0) {
+        return -1;
+    }
     int first = leftBound(nums, target);
     int right = rightBound(nums, target);
     return new int[]{first, right};
@@ -6193,10 +6208,6 @@ public int[] searchRange(int[] nums, int target) {
 * 寻找元素的左侧边界
 */
 private int leftBound(int[] nums, int target) {
-    if(nums == null || nums.length == 0) {
-        return -1;
-    }
-
     int left = 0;
     int right = nums.length;
     while(left < right) {
@@ -6208,7 +6219,7 @@ private int leftBound(int[] nums, int target) {
         }
     }
 
-    if(left >= nums.length || nums[left] != target) {
+    if(left == nums.length || nums[left] != target) {
         return -1;
     }
     return left;
@@ -6218,10 +6229,6 @@ private int leftBound(int[] nums, int target) {
 * 寻找元素的右侧边界
 */
 private int rightBound(int[] nums, int target) {
-    if(nums == null || nums.length == 0) {
-        return -1;
-    }
-
     int left  = 0;
     int right = nums.length;
     while(left < right) {
@@ -6232,7 +6239,7 @@ private int rightBound(int[] nums, int target) {
             right = mid;
         }
     }
-    
+
     if(left == 0 || nums[left - 1] != target) {
         return -1;
     }
@@ -6244,9 +6251,10 @@ private int rightBound(int[] nums, int target) {
 
 ###### 题目示例3 `leetcode 35 搜索插入位置`
 
-**本质是搜索元素的左边界**
-
 ```java
+/**
+* 本质是搜索元素的左边界
+ */
 private int searchInsert(int[] nums, int target) {
     if(nums == null || nums.length == 0) {
         return 0;
@@ -6276,7 +6284,7 @@ private int searchInsert(int[] nums, int target) {
 /*
 * 重点就是在判断mid分割出的两个搜索区间哪个是有序的，先去有序的部分搜索
 * 由于题目说数字了无重复，举个例子：
-* 	设原数组为：1 2 3 4 5 6 7 ，旋转情况可以大致分为两类，
+* 	设原数组为：1 2 3 4 5 6 7 ，旋转情况可以大致分为两类
 * 	第一类 2 3 4 5 6 7 1 这种，也就是 nums[start] <= nums[mid]。此例子中就是 2 < 5。
 * 	这种情况下，前半部分有序。因此如果 nums[start] <= target < nums[mid]，则在前半部分找，否则去后半部分找。
 * 	第二类 6 7 1 2 3 4 5 这种，也就是 nums[start] > nums[mid]。此例子中就是 6 > 2。

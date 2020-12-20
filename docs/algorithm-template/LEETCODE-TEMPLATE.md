@@ -107,7 +107,6 @@
       - [题目示例6 `leetcode 71 简化路径`](#题目示例6-leetcode-71-简化路径)
       - [题目示例7 `leetcode 225 用队列实现栈`](#题目示例7-leetcode-225-用队列实现栈)
       - [题目示例8  `leetcode 232  用栈实现队列`](#题目示例8--leetcode-232--用栈实现队列)
-      - [题目示例9 `leetcode 316 去除重复字母`](#题目示例9-leetcode-316-去除重复字母)
     - [队列](#队列)
       - [题目示例1 `leetcode 622 设计循环队列`](#题目示例1-leetcode-622-设计循环队列)
       - [题目示例2 `leetcode 641 设计循环双端队列`](#题目示例2-leetcode-641-设计循环双端队列)
@@ -129,6 +128,7 @@
         - [题目示例11 `leetcode 1019 链表的下一个更大结点`](#题目示例11-leetcode-1019-链表的下一个更大结点)
         - [题目示例12 `leetcode 1124 表现良好的最长时间段`](#题目示例12-leetcode-1124-表现良好的最长时间段)
         - [题目示例14`leetcode 132模式`](#题目示例14leetcode-132模式)
+        - [题目示例15 `leetcode 316 去除重复字母`](#题目示例15-leetcode-316-去除重复字母)
       - [单调队列典型题目](#单调队列典型题目)
         - [题目示例1 `leetcode 239 滑动窗口最大值`](#题目示例1-leetcode-239-滑动窗口最大值)
   - [并查集](#并查集)
@@ -3618,51 +3618,6 @@ class MyQueue {
 }
 ```
 
-----
-
-##### 题目示例9 `leetcode 316 去除重复字母`
-
-```java
-private String removeDuplicateLetters(String s) {
-    if(s == null || s.length() < 2) {
-        return s;
-    }
-    
-    int len = s.length();
-    // 记录字符是否在使用
-    boolean[] charSet = new boolean[26];
-    // 记录每一个字符最后一次出现的位置
-    int[] lastAppearIndex = new int[26];
-    for(int i = 0; i < len; i++) {
-        lastAppearIndex[s.charAt(i) - 'a'] = i;
-    }
-    
-    Deque<Character> stack = new LinkedList<>();
-    for(int i = 0; i < len; i++) {
-        // 如果当前字符已经在栈里出现过，跳过
-        char curChar = s.charAt(i);
-        if(charSet[curChar - 'a']) {
-            continue;
-        }
-        
-        // 维护栈，当前元素比栈顶元素严格小时，当且仅当栈顶元素在之后
-        // 还出现时才舍弃栈顶元素
-        while(!stack.isEmpty() && stack.peekLast() > curChar
-             && lastAppearIndex[stack.peekLast() - 'a'] > i) {
-            charSet[stack.removeLast() - 'a'] = false;
-        }
-        stack.addLast(curChar);
-        charSet[curChar - 'a'] = true;
-    }
-    
-    StringBuffer res = new StringBuffer();
-    while(!stack.isEmpty()) {
-        res.insert(0, stack.removeLast());
-    }
-    return res.toString();
-}
-```
-
 ------
 
 #### 队列
@@ -4290,7 +4245,52 @@ public boolean find132pattern(int[] nums) {
 }
 ```
 
-------
+-----
+
+###### 题目示例15 `leetcode 316 去除重复字母`
+
+```java
+private String removeDuplicateLetters(String s) {
+    if(s == null || s.length() < 2) {
+        return s;
+    }
+
+    int len = s.length();
+    // 记录字符是否在使用
+    boolean[] charSet = new boolean[26];
+    // 记录每一个字符最后一次出现的位置
+    int[] lastAppearIndex = new int[26];
+    for(int i = 0; i < len; i++) {
+        lastAppearIndex[s.charAt(i) - 'a'] = i;
+    }
+
+    Deque<Character> stack = new LinkedList<>();
+    for(int i = 0; i < len; i++) {
+        // 如果当前字符已经在栈里出现过，跳过
+        char curChar = s.charAt(i);
+        if(charSet[curChar - 'a']) {
+            continue;
+        }
+
+        // 维护栈，当前元素比栈顶元素严格小时，当且仅当栈顶元素在之后
+        // 还会出现时才舍弃栈顶元素
+        while(!stack.isEmpty() && stack.peekLast() > curChar
+              && lastAppearIndex[stack.peekLast() - 'a'] > i) {
+            charSet[stack.removeLast() - 'a'] = false;
+        }
+        stack.addLast(curChar);
+        charSet[curChar - 'a'] = true;
+    }
+
+    StringBuffer res = new StringBuffer();
+    while(!stack.isEmpty()) {
+        res.insert(0, stack.removeLast());
+    }
+    return res.toString();
+}
+```
+
+
 
 ##### 单调队列典型题目
 
@@ -6410,8 +6410,6 @@ private int findMin(int[] nums) {
 
 ###### 题目示例7 `leetcode 154 寻找旋转排序数组中的最小值II`
 
-有重复元素
-
 ```java
 private int findMin(int[] nums) {
     if(nums == null || nums.length <= 0) {
@@ -6471,17 +6469,18 @@ private int hIndex(int[] citations) {
 
 ```java
 public int[] findRightInterval(int[][] intervals) {
+    if(intervals == null || intervals.length == 0) {
+        return new int[0];
+    }
+    
     int len = intervals.length;
-    // 在start[]中存储各个区间的起点
     int[] start = new int[len];
     int[] res = new int[len];
-    // 在map中存储各个区间起点与区间所在位置的索引
     Map<Integer, Integer> map = new HashMap<>();
     for(int i = 0; i < len; i++) {
         start[i] = intervals[i][0];
         map.put(start[i], i);
     }
-    // 将区间起点以非递减的规则进行排序
     Arrays.sort(start);
 
     // 以区间的终点为目标元素在排序好的节点数组中进行二分查找，寻找第一个大于等于
@@ -6623,9 +6622,9 @@ public int findInMountainArray(int target, MountainArray mountainArr) {
     }
 
     int topIndex = findTopIndex(mountainArr, 0, len - 1);
-    int res = searchLeftSpace(mountainArr, 0, topIndex, target);
-    if(res != -1) {
-        return res;
+    int left = searchLeftSpace(mountainArr, 0, topIndex, target);
+    if(left != -1) {
+        return left;
     }
     return searchRightSpace(mountainArr, topIndex + 1, len - 1, target);
 }

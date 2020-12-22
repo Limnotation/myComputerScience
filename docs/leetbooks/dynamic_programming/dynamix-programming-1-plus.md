@@ -41,6 +41,7 @@
       - [题目1 `leetcode 1055 形成字符串的最短路径`](#题目1-leetcode-1055-形成字符串的最短路径)
       - [题目2 `leetcode 368 最大整除子集`](#题目2-leetcode-368-最大整除子集)
     - [单串问题：其它单串`dp[i]`问题](#单串问题其它单串dpi问题)
+      - [题目1 `leetcode 746 使用最小花费爬楼梯`](#题目1-leetcode-746-使用最小花费爬楼梯)
   - [双串](#双串)
     - [双串问题：最经典双串LCS系列](#双串问题最经典双串lcs系列)
       - [题目1 `leetcode 1143 最长公共子序列`](#题目1-leetcode-1143-最长公共子序列)
@@ -89,6 +90,7 @@
   - [回文相关问题](#回文相关问题)
     - [题目1 `leetcode 5 最长回文子串`](#题目1-leetcode-5-最长回文子串)
     - [题目2 `leetcode 647 回文子串`](#题目2-leetcode-647-回文子串)
+    - [题目3 `leetcode 516 最长回文子序列`](#题目3-leetcode-516-最长回文子序列)
 ## 线性动态规划
 
 > 线性动态规划的主要特点是状态的推导是按照问题规模 `i` 从小到大依次推过去的，较大规模的问题的解依赖较小规模的问题的解。
@@ -1383,6 +1385,36 @@ private int maxProfit(int[] prices, int fee) {
 -----
 
 #### 单串问题：其它单串`dp[i]`问题
+
+##### 题目1 `leetcode 746 使用最小花费爬楼梯`
+
+```java
+/**
+* dp[i]表示到达i的顶部所需要的最小花费
+* base case:
+*   dp[0] = cost[0]; 
+*   dp[1] = cost[1];
+* 状态转移方程：
+*   dp[i] = Math.min(dp[i-1], dp[i-2]) + cost[i]
+ */
+private int minCostClimbingStairs(int[] cost) {
+    if(cost == null || cost.length == 0) {
+        return 0;
+    }
+
+    int len = cost.length;
+    int[] dp = new int[len];
+    dp[0] = cost[0];
+    dp[1] = cost[1];
+    for(int i = 2; i < len; i++) {
+        dp[i] = Math.min(dp[i-1], dp[i-2]) + cost[i];
+    }
+
+    return Math.min(dp[len-1], dp[len-2]);
+}
+```
+
+
 
 ----
 

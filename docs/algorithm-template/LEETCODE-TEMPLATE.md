@@ -195,13 +195,17 @@
         - [题目示例12 `leetcode 162 寻找峰值`](#题目示例12-leetcode-162-寻找峰值)
         - [题目示例13  `leetcode 1095 山脉数组中查找目标值`](#题目示例13--leetcode-1095-山脉数组中查找目标值)
         - [题目示例14 `leetcode 4 寻找两个有序数组的中位数`](#题目示例14-leetcode-4-寻找两个有序数组的中位数)
-        - [题目示例15 `leetcode 1237 找出给定方程的正整数解`](#题目示例15-leetcode-1237-找出给定方程的正整数解)
         - [题目示例16 `leetcode 1300 转变数组后最接近目标值的数组和`](#题目示例16-leetcode-1300-转变数组后最接近目标值的数组和)
+        - [题目示例17 `leetcode 374 猜数字大小`](#题目示例17-leetcode-374-猜数字大小)
+        - [题目示例18 `leetcode 378 有序矩阵中第k小的元素`](#题目示例18-leetcode-378-有序矩阵中第k小的元素)
+        - [题目示例19 `leetcode 611 有效三角形的个数`](#题目示例19-leetcode-611-有效三角形的个数)
+        - [题目示例20 `leetcode 658 找到k个最接近的元素`](#题目示例20-leetcode-658-找到k个最接近的元素)
+        - [题目示例21 `leetcode 744 寻找比目标字母大的最小字母`](#题目示例21-leetcode-744-寻找比目标字母大的最小字母)
+        - [题目示例22 `leetcode 911 在线选举`](#题目示例22-leetcode-911-在线选举)
       - [题型二：二分确定一个有范围的整数](#题型二二分确定一个有范围的整数)
         - [题目示例10  `leetcode 287 寻找重复数`](#题目示例10--leetcode-287-寻找重复数)
       - [题目示例11 `leetcode 315 计算右侧小于当前元素的个数`](#题目示例11-leetcode-315-计算右侧小于当前元素的个数)
       - [题目示例12 `leetcode 69 X的平方根`](#题目示例12-leetcode-69-x的平方根)
-      - [题目示例13 `leetcode 374 猜数字大小`](#题目示例13-leetcode-374-猜数字大小)
       - [题目示例14 `leetcode 638 找到K个最接近的元素`](#题目示例14-leetcode-638-找到k个最接近的元素)
       - [题目示例15 `剑指offer 53-II 0 ~ n-1中缺失的数字`](#题目示例15-剑指offer-53-ii-0--n-1中缺失的数字)
       - [题目示例16 `leetcode 852 山脉数组的峰顶索引`](#题目示例16-leetcode-852-山脉数组的峰顶索引)
@@ -6687,18 +6691,52 @@ private int searchRightSpace(MountainArray mountainArr, int left, int right, int
 
 ```java
 /**
-* to-do 
+* 参考官方题解
  */
-```
+private double findMedianSortedArrays(int[] nums1, int[] nums2) {
+    if(nums1.length > nums2.length) {
+        int[] temp = nums1;
+        nums1 = nums2;
+        nums2 = temp;
+    }
 
------
+    int len1 = nums1.length;
+    int len2 = nums2.length;
+    int halfMember = (len1 + len2 + 1) / 2;
 
-###### 题目示例15 `leetcode 1237 找出给定方程的正整数解`
-
-```java
-/**
-* to-do
- */
+    /**
+    * 在nums1搜索区间[0, len1]内搜索分割线的位置，使得分割线两侧元素数量相等
+    * 或者左侧元素数量比右侧元素数量多1，并且满足如下的交叉比较关系：
+    *   nums1[left-1] <= nums2[right] && nums2[right - 1] <= nums1[left]
+     */
+    int left = 0;
+    int right = len1;
+    while(left < right) {
+        // i表示分割线在第一个数组左边的元素个数
+        int i = left + (right - left) / 2;
+        // j表示分割线在第二个数组右边的元素的个数
+        int j = halfMember - i;
+        // 分割线左右两侧元素需要满足交叉比较条件
+        if(nums2[j-1] > nums1[i]) {
+            // 下一轮搜索区间[i+1, right]
+            left = i + 1;
+        } else {
+            // 下一轮搜索区间[left, i]
+            right = i;
+        }
+    }
+    int i = left;
+    int j = halfMember - i;
+    int nums1LeftMax = i == 0? Integer.MIN_VALUE : nums1[i-1];
+    int nums1RightMin = i == len1? Integer.MAX_VALUE : nums1[i];
+    int nums2LeftMax = j == 0? Integer.MIN_VALUE : nums2[j-1];
+    int nums2RightMin = j == len2? Integer.MAX_VALUE : nums2[j];
+    if((len1 + len2) % 2 == 1) {
+        return Math.max(nums1LeftMax, nums2LeftMax);
+    } else {
+        return ((double)(Math.max(nums1LeftMax, nums2LeftMax) + Math.min(nums1RightMin, nums2RightMin)) / 2);
+    }
+}
 ```
 
 -------
@@ -6709,6 +6747,248 @@ private int searchRightSpace(MountainArray mountainArr, int left, int right, int
 /**
 * to-do
  */
+```
+
+-----
+
+###### 题目示例17 `leetcode 374 猜数字大小`
+
+```java
+private int guessNumber(int n) {
+    int left = 1;
+    int right = n;
+    while(left <= right) {
+        int mid = left + (right - left) / 2;
+        int res = guess(mid);
+        if(res == 0) {
+            return mid;
+        } else if(res == -1) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return -1;
+}
+```
+
+----
+
+###### 题目示例18 `leetcode 378 有序矩阵中第k小的元素`
+
+```java
+public int kthSmallest(int[][] matrix, int k) {
+    int n = matrix.length;
+    int start = matrix[0][0];
+    int end = matrix[n-1][n-1];
+    while(start < end) {
+        int mid = start + (end - start) / 2;
+        if(check(matrix, k, mid, n)) {
+            end = mid;
+        } else {
+            start = mid + 1;
+        }
+    }
+    return end;
+}
+
+/**
+* 计算出当前元素的“左上方”的元素数量，左上方的元素满足元素值大于等于
+* 当前元素
+ */
+private boolean check(int[][] matrix, int k, int mid, int n) {
+    int i = n - 1;
+    int j = 0;
+    int count = 0;
+    while(i >= 0 && j < n) {
+        if(matrix[i][j] <= mid) {
+            count += i + 1;
+            j++;
+        } else {
+            i--;
+        }
+    }
+    return count >= k;
+}
+```
+
+----
+
+###### 题目示例19 `leetcode 611 有效三角形的个数`
+
+```java
+/**
+* 二分法的解决流程：
+* 	1、对数组进行非递减排序
+* 	2、固定最短的两条边，并在右侧的剩余元素中使用二分查找寻找第一个大于两边之和的位置
+*	  枚举结束后，总和就是答案
+*
+* 此问题使用二分法解决的时间复杂度为O(n^2 * log2n),并不是最优解
+* 最优解应该使用双指针
+ */
+
+public int triangleNumber(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return 0;
+    }
+
+    int len = nums.length;
+    Arrays.sort(nums);
+    int res = 0;
+    for(int i = 0; i < len - 2; i++) {
+        for(int j = i + 1; j < len - 1; j++) {
+            int k = searchFirstEOrL(nums, j + 1, len - 1, nums[i] + nums[j]);
+            if(k == -1) {
+                // 此时区间[j+1, len - 1]内所有元素都可以与前两条边构成三角形
+                // 可以构成的三角形数量为(len-1) - (j+1) + 1 = len - j - 1
+                res += (len - j - 1);
+            } else {
+                // 此时区间[j+1, k-1]内所有元素可以与前两条边构成三角形
+                // 可以构成的三角形数量为(k-1) - (j-1) + 1 = k - j - 1
+                res += (k - j - 1);
+            }
+        }
+    }
+    return res;
+}
+
+/**
+* 在有序数组nums的子区间[left, right]内找到第一个大于等于target的元素的位置
+* 如果元素存在返回其下标，否则返回-1
+ */
+private int searchFirstEOrL(int[] nums, int left, int right, int target) {
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(nums[mid] >= target) {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    if(nums[left] < target) {
+        return -1;
+    }
+    return left;
+}
+```
+
+----
+
+###### 题目示例20 `leetcode 658 找到k个最接近的元素`
+
+```java
+/**
+* 使用二分查找寻找包括了k个元素的区间的左边界left, 使得[left, left + k - 1]
+* 内的所有元素满足“最靠近”x的条件
+*
+* 在二分查找中，mid定义为当前的左边界，则划分的区间为[mid, mid + k - 1],如果
+* arr[mid]与x的距离比arr[mid+k]与x的距离要大，则真正的左边界应该在mid右侧
+ */
+
+private List<Integer> findClosestElements(int[] arr, int k, int x) {
+    int len = arr.length;
+    int left = 0;
+    // 左边界的最大可能值为len - k
+    int right = len - k;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(x - arr[mid] > arr[mid + k] - x) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+
+    List<Integer> res = new LinkedList<>();
+    for(int i = left; i < left + k; i++) {
+        res.add(arr[i]);
+    }
+    return res;
+}
+```
+
+-----
+
+###### 题目示例21 `leetcode 744 寻找比目标字母大的最小字母`
+
+```java
+/**
+* 思路分析：
+* 1、对下标做二分，找到第一个大于target值的下标
+* 2、target可能比letters中所有字符都小，也可能比letters中所有字符都大,
+*   因此第一个大于target值的下标的取值范围为[0, letters.size()]，因
+*   此初始化left = 0, right = letters.size();
+* 3、当left == right时退出， 因此循环条件为 left < right
+* 4、当letters[mid] > target时， mid是可能结果，大于mid的都可以舍弃，此时right = mid
+* 5、当letters[mid] <= target时， mid不在候选集中，因此left = mid+1, 舍弃小于等于mid的下标
+* 6、当循环退出时，left = right = 待选下标， 注意当targets大于letters中所有元素时， 
+*	left = letters.size()，此* 时要返回letters[0];
+ */
+private char nextGreatestLetter(char[] letters, char target) {
+    int left = 0;
+    int right = letters.length;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(letters[mid] > target) {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    if(left == letters.length) {
+        return letters[0];
+    }
+    return letters[left];
+}
+```
+
+-----
+
+###### 题目示例22 `leetcode 911 在线选举`
+
+```java
+/**
+* 题目分析可以参考：https://leetcode-cn.com/problems/online-election/solution/you-bu-fen-ren-ti-mu-mei-you-du-ming-bai-by-pom
+ */
+private int[] persons;
+private int[] times;
+private int[] maxVoteCounts;
+
+public TopVotedCandidate(int[] persons, int[] times) {
+    this.persons = persons;
+    this.times = times;
+    int len = persons.length;
+    this.maxVoteCounts = new int[len];
+
+    int[] count = new int[len + 1];
+    int curMaxVote = 1;
+    int curMaxCandi = persons[0];
+    for(int i = 0; i < len; i++) {
+        count[persons[i]]++;
+        if(count[persons[i]] >= curMaxVote) {
+            curMaxVote = count[persons[i]];
+            curMaxCandi = persons[i];
+        }
+        maxVoteCounts[i] = curMaxCandi;
+    }
+}
+
+/**
+* 使用二分查找寻找数组中第一个大于t的元素的位置
+ */
+public int q(int t) {
+    int left = 0;
+    int right = times.length;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(times[mid] > t) {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return maxVoteCounts[left-1];
+}
 ```
 
 
@@ -6765,29 +7045,6 @@ private int mySqrt(int x) {
             right = mid - 1;
     }
     return x; // 处理1*1 = 1的情况
-}
-```
-
-----
-
-##### 题目示例13 `leetcode 374 猜数字大小`
-
-```java
-private int guessNumber(int n) 
-{
-    int left = 1, right = n;
-    while(left <= right)
-    {
-        int mid = left + (right - left) / 2;
-        int temp = guess(mid);
-        if(temp == 0)
-            return mid;
-        else if(temp == -1)
-            right = mid - 1;
-        else if(temp == 1)
-            left = mid + 1;
-    }
-    return -1;
 }
 ```
 

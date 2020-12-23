@@ -6565,32 +6565,9 @@ private int firstBadVersion(int n) {
     return left;
 }
 ```
------
-
-###### 题目示例12 `leetcode 374 猜数字大小`
-
-```java
-private int guessNumber(int n) {
-    int left = 1;
-    int right = n;
-    while(left <= right) {
-        int mid = left + (right - left) / 2;
-        int res = guess(mid);
-        if(res == 0) {
-            return mid;
-        } else if(res == -1) {
-            right = mid - 1;
-        } else {
-            left = mid + 1;
-        }
-    }
-    return -1;
-}
-```
-
 ----
 
-###### 题目示例13 `leetcode 378 有序矩阵中第k小的元素`
+###### 题目示例12 `leetcode 378 有序矩阵中第k小的元素`
 
 ```java
 public int kthSmallest(int[][] matrix, int k) {
@@ -6630,7 +6607,7 @@ private boolean check(int[][] matrix, int k, int mid, int n) {
 
 ----
 
-###### 题目示例14 `leetcode 436 寻找右区间`
+###### 题目示例13 `leetcode 436 寻找右区间`
 
 ```java
 public int[] findRightInterval(int[][] intervals) {
@@ -6686,7 +6663,7 @@ private int search(int[] nums, int target) {
 
 
 
-###### 题目示例15 `leetcode 611 有效三角形的个数`
+###### 题目示例14 `leetcode 611 有效三角形的个数`
 
 ```java
 /**
@@ -6746,7 +6723,7 @@ private int searchFirstEOrL(int[] nums, int left, int right, int target) {
 
 ----
 
-###### 题目示例16 `leetcode 658 找到k个最接近的元素`
+###### 题目示例15 `leetcode 658 找到k个最接近的元素`
 
 ```java
 /**
@@ -6778,7 +6755,7 @@ private List<Integer> findClosestElements(int[] arr, int k, int x) {
     return res;
 }
 ```
-###### 题目示例17 `leetcode 704 二分查找`
+###### 题目示例16 `leetcode 704 二分查找`
 
 ```java
 private int search(int[] nums, int target) {
@@ -6803,7 +6780,7 @@ private int search(int[] nums, int target) {
 ```
 -----
 
-###### 题目示例18 `leetcode 744 寻找比目标字母大的最小字母`
+###### 题目示例17 `leetcode 744 寻找比目标字母大的最小字母`
 
 ```java
 /**
@@ -6838,7 +6815,7 @@ private char nextGreatestLetter(char[] letters, char target) {
 
 -----
 
-###### 题目示例19 `leetcode 911 在线选举`
+###### 题目示例18 `leetcode 911 在线选举`
 
 ```java
 /**
@@ -6887,7 +6864,7 @@ public int q(int t) {
 
 -----
 
-###### 题目示例20  `leetcode 1095 山脉数组中查找目标值`
+###### 题目示例19  `leetcode 1095 山脉数组中查找目标值`
 
 ```java
 /**
@@ -6964,6 +6941,96 @@ private int searchRightSpace(MountainArray mountainArr, int left, int right, int
 ```
 
 ------
+
+##### 题型二： 二分确定一个有范围的整数
+
+###### 题目示例1 `leetcode 69 x的平方根`
+
+```java
+/**
+* 二分法寻找小于x的真正平方根的最大整数值
+ */
+private int mySqrt(int x) {
+    int left = 0;
+    int right = x;
+    int res = -1;
+    while(left <= right) {
+        int mid = left + (right - left) / 2;
+        if((long)mid * mid <= x) {
+            res = mid;
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return res;
+}
+```
+
+----
+
+###### 题目示例2 `leetcode 287 寻找重复数`
+
+```java
+/**
+* 根据抽屉原理，如果在[left, right]内小于等于mid的元素个数严格大于mid
+* 则[left, mid]内可能存在重复元素；否则重复元素可能存在与[mid + 1, right]
+* 范围内
+* 
+* 具体分析参考liweiwei的leetcode题解
+ */
+private int findDuplicate(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return -1;
+    }
+
+    int len = nums.length;
+    int left = 0;
+    int right = nums.length;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        int count = 0;
+        // 统计数组中小于等于mid的元素个数
+        for(int num : nums) {
+            if(num <= mid) {
+                count++;
+            }
+        }
+
+        if(count > mid) {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return left;
+}
+```
+
+----
+
+###### 题目示例3 `leetcode 374 猜数字大小`
+
+```java
+private int guessNumber(int n) {
+    int left = 1;
+    int right = n;
+    while(left <= right) {
+        int mid = left + (right - left) / 2;
+        int res = guess(mid);
+        if(res == 0) {
+            return mid;
+        } else if(res == -1) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return -1;
+}
+```
+
+
 
 ### 动态规划
 

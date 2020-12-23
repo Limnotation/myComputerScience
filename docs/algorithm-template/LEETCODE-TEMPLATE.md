@@ -1,4 +1,4 @@
-- 数据结构](#数据结构)
+- [数据结构](#数据结构)
   - [树](#树)
     - [二叉树遍历问题](#二叉树遍历问题)
       - [树结点定义](#树结点定义)
@@ -192,18 +192,19 @@
         - [题目示例9 `leetcode 162 寻找峰值`](#题目示例9-leetcode-162-寻找峰值)
         - [题目示例10 `leetcode 275 H指数II`](#题目示例10-leetcode-275-h指数ii)
         - [题目示例11 `leetcode 278 第一个错误的版本`](#题目示例11-leetcode-278-第一个错误的版本)
-        - [题目示例12 `leetcode 436 寻找右区间`](#题目示例12-leetcode-436-寻找右区间)
-        - [题目示例13 `leetcode 374 猜数字大小`](#题目示例13-leetcode-374-猜数字大小)
-        - [题目示例14 `leetcode 378 有序矩阵中第k小的元素`](#题目示例14-leetcode-378-有序矩阵中第k小的元素)
-        - [题目示例15 `leetcode 611 有效三角形的个数`](#题目示例15-leetcode-611-有效三角形的个数)
-        - [题目示例16 `leetcode 658 找到k个最接近的元素`](#题目示例16-leetcode-658-找到k个最接近的元素)
-        - [题目示例17 `leetcode 704 二分查找`](#题目示例17-leetcode-704-二分查找)
-        - [题目示例18 `leetcode 744 寻找比目标字母大的最小字母`](#题目示例18-leetcode-744-寻找比目标字母大的最小字母)
-        - [题目示例19 `leetcode 911 在线选举`](#题目示例19-leetcode-911-在线选举)
-        - [题目示例20  `leetcode 1095 山脉数组中查找目标值`](#题目示例20--leetcode-1095-山脉数组中查找目标值)
-      - [题目示例14 `leetcode 638 找到K个最接近的元素`](#题目示例14-leetcode-638-找到k个最接近的元素)
-      - [题目示例15 `剑指offer 53-II 0 ~ n-1中缺失的数字`](#题目示例15-剑指offer-53-ii-0--n-1中缺失的数字)
-      - [题目示例16 `leetcode 852 山脉数组的峰顶索引`](#题目示例16-leetcode-852-山脉数组的峰顶索引)
+        - [题目示例12 `leetcode 378 有序矩阵中第k小的元素`](#题目示例12-leetcode-378-有序矩阵中第k小的元素)
+        - [题目示例13 `leetcode 436 寻找右区间`](#题目示例13-leetcode-436-寻找右区间)
+        - [题目示例14 `leetcode 611 有效三角形的个数`](#题目示例14-leetcode-611-有效三角形的个数)
+        - [题目示例15 `leetcode 658 找到k个最接近的元素`](#题目示例15-leetcode-658-找到k个最接近的元素)
+        - [题目示例16 `leetcode 704 二分查找`](#题目示例16-leetcode-704-二分查找)
+        - [题目示例17 `leetcode 744 寻找比目标字母大的最小字母`](#题目示例17-leetcode-744-寻找比目标字母大的最小字母)
+        - [题目示例18 `leetcode 911 在线选举`](#题目示例18-leetcode-911-在线选举)
+        - [题目示例19  `leetcode 1095 山脉数组中查找目标值`](#题目示例19--leetcode-1095-山脉数组中查找目标值)
+      - [题型二： 二分确定一个有范围的整数](#题型二-二分确定一个有范围的整数)
+        - [题目示例1 `leetcode 69 x的平方根`](#题目示例1-leetcode-69-x的平方根)
+        - [题目示例2 `leetcode 287 寻找重复数`](#题目示例2-leetcode-287-寻找重复数)
+        - [题目示例3 `leetcode 374 猜数字大小`](#题目示例3-leetcode-374-猜数字大小)
+        - [题目示例4 `leetcode 1283 使结果不超过阈值的最小除数`](#题目示例4-leetcode-1283-使结果不超过阈值的最小除数)
   - [动态规划](#动态规划)
     - [矩阵类型( 10% )](#矩阵类型-10-)
       - [题目示例1 `leetcode 64 最小路径和`](#题目示例1-leetcode-64-最小路径和)
@@ -7027,6 +7028,47 @@ private int guessNumber(int n) {
         }
     }
     return -1;
+}
+```
+
+-----
+
+###### 题目示例4 `leetcode 1283 使结果不超过阈值的最小除数`
+
+```java
+/**
+* 根据题目条件，除数的取值范围为[1, maxVal]，maxVal是数值中元素最大值
+ */
+private int smallestDivisor(int[] nums, int threshold) {
+    int maxDivisor = 1;
+    for(int num : nums) {
+        maxDivisor = Math.max(maxDivisor, num);
+    }
+
+    int left = 1;
+    int right = maxDivisor;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(calDividedSum(nums, mid) > threshold) {
+            // 除法结果之和大于threshold,则结果一定
+            // 不在[left, mid]内
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return left;
+}
+
+private int calDividedSum(int[] nums, int divisor) {
+    int res = 0;
+    for(int num : nums) {
+        res += num / divisor;
+        if(num % divisor != 0) {
+            res++;
+        }
+    }
+    return res;
 }
 ```
 

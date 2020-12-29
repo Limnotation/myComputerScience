@@ -205,6 +205,10 @@
         - [题目示例2 `leetcode 287 寻找重复数`](#题目示例2-leetcode-287-寻找重复数)
         - [题目示例3 `leetcode 374 猜数字大小`](#题目示例3-leetcode-374-猜数字大小)
         - [题目示例4 `leetcode 1283 使结果不超过阈值的最小除数`](#题目示例4-leetcode-1283-使结果不超过阈值的最小除数)
+      - [题型三 复杂的判别函数(最大值极小化问题)](#题型三-复杂的判别函数最大值极小化问题)
+        - [题目示例1  `leetcode 410 分割数组的最大值`](#题目示例1--leetcode-410-分割数组的最大值)
+        - [题目示例2 `leetcode 875 爱吃香蕉的珂珂`](#题目示例2-leetcode-875-爱吃香蕉的珂珂)
+        - [题目示例3 `leetcode 1011 在D天内送达包裹的能力`](#题目示例3-leetcode-1011-在d天内送达包裹的能力)
   - [动态规划](#动态规划)
     - [矩阵类型( 10% )](#矩阵类型-10-)
       - [题目示例1 `leetcode 64 最小路径和`](#题目示例1-leetcode-64-最小路径和)
@@ -7072,6 +7076,177 @@ private int calDividedSum(int[] nums, int divisor) {
 }
 ```
 
+------
+
+##### 题型三 复杂的判别函数(最大值极小化问题)
+
+###### 题目示例1  `leetcode 410 分割数组的最大值`
+
+```java
+public int splitArray(int[] nums, int m) {
+    int minSum = 0;
+    int maxSum = 0;
+    for(int num : nums) {
+        minSum = Math.max(minSum, num);
+        maxSum += num;
+    }
+
+    int left = minSum;
+    int right = maxSum;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(split(nums, mid) > m) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return left;
+}
+
+private int split(int[] nums, int maxIntervalSum) {
+    int split = 1;
+    int curIntervalSum = 0;
+    for(int num : nums) {
+        if(curIntervalSum + num > maxIntervalSum) {
+            split++;
+            curIntervalSum = 0;
+        }
+        curIntervalSum += num;
+    }
+    return split;
+}
+```
+
+----
+
+###### 题目示例2 `leetcode 875 爱吃香蕉的珂珂`
+
+```java
+public int minEatingSpeed(int[] piles, int H) {
+    int maxHour = 1;
+    for(int pile : piles) {
+        maxHour = Math.max(maxHour, pile);
+    }
+
+    int left = 1;
+    int right = maxHour;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(calculateTime(piles, mid) > H) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return left;
+}
+
+private int calculateTime(int[] piles, int speed) {
+    int sum = 0;
+    for(int pile : piles) {
+        sum += (pile + speed - 1) / speed;
+    }
+    return sum;
+}
+```
+
+-----
+
+###### 题目示例3 `leetcode 1011 在D天内送达包裹的能力`
+
+```java
+public int shipWithinDays(int[] weights, int D) {
+    int left = 0;
+    int right = Integer.MAX_VALUE;
+    while(left < right) {
+        int mid = left + (right - left) / 2;
+        if(canShip(weights, D, mid)) {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return left;
+}
+
+private boolean canShip(int[] weights, int D, int capacity) {
+    int curCapacity = capacity;
+    for(int weight : weights) {
+        if(weight > capacity) {
+            return false;
+        }
+        if(curCapacity < weight) {
+            curCapacity = capacity;
+            D--;
+        }
+        curCapacity -= weight;
+    }
+    return D > 0;
+}
+```
+
+-----
+
+###### 题目示例4 `leetcode 1482 制作m束花所需的最少天数`
+
+```java
+public int minDays(int[] bloomDay, int m, int k) {
+    if(bloomDay == null || bloomDay.length == 0) {
+        return -1;
+    }
+
+    int len = bloomDay.length;
+    if(m * k > len) {
+        return -1;
+    }
+
+    int end = 0;
+    for(int day : bloomDay) {
+        end = Math.max(end, day);
+    }
+    int start = 0;
+    while(start < end) {
+        int mid = start + (end - start) / 2;
+        int temp = getCount(bloomDay, mid, k);
+        if(temp >= m) {
+            end = mid;
+        } else {
+            start = mid + 1;
+        }
+    }
+    return start;
+}
+
+private int getCount(int[] bloomDay, int mid, int k) {
+    int counter = 0;
+    int res = 0;
+    for(int day : bloomDay) {
+        if(day <= mid) {
+            counter++;
+        } else {
+            counter = 0;
+        }
+
+        if(counter == k) {
+            res++;
+            counter = 0;
+        }
+    }
+    return res;
+}
+```
+
+------
+
+###### 题目示例5 `leetcode 1552 两球之间的磁力`
+
+```java
+/**
+* to-do 
+ */
+```
+
 
 
 ### 动态规划
@@ -9568,14 +9743,14 @@ private int[] exchange(int[] nums) {
 
 ```java
 private int removeDuplicates(int[] nums) {
-    int len = nums.length;
-    if(len <= 1) {
-        return len;
+	if(nums == null || nums.length == 0) {
+        return 0;
     }
 
     /**
     * 循环不变量: [0, mark]内的元素每个元素只出现一次
      */
+    int len = nums.length;
     int mark = 0;
     for(int i = 1; i < len; i++) {
         if(nums[i] != nums[mark]) {
@@ -9592,7 +9767,7 @@ private int removeDuplicates(int[] nums) {
 ##### 题目示例4 `leetcode 27 移除元素`
 
 ```java
-public int removeElement(int[] nums, int val) {
+private int removeElement(int[] nums, int val) {
     /**
     * 循环不变量:[0, mark]内的元素都不等于val
      */

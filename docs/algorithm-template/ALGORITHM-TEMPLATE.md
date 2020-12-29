@@ -192,6 +192,7 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
 - `arr[i]`小于`v`,将`arr[less]`和`arr[i]`交换，将`less`和`i`加一
 - `arr[i]`大于`v`,将`arr[great]`和`arr[i]`交换，将`great`减一
 - `arr[i]`等于 `v`,将`i`加一
+- 迭代前三步直到`i == great`
 
 ##### 算法实现代码
 
@@ -305,19 +306,15 @@ public class MergeSort {
         int j = mid - left + 1;
         for(int k = 0; k < len; k++) {
             if(i == mid - left + 1) {
-                // 第一个部分的元素已取完，只能从第二个部分取元素
                 nums[left + k] = temp[j];
                 j++;
             } else if(j == right - left + 1) {
-                // 第二个部分的元素已取完，只能从第一个部分取元素
                 nums[left + k] = nums[i];
                 i++;
             } else if(temp[i] <= temp[j]) {
-                // 第一部分的当前元素更小，则写回原数组
                 nums[left + k] = temp[i];
                 i++;
             } else {
-                // 第二部分的当前元素更小，则协会原数组
                 nums[left + k] = temp[j];
                 j++;
             }

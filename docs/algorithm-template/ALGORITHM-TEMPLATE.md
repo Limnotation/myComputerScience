@@ -112,7 +112,7 @@ private static int partition(int[] arr, int startIndex, int endIndex){
 * 1、[startIndex + 1, mark]内所有元素小于pivot
 * 2、(mark, i]内所有元素大于等于pivot
  */
-private static int partition(int[] arr, int startIndex, int endIndex) {
+private int partition(int[] arr, int startIndex, int endIndex) {
     int pivot = arr[startIndex];
     int mark = startIndex;
     
@@ -309,7 +309,7 @@ public class MergeSort {
                 nums[left + k] = temp[j];
                 j++;
             } else if(j == right - left + 1) {
-                nums[left + k] = nums[i];
+                nums[left + k] = temp[i];
                 i++;
             } else if(temp[i] <= temp[j]) {
                 nums[left + k] = temp[i];

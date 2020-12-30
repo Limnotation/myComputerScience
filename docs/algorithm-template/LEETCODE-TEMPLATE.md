@@ -209,6 +209,8 @@
         - [题目示例1  `leetcode 410 分割数组的最大值`](#题目示例1--leetcode-410-分割数组的最大值)
         - [题目示例2 `leetcode 875 爱吃香蕉的珂珂`](#题目示例2-leetcode-875-爱吃香蕉的珂珂)
         - [题目示例3 `leetcode 1011 在D天内送达包裹的能力`](#题目示例3-leetcode-1011-在d天内送达包裹的能力)
+        - [题目示例4 `leetcode 1482 制作m束花所需的最少天数`](#题目示例4-leetcode-1482-制作m束花所需的最少天数)
+        - [题目示例5 `leetcode 1552 两球之间的磁力`](#题目示例5-leetcode-1552-两球之间的磁力)
   - [动态规划](#动态规划)
     - [矩阵类型( 10% )](#矩阵类型-10-)
       - [题目示例1 `leetcode 64 最小路径和`](#题目示例1-leetcode-64-最小路径和)
@@ -276,6 +278,7 @@
         - [题目示例9 `面试题17.18 最短超串`](#题目示例9-面试题1718-最短超串)
         - [题目示例10 `leetcode 159 至多包含两个不同字符的最长子串`](#题目示例10-leetcode-159-至多包含两个不同字符的最长子串)
         - [题目示例11 `leetcode 340 至多包含K个不同字符的最长子串`](#题目示例11-leetcode-340-至多包含k个不同字符的最长子串)
+        - [题目示例12 `leetcode 1493 删掉一个元素以后全为1的最长子数组`](#题目示例12-leetcode-1493-删掉一个元素以后全为1的最长子数组)
       - [固定窗口题目](#固定窗口题目)
         - [题目示例1 `leetcode 239 滑动窗口最大值`](#题目示例1-leetcode-239-滑动窗口最大值-1)
         - [题目示例2 `leetcode 1456 定长子串中元音的最大数目`](#题目示例2-leetcode-1456-定长子串中元音的最大数目)
@@ -8962,7 +8965,7 @@ private int minSubArrayLen(int s, int[] nums) {
     int len = nums.length;
     while(right < len) {
         curVal += nums[right];
-        // 窗口移动的条件：当前窗口内的数值和大于s
+        // 窗口左边界移动的条件：当前窗口内的数值和大于s
         while(curVal >= s) {
             minLen = Math.min(minLen, right - left + 1);
             curVal -= nums[left];
@@ -9226,6 +9229,38 @@ private int lengthOfLongestSubstringKDistinct(String s, int k) {
 ```
 
 -----
+
+###### 题目示例12 `leetcode 1493 删掉一个元素以后全为1的最长子数组`
+
+```java
+private int longestSubarray(int[] nums) {
+    if(nums == null || nums.length == 0) {
+        return 0;
+    }
+
+    int left = 0;
+    int right = 0;
+    int maxLen = 0;
+    int window = 0;
+    while(right < nums.length) {
+        window += nums[right] & 1;
+        // 窗口左边界移动的条件：当前窗口的尺寸大于1并且窗口内0的个数大于1
+        while(left < right && window <= (right - left - 1)) {
+            if(nums[left] == 1) {
+                window--;
+            }
+            left++;
+        }
+        maxLen = Math.max(maxLen, right - left);
+        right++;
+    }
+    return maxLen;
+}
+```
+
+
+
+------
 
 ##### 固定窗口题目
 

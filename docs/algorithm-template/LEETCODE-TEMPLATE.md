@@ -136,7 +136,7 @@
       - [1、基础并查集代码](#1基础并查集代码)
     - [典型题目](#典型题目)
       - [基础题目](#基础题目)
-        - [题目示例1 `leetcode 547 朋友圈`](#题目示例1-leetcode-547-朋友圈)
+        - [题目示例1 `leetcode 547 省份数量`](#题目示例1-leetcode-547-省份数量)
         - [题目示例2 `leetcode 323 无向图中连通分量的个数`](#题目示例2-leetcode-323-无向图中连通分量的个数)
         - [题目示例3 `leetcode 261 以图判树`](#题目示例3-leetcode-261-以图判树)
         - [题目示例4 `leetcode 1319 连通网络的操作次数`](#题目示例4-leetcode-1319-连通网络的操作次数)
@@ -1365,8 +1365,12 @@ private int widthOfBinaryTree(TreeNode root) {
 /**
 * 回溯问题
  */
-List<List<Integer>> res = new LinkedList<>();
+private List<List<Integer>> res = new LinkedList<>();
 public List<List<Integer>> pathSum(TreeNode root, int sum) {
+    if(root == null) {
+        return res;
+    }
+
     backTracking(root, sum, new LinkedList<Integer>());
     return res;
 }
@@ -1381,11 +1385,10 @@ private void backTracking(TreeNode root, int sum, LinkedList<Integer> path) {
     path.addLast(root.val);
     if(sum == 0 && root.left == null && root.right == null) {
         res.add(new LinkedList(path));
-    } else {
-        // 进入下一层决策树
-        backTracking(root.left, sum, path);
-        backTracking(root.right, sum, path);
     }
+    // 进入下一层决策树
+    backTracking(root.left, sum, path);
+    backTracking(root.right, sum, path);
     // 撤销选择
     sum += root.val;
     path.removeLast();
@@ -2621,7 +2624,7 @@ private ListNode mergeSort(ListNode head) {
     ListNode mid = getMid(head);
     ListNode secondHalf = mid.next;
     // 断开两个部分，避免链表成环
-    preMid.next = null;
+    mid.next = null;
     // 递归地对两部分链表进行排序
     ListNode firstHalf = mergeSort(head);
     secondHalf = mergeSort(secondHalf);
@@ -2632,15 +2635,15 @@ private ListNode mergeSort(ListNode head) {
 
 /**
 * 找到链表的中间节点
-* 当链表长度为2n时，中间节点就是从链表头部开始数第n个节点
-* 当链表长度为2n + 1时，中间节点就是第n + 1个节点
+* 	当链表长度为2n时，中间节点就是从链表头部开始数第n个节点
+* 	当链表长度为2n + 1时，中间节点就是第n + 1个节点
  */
 private ListNode getMid(ListNode head) {
     ListNode slow = head;
     ListNode fast = head.next;
     while(fast != null && fast.next != null) {
-        fast = fast.next.next;
         slow = slow.next;
+        fast = fast.next.next;
     }
     return slow;
 }
@@ -2650,22 +2653,22 @@ private ListNode getMid(ListNode head) {
  */
 private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
     ListNode dummy = new ListNode(0);
-    ListNode head = dummy;
+    ListNode runner = dummy;
     while(l1 != null && l2 != null) {
         if(l1.val < l2.val) {
-            head.next = l1;
+            runner.next = l1;
             l1 = l1.next;
         } else {
-            head.next = l2;
+            runner.next = l2;
             l2 = l2.next;
         }
-        head = head.next;
+        runner = runner.next;
     }
     
     if(l1 != null) {
-        head.next = l1;
+        runner.next = l1;
     } else if(l2 != null) {
-        head.next = l2;
+        runner.next = l2;
     }
     return dummy.next;
 }
@@ -3855,8 +3858,10 @@ for(int i = 0; i < nums.length; i++) {
 **寻找比当前元素更大的下一个元素**
 
 ```java
+/** 
+* 在nums2上，从右至左维护单调递减栈，获取每个数字的下一个更大元素
+ */
 private int[] nextGreaterElement(int[] nums1, int[] nums2) {
-    // 在nums2上，从右至左维护单调递减栈，获取每个数字的下一个更大元素
     Deque<Integer> monoStack = new LinkedList<>();
     int len2 = nums2.length;
     int len1 = nums1.length;
@@ -4343,13 +4348,18 @@ private int[] maxSlidingWindow(int[] nums, int k) {
 
 ```java
 class UnionFind {
-    // 连通分量个数
+    /**连通分量个数*/
     private int count;
-    // 存储触点的父节点引用
+    
+    /**存储触点的父节点引用*/
     private int[] parent;
-    // 记录根节点所代表的树的最大高度
+    
+    /**记录根节点所代表的树的最大高度*/
     private int[] rank;
     
+    /**
+    * 构造器
+     */
     public UnionFind(int n) {
         this.count = n;
        	this.parent = new int[n];
@@ -4426,7 +4436,7 @@ class UnionFind {
 
 ##### 基础题目
 
-###### 题目示例1 `leetcode 547 朋友圈`
+###### 题目示例1 `leetcode 547 省份数量`
 
 ```java
 // 求二维数组不相交集合的个数
@@ -4682,11 +4692,8 @@ public int makeConnected(int n, int[][] connections) {
 }
 
 class UnionFind {
-    // 连通分量个数
     private int count;
-    // 存储触点的父节点
     private int[] parent;
-    // 记录根节点所代表的树的最大高度
     private int[] rank;
 
     public UnionFind(int n) {
@@ -4699,27 +4706,22 @@ class UnionFind {
         }
     }
 
-    // 返回连通分量个数
     public int count() {
         return this.count;
     }
 
-    // 找到所给触点的根节点
     public int find(int k) {
         while(parent[k] != k) {
-            // 路径压缩
             parent[k] = parent[parent[k]];
             k = parent[k];
         }
         return k;
     }
 
-    // 检查所给两个分量的连通性
     public boolean connected(int p, int q) {
         return find(p) == find(q);
     }
 
-    // 合并两个分量
     public boolean union(int p, int q) {
         int pRoot = find(p);
         int qRoot = find(q);
@@ -4727,7 +4729,6 @@ class UnionFind {
             return false;
         }
 
-        // 将“较小”的树放到较大的树下，保证合并后的分量树具有一定平衡性
         int pRank = rank[pRoot];
         int qRank = rank[qRoot];
 	    if(pRank < qRank) {
@@ -4778,12 +4779,10 @@ class UnionFind {
         }
     }
 
-    // 返回连通分量个数
     public int count() {
         return this.count;
     }
 
-    // 找到所给触点的根节点
     public int find(int k) {
         while(parent[k] != k) {
             // 路径压缩
@@ -4793,12 +4792,10 @@ class UnionFind {
         return k;
     }
 
-    // 检查所给两个分量的连通性
     public boolean connected(int p, int q) {
         return find(p) == find(q);
     }
 
-    // 合并两个分量
     public boolean union(int p, int q) {
         int pRoot = find(p);
         int qRoot = find(q);
@@ -4921,8 +4918,7 @@ class UnionFind {
 ###### 题目示例1 `leetcode 128 最长连续序列`
 
 ```java
-// 不得不说这种方法太骚了
-public int longestConsecutive(int[] nums) {
+private int longestConsecutive(int[] nums) {
     int len = nums.length;
     if(len < 2) {
         return len;
@@ -4930,7 +4926,7 @@ public int longestConsecutive(int[] nums) {
 
 
     UnionFind uf = new UnionFind(nums);
-    // 每个数字都是一个长度为1的序列
+    // 每个数字都是一个长度为1的连续序列
     int res = 1;	
     for(int i = 0; i < len; i++) {
         int num = nums[i];
@@ -4947,9 +4943,9 @@ public int longestConsecutive(int[] nums) {
 
 
 class UnionFind {
-    // key表示一个触点，value表示key所在连通分量的根节点
+    /**key表示一个触点，value表示key所在连通分量的根节点*/
     private Map<Integer, Integer> parent;
-    // size维护以当前结点所在的连通分量的结点总数
+    /**size维护以当前结点所在的连通分量的结点总数*/
     private Map<Integer, Integer> size;
 
     public UnionFind(int[] nums) {
@@ -4962,14 +4958,25 @@ class UnionFind {
         }
     }
 
-    // union方法返回合并后的连通分量的结点个数
+    public int find(int i) {
+        while(i != parent.get(i)) {
+            parent.put(i, parent.get(parent.get(i)));
+            i = parent.get(i);
+        }
+        return i;
+    }
+
+    public boolean contains(int x) {
+        return parent.containsKey(x);
+    }
+    
     public int union(int p, int q) {
         int pRoot = find(p);
         int qRoot = find(q);
         if(pRoot == qRoot) {
             return 0;
         }
-		
+
         int pSize = size.get(pRoot);
         int qSize = size.get(qRoot);
         int sum = pSize + qSize;
@@ -4982,20 +4989,6 @@ class UnionFind {
         }
         return sum;
     }
-
-    // 路径压缩版本的find方法
-    public int find(int i) {
-        while(i != parent.get(i)) {
-            parent.put(i, parent.get(parent.get(i)));
-            i = parent.get(i);
-        }
-        return i;
-    }
-
-    // 检查元素是否存在
-    public boolean contains(int x) {
-        return parent.containsKey(x);
-    }
 }
 ```
 
@@ -5004,90 +4997,85 @@ class UnionFind {
 ###### 题目示例2 `leetcode 945 使数组唯一的最小增量`
 
 ```java
-class Solution {
-	public int minIncrementForUnique(int[] A) {
-        int len = A.length;
-        if(len == 0) {
-            return 0;
-        }
-        
-        UnionFind unionFind = new UnionFind();
-        int res = 0;
-        for(int num:A) {
-            if(unionFind.contains(num)) {
-                int root = unionFind.find(num);
-                int add = root + 1;
-                res += (add - num);
-                unionFind.init(add);
-            } else {
-                unionFind.init(add);
-            }
-        }
-        return res;
+public int minIncrementForUnique(int[] A) {
+    int len = A.length;
+    if(len == 0) {
+        return 0;
     }
-    
+
+    UnionFind unionFind = new UnionFind();
+    int res = 0;
+    for(int num:A) {
+        if(unionFind.contains(num)) {
+            int root = unionFind.find(num);
+            int add = root + 1;
+            res += (add - num);
+            unionFind.init(add);
+        } else {
+            unionFind.init(add);
+        }
+    }
+    return res;
+}
+
+private class UnionFind {
     /**
-    * 内部类：并查集定义
-    */
-    private class UnionFind {
-        /**
-        * 代表元法，元素指向父亲节点
-        */
-        private int[] parent;
-        
-        /**
-        * 构造函数
-        */
-        public UnionFind() {
-            this.parent = new int[79999];
-            Arrays.fill(parent, -1);
+    * 代表元法，元素指向父亲节点
+     */
+    private int[] parent;
+
+    /**
+    * 构造函数
+     */
+    public UnionFind() {
+        this.parent = new int[79999];
+        Arrays.fill(parent, -1);
+    }
+
+    /**
+    * 初始化并查集，添加新元素，新元素一定没有在集合中出现过
+    * @param x 加入当前集合的元素一定会在加入后仍保持当前集合的性质
+     */
+    public void init(int x) {
+        parent[x] = x;
+        if(x > 0 && parent[x-1] != -1) {
+            union(x, x - 1);
         }
-        
-        /**
-        * 初始化并查集，添加新元素，新元素一定没有在集合中出现过
-        * @param x 加入当前集合的元素一定会在加入后仍保持当前集合的性质
-        */
-        public void init(int x) {
-            parent[x] = x;
-            if(x > 0 && parent[x-1] != -1) {
-                union(x, x - 1);
-            }
-            if(parent[x + 1] != -1) {
-                union(x, x + 1);
-            }
+        if(parent[x + 1] != -1) {
+            union(x, x + 1);
         }
-        
-        /**
-        * 查看集合中是否已经存在该元素
-        */
-        public boolean contains(int x) {
-            return parent[x] != -1;
+    }
+
+    /**
+    * 查看集合中是否已经存在该元素
+     */
+    public boolean contains(int x) {
+        return parent[x] != -1;
+    }
+
+    /**
+    * 返回不相交集合的代表元节点
+     */
+    public int find(int x) {
+        while(parent[x] != x) {
+            parent[x] = parent[parent[x]];
+            x = parent[x];
         }
-        
-        /**
-        * 返回不相交集合的代表元节点
-        */
-        public int find(int x) {
-            while(parent[x] != x) {
-                parent[x] = parent[parent[x]];
-                x = parent[x];
-            }
-            return x;
+        return x;
+    }
+
+    /**
+    * 合并两个不相交集合
+     */
+    public void union(int x, int y) {
+        int rootx = find(x);
+        int rooty = find(y);
+
+        if(rootx < rooty) {
+            parent[rootx] = rooty;
         }
-        
-        /**
-        * 合并两个不相交集合
-        */
-        public void union(int x, int y) {
-            int rootx = find(x);
-            int rooty = find(y);
-            
-            if(rootx < rooty) {
-                parent[rootx] = rooty;
-            }
-            if(rooty < rootx) {
-                parent[rooty] = rootx;
-            }
+        if(rooty < rootx) {
+            parent[rooty] = rootx;
         }
     }
 }
@@ -5597,17 +5585,20 @@ private boolean dfs(int[][] grid, int i, int j) {
 
 ```java
 public void solve(char[][] board) {
-    if(board == null || board.length == 0)
+    if(board == null || board.length == 0) {
         return;
+    }
 
-    int m = board.length, n = board[0].length;
+    int m = board.length;
+    int n = board[0].length;
     for(int i = 0; i < m; i++) {
         for(int j = 0; j < n; j++) {
             // 从边界开始，搜索所有与边界相连的岛屿，这些岛屿不可以被修改
             // 除此之外的所有岛屿都可以被修改
             boolean atEdge = (i == 0) || (i == m - 1) || (j == 0) || (j == n - 1);
-            if(atEdge && board[i][j] == 'O')
+            if(atEdge && board[i][j] == 'O') {
                 dfs(board, i, j); 
+            }
         }
     }
 
@@ -5623,9 +5614,9 @@ public void solve(char[][] board) {
 
 private void dfs(char[][] board, int i, int j) {
     if(i < 0 || i >= board.length || j < 0 || j >= board[0].length 
-       || board[i][j] == 'X'
-       || board[i][j] == '#')
+       || board[i][j] == 'X' || board[i][j] == '#') {
         return;
+    }
 
     board[i][j] = '#';
     dfs(board, i - 1, j);
@@ -8038,7 +8029,7 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
     for(int i = start; i < candidates.length; i++) {
         // 剪枝
         if(target - candidates[i] < 0) {
-            break;
+            return;
         }
         
         // 做选择
@@ -8056,7 +8047,7 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
 ###### 题目示例7 `leetcode 40 组合总和II`
 
 ```java
-List<List<Integer>> res = new LinkedList<>();
+private List<List<Integer>> res = new LinkedList<>();
 public List<List<Integer>> combinationSum2(int[] candidates, int target) {
     if(candidates == null || candidates.length == 0) {
         return res;
@@ -8182,7 +8173,8 @@ private boolean isPalindrome(String s, int left, int right) {
 ###### 题目示例2  `leetcode 93 复原IP地址`
 
 ```java
-List<String> res = new LinkedList<>();
+private List<String> res = new LinkedList<>();
+
 public List<String> restoreIpAddresses(String s) {
     if(s == null || s.length() == 0 || s.length() > 12) {
         return res;
@@ -8232,8 +8224,8 @@ private void backTracking(String s, int pos, LinkedList<String> runner) {
 ###### 题目示例3 `leetcode 17 电话号码的字母组合`
 
 ```java
-List<String> res = new LinkedList<>();
-HashMap<Character, String> map = new HashMap<>(){
+private List<String> res = new LinkedList<>();
+private HashMap<Character, String> map = new HashMap<>(){
     {
         put('2', "abc");
         put('3', "def");
@@ -8245,6 +8237,7 @@ HashMap<Character, String> map = new HashMap<>(){
         put('9', "wyxz");
     }
 };
+
 public List<String> letterCombinations(String digits) {
     if(digits == null || digits.length() == 0) {
         return res;
@@ -8284,7 +8277,7 @@ private void backTracking(String digits, int index, StringBuffer runner) {
 ###### 题目示例4 `leetcode 784 字母大小写全排列`
 
 ```java
-List<String> res = new LinkedList<>();
+private List<String> res = new LinkedList<>();
 public List<String> letterCasePermutation(String S) {
     if(S == null || S.length() == 0) {
         return res;
@@ -8321,7 +8314,7 @@ private void backTracking(String S, int start, char[] charArray) {
 // 这个题目有两个关键性质
 // 1.一个合法的括号组合的左括号数量一定等于右括号数量
 // 2.对于一个“合法”的括号字符串组合p,必然对于任何 0 <= i < p.length(),都有：子串p[0..i]中左括号的数量都大于等于右括号的数量
-List<String> res = new LinkedList<>();
+private List<String> res = new LinkedList<>();
 public List<String> generateParenthesis(int n) {
     if(n <= 0) {
         return res;
@@ -8412,7 +8405,7 @@ private boolean backTracking(char[][] board, String word, int row, int col, int 
     }
 
     boolean hasPath = false;
-    if( row >= 0 && row < board.length && col >= 0 && col < board[0].length 
+    if(row >= 0 && row < board.length && col >= 0 && col < board[0].length 
        && board[row][col] == word.charAt(pathLength) && !visited[row][col]) {
         // 做选择
         pathLength++;

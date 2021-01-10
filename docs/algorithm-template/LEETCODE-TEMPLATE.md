@@ -2780,36 +2780,46 @@ private ListNode reverseList(ListNode head) {
 ###### 题目示例2 `leetcode 92 反转链表II`
 
 ```java
-private ListNode reverseBetween(ListNode head, int m, int n) {
-    // 定位到被反转的第一个节点以及其前置节点
-    ListNode pre = null;
-    ListNode cur = head;
-    for(int i = 1; i < m; i++) {
-        pre = cur;
-        cur = cur.next;
+public ListNode reverseBetween(ListNode head, int m, int n) {
+    // 使用哑节点方便处理头结点可能被反转的情况
+    ListNode dummyHead = new ListNode(0);
+    dummyHead.next = head;
+    ListNode pre = dummyHead;
+    ListNode newTail = dummyHead;
+
+    // 定位到被反转部分的第一个节点及其前置节点
+    for(int i = m; i > 0; i--) {
+        pre = newTail;
+        newTail = newTail.next;
         n--;
     }
-    // 记录被反转部分的尾节点以及被反转部分之前的
-    // 链表最后一个节点
-    ListNode tail = cur;
-    ListNode con = pre;
-    // 反转指定范围内的链表节点
-    while(n > 0) {
+
+    // 定位到被反转部分的最后一个节点及其后继节点
+    ListNode newHead = newTail;
+    for(int i = n; i > 0; i--) {
+        newHead = newHead.next;
+    }
+    ListNode next = newHead.next;
+
+    // 反转链表中的一部分
+    pre.next = reverseBetween(newTail, next);
+    newTail.next = next;
+    return dummyHead.next;
+}
+
+/**
+* 反转链表中[head, edge)划分的区间
+ */
+private ListNode reverseBetween(ListNode head, ListNode edge) {
+    ListNode pre = null;
+    ListNode cur = head;
+    while(cur != edge) {
         ListNode next = cur.next;
         cur.next = pre;
         pre = cur;
         cur = next;
-        n--;
     }
-    tail.next = cur;
-
-    // con = null表示链表头结点也被反转了
-    if(con != null) {
-        con.next = pre;
-    } else {
-        head = pre;
-    }
-    return head;
+    return pre;
 }
 ```
 
@@ -7515,7 +7525,7 @@ private boolean isInterleave(String s1, String s2, String s3) {
 ```java
 /**
 * dp[i][j] = var 表示，对于前i个物品，当背包容量为j时，若var = true，表示恰好将背包装满，反之表示装不满
-* base case 1: dp[...][0] = true,表示背包容量为0时相当于装满了
+* base case 1: dp[...][0] = true,表示背包容量为0时，背包天然处于装满的状态
 * base case 2: dp[0][...] = false,表示没有物品可以选择的时候，无论如何无法装满背包
 * return: dp[N][sum/2]
 * 注意这个问题要求背包恰好被完全装满
@@ -7653,14 +7663,14 @@ private int[] countZerosAndOnes(String str) {
 ```java
 /**
 * 一个数学证明：
-* 将数组中需要加负号的元素子集设为N,其余部分设为P
-* 由题条件有sum(P) - sum(N) == S,可推得sum(P) + sum(N) + sum(P) - sum(N) = S + sum(P) + sum(N)
-* -> 2 * sum(P) = S + sum(nums)
-* -> sum(P) = (S + sum(nums)) / 2
-* 故原问题转化为: 找到数组中和为(S + sum(nums)) / 2的一个子集
+* 	将数组中需要加负号的元素子集设为N,其余部分设为P
+* 	由题条件有sum(P) - sum(N) == S,可推得sum(P) + sum(N) + sum(P) - sum(N) = S + sum(P) + sum(N)
+* 	-> 2 * sum(P) = S + sum(nums)
+* 	-> sum(P) = (S + sum(nums)) / 2
+* 	故原问题转化为: 找到数组中和为(S + sum(nums)) / 2的一个子集(与leetcode 416类似)
 *
 * dp[i][j] = var 表示，对于前i个物品，当背包容量为j时，可以装满背包的物品选择方案数为var
-* base case 1: dp[...][0] = 1,表示背包容量为0时,至少有一种选择方案，就是什么都不装
+* base case 1: dp[...][0] = 1,表示背包容量为0时,至少有一种选择方案，就是什么都不装或者装整数 0
 * base case 2: dp[0][1...] = 0,表示没有物品可以选择的时候，无论如何无法装满背包
 * 注意这个问题要求背包恰好被完全装满
  */
@@ -7683,7 +7693,6 @@ private int findTargetSumWays(int[] nums, int S) {
     }
 
     for(int i = 1; i <= len; i++) {
-        // 这里j从0开始的原因是:物品的"体积"可以为0,此时物品也可以参与到选择中
         for(int j = 0; j <= sum; j++) {
             if(j < nums[i - 1]) {
                 dp[i][j] = dp[i-1][j];
@@ -8515,6 +8524,8 @@ private boolean backTracking(char[][] board, int row, int col) {
     if(rowLen == row) {
         return true;
     }
+    
+    // 在到达边界时要切换搜索区间
     if(col == colLen) {
         return backTracking(board, row + 1, 0);
     } else if(board[row][col] != '.') {
@@ -9860,7 +9871,7 @@ private void swap(int[] nums, int i, int j) {
 ##### 题目示例6 `leetcode 215 数组中的第k个最大元素`
 
 ```java
-public nt findKthLargest(int[] nums, int k) {
+public int findKthLargest(int[] nums, int k) {
     int len = nums.length;
     int left = 0;
     int right = len - 1;

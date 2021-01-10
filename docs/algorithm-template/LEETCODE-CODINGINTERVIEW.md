@@ -490,31 +490,29 @@ class MinStack {
 ### 面试题39 数组中出现次数超过一半的数字
 
 ```java
-class Solution {
-    public int majorityElement(int[] nums) {
-        /**
-        * 摩尔投票算法
-        * 1、count == 0,把x赋给majority并且count=1
-        * 2、x == majority,则count++;
-        * 3、x != majority,则count--;
-        * 最终的majority就是结果
-         */
-        int count = 0;
-        int majority = nums[0];
-        for(int i = 0; i < nums.length; i++) {
-            if(count == 0) {
-                majority = nums[i];
-                count = 1;
+/**
+* 摩尔投票算法
+* 1、count == 0,把x赋给majority并且count=1
+* 2、x == majority,则count++;
+* 3、x != majority,则count--;
+* 最终的majority就是结果
+ */
+private int majorityElement(int[] nums) {
+    int count = 0;
+    int majority = nums[0];
+    for(int i = 0; i < nums.length; i++) {
+        if(count == 0) {
+            majority = nums[i];
+            count = 1;
+        } else {
+            if(nums[i] == majority) {
+                count++;
             } else {
-                if(nums[i] == majority) {
-                    count++;
-                } else {
-                    count--;
-                }
+                count--;
             }
         }
-        return majority;
     }
+    return majority;
 }
 ```
 

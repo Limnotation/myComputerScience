@@ -2180,7 +2180,8 @@ public class Codec {
         if(root == null) {
             return "";
         }
-        Deque<TreeNode> queue = new LinkedList<>();
+        
+        Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
         StringBuffer res = new StringBuffer();
         while(!queue.isEmpty()) {
@@ -2214,7 +2215,7 @@ public class Codec {
         int cursor = 1;
         Deque<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
-
+        
         while(cursor < vals.length) {
             TreeNode node = queue.poll();
             if(cursor < vals.length && !vals[cursor].equals("null")) {
@@ -2227,6 +2228,8 @@ public class Codec {
                 node.right = right;
                 queue.offer(right);
             }
+            // 在层序遍历序列中，根节点的两个子节点(不论是否为空)与根节点的下标关系为：
+            // leftIndex = rootIndex + 1; rightIndex = rootIndex + 2;
             cursor += 2;
         }
         return root;
@@ -8099,7 +8102,8 @@ private void backTracking(int[] candidates, int target, int start, LinkedList<In
 ###### 题目示例8 `leetcode 216 组合总和III`
 
 ```java
-List<List<Integer>> res = new LinkedList<>();
+private List<List<Integer>> res = new LinkedList<>();
+
 public List<List<Integer>> combinationSum3(int k, int n) {
     if(n <= 0 || k <= 0) {
         return res;
@@ -8117,8 +8121,11 @@ private void backTracking(int k, int n, int start, LinkedList<Integer> runner) {
     }
 
     for(int i = start; i <= 9; i++) {
+        if(i > n) {
+            return;
+        }
         // 做选择
-        runner.add(i);
+        runner.addLast(i);
         // 进入下一层决策树
         backTracking(k - 1, n - i, i + 1, runner);
         // 撤销选择
@@ -8207,7 +8214,7 @@ private void backTracking(String s, int pos, LinkedList<String> runner) {
     }
 
     for(int i = 1; i <= 3; i++) {
-        // 剪枝
+        // 剪枝条件：超过了字符串边界
         if(pos + i > s.length()) {
             break;
         }

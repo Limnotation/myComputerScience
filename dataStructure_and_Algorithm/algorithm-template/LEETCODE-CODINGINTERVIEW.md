@@ -877,43 +877,40 @@ class Solution {
 ### 面试题59-II 队列的最大值
 
 ```java
-class MaxQueue {
+private Queue<Integer> queue;
+private Deque<Integer> maxDeque;
 
-    private Queue<Integer> queue;
-    private Deque<Integer> maxDeque;
+public MaxQueue() {
+    this.queue = new LinkedList<>();
+    this.maxDeque = new LinkedList<>();
+}
 
-    public MaxQueue() {
-        this.queue = new LinkedList<>();
-        this.maxDeque = new LinkedList<>();
+public int max_value() {
+    if(maxDeque.isEmpty()) {
+        return -1;
     }
-    
-    public int max_value() {
-        if(maxDeque.isEmpty()) {
-            return -1;
-        }
-        return maxDeque.peekFirst();
-    }
-    
-    public void push_back(int value) {
-        queue.offer(value);
-        // 构建单调递减的双端队列
-        while(!maxDeque.isEmpty() && value > maxDeque.peekLast()) {
-            maxDeque.removeLast();
-        }
-        maxDeque.addLast(value);
-    }
-    
-    public int pop_front() {
-        if(queue.isEmpty()) {
-            return -1;
-        }
+    return maxDeque.peekFirst();
+}
 
-        int res = queue.poll();
-        if(res == maxDeque.peekFirst()) {
-            maxDeque.removeFirst();
-        }
-        return res;
+public void push_back(int value) {
+    queue.offer(value);
+    // 构建单调递减的双端队列
+    while(!maxDeque.isEmpty() && value > maxDeque.peekLast()) {
+        maxDeque.removeLast();
     }
+    maxDeque.addLast(value);
+}
+
+public int pop_front() {
+    if(queue.isEmpty()) {
+        return -1;
+    }
+
+    int res = queue.poll();
+    if(res == maxDeque.peekFirst()) {
+        maxDeque.removeFirst();
+    }
+    return res;
 }
 ```
 
@@ -924,25 +921,23 @@ class MaxQueue {
 ### 试题66 构建乘积数组
 
 ```java
-class Solution {
-    public int[] constructArr(int[] a) {
-        int len = a.length;
-        int[] res = new int[len];
-        int k = 1;
-        for(int i = 0; i < len; i++) {
-            // res[i]:原数组中下标i所对应元素的左侧的所有元素乘积
-            res[i] = k;
-            k *= a[i];
-        }
-
-        k = 1;
-        for(int i = len - 1; i >= 0; i--) {
-            // res[i]:原数组中下标i所对应元素两侧的所有元素乘积
-            res[i] *= k;
-            k *= a[i];
-        }
-        return res;
+private int[] constructArr(int[] a) {
+    int len = a.length;
+    int[] res = new int[len];
+    int k = 1;
+    for(int i = 0; i < len; i++) {
+        // res[i]:原数组中下标i所对应元素的左侧的所有元素乘积
+        res[i] = k;
+        k *= a[i];
     }
+
+    k = 1;
+    for(int i = len - 1; i >= 0; i--) {
+        // res[i]:原数组中下标i所对应元素两侧的所有元素乘积
+        res[i] *= k;
+        k *= a[i];
+    }
+    return res;
 }
 ```
 

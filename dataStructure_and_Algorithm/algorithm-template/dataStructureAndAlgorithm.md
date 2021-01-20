@@ -1,8 +1,142 @@
+## 数据结构
+
+### 堆
+
+#### 堆有序
+
+> 定义：当一棵二叉树的每个节点都大于它的两个子节点时，它被称为堆有序
+
+#### 二叉堆
+
+> 定义：二叉堆是一组能够用堆有序的完全二叉树排序的元素，并在数组中按照层级存储(不使用数组的第一个位置)
+
+#### 以数组表示的二叉堆
+
+> 在一个堆中，位置k的父节点的位置为(k/2)，而它的两个子节点的位置分别为 2k 和 2k + 1
+
+#### 代码实现
+
+> 参考:《算法 第四版》
+
+```java
+/**
+ * @ClassName: MaxPQ
+ * @Author: Limn Deng
+ * @Date: 2020/9/18
+ * @Time: 22:01
+ * @Description: 基于堆的优先队列
+ */
+
+public class MaxPQ<Key extends Comparable<Key>> {
+    /** 基于堆的完全二叉树 ,数组的第一个位置不使用*/
+    private Key[] heap;
+    /** 优先队列的容量*/
+    private int size = 0;
+
+    /** 构造函数，由于第一个位置不使用，要多给一个数组位置*/
+    public MaxPQ(int initialCapacity) {
+        this.heap = (Key[]) new Comparable[initialCapacity + 1];
+    }
+
+    /**
+     * 判断队列是否为空
+     * */
+    public boolean isEmpty() {
+        return this.size == 0;
+    }
+
+    /**
+     * 获取队列元素数量
+     * */
+    public int size() {
+        return this.size;
+    }
+
+    /**
+     * 向队列中添加元素
+     * @param value 被加入到堆末尾的元素
+     * */
+    public void insert(Key value) {
+        size++;
+        heap[size] = value;
+        swin(size);
+    }
+    
+    /**
+     * 删除队列的最大元素
+     * */
+    public Key deleteMax() {
+        Key max = heap[1];
+        size--;
+        exchange(1, size);
+        heap[size + 1] = null;
+        sink(1);
+        return max;
+    }
+
+    /**
+     * 比较索引i和j处元素的大小
+     * @param i
+     * @param j
+     * @return true if heap[i] is less than heap[j], false otherwise
+     * */
+    private boolean less(int i, int j) {
+        return heap[i].compareTo(heap[j]) < 0;
+    }
+
+    /**
+     * 交换数组中索引i和j处的元素
+     * @param i
+     * @param j
+     * */
+    private void exchange(int i, int j) {
+        Key temp = heap[i];
+        heap[i] = heap[j];
+        heap[j] = temp;
+    }
+
+    /**
+     * 由下至上将数组堆有序化,K代表的元素可能大于其父节点，此时需要将k与
+     * 父节点交换位置，直到到达了根节点的位置或者满足了堆有序的条件
+     * @param k 数组中使得堆有序不成立的元素的索引，对应元素大于其父节点
+     * */
+    private void swin(int k) {
+        while(k > 1 && less(k/2, k)) {
+            exchange(k/2, k);
+            k = k / 2;
+        }
+    }
+    
+    /**
+     * 由上之下的堆有序化,k代表的元素可能小于其子节点，此时需要将k与其子节
+     * 点中的最大值进行交换，直到该节点再无子节点或者满足了堆有序的条件
+     * @param k 数组中使得堆有序不成立的元素的索引，对应元素小于其子节点
+     * */
+    private void sink(int k) {
+        while(2 * k <= size) {
+            int j = 2 * k;
+            if(j < size && less(j, j + 1)) {
+                j++;
+            }
+            if(!less(k, j)) {
+                break;
+            }
+            exchange(k, j);
+            k = j;
+        }
+    }
+}
+```
+
+
+
+-----
+
 ## 排序
 
 -----
 
-### 1、选择排序
+### 选择排序
 
 ```java
 public int[] selectionSort(int[] nums) {
@@ -32,7 +166,7 @@ private void swap(int[] nums, int i, int j) {
 
 ------
 
-### 2、插入排序
+### 插入排序
 
 ```java
 public int[] insertionSort(int[] nums) {
@@ -55,7 +189,7 @@ public int[] insertionSort(int[] nums) {
 
 ----
 
-### 3、快速排序
+### 快速排序
 
 #### partition
 
@@ -185,14 +319,22 @@ public static void quickSort(int[] arr, int startIndex, int endIndex) {
 
 ##### 算法说明
 
-算法遍历数组一次，维护一个指针`less`使得`arr[low..less - 1]`中的元素都小于 `v`,一个指针`great`使得 `arr[great + 1..high]`中的元素都大于`v`,一个指针 `i`使得 `arr[less..i-1]`中的元素都等于 `v`,`arr[i..great]`中的元素都还未确定
+数组`arr`的边界为`[low, high]`，`pivot`元素的值为`v`
 
-一开始`i`和`low`相等，算法流程如下：
+算法遍历数组一次，一共维护三个指针 `less、i、great`,指针间的关系如下
 
+- 维护指针`less`使得`arr[low..less - 1]`中的元素都小于 `v`
+- 维护指针`great`使得 `arr[great + 1..high]`中的元素都大于`v`
+- 维护指针 `i`使得 `arr[less..i-1]`中的元素都等于 `v`
+- `arr[i..great]`中的元素都还未确定
+
+算法流程如下：
+
+- 初始状态：`less == low、i == low、great == high`
 - `arr[i]`小于`v`,将`arr[less]`和`arr[i]`交换，将`less`和`i`加一
 - `arr[i]`大于`v`,将`arr[great]`和`arr[i]`交换，将`great`减一
 - `arr[i]`等于 `v`,将`i`加一
-- 迭代前三步直到`i == great`
+- 迭代前三步直到`i > great`
 
 ##### 算法实现代码
 
@@ -252,9 +394,9 @@ private void swap(int[] arr, int i, int j) {
 
 -------
 
-### 4、归并排序
+### 归并排序
 
-#### 2.1、 普通归并排序代码
+#### 普通归并排序代码
 
 ```java
 public class MergeSort {
@@ -325,32 +467,33 @@ public class MergeSort {
 
 -----
 
-### 5、堆排序
+### 堆排序
 
 ```java
 public class heapSort {
     /**
     * "下沉"
     * @param	heap		存储堆的数组
-    * @param	parentIndex	 将被下沉的节点在数组中的索引
-    * @param	length		 数组长度
+    * @param	index	 将被下沉的节点在数组中的索引
      */
-    private void sink(int[] heap, int parentIndex, int length) {
-        int temp = heap[parentIndex];
-        int childIndex = 2 * parentIndex + 1;
-        while(childIndex < length) {
+    private void sink(int[] heap, int index) {
+        int temp = heap[index];
+        int childIndex = 2 * index;
+        int len = heap.length;
+        while(childIndex < len) {
             // 当前节点与其两个子节点中的最大值做交换
-            if(childIndex + 1 < length && heap[childIndex] < heap[childIndex + 1]) {
+            if(childIndex + 1 < len && heap[childIndex] < heap[childIndex + 1]) {
                 childIndex++;
             }
+            // 如果当前节点与子节点满足堆有序则停止下沉操作
             if(temp > heap[childIndex]) {
                 break;
             }
-            heap[parentIndex] = heap[childIndex];
-            parentIndex = childIndex;
-            childIndex = 2 * parentIndex + 1;
+            heap[index] = heap[childIndex];
+            index = childIndex;
+            childIndex = 2 * index + 1;
         } 
-        heap[parentIndex] = temp;
+        heap[index] = temp;
     }
     
     /**
@@ -361,11 +504,11 @@ public class heapSort {
         int len = heap.length;
         
         // 将数组构建成二叉堆
-        for(int i = (len - 2) / 2; i >= 0; i--) {
-            sink(heap, i, len);
+        for(int i = (len - 1) / 2; i >= 1; i--) {
+            sink(heap, i);
         }
         // 循环不变量:[0, i]堆有序，其余部分全局有序
-        for(int i = len - 1; i >= 0; i--) {
+        for(int i = len - 1; i >= 1; i--) {
             int temp = heap[i];
             heap[i] = heap[0];
             heap[0] = temp;

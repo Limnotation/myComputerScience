@@ -36,10 +36,11 @@ class Trie {
     public void insert(String word) {
         TrieNode node = this.root;
         for(char c:word.toCharArray()) {
-            if(node.child[c - 'a'] == null) {
-                node.child[c - 'a'] = new TrieNode();
+            int index = c - 'a';
+            if(node.child[index] == null) {
+                node.child[index] = new TrieNode();
             }
-            node = node.child[c- 'a'];
+            node = node.child[index];
         }
         // 标记叶子节点
         node.isLeaf = true;
@@ -51,10 +52,11 @@ class Trie {
     public boolean search(String word) {
         TrieNode node = this.root;
         for(char c:word.toCharArray()) {
-            if(node.child[c- 'a'] == null) {
+            int index = c - 'a';
+            if(node.child[index] == null) {
                 return false;
             }
-            node = node.child[c - 'a'];
+            node = node.child[index];
         }
         return node.isLeaf;
     }
@@ -65,10 +67,11 @@ class Trie {
     public boolean startsWith(String prefix) {
         TrieNode node = this.root;
         for(char c:prefix.toCharArray()) {
-            if(node.child[c - 'a'] == null) {
+            int index = c - 'a';
+            if(node.child[index] == null) {
                 return false;
             }
-            node = node.child[c - 'a'];
+            node = node.child[index];
         }
         return true;
     }

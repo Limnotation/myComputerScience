@@ -2837,7 +2837,7 @@ public ListNode reverseKGroup(ListNode head, int k) {
     }
 	// 如果剩余链表的部分长度不足k,则不需要反转，直接返回
     ListNode next = head;
-    for(int i = 1; i <= k; i++) {
+    for(int i = 0; i < k; i++) {
         if(next == null) {
             return head;
         }
@@ -2852,10 +2852,10 @@ public ListNode reverseKGroup(ListNode head, int k) {
 /**
 * 翻转链表head中到b之前的部分
 */
-private ListNode reverseList(ListNode head, ListNode b) {
+private ListNode reverseList(ListNode head, ListNode edge) {
     ListNode pre = null;
     ListNode cur = head;
-    while(cur != b) {
+    while(cur != edge) {
         ListNode next = cur.next;
         cur.next = pre;
         pre = cur;
@@ -3650,16 +3650,19 @@ class MyQueue {
 ```java
 class MyCircularQueue {
     /**
-    * capacity == 队列最多可存放元素数量 + 1
-    * front: 指向队列头部第一个有效数据的位置
+    * queue：存储队列元素
+    * capacity：队列最多可存放元素数量 + 1
+    * front: 指向队列头部第一个有效数据的位置，即队首
     * rear: 指向队列尾部(即最后一个有效数据)的下一个位置
     * 
     * 需要注意的可能导致越界的细节:
-    * 1、指针后移的时候需要将当前索引 + 1，取模   (index + 1) % capacity
-    * 2、指针前移的时候，为了循环到数组末尾，需要先-1并加上数组长度，再对数组长度取模 (index - 1 + capacity) % capacity
+    * 1、指针后移的时候需要将当前索引 + 1，取模：(index + 1) % capacity
+    * 2、指针前移的时候，为了循环到数组末尾，需要先-1并加上数组长度，再对数
+    *	 组长度取模 (index - 1 + capacity) % capacity
     * 
     * 队列为空的条件为: rear == front
     * 队列为满的条件为: (rear + 1) % capacity == front
+    * 队首元素的下标为：front
     * 队尾元素的下标为: (rear - 1 + capacity) % capacity
     * 队列中的元素数量为: (rear - front + capacity) % capacity
      */
@@ -3670,10 +3673,10 @@ class MyCircularQueue {
 
     /** Initialize your data structure here. Set the size of the queue to be k. */
     public MyCircularQueue(int k) {
-        this.capacity = k + 1;
-        this.queue = new int[capacity];
         this.front = 0;
         this.rear = 0;
+        this.capacity = k + 1;
+        this.queue = new int[capacity];
     }
     
     /** Insert an element into the circular queue. Return true if the operation is successful. */

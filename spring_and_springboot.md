@@ -34,6 +34,11 @@ Spring通过一个配置文件来描述Bean之间的相互依赖关系，利用j
 > IoC 即**控制反转**，简单来说就是把原来代码里需要实现的对象创建、依赖反转给容器来帮忙实现，需要创建一个容器并且需要一种描述让容器知道要创建的对象间的关系，在 Spring 中管理对象及其依赖关系是通过 Spring 的 IoC 容器实现的。
 >
 > IoC 的实现方式有**依赖注入**和**依赖查找**，由于依赖查找使用的很少，因此 IoC 也叫做依赖注入。依赖注入指对象被动地接受依赖类而不用自己主动去找，对象不是从容器中查找它依赖的类，而是在容器实例化对象时主动将它依赖的类注入给它
+>
+> DI是对IoC更为准确的描述，即组件之间的关系由容器在运行期决定，即**由容器动态地将某种依赖关系注入到组件之中**
+>
+> - 依赖注入是从应用程序的角度阐述：**应用程序依赖容器**创建并注入它所需要的外部资源
+> - 控制反转是从容器的角度在描述：**容器控制应用程序**，由容器反向地向应用程序注入应用程序所需要的外部资源
 
 #### 4.2、Spring容器高层视图
 
@@ -279,6 +284,20 @@ Spring装配包括 **手动装配和自动装配**
 4. **异常通知(After-throwing)**:目标方法抛出异常后调用通知
 5. **环绕通知(Around)**:在被通知的方法调用之前和调用之后执行自定义的行为
 
+#### 5.4 AOP的应用场景
+
+- Authentication 权限 
+- Caching 缓存 
+- Context passing 内容传递
+- Error handling 错误处理 
+- Lazy loading 懒加载 
+- Debugging 调试 
+- logging, tracing, profiling and monitoring 记录跟踪　优化　校准，Performance optimization 性能优化
+- Persistence 持久化 
+- Resource pooling 资源池 
+- Synchronization 同步
+- Transactions 事务。
+
 ### 6、Spring MVC
 
 #### 6.1、什么是MVC框架
@@ -318,13 +337,36 @@ Spring MVC是Spring框架的一个模块，一个基于MVC的框架
 7. 然后由DispatcherServlet响应视图给浏览器
 8. ![SpringMVC运行原理](../mdPics/49790288.jpg)
 
-#### 6.2.4 Spring MVC的优点
+##### 6.2.4 Spring MVC的优点
 
 1. 具有Spring的特性
 2. 支持多种视图
 3. 配置方便，非侵入
 4. 分层更加清晰，利于团队开发的代码维护，以及可读性好
 
-### 6.3、注解
+#### 6.3、注解
 
 注解本质上是一个集成了Annotation的特殊接口，其具体实现类是JAVA运行时生成的动态代理类。通过反射获取注解时，返回的是Java运行时生成的动态代理对象。通过代理对象调用自定义注解的方法，将最终调用AnnotationInvocationHandler的invoke方法，然后该方法从memberValues的map中索引处对应的值
+
+### 7、Spring Data JPA框架
+
+#### 7.1、定义
+
+Spring Data JPA是Spring基于ORM框架、JPA规范的基础上封装的一套JPA应用框架，可供开发者使用极简的代码实现对数据库的访问和操作。它提供了包括增删改查在内的常用功能，且易于扩展，可以极大提高开发效率
+
+ORM即Object-Relation Mapping,表示对象关系映射，映射的不只是对象的值还有对象之间的关系，通过ORM就可以把对象映射到关系型数据库中。操作实体类就相当于操作数据库表，可以不再重点关注sql语句
+
+使用时只需要持久层接口继承JpaRepository即可，泛型参数列表中第一个参数是实体类类型，第二个参数是主键类型。运行时通过JdkDynamicAopProxy的invoke方法创建了一个动态代理对象SimpleJpaRepository,这个对象中封装了JPA的操作，通过hibernate(封装了JDBC)完成数据库操作
+
+#### 7.2、相关注解
+
+- @Entity:表明当前类是一个实体类
+- @Table:关联实体类和数据库表
+- @Column:关联实体类属性和数据库表中字段
+- @Id:声明当前属性为数据库表主键对应的属性
+- @GenerateValue:配置主键生成策略
+
+#### 7.3、对象导航查询
+
+- 通过get方法查询一个对象的同时，通过此对象可以查询它的关联对象
+- 对象导航查询一到多默认使用延迟加载的方式，关联对象是集合，因此使用立即加载可能浪费资源

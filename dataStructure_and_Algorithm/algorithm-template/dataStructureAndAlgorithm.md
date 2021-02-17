@@ -394,6 +394,8 @@ public class MaxPQ<Key extends Comparable<Key>> {
 
 ## 排序
 
+![20190624173156.jpg](../../../mdPics/cde64bf682850738153e6c76dd3f6fb32201ce3c73c23415451da1eead9eb7cb-20190624173156.jpg)
+
 -----
 
 ### 选择排序
@@ -463,7 +465,7 @@ public int[] insertionSort(int[] nums) {
 * @param	endIndex	 结束下标
 * @return	pivot的下标
 */
-private static int partition(int[] arr, int startIndex, int endIndex){
+private int partition(int[] arr, int startIndex, int endIndex){
     int pivot = arr[startIndex];
     int left = startIndex;
     int right = endIndex;
@@ -709,7 +711,7 @@ private void mergeTwoSortedArray(int[] nums, int left, int mid, int right) {
         }
         k++;
     }
-    for(k = left; k <= high; k++) {
+    for(k = left; k <= right; k++) {
         nums[k] = copy[k];
     }
 }
@@ -726,9 +728,7 @@ private void mergeTwoSortedArray(int[] nums, int left, int mid, int right) {
 * 	1、设当前节点位置为k
 *	2、当前节点的父节点为(k - 1) / 2;
 *	3、当前节点的两个子节点分别为(2*k + 1)和(2*k + 2)
-*
-* 在堆排序中另一个重要的性质为：
-*	数组长度为len,则表示堆的完全二叉树中第一个非叶节点的下标为(len / 2) - 1
+*	4、数组长度为len,则表示堆的完全二叉树中第一个非叶节点的下标为(len / 2) - 1
 */
 public class heapSort {
     /**
@@ -742,7 +742,7 @@ public class heapSort {
         int childIndex = 2 * index + 1;
         while(childIndex < length) {
             // 当前节点与其两个子节点中的最大值做交换
-            if(childIndex + 1 < len && heap[childIndex] < heap[childIndex + 1]) {
+            if(childIndex + 1 < length && heap[childIndex] < heap[childIndex + 1]) {
                 childIndex++;
             }
             // 如果当前节点与子节点满足堆有序则停止下沉操作
@@ -759,6 +759,7 @@ public class heapSort {
     /**
     * 堆排序
     * @param	heap	待排序的数组
+    * @return
      */
     public void heapSort(int[] heap) {
         int len = heap.length;

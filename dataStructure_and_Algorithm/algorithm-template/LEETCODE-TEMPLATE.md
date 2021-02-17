@@ -2162,9 +2162,7 @@ public class Codec {
         }
         // 先序遍历序列第一个元素为根节点
         TreeNode root = new TreeNode(Integer.parseInt(val));
-        // 根节点的第一个后继元素为其左子树根节点
         root.left = buildTree(queue);
-        // 根节点的第二个后继元素为其右子树根节点
         root.right = buildTree(queue);
         return root;
     }
@@ -2212,25 +2210,24 @@ public class Codec {
         }
 
         TreeNode root = new TreeNode(Integer.parseInt(vals[0]));
-        int cursor = 1;
-        Deque<TreeNode> queue = new LinkedList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
-        
-        while(cursor < vals.length) {
+        int cursor = 1;
+        int len = vals.length;
+        while(cursor < len) {
             TreeNode node = queue.poll();
-            if(cursor < vals.length && !vals[cursor].equals("null")) {
+            if(cursor < len && !vals[cursor].equals("null")) {
                 TreeNode left = new TreeNode(Integer.parseInt(vals[cursor]));
                 node.left = left;
                 queue.offer(left);
             }
-            if(cursor + 1 < vals.length && !vals[cursor + 1].equals("null")) {
-                TreeNode right = new TreeNode(Integer.parseInt(vals[cursor + 1]));
+            cursor++;
+            if(cursor < len && !vals[cursor].equals("null")) {
+                TreeNode right = new TreeNode(Integer.parseInt(vals[cursor]));
                 node.right = right;
                 queue.offer(right);
             }
-            // 在层序遍历序列中，根节点的两个子节点(不论是否为空)与根节点的下标关系为：
-            // leftIndex = rootIndex + 1; rightIndex = rootIndex + 2;
-            cursor += 2;
+            cursor++;
         }
         return root;
     }
@@ -2790,21 +2787,21 @@ public ListNode reverseBetween(ListNode head, int m, int n) {
     ListNode pre = dummyHead;
     ListNode newTail = dummyHead;
 
-    // 定位到被反转部分的第一个节点及其前置节点
+    // 1、定位到被反转部分的第一个节点及其前置节点
     for(int i = m; i > 0; i--) {
         pre = newTail;
         newTail = newTail.next;
         n--;
     }
 
-    // 定位到被反转部分的最后一个节点及其后继节点
+    // 2、定位到被反转部分的最后一个节点及其后继节点
     ListNode newHead = newTail;
     for(int i = n; i > 0; i--) {
         newHead = newHead.next;
     }
     ListNode next = newHead.next;
 
-    // 反转链表中的一部分
+    // 3、反转链表中的一部分
     pre.next = reverseBetween(newTail, next);
     newTail.next = next;
     return dummyHead.next;
@@ -3650,13 +3647,13 @@ class MyQueue {
 ```java
 class MyCircularQueue {
     /**
-    * queue：存储队列元素
-    * capacity：队列最多可存放元素数量 + 1
-    * front: 指向队列头部第一个有效数据的位置，即队首
-    * rear: 指向队列尾部(即最后一个有效数据)的下一个位置
+    * queue：	存储队列元素
+    * capacity：	队列最多可存放元素数量 + 1
+    * front: 	 指向队列头部第一个有效数据的位置，即队首
+    * rear: 	指向队列尾部(即最后一个有效数据)的下一个位置
     * 
     * 需要注意的可能导致越界的细节:
-    * 1、指针后移的时候需要将当前索引 + 1，取模：(index + 1) % capacity
+    * 1、指针后移的时候需要将当前索引 + 1，并取模：(index + 1) % capacity
     * 2、指针前移的时候，为了循环到数组末尾，需要先-1并加上数组长度，再对数
     *	 组长度取模 (index - 1 + capacity) % capacity
     * 

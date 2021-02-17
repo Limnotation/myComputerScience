@@ -1087,7 +1087,7 @@ dp[i][0][1] = Integer.MIN_VALUE;	 // 不允许进行任何交易的情况下不�
 
 
 /**
-* 状态转移方程总结
+* 状态转移方程
  */
 // base case
 dp[-1][k][0] = dp[i][0][0] = 0;
@@ -1639,8 +1639,32 @@ private boolean isMatch(String s, String p) {
 
 ```java
 /**
-* to-do
+* dp[i][j]表示s1的前i个字符与s2的前j个字符组成s3的前(i+j)个字符的可能性
+* 状态转移方程：
+*	base case: dp[0][0] = true;
+*	dp[i][j] = (dp[i-1][j] && s1.charAt(i-1) == s3.charAt(i+j-1))
+                || (dp[i][j-1] && s2.charAt(j-1) == s3.charAt(i+j-1));
  */
+private boolean isInterleave(String s1, String s2, String s3) {
+    int len1 = s1.length();
+    int len2 = s2.length();
+    int len3 = s3.length();
+    if(len1 + len2 != len3) {
+        return false;
+    }
+
+    boolean[][] dp = new boolean[len1 + 1][len2 + 1];
+    dp[0][0] = true;
+    for(int i = 1; i <= len1 && s1.charAt(i-1) == s3.charAt(i-1); i++) dp[i][0] = true;
+    for(int i = 1; i <= len2 && s2.charAt(i-1) == s3.charAt(i-1); i++) dp[0][i] = true;
+    for(int i = 1; i <= len1; i++) {
+        for(int j = 1; j <= len2; j++) {
+            dp[i][j] = (dp[i-1][j] && s1.charAt(i-1) == s3.charAt(i+j-1))
+                || (dp[i][j-1] && s2.charAt(j-1) == s3.charAt(i+j-1));
+        }
+    }
+    return dp[len1][len2];
+}
 ```
 
 -----
@@ -1817,6 +1841,8 @@ private int maximalSquare(char[][] matrix) {
 /**
 * 定义dp数组：dp[i][j]表示从(i, j)开始到达底部的最小和
 * 根据题目要求,(i, j)可以到达的位置有：(i+1, j-1), (i+1，j), (i+1, j+1)
+* Base case 为：
+*	dp[row - 1] = A[row - 1];
 * 状态转移方程为：
 * 	dp[i][j] = A[i][j] + min(dp[i+1][j-1], dp[i+1][j], dp[i+1][j+1])
 *	// 注意判断边界条件即可，第一列和最后一列的位置并不能有三个选项

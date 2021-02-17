@@ -370,3 +370,31 @@ ORM即Object-Relation Mapping,表示对象关系映射，映射的不只是对�
 
 - 通过get方法查询一个对象的同时，通过此对象可以查询它的关联对象
 - 对象导航查询一到多默认使用延迟加载的方式，关联对象是集合，因此使用立即加载可能浪费资源
+
+------
+
+## SpringBoot
+
+### 1、SpringBoot自动装配原理
+
+[AutoConfigure](https://www.cnblogs.com/javaguide/p/springboot-auto-config.html)
+
+-----
+
+## 一些面试题的笔记
+
+### 1、Spring有几种方式定义Bean?
+
+主要是注解和XML
+
+### 2、SpringBoot提供了哪几种注解声明Bean？
+
+**声明Bean的注解有：**
+
+- @Component 没有明确角色的组件
+- @Service 在业务逻辑层（Service层）使用
+- @Repositpry 在数据访问层（dao层）使用
+- @Controller 用于标注控制层组件
+- @RestController
+
+参考：[声明Bean的注解](https://blog.csdn.net/lipinganq/article/details/79155072)

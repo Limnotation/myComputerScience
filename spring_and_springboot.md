@@ -348,6 +348,19 @@ Spring MVC是Spring框架的一个模块，一个基于MVC的框架
 
 注解本质上是一个集成了Annotation的特殊接口，其具体实现类是JAVA运行时生成的动态代理类。通过反射获取注解时，返回的是Java运行时生成的动态代理对象。通过代理对象调用自定义注解的方法，将最终调用AnnotationInvocationHandler的invoke方法，然后该方法从memberValues的map中索引处对应的值
 
+`Spring MVC`常用注解：
+
+- @RequestMapping:用于处理请求url映射的注解，可用于类或方法上。用于类上，则表示类中的所有
+    响应请求的方法都是以该地址作为父路径。
+- @RequestBody：注解实现接受http请求的json数据，将json转换为java对象。
+- @ResponseBody:注解实现将Controller方法返回的对象转化为json对象响应给客户。
+- @RestController:注解相当于@Controller+@ResponseBody
+- @RequestParam:在controller的方法中参数名与表单中的参数名不一致，使用@RequestParm实现参
+    数绑定
+- @RequestParam(name="username") String t_username
+- @PathVariable：Controller除了可以接受表单提交的数据之外，还可以获取url中携带的变量，即路径
+    变量
+
 ### 7、Spring Data JPA框架
 
 #### 7.1、定义
@@ -378,6 +391,30 @@ ORM即Object-Relation Mapping,表示对象关系映射，映射的不只是对�
 ### 1、SpringBoot自动装配原理
 
 [AutoConfigure](https://www.cnblogs.com/javaguide/p/springboot-auto-config.html)
+
+### 2、Spring Boot的核心注解是哪个？它主要由哪几个注解组成的？
+
+@SpringBootApplication是SpringBoot的核心注解，主要组合包含了以下3个注解：
+
+1. @SpringBootConfiguration:组合了@Configuration注解，实现配置文件的功能。
+2. @EnableAutoConfiguration：打开自动配置的功能，也可以关闭某个自动配置的选项，如关闭数据
+    源自动配置功能：@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
+3. @ComponentScan:Spring组件扫描
+
+### 3、Spring Boot的优缺点
+
+#### 3.1、优点
+
+1. 创建独立的Spring应用程序。SpringBoot可以jar包的形式进行独立的运行，使用：java -jar xx.jar就可以成功运行[项目]()，或者在[项目]()的主程序中运行main函数。 
+2. springboot[项目]()不需要单独下载Tomcat等传统服务器，内嵌容器，使得我们可以执行运行[项目]()的主程序main函数，并让[项目]()的快速运行，另外，也降低对运行环境的基本要求，环境变量中有JDK即可。 
+3. Spring Boot提供了一系列的starter pom用来简化我们的Maven依赖，通过这些starter[项目]()就能以Java Application的形式运行Spring Boot[项目]()，而无需其他服务器配置。 
+4. Spring Boot提供Spring框架的最大自动化配置，大量使用自动配置，使得开发者对Spring的配置尽量减少。Spring Boot更多的是采用 Java Config 的方式，对 Spring 进行配置。
+
+#### 3.2、缺点
+
+1. 依赖太多，一个spring boot项目就有很多M
+2. 缺少服务的注册和发现等解决方案
+3. 缺少监控集成方案，安全管理方案
 
 -----
 

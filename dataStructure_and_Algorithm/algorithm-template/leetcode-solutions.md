@@ -3963,6 +3963,7 @@ func invertTree(root *TreeNode) *TreeNode {
 ### `leetcode 230 二叉搜素树中第k小的元素`
 
 ```go
+// 中序遍历并进行计数
 func kthSmallest(root *TreeNode, k int) int {
     res := 0
     count := 0

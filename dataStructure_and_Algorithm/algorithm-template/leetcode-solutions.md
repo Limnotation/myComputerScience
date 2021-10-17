@@ -2,53 +2,75 @@
 
 ### `leetcode 1 两数之和`
 
-```java
-class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        if(nums == null || nums.length < 2) {
-            return new int[]{-1, -1};
+```go
+func twoSum(nums []int, target int) []int {
+    valToIndex := map[int]int{}
+    for i, num := range nums {
+        if val, ok := valToIndex[target - num]; ok {
+            return []int{i, val}
         }
-
-        Map<Integer, Integer> valToIndex = new HashMap<>();
-        for(int i = 0; i < nums.length; i++) {
-            if(valToIndex.containsKey(target - nums[i])) {
-                return new int[]{i, valToIndex.get(target - nums[i])};
-            }
-            valToIndex.put(nums[i], i);
-        }
-        return new int[]{-1, -1};
+        valToIndex[num] = i
     }
+    return []int{-1, -1}
 }
 ```
 
+----
 
+### `leetcode 2 两数相加`
+
+```go
+func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+    dummyHead := &ListNode{}
+    runner := dummyHead
+    carry := 0
+    for l1 != nil || l2 != nil || carry > 0 {
+        temp := carry
+        if l1 != nil {
+            temp += l1.Val
+            l1 = l1.Next
+        }
+        if l2 != nil {
+            temp += l2.Val
+            l2 = l2.Next
+        }
+        runner.Next = &ListNode{Val: temp % 10}
+        runner = runner.Next
+        carry = temp / 10
+    }
+    return dummyHead.Next
+}
+```
+
+------
 
 ### `leetcode 3 无重复字符的最长子串`
 
-```java
-class Solution {
-    public int lengthOfLongestSubstring(String s) {
-        if(s == null || s.length() == 0) {
-            return 0;
-        }
-
-        int res = 1;
-        Map<Character, Integer> window = new HashMap<>();
-        int left = 0;
-        int right = 0;
-        while(right < s.length()) {
-            char c1 = s.charAt(right);
-            window.put(c1, window.getOrDefault(c1, 0) + 1);
-            while(window.get(c1) > 1) {
-                char c2 = s.charAt(left);
-                window.put(c2, window.get(c2) - 1);
-                left++;
-            }
-            res = Math.max(res, right - left + 1);
-            right++;
-        }
-        return res;
+```go
+func lengthOfLongestSubstring(s string) int {
+    length := len(s)
+    if length < 2 {
+        return length
     }
+
+    maxLen := 1
+    left := 0
+    right := 0
+    window := map[byte]int{}
+    for right < length {
+        c1 := s[right]
+        window[c1]++
+        for window[c1] > 1 {
+            c2 := s[left]
+            window[c2]--
+            left++
+        }
+        if right - left + 1 > maxLen {
+            maxLen = right - left + 1
+        }
+        right++
+    }
+    return maxLen
 }
 ```
 
@@ -96,135 +118,404 @@ class Solution {
 }
 ```
 
+-----
 
+### `leetcode 5 最长回文子串`
+
+```go
+func longestPalindrome(s string) string {
+    length := len(s)
+    dp := make([][]bool, length)
+    for i := 0; i < length; i++ {
+        dp[i] = make([]bool, length)
+    }
+    start := 0
+    maxLen := 1
+
+    for i := 0; i < length; i++ {
+        dp[i][i] = true
+    }
+
+    for i := length - 2; i >= 0; i-- {
+        for j := i + 1; j < length; j++ {
+            if s[i] == s[j] {
+                if j - i < 3 || dp[i+1][j-1] {
+                    dp[i][j] = true
+                } else {
+                    dp[i][j] = dp[i+1][j-1]
+                }
+            } else {
+                dp[i][j] = false
+            }
+
+            if dp[i][j] && j - i + 1 > maxLen {
+                maxLen = j - i + 1
+                start = i
+            }
+        }
+    }
+
+    return s[start : start + maxLen]
+}
+```
+
+------
+
+### `leetcode 6 Z字形变换`
+
+```go
+func convert(s string, numRows int) string {
+    if numRows < 2 {
+        return s 
+    }
+
+    res := make([]string, numRows)
+    cycle := 2 * numRows - 2
+    for i, c := range s {
+        x := i % cycle
+        res[min(x, cycle - x)] += string(c)
+    }
+    return strings.Join(res, "")
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a 
+    }
+    return b 
+}
+```
+
+[参考答案](https://leetcode-cn.com/problems/zigzag-conversion/submissions/)
+
+------
+
+### `leetcode 7 整数反转`
+
+```go
+func reverse(x int) int {
+    res := 0
+    for x != 0 {
+        pop := x % 10
+        x /= 10
+        res = res * 10 + pop
+        if res < math.MinInt32 || res > math.MaxInt32 {
+            return 0
+        }
+    }
+    return res
+}
+```
+
+[参考答案](https://leetcode-cn.com/problems/reverse-integer/solution/7zheng-shu-fan-zhuan-by-laoji182518-2/)
+
+----
 
 ### `leetcode 8 字符串转换整数`
 
-```java
-class Solution {
-    public int myAtoi(String s) {
-        if(s == null || s.length() == 0) {
-            return 0;
-        }
-
-        int min = Integer.MIN_VALUE;
-        int max = Integer.MAX_VALUE;
-        int res = 0;
-        int index = 0;
-        int len = s.length();
-
-        // 1. 清楚所有前缀空格
-        while(index < len && s.charAt(index) == ' ') {
-            index++;
-        }
-        if(index == len) {
-            return 0;
-        }
-
-        // 2. 判断正负
-        char signChar = s.charAt(index);
-        boolean positive = true;
-        if(!Character.isDigit(signChar)) {
-            if(signChar != '+' && signChar != '-') {
-                return 0;
-            }
-            positive = (signChar == '+');
-            index++;
-        }
-
-        // 3. 计算边界值大小以及清楚所有前缀0
-        int limit = positive? (-max) : min;
-        while(index < 0 && s.charAt(index) == '0') {
-            index++;
-        }
-        if(index == len) {
-            return 0;
-        }
-
-        // 4. 解析字符
-        while(index < len && Character.isDigit(s.charAt(index))) {
-            int digit = s.charAt(index) - '0';
-            index++;
-            if(res < (limit + digit) / 10) {
-                return positive? max : min;
-            }
-            res = res * 10 - digit;
-        }
-        return positive? (-res) : res;
+```go
+func myAtoi(s string) int {
+    if len(s) <= 0 {
+        return 0
     }
+
+    min := math.MinInt32
+    max := math.MaxInt32
+    res := 0
+    index := 0
+    length := len(s)
+
+    // 1、清除前缀空格
+    for index < length && s[index] == ' ' {
+        index++
+    }
+    if index == length {
+        return 0
+    }
+
+    // 2、确定符号
+    positive := true
+    signChar := s[index]
+    if !isNumber(signChar) {
+        if signChar != '+' && signChar != '-' {
+            return 0
+        }
+        positive = (signChar == '+')
+        index++
+    }
+
+    // 3、解析字符
+    for ; index < length && isNumber(s[index]); index++ {
+        res = res * 10 + int(s[index] - '0')
+        if res > max {
+            if positive {
+                return max 
+            } else {
+                return min
+            }
+        }
+    }
+    if positive {
+        return res 
+    }
+    return -res
+}
+
+func isNumber(c byte) bool {
+    return c >= '0' && c <= '9'
 }
 ```
 
 -----
 
-### `leetcode 14 最长公共前缀`
+### `leetcode 9 回文数`
 
-```java
-class Solution {
-    public String longestCommonPrefix(String[] strs) {
-        if(strs == null || strs.length == 0) {
-            return "";
-        }
-
-        String prefix = strs[0];
-        for(String str : strs) {
-            int index = 0;
-            while(index < Math.min(prefix.length(), str.length())) {
-                if(prefix.charAt(index) != str.charAt(index)) {
-                    break;
-                }
-                index++;
-            }
-            prefix = prefix.substring(0, index);
-            if(prefix.equals("")) {
-                return "";
-            }
-        }
-        return prefix;
+```go
+func isPalindrome(x int) bool {
+    if x < 0 || (x % 10 == 0 && x > 0) {
+        return false 
     }
+
+    half := 0
+    for x > half {
+        half = half * 10 + x % 10
+        x /= 10
+    }
+    return x == half || x == half / 10
+}
+```
+
+---
+
+### `leetcode 11 盛最多水的容器`
+
+```go
+func maxArea(height []int) int {
+    if len(height) < 2 {
+        return 0
+    }
+
+    res := 0
+    left := 0
+    right := len(height) - 1
+    for left < right {
+        res = max(res, (right - left) * min(height[left], height[right]))
+        if height[left] < height[right] {
+            left++
+        } else {
+            right--
+        }
+    }
+    return res
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a 
+    }
+    return b 
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b
+    }
+    return a 
+}
+```
+
+----
+
+### `leetcode 12 整数转罗马数字`
+
+```go
+func intToRoman(num int) string {
+    roman := []string{"I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M"}
+    nums := []int{1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000}
+    res := ""
+    for i := len(nums) - 1; i >= 0 && num != 0; i-- {
+        if num < nums[i] {
+            continue 
+        }
+        repeat := num / nums[i]
+        res += strings.Repeat(roman[i], repeat)
+        num -= repeat * nums[i]
+    }
+    return res
+}
+```
+
+-----
+
+### `leetcode 13 罗马数字转整数`
+
+```go
+func romanToInt(s string) int {
+    valMap := map[byte]int {
+        'I': 1,
+        'V': 5,
+        'X': 10,
+        'L': 50,
+        'C': 100,
+        'D': 500,
+        'M': 1000,
+    }
+
+    preVal := valMap[s[0]]
+    sum := 0
+    for i := 1; i < len(s); i++ {
+        curVal := valMap[s[i]]
+        if curVal <= preVal {
+            sum += preVal
+        } else {
+            sum -= preVal
+        }
+        preVal = curVal
+    }
+    sum += preVal
+    return sum
 }
 ```
 
 
 
+### `leetcode 14 最长公共前缀`
+
+```go
+func longestCommonPrefix(strs []string) string {
+    if len(strs) <= 0 {
+        return ""
+    }
+    
+    res := strs[0]
+    for _, s := range strs {
+        index := 0
+        for index < len(s) && index < len(res) && s[index] == res[index] {
+            index++
+        }
+        res = res[:index]
+    }
+    return res
+}
+```
+
+------
+
 ### `leetcode 15 三数之和`
 
-```java
-class Solution {
-    public List<List<Integer>> threeSum(int[] nums) {
-        List<List<Integer>> res = new LinkedList<>();
-        if(nums == null || nums.length < 3) {
-            return res;
-        }
-
-        int len = nums.length;
-        Arrays.sort(nums);
-        for(int i = 0; i < len - 2; i++) {
-            if(nums[i] > 0) {
-                break;
-            } else if(i > 0 && nums[i] == nums[i-1]) {
-                continue;
-            }
-
-            int left = i + 1;
-            int right = len - 1;
-            while(left < right) {
-                int curVal = nums[i] + nums[left] + nums[right];
-                if(curVal == 0) {
-                    res.add(Arrays.asList(nums[i], nums[left], nums[right]));
-                    while(left < right && nums[left] == nums[left+1])       left++;
-                    while(left < right && nums[right] == nums[right - 1])   right--;
-                    left++;
-                    right--;
-                } else if(curVal < 0) {
-                    left++;
-                } else {
-                    right--;
-                }
-            }
-        }
-        return res;
+```go
+func threeSum(nums []int) [][]int {
+    length := len(nums)
+    if length < 3 {
+        return make([][]int, 0)
     }
+
+    sort.Ints(nums)
+    res := make([][]int, 0)
+    for i := 0; i < length - 2; i++ {
+        if i > 0 && nums[i] == nums[i-1] {
+            continue
+        } else if nums[i] > 0 {
+            break
+        }
+
+        j := i + 1
+        k := length - 1
+        for j < k {
+            curVal := nums[i] + nums[j] + nums[k]
+            if curVal == 0 {
+                res = append(res, []int{nums[i], nums[j], nums[k]})
+                for j < k && nums[j] == nums[j+1] {
+                    j++
+                }
+                for j < k && nums[k] == nums[k-1] {
+                    k--
+                }
+                j++
+                k--
+            } else if curVal < 0 {
+                j++
+            } else {
+                k--
+            }
+        }
+    }
+    return res
+}
+```
+
+-----
+
+### `leetcode 16 最接近的三数之和`
+
+```go
+func threeSumClosest(nums []int, target int) int {
+    sort.Ints(nums)
+    length := len(nums)
+    res := nums[0] + nums[1] + nums[length - 1]
+    for i := 0; i < length - 2; i++ {
+        j := i + 1
+        k := length - 1
+        for j < k {
+            cur := nums[i] + nums[j] + nums[k]
+            if abs(cur - target) < abs(res - target) {
+                res = cur
+            }
+            if cur < target {
+                j++
+            } else {
+                k--
+            }
+        }
+    }
+    return res
+}
+
+func abs(a int) int {
+    if a < 0 {
+        return -a
+    }
+    return a 
+}
+```
+
+-----
+
+### `leetcode 17 电话号码的字母组合`
+
+```go
+func letterCombinations(digits string) []string {
+    if len(digits) <= 0 {
+        return []string{}
+    }
+    
+    valMap := map[byte]string {
+        '2': "abc",
+        '3': "def",
+        '4': "ghi",
+        '5': "jkl",
+        '6': "mno",
+        '7': "pqrs",
+        '8': "tuv",
+        '9': "wxyz",
+    }
+
+    res := []string{}
+    var backTracking func(digits string, start int, path string) 
+    backTracking = func(digits string, start int, path string) {
+        if start == len(digits) {
+            res = append(res, path)
+            return 
+        }
+
+        for _, c := range valMap[digits[start]] {
+            path += string(c)
+            backTracking(digits, start + 1, path)
+            path = path[:len(path) - 1]
+        }
+    }
+    backTracking(digits, 0, "")
+    return res
 }
 ```
 
@@ -232,44 +523,42 @@ class Solution {
 
 ### `leetcode 18 四数之和`
 
-```java
-class Solution {
-    public List<List<Integer>> fourSum(int[] nums, int target) {
-        List<List<Integer>> res = new LinkedList<>();
-        if(nums == null || nums.length < 4) {
-            return res;
-        }
-
-        Arrays.sort(nums);
-        int len = nums.length;
-        for(int i = 0; i < len - 3; i++) {
-            if(i > 0 && nums[i] == nums[i-1]) {
-                continue;
-            }
-            for(int j = i + 1; j < len - 2; j++) {
-                if(j > i + 1 && nums[j] == nums[j-1]) {
-                    continue;
-                }
-                int k = j + 1;
-                int l = len - 1;
-                while(k < l) {
-                    int curVal = nums[i] + nums[j] + nums[k] + nums[l];
-                    if(curVal == target) {
-                        res.add(Arrays.asList(nums[i], nums[j], nums[k], nums[l]));
-                        while(k < l && nums[k] == nums[k+1]) k++;
-                        while(k < l && nums[l] == nums[l-1]) l--;
-                        k++;
-                        l--;
-                    } else if(curVal < target) {
-                        k++;
-                    } else {
-                        l--;
-                    }
-                }
-            }
-        }
-        return res;
+```go
+func fourSum(nums []int, target int) [][]int {
+    res := [][]int{}
+    if len(nums) < 4 {
+        return res 
     }
+
+    sort.Ints(nums)
+    length := len(nums)
+    for i := 0; i < length - 3; i++ {
+        if i > 0 && nums[i] == nums[i-1] {
+            continue 
+        }
+        for j := i + 1; j < length - 2; j++ {
+            if j > i + 1 && nums[j] == nums[j-1] {
+                continue
+            }
+            k := j + 1
+            l := length - 1
+            for k < l {
+                cur := nums[i] + nums[j] + nums[k] + nums[l]
+                if cur == target {
+                    res = append(res, []int{nums[i], nums[j], nums[k], nums[l]})
+                    for k < l && nums[k] == nums[k+1] {k++}
+                    for k < l && nums[l] == nums[l-1] {l--}
+                    k++
+                    l--
+                } else if cur < target {
+                    k++
+                } else {
+                    l--
+                }
+            }
+        }
+    }
+    return res
 }
 ```
 
@@ -277,24 +566,22 @@ class Solution {
 
 ### `leetcode 19 删除链表的倒数第N个节点`
 
-```java
-class Solution {
-    public ListNode removeNthFromEnd(ListNode head, int n) {
-        ListNode dummyHead = new ListNode(Integer.MIN_VALUE);
-        dummyHead.next = head;
-        ListNode slow = dummyHead;
-        ListNode fast = dummyHead;
-        for(int i = 0; i < n; i++) {
-            fast = fast.next;
-        }
+```go
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+    dummyHead := &ListNode{0, nil}
+    dummyHead.Next = head
 
-        while(fast != null && fast.next != null) {
-            slow = slow.next;
-            fast = fast.next;
-        }
-        slow.next = slow.next.next;
-        return dummyHead.next;
+    slow := dummyHead
+    fast := dummyHead
+    for i := 0; i < n; i++ {
+        fast = fast.Next
     }
+    for fast != nil && fast.Next != nil {
+        slow = slow.Next
+        fast = fast.Next
+    }
+    slow.Next = slow.Next.Next
+    return dummyHead.Next
 }
 ```
 
@@ -302,47 +589,151 @@ class Solution {
 
 ### `leetcode 20 有效的括号`
 
-```java
-class Solution {
-    public boolean isValid(String s) {
-        Deque<Character> stack = new LinkedList<>();
-        for(char c : s.toCharArray()) {
-            if(c == '(' || c == '[' || c == '{') {
-                stack.push(c);
+```go
+func isValid(s string) bool {
+    if len(s) < 2 {
+        return false
+    }
+
+    stack := []byte{}
+    for i := 0; i < len(s); i++ {
+        c1 := s[i]
+        if c1 == '(' || c1 == '[' || c1 == '{' {
+            stack = append(stack, c1)
+        } else {
+            if len(stack) == 0 {
+                return false 
             } else {
-                if(stack.isEmpty()) {
-                    return false;
-                } else if(c == ')' && stack.peek() != '(') {
-                    return false;
-                } else if(c == ']' && stack.peek() != '[') {
-                    return false;
-                } else if(c == '}' && stack.peek() != '{') {
-                    return false;
+                c2 := stack[len(stack) - 1]
+                stack = stack[:len(stack) - 1]
+                if c1 == ')' && c2 != '(' {
+                    return false
+                } else if c1 == ']' && c2 != '[' {
+                    return false
+                } else if c1 == '}' && c2 != '{' {
+                    return false
                 }
-                stack.pop();
             }
         }
-        return stack.isEmpty();
     }
+    return len(stack) == 0
 }
 ```
 
+-----
 
+### `leetcode 21 合并两个有序链表`
+
+```go
+func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
+    dummy := &ListNode{Val: 0, Next: nil}
+    runner := dummy
+    for l1 != nil && l2 != nil {
+        if(l1.Val < l2.Val) {
+            runner.Next = l1
+            l1 = l1.Next
+        } else {
+            runner.Next = l2
+            l2 = l2.Next
+        }
+        runner = runner.Next
+    }
+
+    if l1 != nil {
+        runner.Next = l1
+    } else if l2 != nil {
+        runner.Next = l2
+    }
+    return dummy.Next
+}
+```
+
+------
+
+### `leetcode 22 括号生成`
+
+```go
+func generateParenthesis(n int) []string {
+    if n <= 0 {
+        return []string{}
+    }
+
+    res := []string{}
+    var backTracking func(left, right int, runner string) 
+    backTracking = func(left, right int, runner string) {
+        if left < 0 || right < 0 || left > right {
+            return 
+        } else if left == 0 && right == 0 {
+            res = append(res, runner)
+        }
+
+        runner += "("
+        backTracking(left - 1, right, runner)
+        runner = runner[:len(runner) - 1]
+
+        runner += ")"
+        backTracking(left, right - 1, runner)
+        runner = runner[:len(runner) - 1]
+    }
+    backTracking(n, n, "")
+    return res
+}
+```
+
+----
+
+### `leetcode 23 合并K个升序链表`
+
+```go
+// 暴力解法，复杂度为O(n^2)
+func mergeKLists(lists []*ListNode) *ListNode {
+    if len(lists) == 0 {
+        return nil 
+    }
+
+    res := lists[0]
+    for i := 1; i < len(lists); i++ {
+        res = mergeSortedLists(res, lists[i])
+    }
+    return res
+}
+
+func mergeSortedLists(l1, l2 *ListNode) *ListNode {
+    dummy := &ListNode{0, nil}
+    runner := dummy
+    for l1 != nil && l2 != nil {
+        if l1.Val < l2.Val {
+            runner.Next = l1
+            l1 = l1.Next
+        } else {
+            runner.Next = l2
+            l2 = l2.Next
+        }
+        runner = runner.Next
+    }
+    if l1 != nil {
+        runner.Next = l1
+    } else if l2 != nil {
+        runner.Next = l2
+    }
+    return dummy.Next
+}
+```
+
+-----
 
 ### `leetcode 24 两两交换链表中的节点`
 
 ```java
-class Solution {
-    public ListNode swapPairs(ListNode head) {
-        if(head == null || head.next == null) {
-            return head;
-        }
-
-        ListNode newHead = head.next;
-        head.next = swapPairs(newHead.next);
-        newHead.next = head;
-        return newHead;
+func swapPairs(head *ListNode) *ListNode {
+    if head == nil || head.Next == nil {
+        return head 
     }
+
+    newHead := head.Next
+    head.Next = swapPairs(newHead.Next)
+    newHead.Next = head
+    return newHead
 }
 ```
 
@@ -350,73 +741,99 @@ class Solution {
 
 ### `leetcode 25 K个一组翻转链表`
 
-```java
-class Solution {
-    public ListNode reverseKGroup(ListNode head, int k) {
-        if(head ==  null || head.next == null) {
-            return head;
+```go
+func reverseKGroup(head *ListNode, k int) *ListNode {
+    next := head
+    for i := 0; i < k; i++ {
+        if next == nil {
+            return head
         }
-
-        ListNode next = head;
-        for(int i = 0; i < k; i++) {
-            if(next == null) {
-                return head;
-            }
-            next = next.next;
-        }
-
-        ListNode newHead = reverseList(head, next);
-        head.next = reverseKGroup(next, k);
-        return newHead;
+        next = next.Next
     }
 
-    private ListNode reverseList(ListNode a, ListNode b) {
-        ListNode cur = a;
-        ListNode pre = null;
-        while(cur != b) {
-            ListNode next = cur.next;
-            cur.next = pre;
-            pre = cur;
-            cur = next;
-        }
-        return pre;
+    newHead := reverseList(head, next)
+    head.Next = reverseKGroup(next, k)
+    return newHead
+} 
+
+func reverseList(head *ListNode, edge *ListNode) *ListNode {
+    var pre *ListNode
+    cur := head
+    for cur != edge {
+        next := cur.Next
+        cur.Next = pre
+        pre = cur
+        cur = next
     }
+    return pre
 }
 ```
+
+-----
+
+### `leetcode 26 删除有序数组中的重复项`
+
+```go
+func removeDuplicates(nums []int) int {
+    mark := 0
+    for i := 1; i < len(nums); i++ {
+        if nums[i] != nums[mark] {
+            mark++
+            nums[mark] = nums[i]
+        }
+    }
+    return mark + 1
+}
+```
+
+----
+
+### `leetcode 27 移除元素`
+
+```go
+func removeElement(nums []int, val int) int {
+    mark := -1
+    for _, num := range nums {
+        if num != val {
+            mark++
+            nums[mark] = num 
+        }
+    }
+    return mark + 1
+}
+```
+
+------
 
 
 
 ### `leetcode 31 下一个排列`
 
-```java
-class Solution {
-    public void nextPermutation(int[] nums) {
-        int len = nums.length;
-        int i = len - 2;
-        int j = len - 1;
-        int k = len - 1;
+```go
+func nextPermutation(nums []int)  {
+    length := len(nums)
+    i := length - 2
+    j := length - 1
+    k := length - 1
 
-        while(i >= 0 && nums[i] >= nums[j]) {
-            i--;
-            j--;
+    for i >= 0 && nums[i] >= nums[j] {
+        i--
+        j--
+    }
+    if i >= 0 {
+        for nums[i] >= nums[k] {
+            k--
         }
-
-        if(i >= 0) {
-            while(nums[i] >= nums[k]) {
-                k--;
-            }
-            swap(nums, i, k);
-        }
-        for(i = j, j = len - 1; i < j; i++, j--) {
-            swap(nums, i, j);
-        }
+        swap(nums, i, k)
     }
 
-    private void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
+    for i, j = j, length - 1; i < j; i, j = i + 1, j - 1 {
+        swap(nums, i, j)
     }
+}
+
+func swap(nums []int, i, j int) {
+    nums[i], nums[j] = nums[j], nums[i] 
 }
 ```
 
@@ -424,146 +841,167 @@ class Solution {
 
 ### `leetcode 32 最长有效括号`
 
-```java
-class Solution {
-    public int longestValidParentheses(String s) {
-        int res = 0;
-        Deque<Integer> stack = new LinkedList<>();
-        stack.push(-1);
-        for(int i = 0; i < s.length(); i++) {
-            if(s.charAt(i) == '(') {
-                stack.push(i);
+```go
+func longestValidParentheses(s string) int {
+    if len(s) < 2 {
+        return 0
+    }
+
+    res := 0
+    stack := []int{-1}
+    for i := 0; i < len(s); i++ {
+        if s[i] == '(' {
+            stack = append(stack, i)
+        } else {
+            stack = stack[:len(stack) - 1]
+            if len(stack) == 0 {
+                stack = append(stack, i)
             } else {
-                stack.pop();
-                if(stack.isEmpty()) {
-                    stack.push(i);
-                } else {
-                    res = Math.max(res, i - stack.peek());
-                }
+                res = max(res, i - stack[len(stack) - 1])
             }
         }
-        return res;
     }
+    return res
 }
-```
 
-
-
-### `leetcode 34 在排序数组中查找元素的第一个和最后一个位置`
-
-```java
-class Solution {
-    public int[] searchRange(int[] nums, int target) {
-        int left = leftBound(nums, target);
-        int right = rightBound(nums, target);
-        return new int[]{left, right};
+func max(a, b int) int {
+    if a < b {
+        return b
     }
-
-    private int leftBound(int[] nums, int target) {
-        int left = 0;
-        int right = nums.length;
-        while(left < right) {
-            int mid = left + (right - left) / 2;
-            if(nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
-        }
-        if(left == nums.length || nums[left] != target) {
-            return -1;
-        }
-        return left;
-    }
-
-    private int rightBound(int[] nums, int target) {
-        int left = 0;
-        int right = nums.length;
-        while(left < right) {
-            int mid = left + (right - left) / 2;
-            if(nums[mid] <= target) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
-        }
-        if(left == 0 || nums[left - 1] != target) {
-            return -1;
-        }
-        return left - 1;
-    }
+    return a 
 }
 ```
 
 ----
 
-### `leetcode 36 有效的数独`
+### `leetcode 33 搜索旋转排序数组`
 
-```java
-class Solution {
-    public boolean isValidSudoku(char[][] board) {
-        int[][] row = new int[9][9];
-        int[][] col = new int[9][9];
-        int[][] map = new int[9][9];
-        for(int i = 0; i < 9; i++) {
-            for(int j = 0; j < 9; j++) {
-                if(board[i][j] == '.') {
-                    continue;
-                }
-                int cur = board[i][j] - '0' - 1;
-                if(row[i][cur] == 1) {
-                    return false;
-                } else if(col[j][cur] == 1) {
-                    return false;
-                } else if(map[j/3 + (i/3)*3][cur] == 1) {
-                    return false;
-                }
-                row[i][cur] = 1;
-                col[j][cur] = 1;
-                map[j/3 + (i/3)*3][cur] = 1;
+```go
+func search(nums []int, target int) int {
+    left := 0
+    right := len(nums) - 1
+    for left <= right {
+        mid := left + (right - left) / 2
+        if nums[mid] == target {
+            return mid 
+        } else if nums[left] <= nums[mid] {
+            if nums[left] <= target && target < nums[mid] {
+                right = mid - 1
+            } else {
+                left = mid + 1
+            }
+        } else {
+            if nums[mid] < target && target <= nums[right] {
+                left = mid + 1
+            } else {
+                right = mid - 1
             }
         }
-        return true;
     }
+    return -1
 }
 ```
+
+------
+
+### `leetcode 34 在排序数组中查找元素的第一个和最后一个位置`
+
+```go
+func searchRange(nums []int, target int) []int {
+    left := leftBound(nums, target)
+    right := rightBound(nums, target)
+    return []int{left, right}
+}
+
+func leftBound(nums []int, target int) int {
+    left := 0
+    right := len(nums)
+    for left < right {
+        mid := left + (right - left) / 2
+        if nums[mid] < target {
+            left = mid + 1
+        } else {
+            right = mid 
+        }
+    }
+
+    if left == len(nums) || nums[left] != target {
+        return -1
+    }
+    return left
+}
+
+func rightBound(nums []int, target int) int {
+    left := 0
+    right := len(nums)
+    for left < right {
+        mid := left + (right - left) / 2
+        if nums[mid] <= target {
+            left = mid + 1
+        } else {
+            right = mid 
+        }
+    }
+
+    if left == 0 || nums[left - 1] != target {
+        return -1
+    }
+    return left - 1
+}
+```
+
+----
+
+### `leetcode 35 搜索插入位置`
+
+```go
+func searchInsert(nums []int, target int) int {
+    left := 0
+    right := len(nums)
+    for left < right {
+        mid := left + (right - left) / 2
+        if nums[mid] < target {
+            left = mid + 1
+        } else {
+            right = mid 
+        }
+    }
+    return left
+}
+```
+
+-----
 
 
 
 ### `leetcode 39 组合总和`
 
-```java
-class Solution {
-    private List<List<Integer>> res;
-    private int[] candidates;
+```go
+func combinationSum(candidates []int, target int) [][]int {
+    res := [][]int{}
+    sort.Ints(candidates)
 
-    public List<List<Integer>> combinationSum(int[] candidates, int target) {
-        this.res = new LinkedList<>();
-        if(candidates == null || candidates.length == 0) {
-            return res;
+    var backTracking func(target int, start int, runner []int) 
+    backTracking = func(target int, start int, runner []int) {
+        if target == 0 {
+            temp := make([]int, len(runner))
+            copy(temp, runner)
+            res = append(res, temp)
+            return 
         }
 
-        this.candidates = candidates;
-        Arrays.sort(candidates);
-        backTracking(target, 0, new LinkedList<Integer>());
-        return res;
-    }
-
-    private void backTracking(int target, int start, LinkedList<Integer> runner) {
-        if(target == 0) {
-            res.add(new LinkedList(runner));
-            return;
-        }
-
-        for(int i = start; i < candidates.length; i++) {
-            if(target < candidates[i]) {
-                break;
+        for i := start; i < len(candidates); i++ {
+            if target < candidates[i] {
+                break 
             }
-            runner.addLast(candidates[i]);
-            backTracking(target - candidates[i], i, runner);
-            runner.removeLast();
+            runner = append(runner, candidates[i])
+            backTracking(target - candidates[i], i, runner)
+            runner = runner[:len(runner) - 1]
         }
     }
+
+    backTracking(target, 0, []int{})
+    return res
 }
 ```
 
@@ -571,41 +1009,35 @@ class Solution {
 
 ### `leetcode 40 组合总和 II`
 
-```java
-class Solution {
-    private List<List<Integer>> res;
-    private int[] candidates;
+```go
+func combinationSum2(candidates []int, target int) [][]int {
+    res := [][]int{}
+    sort.Ints(candidates)
 
-    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
-        this.res = new LinkedList<>();
-        if(candidates == null || candidates.length == 0) {
-            return res;
+    var backTracking func(target int, start int, runner []int) 
+    backTracking = func(target int, start int, runner []int) {
+        if target == 0 {
+            temp := make([]int, len(runner))
+            copy(temp, runner)
+            res = append(res, temp)
+            return 
         }
 
-        this.candidates = candidates;
-        Arrays.sort(candidates);
-        backTracking(target, 0, new LinkedList<Integer>());
-        return res;
-    }
-
-    private void backTracking(int target, int start, LinkedList<Integer> runner) {
-        if(target == 0) {
-            res.add(new LinkedList(runner));
-            return;
-        }
-
-        for(int i = start; i < candidates.length; i++) {
-            if(target < candidates[i]) {
-                break;
-            } else if(i > start && candidates[i] == candidates[i-1]) {
-                continue;
+        for i := start; i < len(candidates); i++ {
+            if target < candidates[i] {
+                break 
+            } else if  (i > start && candidates[i] == candidates[i-1]) {
+                continue 
             }
 
-            runner.addLast(candidates[i]);
-            backTracking(target - candidates[i], i + 1, runner);
-            runner.removeLast();
+            runner = append(runner, candidates[i])
+            backTracking(target - candidates[i], i + 1, runner)
+            runner = runner[:len(runner) - 1]
         }
     }
+    backTracking(target, 0, []int{})
+
+    return res
 }
 ```
 
@@ -613,29 +1045,20 @@ class Solution {
 
 ### `leetcode 41 缺失的第一个正数`
 
-```java
-class Solution {
-    public int firstMissingPositive(int[] nums) {
-        int len = nums.length;
-        for(int i = 0; i < len; i++) {
-            while(nums[i] > 0 && nums[i] <= len && nums[i] != nums[nums[i] - 1]) {
-                swap(nums, i, nums[i] - 1);
-            }
+```go
+func firstMissingPositive(nums []int) int {
+    for i := 0; i < len(nums); i++ {
+        for nums[i] > 0 && nums[i] <= len(nums) && nums[i] != nums[nums[i]-1] {
+            nums[i], nums[nums[i]-1] = nums[nums[i]-1], nums[i]
         }
-
-        for(int i = 0; i < len; i++) {
-            if(nums[i] != i + 1) {
-                return i + 1;
-            }
-        }
-        return len + 1;
     }
 
-    private void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
+    for i := 0; i < len(nums); i++ {
+        if nums[i] != i + 1 {
+            return i + 1
+        }
     }
+    return len(nums) + 1
 }
 ```
 
@@ -643,32 +1066,32 @@ class Solution {
 
 ### `leetcode 42 接雨水`
 
-```java
-/**
-* 单调栈
- */
-class Solution {
-    public int trap(int[] height) {
-        if(height == null || height.length < 3) {
-            return 0;
-        }
-
-        int res = 0;
-        Deque<Integer> monoStack = new LinkedList<>();
-        for(int i = 0; i < height.length; i++) {
-            while(!monoStack.isEmpty() && height[i] > height[monoStack.peek()]) {
-                int curHeight = height[monoStack.pop()];
-                while(!monoStack.isEmpty() && height[monoStack.peek()] == curHeight) {
-                    monoStack.pop();
-                }
-                if(!monoStack.isEmpty()) {
-                    res += (Math.min(height[monoStack.peek()], height[i]) - curHeight) * (i - monoStack.peek() - 1);
-                }
+```go
+func trap(height []int) int {
+    stack := []int{}
+    res := 0
+    for i, h := range height {
+        for len(stack) > 0 && h > height[stack[len(stack)-1]] {
+            curHeight := height[stack[len(stack)-1]]
+            stack = stack[:len(stack)-1]
+            for len(stack) > 0 && curHeight == height[stack[len(stack)-1]] {
+                stack = stack[:len(stack)-1]
             }
-            monoStack.push(i);
+            if len(stack) > 0 {
+                temp := len(stack) - 1
+                res += (min(h, height[stack[temp]]) - curHeight) * (i - stack[temp] - 1)
+            }
         }
-        return res;
+        stack = append(stack, i)
     }
+    return res 
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
 }
 ```
 
@@ -676,38 +1099,35 @@ class Solution {
 
 ### `leetcode 46 全排列`
 
-```java
-class Solution {
-    private List<List<Integer>> res;
+```go
+func permute(nums []int) [][]int {
+    visited := make([]bool, len(nums))
+    res := [][]int{}
 
-    public List<List<Integer>> permute(int[] nums) {
-        this.res = new LinkedList<>();
-        if(nums == null || nums.length == 0) {
-            return res;
+    var backTracking func(path []int)
+    backTracking = func(path []int) {
+        if len(path) == len(nums) {
+            temp := make([]int, len(path))
+            copy(temp, path)
+            res = append(res, temp)
+            return
         }
 
-        backTracking(nums, new boolean[nums.length], new LinkedList<Integer>());
-        return res;
-    }
-
-    private void backTracking(int[] nums, boolean[] visited, LinkedList<Integer> runner) {
-        if(nums.length == runner.size()) {
-            res.add(new LinkedList(runner));
-            return;
-        }
-
-        for(int i = 0; i < nums.length; i++) {
-            if(visited[i]) {
-                continue;
+        for i, num := range nums {
+            if visited[i] {
+                continue 
             }
 
-            runner.addLast(nums[i]);
-            visited[i] = true;
-            backTracking(nums, visited, runner);
-            visited[i] = false;
-            runner.removeLast();
+            path = append(path, num)
+            visited[i] = true
+            backTracking(path)
+            visited[i] = false
+            path = path[:len(path) - 1]
         }
     }
+
+    backTracking([]int{})
+    return res
 }
 ```
 
@@ -715,39 +1135,34 @@ class Solution {
 
 ### `leetcode 47 全排列 II`
 
-```java
-class Solution {
-    private List<List<Integer>> res;
-
-    public List<List<Integer>> permuteUnique(int[] nums) {
-        this.res = new LinkedList<>();
-        if(nums == null || nums.length == 0) {
-            return res;
+```go
+func permuteUnique(nums []int) [][]int {
+    res := [][]int{}
+    sort.Ints(nums)
+    
+    var backTracking func(nums []int, visited []bool, runner []int) 
+    backTracking = func(nums []int, visited []bool, runner []int) {
+        if len(nums) == len(runner) {
+            temp := make([]int, len(runner))
+            copy(temp, runner)
+            res = append(res, temp)
+            return 
         }
 
-        Arrays.sort(nums);
-        backTracking(nums, new boolean[nums.length], new LinkedList<Integer>());
-        return res;
-    }
-
-    private void backTracking(int[] nums, boolean[] visited, LinkedList<Integer> runner) {
-        if(nums.length == runner.size()) {
-            res.add(new LinkedList(runner));
-            return;
-        }
-
-        for(int i = 0; i < nums.length; i++) {
-            if(visited[i] || (i > 0 && nums[i] == nums[i-1] && !visited[i-1])) {
-                continue;
+        for i := 0; i < len(nums); i++ {
+            if visited[i] || (i > 0 && nums[i] == nums[i-1] && !visited[i-1]){
+                continue 
             }
 
-            runner.addLast(nums[i]);
-            visited[i] = true;
-            backTracking(nums, visited, runner);
-            visited[i] = false;
-            runner.removeLast();
+            runner = append(runner, nums[i])
+            visited[i] = true 
+            backTracking(nums, visited, runner)
+            visited[i] = false
+            runner = runner[:len(runner) - 1]
         }
     }
+    backTracking(nums, make([]bool, len(nums)), []int{})
+    return res
 }
 ```
 
@@ -755,28 +1170,26 @@ class Solution {
 
 ### `leetcode 48 旋转图像`
 
-```java
-class Solution {
-    public void rotate(int[][] matrix) {
-        int n = matrix.length;
-        int top = 0;
-        int bottom = n - 1;
-        while(top < bottom) {
-            rotateEdge(matrix, top, bottom);
-            top++;
-            bottom--;
-        }
+```go
+func rotate(matrix [][]int)  {
+    n := len(matrix)
+    top := 0
+    bottom := n - 1
+    for top < bottom {
+        rotateEdge(matrix, top, bottom)
+        top++
+        bottom--
     }
+}
 
-    private void rotateEdge(int[][] matrix, int top, int bottom) {
-        int times = bottom - top;
-        for(int i = 0; i < times; i++) {
-            int temp = matrix[top][top+i];
-            matrix[top][top+i] = matrix[bottom-i][top];
-            matrix[bottom-i][top] = matrix[bottom][bottom-i];
-            matrix[bottom][bottom-i] = matrix[top+i][bottom];
-            matrix[top+i][bottom] = temp;
-        }
+func rotateEdge(matrix [][] int, top, bottom int) {
+    time := bottom - top
+    for i := 0; i < time; i++ {
+        temp := matrix[top][top+i]
+        matrix[top][top+i] = matrix[bottom-i][top]
+        matrix[bottom-i][top] = matrix[bottom][bottom-i]
+        matrix[bottom][bottom-i] = matrix[top+i][bottom]
+        matrix[top+i][bottom] = temp
     }
 }
 ```
@@ -920,21 +1333,22 @@ class Solution {
 
 ### `leetcode 53 最大子序和`
 
-```java
-class Solution {
-    public int maxSubArray(int[] nums) {
-        int res = Integer.MIN_VALUE;
-        int cur = Integer.MIN_VALUE;
-        for(int num : nums) {
-            if(cur <= 0) {
-                cur = num;
-            } else {
-                cur += num;
-            }
-            res = Math.max(res, cur);
+```go
+func maxSubArray(nums []int) int {
+    res := nums[0]
+    cur := nums[0]
+    for i := 1; i < len(nums); i++ {
+        if cur <= 0 {
+            cur = nums[i]
+        } else {
+            cur += nums[i]
         }
-        return res;
+
+        if cur > res {
+            res = cur
+        }
     }
+    return res
 }
 ```
 
@@ -942,43 +1356,50 @@ class Solution {
 
 ### `leetcode 54 螺旋矩阵`
 
-```java
-class Solution {
-    public List<Integer> spiralOrder(int[][] matrix) {
-        List<Integer> res = new ArrayList<>();
-        int m = matrix.length;
-        int n = matrix[0].length;
-        int top = 0;
-        int bottom = m - 1;
-        int left = 0;
-        int right = n - 1;
-        while(true) {
-            for(int i = left; i <= right; i++) res.add(matrix[top][i]);
-            top++;
-            if(top > bottom) {
-                break;
-            }
+```go
+func spiralOrder(matrix [][]int) []int {
+    res := []int{}
+    m := len(matrix)
+    n := len(matrix[0])
+    top := 0
+    right := n - 1
+    bottom := m - 1
+    left := 0
 
-            for(int i = top; i <= bottom; i++) res.add(matrix[i][right]);
-            right--;
-            if(right < left) {
-                break;
-            }
-
-            for(int i = right; i >= left; i--) res.add(matrix[bottom][i]);
-            bottom--;
-            if(bottom < top) {
-                break;
-            }
-
-            for(int i = bottom; i >= top; i--) res.add(matrix[i][left]);
-            left++;
-            if(left > right) {
-                break;
-            }
+    for {
+        for i := left; i <= right; i++ {
+            res = append(res, matrix[top][i])
         }
-        return res;
+        top++
+        if top > bottom {
+            break
+        }
+
+        for i := top; i <= bottom; i++ {
+            res = append(res, matrix[i][right])
+        }
+        right--
+        if right < left {
+            break
+        }
+
+        for i := right; i >= left; i-- {
+            res = append(res, matrix[bottom][i])
+        }
+        bottom--
+        if bottom < top {
+            break
+        }
+
+        for i := bottom; i >= top; i-- {
+            res = append(res, matrix[i][left])
+        }
+        left++
+        if left > right {
+            break
+        }
     }
+    return res
 }
 ```
 
@@ -1084,23 +1505,21 @@ class Solution {
 
 ### `leetcode 70 爬楼梯`
 
-```java
-class Solution {
-    public int climbStairs(int n) {
-        if(n <= 2) {
-            return n;
-        }
-
-        int stepsMinusOne = 2;
-        int stepsMinusTwo = 1;
-        int nSteps = 0;
-        for(int i = 3; i <= n; i++) {
-            nSteps = stepsMinusOne + stepsMinusTwo;
-            stepsMinusTwo = stepsMinusOne;
-            stepsMinusOne = nSteps;
-        }
-        return nSteps;
+```go
+func climbStairs(n int) int {
+    if n <= 2 {
+        return n
     }
+
+    stepsMinusOne := 2
+    stepsMinusTwo := 1
+    nSteps := 0
+    for i := 3; i <= n; i++ {
+        nSteps = stepsMinusOne + stepsMinusTwo
+        stepsMinusTwo = stepsMinusOne
+        stepsMinusOne = nSteps
+    }
+    return nSteps
 }
 ```
 
@@ -1132,6 +1551,31 @@ class Solution {
 ```
 
 -----
+
+### `leetcode 74 搜索二维矩阵`
+
+```go
+func searchMatrix(matrix [][]int, target int) bool {
+    m := len(matrix)
+    n := len(matrix[0])
+    left := 0
+    right := m * n - 1
+    for left <= right {
+        mid := left + (right - left) / 2
+        cur := matrix[mid/n][mid%n]
+        if cur == target {
+            return true
+        } else if cur < target {
+            left = mid + 1
+        } else {
+            right = mid - 1
+        }
+    }
+    return false
+}
+```
+
+
 
 ### `leetcode 75  颜色分类`
 
@@ -1167,46 +1611,46 @@ class Solution {
 
 ### `leetcode 76 最小覆盖子串`
 
-```java
-class Solution {
-    public String minWindow(String s, String t) {
-        if(s == null || s.length() < t.length()) {
-            return "";
-        }
-
-        Map<Character, Integer> need = new HashMap<>();
-        Map<Character, Integer> window = new HashMap<>();
-        for(char c : t.toCharArray()) {
-            need.put(c, need.getOrDefault(c, 0) + 1);
-        }
-        int left = 0;
-        int right = 0;
-        int start = 0;
-        int minLen = Integer.MAX_VALUE;
-        int match = 0;
-
-        while(right < s.length()) {
-            char c1 = s.charAt(right);
-            window.put(c1, window.getOrDefault(c1, 0) + 1);
-            if(window.get(c1).equals(need.get(c1))) {
-                match++;
-            }
-            while(match == need.size()) {
-                if(right - left + 1 < minLen) {
-                    minLen = right - left + 1;
-                    start = left;
-                }
-                char c2 = s.charAt(left);
-                if(window.get(c2).equals(need.get(c2))) {
-                    match--;
-                }
-                window.put(c2, window.get(c2) - 1);
-                left++;
-            }
-            right++;
-        }
-        return minLen == Integer.MAX_VALUE? "" : s.substring(start, start + minLen);
+```go
+func minWindow(s string, t string) string {
+    need := make(map[byte]int)
+    for i := 0; i < len(t); i++ {
+        need[t[i]]++
     }
+
+    window := make(map[byte]int)
+    left := 0
+    right := 0
+    start := 0
+    minLen := math.MaxInt32
+    match := 0
+    for right < len(s) {
+        c1 := s[right]
+        window[c1]++
+        if window[c1] == need[c1] {match++}
+        for match == len(need) {
+            if right - left + 1 < minLen {
+                minLen = right - left + 1
+                start = left
+            }
+            c2 := s[left]
+            if window[c2] == need[c2] {match--}
+            window[c2]--
+            left++
+        }
+        right++
+    }
+    if minLen == math.MaxInt32 {
+        return ""
+    }
+    return s[start:start + minLen]
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a 
+    }
+    return b 
 }
 ```
 
@@ -1214,29 +1658,25 @@ class Solution {
 
 ### `leetcode 78 子集`
 
-```java
-class Solution {
-    private List<List<Integer>> res;
+```go
+func subsets(nums []int) [][]int {
+    res := [][]int{}
 
-    public List<List<Integer>> subsets(int[] nums) {
-        this.res = new LinkedList<>();
-        if(nums == null || nums.length == 0) {
-            return res;
-        }
+    var backTracking func(nums []int, start int, path []int) 
+    backTracking = func(nums []int, start int, path []int) {
+        temp := make([]int, len(path))
+        copy(temp, path)
+        res = append(res, temp)
 
-        backTracking(nums, 0, new LinkedList<Integer>());
-        return res;
-    }
-
-    private void backTracking(int[] nums, int start, LinkedList<Integer> runner) {
-        res.add(new LinkedList(runner));
-
-        for(int i = start; i < nums.length; i++) {
-            runner.addLast(nums[i]);
-            backTracking(nums, i + 1, runner);
-            runner.removeLast();
+        for i := start; i < len(nums); i++ {
+            path = append(path, nums[i])
+            backTracking(nums, i + 1, path)
+            path = path[:len(path) - 1]
         }
     }
+
+    backTracking(nums, 0, []int{})
+    return res
 }
 ```
 
@@ -1310,25 +1750,79 @@ class Solution {
 
 -----
 
-### `leetcode 83 删除排序链表中的重复元素`
+### `leetcode 82 删除排序链表中的重复元素II`
 
-```java
-class Solution {
-    public ListNode deleteDuplicates(ListNode head) {
-        if(head == null || head.next == null) {
-            return head;
-        }
+```go
+func deleteDuplicates(head *ListNode) *ListNode {
+    if head == nil || head.Next == nil {
+        return head 
+    }
 
-        ListNode cur = head;
-        while(cur != null && cur.next != null) {
-            if(cur.next.val == cur.val) {
-                cur.next = cur.next.next;
+    dummy := &ListNode{}
+    runner := dummy
+    duplicate := false
+    for head != nil && head.Next != nil {
+        if head.Val == head.Next.Val {
+            duplicate = true
+        } else {
+            if duplicate {
+                duplicate = false
             } else {
-                cur = cur.next;
+                runner.Next = &ListNode{Val: head.Val}
+                runner = runner.Next
             }
         }
-        return head;
+        head = head.Next
     }
+    if !duplicate {
+        runner.Next = &ListNode{Val: head.Val}
+    }
+    return dummy.Next
+}
+```
+
+-----
+
+### `leetcode 83 删除排序链表中的重复元素`
+
+```go
+func deleteDuplicates(head *ListNode) *ListNode {
+    runner := head
+    for runner != nil && runner.Next != nil {
+        if runner.Val == runner.Next.Val {
+            runner.Next = runner.Next.Next
+        } else  {
+            runner = runner.Next
+        }
+    }
+    return head
+}
+```
+
+----
+
+### `leetcode 86 分隔链表`
+
+```go
+func partition(head *ListNode, x int) *ListNode {
+    less := &ListNode{}
+    greOrEqu := &ListNode{}
+    runner1 := less
+    runner2 := greOrEqu
+    for head != nil {
+        if head.Val < x {
+            runner1.Next = head
+            runner1 = runner1.Next
+        } else {
+            runner2.Next = head 
+            runner2 = runner2.Next
+        }
+        head = head.Next
+    }
+
+    runner1.Next = greOrEqu.Next
+    runner2.Next = nil
+    return less.Next
 }
 ```
 
@@ -1336,29 +1830,24 @@ class Solution {
 
 ### `leetcode 88 合并两个有序数组`
 
-```java
-class Solution {
-    public void merge(int[] nums1, int m, int[] nums2, int n) {
-        int index = m + n - 1;
-        int index1 = m - 1;
-        int index2 = n - 1;
-        while(index1 >= 0 || index2 >= 0) {
-            if(index1 < 0) {
-                nums1[index] = nums2[index2];
-                index2--;
-            } else if(index2 < 0) {
-                nums1[index] = nums1[index1];
-                index1--;
+```go
+func merge(nums1 []int, m int, nums2 []int, n int)  {
+    i := m - 1
+    j := n - 1
+    for index := m + n - 1; index >= 0; index-- {
+        if i < 0 {
+            nums1[index] = nums2[j]
+            j--
+        } else if j < 0 {
+            break
+        } else {
+            if nums1[i] < nums2[j] {
+                nums1[index] = nums2[j]
+                j--
             } else {
-                if(nums1[index1] < nums2[index2]) {
-                    nums1[index] = nums2[index2];
-                    index2--;
-                } else {
-                    nums1[index] = nums1[index1];
-                    index1--;
-                }
+                nums1[index] = nums1[i]
+                i--
             }
-            index--;
         }
     }
 }
@@ -1366,204 +1855,502 @@ class Solution {
 
 ----
 
-### `leetcode 96 不同的二叉搜索树`
+### `leetcode 91 解码方法`
 
-```java
-class Solution {
-    public int numTrees(int n) {
-        int[] dp = new int[n+1];
-        dp[0] = 1;
-        dp[1] = 1;
-        for(int i = 2; i <= n; i++) {
-            for(int j = 1; j <= i; j++) {
-                dp[i] += dp[j-1] * dp[i-j];
-            }
-        }
-        return dp[n];
+```go
+func numDecodings(s string) int {
+    if len(s) == 0 || s[0] == '0' {
+        return 0
     }
+
+    pre := 1
+    cur := 1
+    for i := 1; i < len(s); i++ {
+        temp := cur
+        if s[i] == '0' {
+            if s[i-1] == '1' || s[i-1] == '2' {
+                cur = pre 
+            } else {
+                return 0
+            }
+        } else if s[i-1] == '1' || (s[i-1] == '2' && s[i] <= '6') {
+            cur += pre 
+        }
+        pre = temp
+    }
+    return cur
 }
 ```
 
+[参考答案](https://leetcode-cn.com/problems/decode-ways/solution/c-wo-ren-wei-hen-jian-dan-zhi-guan-de-jie-fa-by-pr/)
 
+------
+
+
+
+### `leetcode 94 二叉树的中序遍历`
+
+```go
+// 递归
+func inorderTraversal(root *TreeNode) []int {
+    res := []int{}
+    var recursion func(root *TreeNode) 
+    
+    recursion = func(root *TreeNode) {
+        if root == nil {
+            return 
+        }
+
+        recursion(root.Left)
+        res = append(res, root.Val)
+        recursion(root.Right)
+    }
+
+    recursion(root)
+    return res
+}
+
+// 迭代
+func inorderTraversal(root *TreeNode) []int {
+    res := []int{}
+    stack := []*TreeNode{}
+    for len(stack) > 0 || root != nil {
+        for root != nil {
+            stack = append(stack, root)
+            root = root.Left
+        }
+
+        node := stack[len(stack) - 1]
+        stack = stack[:len(stack) - 1]
+        res = append(res, node.Val)
+        root = node.Right
+    }
+    return res
+}
+```
+
+----
+
+### `leetcode 95 不同的二叉搜索树 II` 
+
+```go
+func generateTrees(n int) []*TreeNode {
+    if n <= 0 {
+        return nil
+    }
+    return buildTrees(1, n)
+}
+
+func buildTrees(start, end int) []*TreeNode {
+    if start > end {
+        return []*TreeNode{nil} 
+    }
+
+    res := []*TreeNode{}
+    for i := start; i <= end; i++ {
+        lefts := buildTrees(start, i - 1)
+        rights := buildTrees(i + 1, end)
+        for _, left := range lefts {
+            for _, right := range rights {
+                root := &TreeNode{Val: i}
+                root.Left = left
+                root.Right = right
+                res = append(res, root)
+            }
+        }
+    }
+    return res
+}
+```
+
+-----
+
+### `leetcode 96 不同的二叉搜索树`
+
+```go
+func numTrees(n int) int {
+    dp := make([]int, n + 1)
+    dp[0] = 1
+    dp[1] = 1
+    for i := 2; i <= n; i++ {
+        for j := 0; j <= i - 1; j++ {
+            dp[i] += dp[j] * dp[i-j-1]
+        }
+    }
+    return dp[n]
+}
+```
+
+----
+
+### `leetcode 98 验证二叉搜索树`
+
+```go
+func isValidBST(root *TreeNode) bool {
+    return checkForValidity(root, nil, nil)
+}
+
+func checkForValidity(root, min, max *TreeNode) bool {
+    if root == nil {
+        return true 
+    } else if min != nil && root.Val <= min.Val {
+        return false 
+    } else if max != nil && root.Val >= max.Val {
+        return false 
+    }
+
+    return checkForValidity(root.Left, min, root) && checkForValidity(root.Right, root, max)
+}
+```
+
+-----
 
 ### `leetcode 99 恢复二叉搜索树`
 
-```java
-class Solution {
-    public void recoverTree(TreeNode root) {
-        if(root == null) {
-            return;
-        }
-
-        TreeNode firstNode = null;
-        TreeNode secondNode = null;
-        TreeNode pre = new TreeNode(Integer.MIN_VALUE);
-        Deque<TreeNode> stack = new LinkedList<>();
-        while(!stack.isEmpty() || root != null) {
-            while(root != null) {
-                stack.push(root);
-                root = root.left;
-            }
-
-            TreeNode node = stack.pop();
-            if(firstNode == null && pre.val > node.val) {
-                firstNode = pre;
-            }
-            if(firstNode != null && pre.val > node.val) {
-                secondNode = node;
-            }
-            pre = node;
-            root = node.right;
-        }
-
-        int temp = firstNode.val;
-        firstNode.val = secondNode.val;
-        secondNode.val = temp;
+```go
+func recoverTree(root *TreeNode)  {
+    if root == nil {
+        return 
     }
+
+    pre := &TreeNode{Val: math.MinInt32}
+    var firstNode *TreeNode
+    var secondNode *TreeNode
+    stack := []*TreeNode{}
+    for len(stack) > 0 || root != nil {
+        for root != nil {
+            stack = append(stack, root)
+            root = root.Left
+        }
+
+        node := stack[len(stack) - 1]
+        stack = stack[:len(stack) - 1]
+        if firstNode == nil && pre.Val > node.Val {
+            firstNode = pre
+        }
+        if firstNode != nil && pre.Val > node.Val {
+            secondNode = node 
+        }
+        pre = node
+        root = node.Right
+    }
+    firstNode.Val, secondNode.Val = secondNode.Val, firstNode.Val
 }
 ```
 
+----
 
+### `leetcode 100 相同的树`
+
+```go
+func isSameTree(p *TreeNode, q *TreeNode) bool {
+    if p == nil && q == nil {
+        return true
+    } else if p == nil || q == nil || p.Val != q.Val {
+        return false
+    }
+
+    return isSameTree(p.Left, q.Left) && isSameTree(p.Right, q.Right)
+}
+```
+
+-----
+
+### `leetcode 101 对称二叉树`
+
+```go
+func isSymmetric(root *TreeNode) bool {
+    return checkSymmetry(root, root)
+}
+
+func checkSymmetry(t1, t2 *TreeNode) bool {
+    if t1 == nil && t2 == nil {
+        return true 
+    } else if t1 == nil || t2 == nil || t1.Val != t2.Val {
+        return false 
+    }
+
+    return checkSymmetry(t1.Left, t2.Right) && checkSymmetry(t1.Right, t2.Left)
+}
+```
+
+-----
+
+### `leetcode 102 二叉树的层序遍历`
+
+```go
+func levelOrder(root *TreeNode) [][]int {
+    res := [][]int{}
+    if root == nil {
+        return res
+    }
+    
+    queue := []*TreeNode{root}
+    for len(queue) > 0 {
+        levelSize := len(queue)
+        nextLevel := []*TreeNode{}
+        line := []int{}
+        for i := 0; i < levelSize; i++ {
+            node := queue[i]
+            line = append(line, node.Val)
+            if node.Left != nil {
+                nextLevel = append(nextLevel, node.Left)
+            }
+            if node.Right != nil {
+                nextLevel = append(nextLevel, node.Right)
+            }
+        }
+        res = append(res, line)
+        queue = nextLevel
+    }
+    return res
+}
+```
+
+-----
 
 ### `leetcode 103 二叉树的锯齿形层序遍历`
 
-```java
-class Solution {
-    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
-        List<List<Integer>> res = new LinkedList<>();
-        if(root == null) {
-            return res;
-        }
+```go 
+func zigzagLevelOrder(root *TreeNode) [][]int {
+    res := [][]int{}
+    if root == nil {
+        return res 
+    }
 
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
-        boolean toggle = false;
-        while(!queue.isEmpty()) {
-            int levelSize = queue.size();
-            List<Integer> runner = new LinkedList<>();
-            while(levelSize > 0) {
-                TreeNode node = queue.poll();
-                levelSize--;
-                if(!toggle) {
-                    runner.add(node.val);
-                } else {
-                    runner.add(0, node.val);
-                }
-
-                if(node.left != null) {
-                    queue.offer(node.left);
-                }
-                if(node.right != null) {
-                    queue.offer(node.right);
-                }
+    queue := []*TreeNode{root}
+    toggle := false 
+    for len(queue) > 0 {
+        levelSize := len(queue)
+        line := []int{}
+        nextLevel := []*TreeNode{}
+        for i := 0; i < levelSize; i++ {
+            node := queue[i]
+            line = append(line, node.Val)
+            if node.Left != nil {
+                nextLevel = append(nextLevel, node.Left)
             }
-            res.add(runner);
-            toggle = !toggle;
+            if node.Right != nil {
+                nextLevel = append(nextLevel, node.Right)
+            }
         }
-        return res;
+
+        if toggle {
+            reverse(line)
+        }
+        toggle = !toggle
+        res = append(res, line)
+        queue = nextLevel
+    }
+    return res
+}
+
+func reverse(nums []int) {
+    for i, j := 0, len(nums) - 1; i < j; i, j = i+1, j-1 {
+        nums[i], nums[j] = nums[j], nums[i]
     }
 }
 ```
 
+----
 
+### `leetcode 104 二叉树的最大深度`
+
+```go
+func maxDepth(root *TreeNode) int {
+    if root == nil {
+        return 0
+    }
+
+    return 1 + max(maxDepth(root.Left), maxDepth(root.Right))
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b
+    }
+    return a 
+}
+```
+
+------
 
 ### `leetcode 105 从前序与中序遍历序列构造二叉树`
 
-```java
-class Solution {
-    private int[] preorder;
-    private Map<Integer, Integer> valToIndex;
-
-    public TreeNode buildTree(int[] preorder, int[] inorder) {
-        if(preorder == null || inorder == null) {
-            return null;
-        }
-
-        int preLen = preorder.length;
-        int inLen = inorder.length;
-        if(preLen == 0 || inLen == 0 || inLen != preLen) {
-            return null;
-        }
-
-        this.preorder = preorder;
-        this.valToIndex = new HashMap<>();
-        for(int i = 0; i < inLen; i++) {
-            valToIndex.put(inorder[i], i);
-        }
-
-        return buildTree(0, preLen - 1, 0, inLen - 1);
+```go
+func buildTree(preorder []int, inorder []int) *TreeNode {
+    preLen := len(preorder)
+    inLen := len(inorder)
+    if preLen <= 0 || inLen <= 0 || inLen != preLen {
+        return nil 
     }
 
-    private TreeNode buildTree(int preLeft, int preRight, int inLeft, int inRight) {
-        if(preLeft > preRight || inLeft > inRight) {
-            return null;
+    valToIndex := map[int]int{}
+    for i := 0; i < inLen; i++ {
+        valToIndex[inorder[i]] = i 
+    }
+
+    var reconstruct func(preLeft, preRight, inLeft, inRight int) *TreeNode 
+    reconstruct = func(preLeft, preRight, inLeft, inRight int) *TreeNode {
+        if preLeft > preRight || inLeft > inRight {
+            return nil 
         }
 
-        int rootVal = preorder[preLeft];
-        int rootIndex = valToIndex.get(rootVal);
-        TreeNode root = new TreeNode(rootVal);
-        root.left = buildTree(preLeft + 1, preLeft + rootIndex - inLeft, inLeft, rootIndex - 1);
-        root.right = buildTree(preLeft + rootIndex - inLeft + 1, preRight, rootIndex + 1, inRight);
-        return root;
+        rootVal := preorder[preLeft]
+        rootIndex := valToIndex[rootVal]
+        root := &TreeNode{Val: rootVal}
+        root.Left = reconstruct(preLeft + 1, preLeft + rootIndex - inLeft, inLeft, rootIndex - 1)
+        root.Right = reconstruct(preLeft + rootIndex - inLeft + 1, preRight, rootIndex + 1, inRight)
+        return root 
     }
+    
+    return reconstruct(0, preLen - 1, 0, inLen - 1)
 }
 ```
 
 -------
 
-### `leetcode 108 将有序数组转换为二叉搜索树`
+### `leetcode 106 从中序与后序遍历序列构造二叉树`
 
-```java
-class Solution {
-    public TreeNode sortedArrayToBST(int[] nums) {
-        if(nums == null || nums.length == 0) {
-            return null;
-        }
-
-        return buildTree(nums, 0, nums.length - 1);
+```go
+func buildTree(inorder []int, postorder []int) *TreeNode {
+    inLen := len(inorder)
+    postLen := len(postorder)
+    if inLen <= 0 || postLen <= 0 || inLen != postLen {
+        return nil
     }
 
-    private TreeNode buildTree(int[] nums, int left, int right) {
-        if(left > right) {
-            return null;
+    valToIndex := map[int]int{}
+    for i := 0; i < inLen; i++ {
+        valToIndex[inorder[i]] = i
+    }
+
+    var reconstruct func(inLeft, inRight, postLeft, postRight int) *TreeNode 
+    reconstruct = func(inLeft, inRight, postLeft, postRight int) *TreeNode {
+        if inLeft > inRight || postLeft > postRight {
+            return nil 
         }
 
-        int mid = left + (right - left) / 2;
-        TreeNode root = new TreeNode(nums[mid]);
-        root.left = buildTree(nums, left, mid - 1);
-        root.right = buildTree(nums, mid + 1, right);
-        return root;
+        rootVal := postorder[postRight]
+        rootIndex := valToIndex[rootVal]
+        root := &TreeNode{Val: rootVal}
+        root.Left = reconstruct(inLeft, rootIndex - 1, postLeft, postLeft + rootIndex - inLeft - 1)
+        root.Right = reconstruct(rootIndex + 1, inRight, postLeft + rootIndex - inLeft, postRight - 1)
+        return root 
+    }
+    
+    return reconstruct(0, inLen - 1, 0, postLen - 1)
+}
+```
+
+-----
+
+### `leetcode 107 二叉树的层序遍历 II` 
+
+```go
+func levelOrderBottom(root *TreeNode) [][]int {
+    res := [][]int{}
+    if root == nil {
+        return res 
+    }
+
+    queue := []*TreeNode{root}
+    for len(queue) > 0 {
+        levelSize := len(queue)
+        line := []int{}
+        nextLevel := []*TreeNode{}
+        for i := 0; i < levelSize; i++ {
+            node := queue[i]
+            line = append(line, node.Val)
+            if node.Left != nil {
+                nextLevel = append(nextLevel, node.Left)
+            }
+            if node.Right != nil {
+                nextLevel = append(nextLevel, node.Right)
+            }
+        }
+        res = append(res, line)
+        queue = nextLevel
+    }
+    reverseLines(res)
+    return res
+}
+
+func reverseLines(nums [][]int) {
+    for i, j := 0, len(nums) - 1; i < j; i, j = i+1, j-1 {
+        nums[i], nums[j] = nums[j], nums[i]
     }
 }
 ```
 
+------
 
+### `leetcode 108 将有序数组转换为二叉搜索树`
+
+```go
+func sortedArrayToBST(nums []int) *TreeNode {
+    length := len(nums)
+    if length <= 0 {
+        return nil 
+    }
+
+    var buildBST func(start, end int) *TreeNode 
+    buildBST = func(start, end int) *TreeNode {
+        if start > end {
+            return nil 
+        }
+
+        mid := start + (end - start) / 2
+        root := &TreeNode{Val: nums[mid]}
+        root.Left = buildBST(start, mid - 1)
+        root.Right = buildBST(mid + 1, end)
+        return root 
+    }
+    return buildBST(0, length - 1)
+}
+```
+
+-----
 
 ### `leetcode 110 平衡二叉树`
 
-```java
-class Solution {
-    public boolean isBalanced(TreeNode root) {
-        return checkBalance(root) != -1;
+```go
+func isBalanced(root *TreeNode) bool {
+    return checkBalance(root) != -1
+}
+
+func checkBalance(root *TreeNode) int {
+    if root == nil {
+        return 0
     }
 
-    private int checkBalance(TreeNode root) {
-        if(root == null) {
-            return 0;
-        }
-
-        int left = checkBalance(root.left);
-        if(left == -1) {
-            return -1;
-        }
-
-        int right = checkBalance(root.right);
-        if(right == -1) {
-            return -1;
-        }
-
-        return Math.abs(left - right) > 1? -1 : Math.max(left, right) + 1;
+    left := checkBalance(root.Left)
+    if left == -1 {
+        return -1
     }
+    right := checkBalance(root.Right)
+    if right == -1 {
+        return -1
+    }
+
+    if abs(left - right) > 1 {
+        return -1
+    }
+    return max(left, right) + 1
+}
+
+func abs(a int) int {
+    if a < 0 {
+        return -a 
+    }
+    return a 
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b
+    }
+    return a 
 }
 ```
 
@@ -1571,81 +2358,125 @@ class Solution {
 
 ### `leetcode 111 二叉树的最小深度`
 
-```java
-class Solution {
-    public int minDepth(TreeNode root) {
-        if(root == null) {
-            return 0;
-        }
-
-        int left = minDepth(root.left);
-        int right = minDepth(root.right);
-        if(left == 0 || right == 0) {
-            return left + right + 1;
-        }
-        return Math.min(left, right) + 1;
+```go
+func minDepth(root *TreeNode) int {
+    if root == nil {
+        return 0
     }
+
+    left := minDepth(root.Left)
+    right := minDepth(root.Right)
+    if left == 0 || right == 0 {
+        return left + right + 1
+    }
+    return min(left, right) + 1
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a 
+    }
+    return b 
 }
 ```
 
 ----
 
-### `leetcode 113 路径总和 II`
+### `leetcode 112 路径总和`
 
-```java
-class Solution {
-    private List<List<Integer>> res;
-
-    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
-        this.res = new LinkedList<>();
-        if(root == null) {
-            return res;
-        }
-
-        backTracking(root, targetSum, new LinkedList<Integer>());
-        return res;
+```go
+func hasPathSum(root *TreeNode, targetSum int) bool {
+    if root == nil {
+        return false 
     }
 
-    private void backTracking(TreeNode root, int targetSum, LinkedList<Integer> runner) {
-        if(root == null) {
-            return;
-        }
-
-        targetSum -= root.val;
-        runner.addLast(root.val);
-        if(targetSum == 0 && root.left == null && root.right == null) {
-            res.add(new LinkedList(runner));
-        }
-        backTracking(root.left, targetSum, runner);
-        backTracking(root.right, targetSum, runner);
-        runner.removeLast();
-        targetSum += root.val;
+    targetSum -= root.Val
+    if targetSum == 0 && root.Left == nil && root.Right == nil {
+        return true 
     }
+    return hasPathSum(root.Left, targetSum) || hasPathSum(root.Right, targetSum)
 }
 ```
 
 -----
 
+### `leetcode 113 路径总和 II`
+
+```go
+func pathSum(root *TreeNode, targetSum int) [][]int {
+    res := [][]int{}
+    if root == nil {
+        return res 
+    }
+
+    var backTracking func(root *TreeNode, targetSum int, runner []int) 
+    backTracking = func(root *TreeNode,  targetSum int, runner []int) {
+        if root == nil {
+            return 
+        }
+
+        targetSum -= root.Val
+        runner = append(runner, root.Val)
+        if targetSum == 0 && root.Left == nil && root.Right == nil {
+            res = append(res, append([]int{}, runner...))
+        }
+        backTracking(root.Left, targetSum, runner)
+        backTracking(root.Right, targetSum, runner)
+    }
+    
+    backTracking(root, targetSum, []int{})
+    return res
+}
+```
+
+-----
+
+### `leetcode 114 二叉树展开为链表`
+
+```go
+func flatten(root *TreeNode)  {
+    if root == nil {
+        return 
+    }
+
+    left := root.Left
+    root.Left = nil 
+    flatten(left)
+
+    right := root.Right
+    root.Right = left
+    flatten(right)
+    
+    runner := root
+    for runner.Right != nil {
+        runner = runner.Right
+    }
+    runner.Right = right 
+}
+```
+
+-----
+
+
+
 ### `leetcode 116 填充每个节点的下一个右侧节点指针`
 
-```java
-class Solution {
-    public Node connect(Node root) {
-        if(root == null) {
-            return null;
-        }
-
-        Node left = root.left;
-        Node right = root.right;
-        while(left != null && right != null) {
-            left.next = right;
-            left = left.right;
-            right = right.left;
-        }
-        connect(root.left);
-        connect(root.right);
-        return root;
+```go
+func connect(root *Node) *Node {
+    if root == nil {
+        return root
     }
+
+    left := root.Left
+    right := root.Right
+    for left != nil && right != nil {
+        left.Next = right
+        left = left.Right
+        right = right.Left
+    }
+    connect(root.Left)
+    connect(root.Right)
+    return root
 }
 ```
 
@@ -1653,32 +2484,30 @@ class Solution {
 
 ### `leetcode 117 填充每个节点的下一个右侧节点指针 II`
 
-```java
-class Solution {
-    public Node connect(Node root) {
-        if(root == null) {
-            return null;
-        }
-
-        Node cur = root;
-        while(cur != null) {
-            Node dummy = new Node(Integer.MIN_VALUE);
-            Node pre = dummy;
-            while(cur != null) {
-                if(cur.left != null) {
-                    pre.next = cur.left;
-                    pre = pre.next;
-                }
-                if(cur.right != null) {
-                    pre.next = cur.right;
-                    pre = pre.next;
-                }
-                cur = cur.next;
-            }
-            cur = dummy.next;
-        }
-        return root;
+```go
+func connect(root *Node) *Node {
+    if root == nil {
+        return nil 
     }
+
+    cur := root
+    for cur != nil {
+        dummy := &Node{}
+        pre := dummy
+        for cur != nil {
+            if cur.Left != nil {
+                pre.Next = cur.Left
+                pre = pre.Next
+            }
+            if cur.Right != nil {
+                pre.Next = cur.Right
+                pre = pre.Next
+            }
+            cur = cur.Next
+        }
+        cur = dummy.Next
+    }
+    return root
 }
 ```
 
@@ -1686,29 +2515,30 @@ class Solution {
 
 ### `leetcode 124 二叉树中的最大路径和`
 
-```java
-class Solution {
-    private int res = Integer.MIN_VALUE;
+```go
+func maxPathSum(root *TreeNode) int {
+    res := math.MinInt32
 
-    public int maxPathSum(TreeNode root) {
-        if(root == null) {
-            return 0;
+    var oneMaxSide func(root *TreeNode) int
+    oneMaxSide = func(root *TreeNode) int {
+        if root == nil {
+            return 0
         }
 
-        oneMaxSide(root);
-        return res;
+        left := max(0, oneMaxSide(root.Left))
+        right := max(0, oneMaxSide(root.Right))
+        res = max(res, left + right + root.Val)
+        return max(left, right) + root.Val
     }
+    oneMaxSide(root)
+    return res
+}
 
-    private int oneMaxSide(TreeNode root) {
-        if(root == null) {
-            return 0;
-        }
-
-        int left = Math.max(0, oneMaxSide(root.left));
-        int right = Math.max(0, oneMaxSide(root.right));
-        res = Math.max(res, left + right + root.val);
-        return Math.max(left, right) + root.val;
+func max(a, b int) int {
+    if a < b {
+        return b 
     }
+    return a 
 }
 ```
 
@@ -1735,40 +2565,119 @@ class Solution {
 }
 ```
 
+-----
 
+### `leetcode 128  最长连续序列`
 
-### `leetcode 129 求根到叶子节点数字之和`
-
-```java
-class Solution {
-    private int res;
-
-    public int sumNumbers(TreeNode root) {
-        this.res = 0;
-        if(root == null) {
-            return res;
+```go
+func longestConsecutive(nums []int) int {
+    if len(nums) <= 0 {
+        return 0
+    }
+    
+    uf := initUF(nums)
+    res := 1
+    for _, num := range nums {
+        if uf.contains(num - 1) {
+            res = max(res, uf.union(num, num - 1))
         }
+        if uf.contains(num + 1) {
+            res = max(res, uf.union(num, num + 1))
+        }
+    }
+    return res
+}
 
-        preorderTra(root, 0);
-        return res;
+func max(a, b int) int {
+    if a < b {
+        return b 
+    }
+    return a
+}
+
+type UnionFind struct {
+    parent  map[int]int
+    size    map[int]int 
+}
+
+func initUF(nums []int) *UnionFind {
+    parent := map[int]int{}
+    size := map[int]int{}
+    for _, num := range nums {
+        parent[num] = num
+        size[num] = 1
     }
 
-    private void preorderTra(TreeNode root, int curVal) {
-        if(root == null) {
-            return;
-        }
-
-        curVal = curVal * 10 + root.val;
-        if(root.left == null && root.right == null) {
-            res += curVal;
-        }
-        preorderTra(root.left, curVal);
-        preorderTra(root.right, curVal);
+    return &UnionFind{
+        parent: parent,
+        size: size,
     }
+}
+
+func (uf *UnionFind) contains(x int) bool {
+    if _, ok := uf.parent[x]; ok {
+        return true 
+    }
+    return false
+}
+
+func (uf *UnionFind) find(x int) int {
+    for uf.parent[x] != x {
+        uf.parent[x] = uf.parent[uf.parent[x]]
+        x = uf.parent[x]
+    }
+    return x 
+}
+
+func (uf *UnionFind) union(x, y int) int {
+    xRoot := uf.find(x)
+    yRoot := uf.find(y)
+    if xRoot == yRoot {
+        return 0
+    }
+
+    xSize := uf.size[xRoot]
+    ySize := uf.size[yRoot]
+    sum := xSize + ySize
+    if xSize < ySize {
+        uf.parent[xRoot] = yRoot
+        uf.size[yRoot] = sum
+    } else {
+        uf.parent[yRoot] = xRoot
+        uf.size[xRoot] = sum 
+    }
+    return sum 
 }
 ```
 
 
+
+### `leetcode 129 求根到叶子节点数字之和`
+
+```go
+func sumNumbers(root *TreeNode) int {
+    res := 0
+
+    var recursion func(root *TreeNode, sum int) 
+    recursion = func(root *TreeNode, sum int) {
+        if root == nil {
+            return
+        }
+
+        sum = sum * 10 + root.Val
+        if root.Left == nil && root.Right == nil {
+            res += sum 
+        }
+        recursion(root.Left, sum)
+        recursion(root.Right, sum)
+    }
+    
+    recursion(root, 0)
+    return res
+}
+```
+
+----
 
 ### `leetcode 130 被围绕的区域`
 
@@ -1836,6 +2745,20 @@ class Solution {
         }
         return spare < 0? -1 : (minIndex + 1) % len;
     }
+}
+```
+
+-----
+
+### `leetcode 136  只出现一次的数字`
+
+```go
+func singleNumber(nums []int) int {
+    res := 0
+    for _, num := range nums {
+        res ^= num 
+    }
+    return res
 }
 ```
 
@@ -1921,24 +2844,22 @@ class Solution {
 
 ### `leetcode 141 环形链表`
 
-```java
-public class Solution {
-    public boolean hasCycle(ListNode head) {
-        if(head == null || head.next == null) {
-            return false;
-        }
-
-        ListNode slow = head;
-        ListNode fast = head.next;
-        while(fast != null && fast.next != null) {
-            if(fast == slow) {
-                return true;
-            }
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-        return false;
+```go
+func hasCycle(head *ListNode) bool {
+    if head == nil || head.Next == nil {
+        return false
     }
+
+    slow := head
+    fast := head.Next
+    for fast != nil && fast.Next != nil {
+        slow = slow.Next
+        fast = fast.Next.Next
+        if slow == fast {
+            return true
+        }
+    }
+    return false
 }
 ```
 
@@ -1946,29 +2867,85 @@ public class Solution {
 
 ### `leetcode 142 环形链表II`
 
-```java
-public class Solution {
-    public ListNode detectCycle(ListNode head) {
-        if(head == null || head.next == null) {
-            return null;
-        }
-
-        ListNode slow = head;
-        ListNode fast = head;
-        while(fast != null && fast.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
-            if(slow == fast) {
-                slow = head;
-                while(slow != fast) {
-                    slow = slow.next;
-                    fast = fast.next;
-                }
-                return slow;
-            }
-        }
-        return null;
+```go
+func detectCycle(head *ListNode) *ListNode {
+    if head == nil || head.Next == nil {
+        return nil
     }
+
+    slow := head
+    fast := head
+    for fast != nil && fast.Next != nil {
+        slow = slow.Next
+        fast = fast.Next.Next
+        if slow == fast {
+            slow = head
+            for slow != fast {
+                slow = slow.Next
+                fast = fast.Next
+            }
+            return slow
+        }
+    }
+    return nil
+}
+```
+
+---
+
+### `leetcode 143 重排链表`
+
+```go
+func reorderList(head *ListNode)  {
+    if head == nil || head.Next == nil {
+        return
+    }
+
+    mid := getMid(head)
+    half := mid.Next
+    mid.Next = nil 
+    half = reverseList(half)
+    dummy := &ListNode{0, nil}
+    runner := dummy
+    for head != nil || half != nil {
+        if head != nil {
+            runner.Next = head
+            head = head.Next
+            runner = runner.Next
+        }
+        if half != nil {
+            runner.Next = half
+            half = half.Next
+            runner = runner.Next
+        }
+    }
+    head = dummy.Next
+}
+
+func getMid(head *ListNode) *ListNode {
+    if head == nil || head.Next == nil {
+        return head 
+    }
+
+    slow := head
+    fast := head.Next
+    for fast != nil && fast.Next != nil {
+        slow = slow.Next
+        fast = fast.Next.Next
+    }
+    return slow 
+}
+
+func reverseList(head *ListNode) *ListNode {
+    var pre *ListNode
+    cur := head
+    for cur != nil {
+        next := cur.Next
+        cur.Next = pre
+        pre = cur
+        cur = next 
+    }
+    return pre 
 }
 ```
 
@@ -1976,63 +2953,93 @@ public class Solution {
 
 ### `leetcode 144 二叉树的前序遍历`
 
-```java
-class Solution {
-    public List<Integer> preorderTraversal(TreeNode root) {
-        List<Integer> res = new LinkedList<>();
-        if(root == null) {
-            return res;
+```go
+// 递归
+func preorderTraversal(root *TreeNode) []int {
+    res := []int{}
+
+    var preOrderTra func(root *TreeNode) 
+    preOrderTra = func(root *TreeNode) {
+        if root == nil {
+            return 
         }
 
-        Deque<TreeNode> stack = new LinkedList<>();
-        while(!stack.isEmpty() || root != null) {
-            while(root != null) {
-                res.add(root.val);
-                stack.push(root);
-                root = root.left;
-            }
-
-            TreeNode node = stack.pop();
-            root = node.right;
-        }
-        return res;
+        res = append(res, root.Val)
+        preOrderTra(root.Left)
+        preOrderTra(root.Right)
     }
+
+    preOrderTra(root)
+    return res
+}
+
+// 迭代
+func preorderTraversal(root *TreeNode) []int {
+    stack := []*TreeNode{}
+    res := []int{}
+    for len(stack) > 0 || root != nil {
+        for root != nil {
+            res = append(res, root.Val)
+            stack = append(stack, root)
+            root = root.Left
+        }
+        node := stack[len(stack) - 1]
+        stack = stack[:len(stack) - 1]
+        root = node.Right
+    }
+    return res
 }
 ```
 
-
-
 -----
 
-### `leetcode` 145  二叉树的后序遍历
+### `leetcode 145  二叉树的后序遍历`
 
-```java
-class Solution {
-    public List<Integer> postorderTraversal(TreeNode root) {
-        List<Integer> res = new LinkedList<>();
-        if(root == null) {
-            return res;
+```go
+// 递归
+func postorderTraversal(root *TreeNode) []int {
+    res := []int{}
+    
+    var postorderTra func(root *TreeNode) 
+    postorderTra = func(root *TreeNode) {
+        if root == nil {
+            return 
         }
 
-        Deque<TreeNode> stack = new LinkedList<>();
-        TreeNode lastVisit = null;
-        while(!stack.isEmpty() || root != null) {
-            while(root != null) {
-                stack.push(root);
-                root = root.left;
-            }
-
-            TreeNode node = stack.peek();
-            if(node.right == null || node.right == lastVisit) {
-                stack.pop();
-                res.add(node.val);
-                lastVisit = node;
-            } else {
-                root = node.right;
-            }
-        }
-        return res;
+        postorderTra(root.Left)
+        postorderTra(root.Right)
+        res = append(res, root.Val)
     }
+    
+    postorderTra(root)
+    return res
+}
+
+// 迭代
+func postorderTraversal(root *TreeNode) []int {
+    res := []int{}
+    if root == nil {
+        return res 
+    }
+
+    stack := []*TreeNode{}
+    var lastVisit *TreeNode
+    for len(stack) > 0 || root != nil {
+        for root != nil {
+            stack = append(stack, root)
+            root = root.Left
+        }
+
+        node := stack[len(stack) - 1]
+        if node.Right == nil || node.Right == lastVisit {
+            res = append(res, node.Val)
+            lastVisit = node
+            stack = stack[:len(stack)-1]
+        } else {
+            root = node.Right
+        }
+    }
+    return res
 }
 ```
 
@@ -2040,70 +3047,44 @@ class Solution {
 
 ### `leetcode 146 LRU缓存机制`
 
-```java
-class LRUCache {
-    private class LinkedListNode {
-        private int key;
-        private int value;
-        private LinkedListNode prev;
-        private LinkedListNode next;
+```go
+type entry struct {
+    key     int
+    value   int
+}
 
-        public LinkedListNode(int key, int value) {
-            this.key = key;
-            this.value = value;
-            this.prev = null;
-            this.next = null;
-        }
+type LRUCache struct {
+    cap     int
+    cache   map[int]*list.Element
+    lst     *list.List 
+}
+
+
+func Constructor(capacity int) LRUCache {
+    return LRUCache{capacity, map[int]*list.Element{}, list.New()}
+}
+
+
+func (this *LRUCache) Get(key int) int {
+    e := this.cache[key]
+    if e == nil {
+        return -1
+    }    
+    this.lst.MoveToFront(e)
+    return e.Value.(entry).value 
+}
+
+
+func (this *LRUCache) Put(key int, value int)  {
+    if e := this.cache[key]; e != nil {
+        e.Value = entry{key, value}
+        this.lst.MoveToFront(e)
+        return 
     }
 
-    private int capacity;
-    private LinkedListNode listHead;
-    private LinkedListNode listTail;
-    private Map<Integer, LinkedListNode> map;
-
-    public LRUCache(int capacity) {
-        this.capacity = capacity;
-        this.listHead = new LinkedListNode(-1, -1);
-        this.listTail = new LinkedListNode(-1, -1);
-        this.map = new HashMap<>();
-        
-        listHead.next = listTail;
-        listTail.prev = listHead;
-    }
-    
-    public int get(int key) {
-        if(!map.containsKey(key)) {
-            return -1;
-        }
-
-        LinkedListNode node = map.get(key);
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
-        moveToTail(node);
-        return node.value;
-    }
-    
-    public void put(int key, int value) {
-        if(get(key) != -1) {
-            map.get(key).value = value;
-            return;
-        }
-
-        LinkedListNode node = new LinkedListNode(key, value);
-        map.put(key, node);
-        moveToTail(node);
-        if(map.size() > capacity) {
-            map.remove(listHead.next.key);
-            listHead.next = listHead.next.next;
-            listHead.next.prev = listHead;
-        }
-    }
-
-    private void moveToTail(LinkedListNode node) {
-        node.prev = listTail.prev;
-        listTail.prev = node;
-        node.prev.next = node;
-        node.next = listTail;
+    this.cache[key] = this.lst.PushFront(entry{key, value})
+    if len(this.cache) > this.cap {
+        delete(this.cache, this.lst.Remove(this.lst.Back()).(entry).key)
     }
 }
 ```
@@ -2160,23 +3141,21 @@ class Solution {
 
 ### `leetcode 154 寻找旋转排序数组中的最小值 II` 
 
-```java
-class Solution {
-    public int findMin(int[] nums) {
-        int left = 0;
-        int right = nums.length - 1;
-        while(left < right) {
-            int mid = left + (right - left) / 2;
-            if(nums[mid] == nums[right]) {
-                right--;
-            } else if(nums[mid] < nums[right]) {
-                right = mid;
-            } else {
-                left = mid + 1;
-            }
+```go
+func findMin(nums []int) int {
+    left := 0
+    right := len(nums) - 1
+    for left < right {
+        mid := left + (right - left) / 2
+        if nums[mid] == nums[right] {
+            right--
+        } else if nums[mid] < nums[right] {
+            right = mid 
+        } else {
+            left = mid + 1
         }
-        return nums[left];
     }
+    return nums[left]
 }
 ```
 
@@ -2184,39 +3163,72 @@ class Solution {
 
 ### `leetcode 155 最小栈`
 
-```java
-class MinStack {
-    private Deque<Integer> dataStack;
-    private Deque<Integer> minStack;
+```go
+type MinStack struct {
+    dataStack   []int
+    minStack    []int 
+}
 
-    /** initialize your data structure here. */
-    public MinStack() {
-        this.dataStack = new LinkedList<>();
-        this.minStack = new LinkedList<>();
+
+/** initialize your data structure here. */
+func Constructor() MinStack {
+    return MinStack{[]int{}, []int{}}
+}
+
+
+func (this *MinStack) Push(val int)  {
+    this.dataStack = append(this.dataStack, val)
+    if len(this.minStack) == 0 {
+        this.minStack = append(this.minStack, val)
+    } else {
+        top := this.minStack[len(this.minStack) - 1]
+        this.minStack = append(this.minStack, min(val, top))
     }
-    
-    public void push(int x) {
-        dataStack.push(x);
-        if(minStack.isEmpty()) {
-            minStack.push(x);
-        } else {
-            int min = Math.min(minStack.peek(), x);
-            minStack.push(min);
-        }
+}
+
+
+func (this *MinStack) Pop()  {
+    this.dataStack = this.dataStack[:len(this.dataStack) - 1]
+    this.minStack = this.minStack[:len(this.minStack) - 1]
+}
+
+
+func (this *MinStack) Top() int {
+    return this.dataStack[len(this.dataStack) - 1]
+}
+
+
+func (this *MinStack) GetMin() int {
+    return this.minStack[len(this.minStack) - 1]
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
     }
-    
-    public void pop() {
-        dataStack.pop();
-        minStack.pop();
+    return b 
+}
+```
+
+----
+
+### `leetcode 156 上下翻转二叉树`
+
+```go
+func upsideDownBinaryTree(root *TreeNode) *TreeNode {
+    var parent *TreeNode
+    var rightSib *TreeNode
+    cur := root
+    for cur != nil {
+        left := cur.Left
+        right := cur.Right 
+        cur.Left = rightSib
+        cur.Right = parent
+        parent = cur
+        rightSib = right 
+        cur = left 
     }
-    
-    public int top() {
-        return dataStack.peek();
-    }
-    
-    public int getMin() {
-        return minStack.peek();
-    }
+    return parent
 }
 ```
 
@@ -2224,43 +3236,40 @@ class MinStack {
 
 ### `leetcode 160 相交链表`
 
-```java
-public class Solution {
-    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-        ListNode shortL = headA;
-        ListNode longL = headB;
-        int lenS = 0;
-        int lenL = 0;
-        while(shortL != null) {
-            lenS++;
-            shortL = shortL.next;
-        }
-        while(longL != null) {
-            lenL++;
-            longL = longL.next;
-        }
+```go
+/**执行耗时有点长，不知道为何*/
+func getIntersectionNode(headA, headB *ListNode) *ListNode {
+    shortLen := 0
+    longLen := 0
+    shortL := headA
+    longL := headB
 
-        int diff = lenL - lenS;
-        shortL = headA;
-        longL = headB;
-        if(diff < 0) {
-            shortL = headB;
-            longL = headA;
-            diff = Math.abs(diff);
-        }
-
-        for(int i = 0; i < diff; i++) {
-            longL = longL.next;
-        }
-        while(shortL != null && longL != null) {
-            if(shortL == longL) {
-                return shortL;
-            }
-            shortL = shortL.next;
-            longL = longL.next;
-        }
-        return null;
+    for shortL != nil {
+        shortLen++
+        shortL = shortL.Next
     }
+    for longL != nil {
+        longLen++
+        longL = longL.Next
+    }
+
+    diff := longLen - shortLen
+    shortL = headA
+    longL = headB
+    if diff < 0 {
+        diff = -diff
+        shortL = headB
+        longL = headA
+    }
+
+    for i := 0; i < diff; i++ {
+        longL = longL.Next
+    }
+    for shortL != longL {
+        shortL = shortL.Next
+        longL = longL.Next
+    }
+    return shortL
 }
 ```
 
@@ -2268,26 +3277,36 @@ public class Solution {
 
 ### `leetcode 165 比较版本号`
 
-```java
-class Solution {
-    public int compareVersion(String version1, String version2) {
-        String[] v1 = version1.split("\\.");
-        String[] v2 = version2.split("\\.");
-        int len1 = v1.length;
-        int len2 = v2.length;
-        int i = 0;
-        int j = 0;
-        while(i < len1 || j < len2) {
-            int a = (i < len1)? Integer.parseInt(v1[i]) : 0;
-            int b = (j < len2)? Integer.parseInt(v2[j]) : 0;
-            i++;
-            j++;
-            if(a != b) {
-                return (a > b)? 1 : -1;
-            }
+```go
+func compareVersion(version1 string, version2 string) int {
+    v1 := strings.Split(version1, ".")
+    v2 := strings.Split(version2, ".")
+    len1 := len(v1)
+    len2 := len(v2)
+    for i := 0; i < max(len1, len2); i++ {
+        a := 0
+        b := 0
+        if i < len1 {
+            a,_ = strconv.Atoi(v1[i])
         }
-        return 0;
+        if i < len2 {
+            b,_ = strconv.Atoi(v2[i])
+        }
+        if a != b {
+            if a < b {
+                return -1
+            }
+            return 1
+        }
     }
+    return 0
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b  
+    }
+    return a 
 }
 ```
 
@@ -2295,29 +3314,94 @@ class Solution {
 
 ### `leetcode 169 多数元素`
 
-```java
-class Solution {
-    public int majorityElement(int[] nums) {
-        int count = 0;
-        int majority = Integer.MIN_VALUE;
-        for(int num : nums) {
-            if(count <= 0) {
-                count = 1;
-                majority = num;
+```go
+func majorityElement(nums []int) int {
+    majority := nums[0]
+    count := 1
+    for i := 1; i < len(nums); i++ {
+        if count == 0 {
+            majority = nums[i]
+            count = 1
+        } else {
+            if majority == nums[i] {
+                count++
             } else {
-                if(num == majority) {
-                    count++;
-                } else {
-                    count--;
-                }
+                count--
             }
         }
-        return majority;
     }
-} 	
+    return majority
+}
 ```
 
 ----
+
+### `leetcode 170 两数之和 III`
+
+```go
+type TwoSum struct {
+    data        map[int]int
+    lowerBound  int
+    upperBound  int 
+}
+
+
+/** Initialize your data structure here. */
+func Constructor() TwoSum {
+    return TwoSum {
+        data: map[int]int{},
+        lowerBound: math.MaxInt32,
+        upperBound: math.MinInt32,
+    }
+}
+
+
+/** Add the number to an internal data structure.. */
+func (this *TwoSum) Add(number int)  {
+    this.data[number]++
+    this.lowerBound = min(this.lowerBound, number)
+    this.upperBound = max(this.upperBound, number)
+}
+
+
+/** Find if there exists any pair of numbers which sum is equal to the value. */
+func (this *TwoSum) Find(value int) bool {
+    if value < 2 * this.lowerBound || value > 2 * this.upperBound {
+        return false 
+    }
+
+    for k, v := range this.data {
+        if value - k == k {
+            if v > 1 {
+                return true 
+            }
+        } else {
+            if this.data[value - k] > 0 {
+                return true 
+            }
+        }
+    }
+    return false
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b 
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b 
+    }
+    return a 
+}
+```
+
+[参考答案](https://leetcode-cn.com/problems/two-sum-iii-data-structure-design/solution/shuang-100jian-dan-chang-gui-si-lu-kan-liao-yi-qua/)
+
+------
 
 ### `leetcode 171 Excel表列序号`
 
@@ -2334,6 +3418,41 @@ class Solution {
 ```
 
 -----
+
+### `leetcode 173 二叉搜索树迭代器`
+
+```go
+type BSTIterator struct {
+    stack   []*TreeNode
+    curNode *TreeNode
+}
+
+
+func Constructor(root *TreeNode) BSTIterator {
+    stack := []*TreeNode{}
+    curNode := root
+    return BSTIterator{stack, curNode}
+}
+
+
+func (this *BSTIterator) Next() int {
+    for node := this.curNode; node != nil; node = node.Left {
+        this.stack = append(this.stack, node)
+    }
+    this.curNode = this.stack[len(this.stack)-1]
+    val := this.curNode.Val
+    this.stack = this.stack[:len(this.stack)-1]
+    this.curNode = this.curNode.Right
+    return val
+}   
+
+
+func (this *BSTIterator) HasNext() bool {
+    return this.curNode != nil || len(this.stack) > 0
+}
+```
+
+
 
 ### `leetcode 179 最大数`
 
@@ -2371,22 +3490,27 @@ class Solution {
 
 ### `leetcode 198 打家劫舍`
 
-```java
-class Solution {
-    public int rob(int[] nums) {
-        if(nums == null || nums.length == 0) {
-            return 0;
-        }
-
-        int len = nums.length;
-        int[] dp = new int[len+1];
-        dp[0] = 0;
-        dp[1] = nums[0];
-        for(int i = 2; i <= len; i++) {
-            dp[i] = Math.max(dp[i-1], dp[i-2] + nums[i-1]);
-        }
-        return dp[len];
+```go
+func rob(nums []int) int {
+    if len(nums) < 1 {
+        return 0
     }
+
+    length := len(nums)
+    dp := make([]int, length+1)
+    dp[0] = 0
+    dp[1] = nums[0]
+    for i := 2; i <= length; i++ {
+        dp[i] = max(dp[i-1], dp[i-2] + nums[i-1])
+    }
+    return dp[length]
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b 
+    }
+    return a
 }
 ```
 
@@ -2394,36 +3518,84 @@ class Solution {
 
 ### `leetcode 199 二叉树的右视图`
 
-```java
-class Solution {
-    private List<Integer> res;
+```go
+func rightSideView(root *TreeNode) []int {
+    res := []int{}
 
-    public List<Integer> rightSideView(TreeNode root) {
-        this.res = new LinkedList<>();
-        if(root == null) {
-            return res;
+    var reverseInorderTra func(root *TreeNode, depth int)
+    reverseInorderTra = func(root *TreeNode, depth int) {
+        if root == nil {
+            return 
         }
 
-        reverseTra(root, 0);
-        return res;
+        if len(res) == depth {
+            res = append(res, root.Val)
+        }
+        depth++
+        reverseInorderTra(root.Right, depth)
+        reverseInorderTra(root.Left, depth)
     }
-
-    private void reverseTra(TreeNode root, int height) {
-        if(root == null) {
-            return;
-        }
-
-        if(height == res.size()) {
-            res.add(root.val);
-        }
-        height++;
-        reverseTra(root.right, height);
-        reverseTra(root.left, height);
-    }
+    
+    reverseInorderTra(root, 0)
+    return res
 }
 ```
 
 -----
+
+### `leetcode 200 岛屿数量`
+
+```java
+func numIslands(grid [][]byte) int {
+    var dfs func(grid[][] byte, i, j int)
+    dfs = func(grid [][]byte, i, j int) {
+        if i < 0 || i >= len(grid) || j < 0 || j >= len(grid[0]) || grid[i][j] != '1' {
+            return
+        }
+
+        grid[i][j] = '0'
+        dfs(grid, i - 1, j)
+        dfs(grid, i, j - 1)
+        dfs(grid, i + 1, j)
+        dfs(grid, i, j + 1)
+    }
+
+    m := len(grid)
+    n := len(grid[0])
+    res := 0
+    for i := 0; i < m; i++ {
+        for j := 0; j < n; j++ {
+            if grid[i][j] == '1' {
+                dfs(grid, i, j)
+                res++
+            }
+        }
+    }
+    return res
+}
+```
+
+-----
+
+### `leetcode 203 移除链表元素`
+
+```go
+func removeElements(head *ListNode, val int) *ListNode {
+    dummy := &ListNode{}
+    dummy.Next = head
+    runner := dummy
+    for runner.Next != nil {
+        if runner.Next.Val == val {
+            runner.Next = runner.Next.Next
+        } else {
+            runner = runner.Next
+        }
+    }
+    return dummy.Next
+}
+```
+
+
 
 ### `leetcode 205 同构字符串`
 
@@ -2475,22 +3647,20 @@ class Solution {
 
 ### `leetcode 206 反转链表`
 
-```java
+```go
 /**
 * 迭代
  */
-class Solution {
-    public ListNode reverseList(ListNode head) {
-        ListNode pre = null;
-        ListNode cur = head;
-        while(cur != null) {
-            ListNode next = cur.next;
-            cur.next = pre;
-            pre = cur;
-            cur = next;
-        }
-        return pre;
+func reverseList(head *ListNode) *ListNode {
+    var pre *ListNode
+    cur := head
+    for cur != nil {
+        next := cur.Next
+        cur.Next = pre
+        pre = cur
+        cur = next
     }
+    return pre
 }
 ```
 
@@ -2498,63 +3668,73 @@ class Solution {
 
 ### `leetcode 208 实现Trie (前缀树)`
 
-```java
-class Trie {
-    private class TrieNode {
-        private TrieNode[] child;
-        private boolean isLeaf;
+```go
+type Trie struct {
+    child   [26]*Trie
+    isLeaf  bool
+}
 
-        public TrieNode() {
-            this.child = new TrieNode[26];
-            this.isLeaf = false;
-        }
+/** Initialize your data structure here. */
+func Constructor() Trie {
+    return Trie{}
+}
+
+
+/** Inserts a word into the trie. */
+func (this *Trie) Insert(word string)  {
+    if this == nil {
+        return 
     }
 
-    private TrieNode root;
+    cur := this
+    for _, c := range word {
+        index := c - 'a'
+        if cur.child[index] == nil {
+            cur.child[index] = &Trie{}
+        }
+        cur = cur.child[index]
+    }
+    cur.isLeaf = true
+}
 
-    /** Initialize your data structure here. */
-    public Trie() {
-        this.root = new TrieNode();
+
+/** Returns if the word is in the trie. */
+func (this *Trie) Search(word string) bool {
+    if this == nil {
+        return false
     }
-    
-    /** Inserts a word into the trie. */
-    public void insert(String word) {
-        TrieNode node = root;
-        for(char c : word.toCharArray()) {
-            int index = c - 'a';
-            if(node.child[index] == null) {
-                node.child[index] = new TrieNode();
-            }
-            node = node.child[index];
+
+    cur := this
+    for _, c := range word {
+        index := c - 'a'
+        if cur.child[index] == nil {
+            return false
         }
-        node.isLeaf = true;
+        cur = cur.child[index]
     }
-    
-    /** Returns if the word is in the trie. */
-    public boolean search(String word) {
-        TrieNode node = root;
-        for(char c : word.toCharArray()) {
-            int index = c - 'a';
-            if(node.child[index] == null) {
-                return false;
-            }
-            node = node.child[index];
+
+    if cur.isLeaf {
+        return true
+    }
+    return false
+}
+
+
+/** Returns if there is any word in the trie that starts with the given prefix. */
+func (this *Trie) StartsWith(prefix string) bool {
+    if this == nil {
+        return false
+    }
+
+    cur := this
+    for _, c := range prefix {
+        index := c - 'a'
+        if cur.child[index] == nil {
+            return false
         }
-        return node.isLeaf;
+        cur = cur.child[index]
     }
-    
-    /** Returns if there is any word in the trie that starts with the given prefix. */
-    public boolean startsWith(String prefix) {
-        TrieNode node = root;
-        for(char c : prefix.toCharArray()) {
-            int index = c - 'a';
-            if(node.child[index] == null) {
-                return false;
-            }
-            node = node.child[index];
-        }
-        return true;
-    }
+    return true
 }
 ```
 
@@ -2584,6 +3764,146 @@ class Solution {
 ```
 
 ----
+
+### `leetcode 213 打家劫舍 II`
+
+```go
+func rob(nums []int) int {
+    length := len(nums)
+    if length == 1 {
+        return nums[0]
+    }
+    
+    return max(robInRange(nums, 0, length - 2), robInRange(nums, 1, length - 1))
+}
+
+func robInRange(nums []int, start, end int) int {
+    robMinusOne := 0
+    robMinusTwo := 0
+    robN := 0
+    for i := start; i <= end; i++ {
+        robN = max(robMinusOne, robMinusTwo + nums[i])
+        robMinusTwo = robMinusOne
+        robMinusOne = robN
+    }
+    return robN
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b 
+    }
+    return a 
+}
+```
+
+
+
+### `leetcode 215 数组中的第k个最大元素`
+
+```go
+func findKthLargest(nums []int, k int) int {
+    length := len(nums)
+    k = length - k
+    left := 0
+    right := length - 1
+    for {
+        index := partition(nums, left, right)
+        if index == k {
+            return nums[index]
+        } else if index < k {
+            left = index + 1
+        } else {
+            right = index - 1
+        }
+    }
+}
+
+func partition(nums []int, left int, right int) int {
+    mark := left
+    pivot := nums[left]
+    for i := left + 1; i <= right; i++ {
+        if nums[i] < pivot {
+            mark++
+            nums[mark], nums[i] = nums[i], nums[mark]
+        }
+    }
+    nums[left] = nums[mark]
+    nums[mark] = pivot
+    return mark
+}
+```
+
+----
+
+### `leetcode 221 最大正方形`
+
+```go
+func maximalSquare(matrix [][]byte) int {
+    m := len(matrix)
+    n := len(matrix[0])
+    res := 0
+    dp := make([][]int, m + 1)
+    for i := 0; i <= m; i++ {
+        dp[i] = make([]int, n + 1)
+    }
+
+    for i := 1; i <= m; i++ {
+        for j := 1; j <= n; j++ {
+            if matrix[i-1][j-1] == '1' {
+                dp[i][j] = min(dp[i-1][j], min(dp[i-1][j-1], dp[i][j-1])) + 1
+            }
+            res = max(res, dp[i][j])
+        }
+    }
+    return res * res
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b 
+    }
+    return a 
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a 
+    }
+    return b 
+}
+```
+
+
+
+### `leetcode 222 完全二叉树的节点个数`
+
+```go
+func countNodes(root *TreeNode) int {
+    if root == nil {
+        return 0
+    }
+
+    left := height(root.Left)
+    right := height(root.Right)
+    if left == right {
+        return (1 << left) + countNodes(root.Right)
+    } else {
+        return (1 << right) + countNodes(root.Left)
+    }
+}
+
+func height(root *TreeNode) int {
+    res := 0
+    for root != nil {
+        res++
+        root = root.Left
+    }
+    return res
+}
+```
+
+
 
 ### `leetcode 225 用队列实现栈`
 
@@ -2626,18 +3946,15 @@ class MyStack {
 
 ### `leetcode 226 翻转二叉树`
 
-```java
-class Solution {
-    public TreeNode invertTree(TreeNode root) {
-        if(root == null) {
-            return null;
-        }
-
-        TreeNode left = root.left;
-        root.left = invertTree(root.right);
-        root.right = invertTree(left);
-        return root;
+```go
+func invertTree(root *TreeNode) *TreeNode {
+    if root == nil {
+        return nil
     }
+    left := root.Left
+    root.Left = invertTree(root.Right)
+    root.Right = invertTree(left)
+    return root
 }
 ```
 
@@ -2645,33 +3962,25 @@ class Solution {
 
 ### `leetcode 230 二叉搜素树中第k小的元素`
 
-```java
-class Solution {
-    private int res = 0;
-    private int count = 0;
+```go
+func kthSmallest(root *TreeNode, k int) int {
+    res := 0
+    count := 0
 
-    public int kthSmallest(TreeNode root, int k) {
-        if(root == null) {
-            return Integer.MIN_VALUE;
+    var inorderTra func(root *TreeNode) 
+    inorderTra = func(root *TreeNode) {
+        if root == nil {
+            return 
         }
 
-        inorderTra(root, k);
-        return res;
+        inorderTra(root.Left)
+        count++ 
+        if count == k { res = root.Val }
+        inorderTra(root.Right)
     }
 
-    private void inorderTra(TreeNode root, int k) {
-        if(root == null) {
-            return;
-        }
-
-        inorderTra(root.left, k);
-        count++;
-        if(count == k) {
-            res = root.val;
-            return;
-        }
-        inorderTra(root.right, k);
-    }
+    inorderTra(root)
+    return res
 }
 ```
 
@@ -2726,27 +4035,175 @@ class MyQueue {
 
 ----
 
+### `leetcode 234 回文链表`
+
+```go
+func isPalindrome(head *ListNode) bool {
+    if head == nil || head.Next == nil {
+        return true 
+    }
+
+    mid := getMid(head)
+    half := mid.Next
+    mid.Next = nil
+    half = reverseList(half)
+    return checkForMatch(head, half)
+}
+
+func checkForMatch(l1 *ListNode, l2 *ListNode) bool {
+    for l1 != nil && l2 != nil {
+        if l1.Val != l2.Val {
+            return false
+        }
+        l1 = l1.Next
+        l2 = l2.Next
+    }
+    return true 
+}
+
+func getMid(head *ListNode) *ListNode {
+    if head == nil || head.Next == nil {
+        return head 
+    }
+
+    slow := head
+    fast := head.Next
+    for fast != nil && fast.Next != nil {
+        slow = slow.Next
+        fast = fast.Next.Next
+    }
+    return slow
+}
+
+func reverseList(head *ListNode) *ListNode {
+    var pre *ListNode
+    cur := head
+    for cur != nil {
+        next := cur.Next
+        cur.Next = pre
+        pre = cur
+        cur = next
+    }
+    return pre
+}
+```
+
+----
+
+### `leetcode 235 二叉搜索树的最近公共祖先`
+
+```go
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	if p.Val < root.Val && q.Val < root.Val {
+        return lowestCommonAncestor(root.Left, p, q)
+    } else if p.Val > root.Val && q.Val > root.Val {
+        return lowestCommonAncestor(root.Right, p, q)
+    } 
+    return root
+}
+```
+
+---
+
+### `leetcode 236 二叉树的最近公共祖先`
+
+```go
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+    if root == nil || root == p || root == q {
+        return root
+    }
+    left := lowestCommonAncestor(root.Left, p, q)
+    right := lowestCommonAncestor(root.Right, p, q)
+    if left == nil {
+        return right 
+    } else if right == nil {
+        return left 
+    }
+    return root
+}
+```
+
+
+
+### `leetcode 237 删除链表中的节点`
+
+```go
+func deleteNode(node *ListNode) {
+    node.Val = node.Next.Val
+    node.Next = node.Next.Next
+}
+```
+
+
+
 ### `leetcode 238 除自身以外数组的乘积`
 
-```java
-class Solution {
-    public int[] productExceptSelf(int[] nums) {
-        int len = nums.length;
-        int[] res = new int[len];
+```go
+func productExceptSelf(nums []int) []int {
+    length := len(nums)
+    res := make([]int, length)
 
-        int left = 1;
-        for(int i = 0; i < len; i++) {
-            res[i] = left;
-            left *= nums[i];
-        }
-
-        int right = 1;
-        for(int i = len - 1; i >= 0; i--) {
-            res[i] *= right;
-            right *= nums[i];
-        }
-        return res;
+    left := 1
+    for i := 0; i < length; i++ {
+        res[i] = left 
+        left *= nums[i]
     }
+
+    right := 1
+    for i := length - 1; i >= 0; i-- {
+        res[i] *= right 
+        right *= nums[i]
+    }
+
+    return res
+}
+```
+
+----
+
+### `leetcode 239 滑动窗口最大值`
+
+```go
+func maxSlidingWindow(nums []int, k int) []int {
+    res := []int{}
+    window := []int{}
+    for i, num := range nums {
+        for len(window) > 0 && num >= nums[window[len(window) - 1]] {
+            window = window[:len(window) - 1]
+        }
+        window = append(window, i)
+        if i - window[0] >= k {
+            window = window[1:]
+        }
+        if i >= k - 1 {
+            res = append(res, nums[window[0]])
+        }
+    }
+    return res
+}
+```
+
+----
+
+### `leetcode 240 搜索二维矩阵II`
+
+```go
+func searchMatrix(matrix [][]int, target int) bool {
+    m := len(matrix)
+    n := len(matrix[0])
+    top := 0
+    right := n - 1
+    for top < m && right >= 0 {
+        cur := matrix[top][right]
+        if cur == target {
+            return true
+        } else if cur < target {
+            top++
+        } else {
+            right--
+        }
+    }
+    return false
 }
 ```
 
@@ -2754,30 +4211,33 @@ class Solution {
 
 ### `leetcode 255 验证前序遍历序列二叉搜索树`
 
-```java
-class Solution {
-    public boolean verifyPreorder(int[] preorder) {
-        return recursion(preorder, 0, preorder.length - 1);
+```go
+func verifyPreorder(preorder []int) bool {
+    if len(preorder) < 2 {
+        return true
     }
 
-    private boolean recursion(int[] preorder, int left, int right) {
-        if(left >= right) {
-            return true;
+    var recursion func(start, end int) bool 
+    recursion = func(start, end int) bool {
+        if start >= end {
+            return true
         }
 
-        int rootVal = preorder[left];
-        int cur = left + 1;
-        while(cur <= right && preorder[cur] < rootVal) {
-            cur++;
+        rootVal := preorder[start]
+        split := start + 1
+        for split <= end && preorder[split] < rootVal {
+            split++
         }
-        for(int i = cur; i <= right; i++) {
-            if(preorder[i] <= rootVal) {
-                return false;
+        for i := split; i <= end; i++ {
+            if preorder[i] <= rootVal {
+                return false 
             }
         }
 
-        return recursion(preorder, left + 1, cur - 1) && recursion(preorder, cur, right);
+        return recursion(start + 1, split - 1) && recursion(split, end)
     }
+
+    return recursion(0, len(preorder) - 1)
 }
 ```
 
@@ -2785,38 +4245,31 @@ class Solution {
 
 ### `leetcode 257 二叉树的所有路径`
 
-```java
-/**
-* 回溯
- */
-class Solution {
-    private List<String> res;
-
-    public List<String> binaryTreePaths(TreeNode root) {
-        this.res = new LinkedList<>();
-        if(root == null) {
-            return res;
-        }
-
-        backTracking(root, "");
-        return res;
+```go
+func binaryTreePaths(root *TreeNode) []string {
+    res := []string{}
+    if root == nil {
+        return res 
     }
 
-    private void backTracking(TreeNode root, String path) {
-        if(root == null) {
-            return;
+    var backTracking func(root *TreeNode, runner string) 
+    backTracking = func(root *TreeNode, runner string) {
+        if root == nil {
+            return 
         }
 
-        path += root.val;
-        if(root.left == null && root.right == null) {
-            res.add(path);
-            return;
+        runner += strconv.Itoa(root.Val)
+        if root.Left == nil && root.Right == nil {
+            res = append(res, runner)
+            return 
         }
-
-        path += "->";
-        backTracking(root.left, path);
-        backTracking(root.right, path);
+        runner += "->"
+        backTracking(root.Left, runner)
+        backTracking(root.Right, runner)
     }
+
+    backTracking(root, "")
+    return res
 }
 ```
 
@@ -2853,6 +4306,38 @@ class Solution {
 
 -----
 
+### `leetcode 270 最接近的二叉搜索树值`
+
+```go
+func closestValue(root *TreeNode, target float64) int {
+    res := root.Val
+    dif := diff(float64(root.Val), target)
+    cur := 0.0
+    for root != nil {
+        cur = diff(float64(root.Val), target)
+        if cur < dif {
+            dif = cur 
+            res = root.Val
+        }
+        if target > float64(root.Val) {
+            root = root.Right
+        } else {
+            root = root.Left
+        }
+    } 
+    return res
+}
+
+func diff(a, b float64) float64 {
+    if a < b {
+        return b - a
+    }
+    return a - b 
+} 
+```
+
+
+
 ### `leetcode 283 移动零`
 
 ```java
@@ -2876,6 +4361,25 @@ class Solution {
 ```
 
 ----
+
+### `leetcode 285 二叉搜索树中的中序后继`
+
+```go
+func inorderSuccessor(root *TreeNode, p *TreeNode) *TreeNode {
+    var res *TreeNode
+    for root != nil {
+        if p.Val < root.Val {
+            res = root 
+            root = root.Left
+        } else {
+            root = root.Right
+        }
+    }
+    return res
+}
+```
+
+
 
 ### `leetcode 287 寻找重复数`
 
@@ -2948,25 +4452,142 @@ class MedianFinder {
 
 -----
 
+### `leetcode 297 二叉树的序列化与反序列化`
+
+```go
+type Codec struct {
+    
+}
+
+func Constructor() Codec {
+    return Codec{}
+}
+
+// Serializes a tree to a single string.
+func (this *Codec) serialize(root *TreeNode) string {
+    if root == nil {
+        return ""
+    }
+
+    queue := []*TreeNode{root}
+    vals := []string{}
+    for len(queue) > 0 {
+        node := queue[0]
+        queue = queue[1:]
+        if node != nil {
+            vals = append(vals, strconv.Itoa(node.Val))
+            queue = append(queue, node.Left, node.Right)
+        } else {
+            vals = append(vals, "null")
+        }
+    }
+    return strings.Join(vals, ",")
+}
+
+// Deserializes your encoded data to tree.
+func (this *Codec) deserialize(data string) *TreeNode {    
+    if len(data) == 0 {
+        return nil
+    }
+
+    vals := strings.Split(data, ",")
+    rootVal,_ := strconv.Atoi(vals[0])
+    root := &TreeNode{Val: rootVal}
+    queue := []*TreeNode{root}
+    index := 1
+    length := len(vals)
+
+    for index < length {
+        node := queue[0]
+        queue = queue[1:]
+        if index < length && vals[index] != "null" {
+            val, _ := strconv.Atoi(vals[index])
+            left := &TreeNode{Val: val}
+            node.Left = left 
+            queue = append(queue, left)
+        }
+        index++
+        
+        if index < length && vals[index] != "null" {
+            val2, _ := strconv.Atoi(vals[index])
+            right := &TreeNode{Val: val2}
+            node.Right = right
+            queue = append(queue, right)
+        }
+        index++
+    }
+    return root
+}
+```
+
+----
+
+### `leetcode 298 二叉树最长连续序列`
+
+```go
+func longestConsecutive(root *TreeNode) int {
+    if root == nil {
+        return 0
+    }
+    res := 1
+
+    var dfs func(root, parent *TreeNode, curLen int)
+    dfs = func(root, parent *TreeNode, curLen int) {
+        if root == nil {
+            return 
+        }
+
+        if parent != nil && root.Val == parent.Val + 1 {
+            curLen++
+            res = max(res, curLen)
+        } else {
+            curLen = 1
+        }
+        dfs(root.Left, root, curLen)
+        dfs(root.Right, root, curLen)
+    }
+
+    dfs(root, nil, 1)
+    return res
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b 
+    }
+    return a 
+}
+```
+
+
+
 ### `leetcode 300 最长递增子序列`
 
-```java
-class Solution {
-    public int lengthOfLIS(int[] nums) {
-        int len = nums.length;
-        int[] dp = new int[len];
-        Arrays.fill(dp, 1);
-        int res = 1;
-        for(int i = 1; i < len; i++) {
-            for(int j = 0; j < i; j++) {
-                if(nums[i] > nums[j]) {
-                    dp[i] = Math.max(dp[i], dp[j] + 1);
-                }
-            }
-            res = Math.max(res, dp[i]);
-        }
-        return res;
+```go
+func lengthOfLIS(nums []int) int {
+    length := len(nums)
+    dp := make([]int, length)
+    for i := 0; i < length; i++ {
+        dp[i] = 1
     }
+
+    res := 1
+    for i := 1; i < length; i++ {
+        for j := 0; j < i; j++ {
+            if nums[i] > nums[j] {
+                dp[i] = max(dp[i], dp[j] + 1)
+            }
+        }
+        res = max(res, dp[i])
+    }
+    return res
+}
+
+func max(a, b int) int {
+    if a > b {
+        return a
+    }
+    return b
 }
 ```
 
@@ -2987,6 +4608,72 @@ class Solution {
         }
         return dp[amount] == amount + 1? -1 : dp[amount];
     }
+}
+```
+
+----
+
+### `leetcode 323 无向图中连通分量的数目`
+
+```go
+func countComponents(n int, edges [][]int) int {
+    uf := initUF(n)
+    for _, edge := range edges {
+        uf.union(edge[0], edge[1])
+    }
+    return uf.getCount()
+}
+
+type UnionFind struct {
+    count   int
+    parent  []int 
+    rank    []int 
+}
+
+func initUF(n int) *UnionFind {
+    count := n
+    parent := make([]int, n)
+    rank := make([]int, n)
+    for i := 0; i < n; i++ {
+        parent[i] = i
+        rank[i] = 1
+    }
+    return &UnionFind{
+        count: count,
+        parent: parent,
+        rank: rank,
+    }
+}
+
+func (uf *UnionFind) getCount() int {
+    return uf.count
+}
+
+func (uf *UnionFind) find(x int) int {
+    for x != uf.parent[x] {
+        uf.parent[x] = uf.parent[uf.parent[x]]
+        x = uf.parent[x]
+    }
+    return x
+}
+
+func (uf *UnionFind) union(x, y int) bool {
+    xRoot := uf.find(x)
+    yRoot := uf.find(y)
+    if xRoot == yRoot {
+        return false 
+    }
+
+    if uf.rank[xRoot] < uf.rank[yRoot] {
+        uf.parent[xRoot] = yRoot
+    } else if uf.rank[xRoot] > uf.rank[yRoot] {
+        uf.parent[yRoot] = xRoot
+    } else {
+        uf.parent[xRoot] = yRoot
+        uf.rank[yRoot]++
+    }
+    uf.count--
+    return true 
 }
 ```
 
@@ -3092,6 +4779,88 @@ class Solution {
 }
 ```
 
+----
+
+### `leetcode 333 最大BST子树`
+
+```go
+func largestBSTSubtree(root *TreeNode) int {
+    res := 0
+    var dfs func(root *TreeNode)
+    dfs = func(root *TreeNode) {
+        if root == nil {
+            return 
+        }
+
+        if isValidBST(root, nil, nil) {
+            res = max(res, size(root))
+        }
+        dfs(root.Left)
+        dfs(root.Right)
+    }
+
+    dfs(root)
+    return res
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b
+    }
+    return a
+}
+
+func isValidBST(root, min, max *TreeNode) bool {
+    if root == nil {
+        return true
+    } else if min != nil && root.Val <= min.Val {
+        return false
+    } else if max != nil && root.Val >= max.Val {
+        return false 
+    }
+
+    return isValidBST(root.Left, min, root) && isValidBST(root.Right, root, max)
+} 
+
+func size(root *TreeNode) int {
+    if root == nil {
+        return 0
+    }
+
+    return 1 + size(root.Left) + size(root.Right)
+}
+```
+
+---
+
+### `leetcode 337 打家劫舍 III`
+
+```go
+func rob(root *TreeNode) int {
+    resSli := robInTree(root)
+    return max(resSli[0], resSli[1])
+}
+
+func robInTree(root *TreeNode) []int {
+    if root == nil {
+        return []int{0, 0}
+    }
+
+    left := robInTree(root.Left)
+    right := robInTree(root.Right)
+    notRob := max(left[0], left[1]) + max(right[0], right[1])
+    rob := left[0] + right[0] + root.Val
+    return []int{notRob, rob} 
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b 
+    }
+    return a 
+}
+```
+
 
 
 ### `leetcode 349 两个数组的交集`
@@ -3159,37 +4928,68 @@ class Solution {
 
 ### `leetcode 354 俄罗斯套娃信封问题`
 
-```java
-class Solution {
-    public int maxEnvelopes(int[][] envelopes) {
-        if(envelopes == null || envelopes.length == 0) {
-            return 0;
+```go
+func maxEnvelopes(envelopes [][]int) int {
+    sort.Slice(envelopes, func(i, j int) bool {
+        if envelopes[i][0] == envelopes[j][0] {
+            return envelopes[i][1] > envelopes[j][1]
         }
+        return envelopes[i][0] < envelopes[j][0]
+    })
 
-        Arrays.sort(envelopes, new Comparator<int[]>() {
-            @Override
-            public int compare(int[] a, int[] b) {
-                if(a[0] == b[0]) {
-                    return b[1] - a[1];
-                }
-                return a[0] - b[0];
+    length := len(envelopes)
+    dp := make([]int, length)
+    res := 1
+    for i := 0; i < length; i++ { dp[i] = 1}
+    for i := 1; i < length; i++ {
+        for j := 0; j < i; j++ {
+            if envelopes[i][1] > envelopes[j][1] {
+                dp[i] = max(dp[i], dp[j] + 1)
             }
-        });
-
-        int len = envelopes.length;
-        int[] dp = new int[len];
-        Arrays.fill(dp, 1);
-        int res = 1;
-        for(int i = 1; i < len; i++) {
-            for(int j = 0; j < i; j++) {
-                if(envelopes[i][1] > envelopes[j][1]) {
-                    dp[i] = Math.max(dp[i], dp[j] + 1);
-                }
-            }
-            res = Math.max(res, dp[i]);
         }
-        return res;
+        res = max(res, dp[i])
     }
+    return res
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b 
+    }
+    return a 
+}
+```
+
+---
+
+### `leetcode 366 寻找二叉树的叶子节点`
+
+```go
+func findLeaves(root *TreeNode) [][]int {
+    res := [][]int{}
+    if root == nil {
+        return res 
+    }
+
+    for root != nil {
+        runner := []int{}
+        root = recursion(root, &runner)
+        res = append(res, runner)
+    }
+    return res
+}
+
+func recursion (root *TreeNode, runner *[]int) *TreeNode {
+    if root == nil {
+        return nil
+    } else if root.Left == nil && root.Right == nil {
+        *runner = append(*runner, root.Val)
+        return nil
+    }
+
+    root.Left = recursion(root.Left, runner)
+    root.Right = recursion(root.Right, runner)
+    return root 
 }
 ```
 
@@ -3225,6 +5025,27 @@ class Solution {
 
 -----
 
+### `leetcode 377 组合总和 IV`
+
+```go
+func combinationSum4(nums []int, target int) int {
+    dp := make([]int, target + 1)
+    dp[0] = 1
+    for i := 1; i <= target; i++ {
+        for _, num := range nums {
+            if i >= num {
+                dp[i] += dp[i-num]
+            }
+        }
+    }
+    return dp[target]
+}
+```
+
+----
+
+
+
 ### `leetcode 402 移掉K位数字`
 
 ```java
@@ -3258,34 +5079,53 @@ class Solution {
 }
 ```
 
+---
+
+### `leetcode 404 左叶子之和`
+
+```go
+func sumOfLeftLeaves(root *TreeNode) int {
+    if root == nil {
+        return 0
+    }
+
+    if root.Left != nil && isLeaf(root.Left) {
+        return root.Left.Val + sumOfLeftLeaves(root.Right)
+    }
+    return sumOfLeftLeaves(root.Left) + sumOfLeftLeaves(root.Right)
+}
+
+func isLeaf(root *TreeNode) bool {
+    if root == nil {
+        return false
+    }
+
+    return root.Left == nil && root.Right == nil
+}
+```
+
 
 
 ### `leetcode 415 字符串相加`
 
-```java
-class Solution {
-    public String addStrings(String num1, String num2) {
-        int index1 = num1.length() - 1;
-        int index2 = num2.length() - 1;
-        StringBuffer res = new StringBuffer();
-        int carry = 0;
-        while(index1 >= 0 || index2 >= 0 || carry > 0) {
-            int temp = carry;
-            if(index1 >= 0) {
-                temp += num1.charAt(index1) - '0';
-                index1--;
-            }
-            if(index2 >= 0) {
-                temp += num2.charAt(index2) - '0';
-                index2--;
-            }
-
-            int val = temp % 10;
-            carry = temp / 10;
-            res.insert(0, val);
+```go
+func addStrings(num1 string, num2 string) string {
+    carry := 0
+    res := ""
+    len1 := len(num1)
+    len2 := len(num2)
+    for i, j := len1 - 1, len2 - 1; i >= 0 || j >= 0 || carry > 0; i,j = i - 1, j - 1 {
+        temp := carry
+        if i >= 0 {
+            temp += int(num1[i] - '0')
+        } 
+        if j >= 0 {
+            temp += int(num2[j] - '0')
         }
-        return res.toString();
+        res = strconv.Itoa(temp % 10) + res
+        carry = temp / 10
     }
+    return res
 }
 ```
 
@@ -3360,6 +5200,37 @@ class Solution {
 
 ------
 
+### `leetcode 429 N叉树的层序遍历`
+
+```go
+func levelOrder(root *Node) [][]int {
+    res := [][]int{}
+    if root == nil {
+        return res 
+    }
+
+    queue := []*Node{root}
+    for len(queue) > 0 {
+        line := []int{}
+        levelSize := len(queue)
+        for i := 0; i < levelSize; i++ {
+            node := queue[0]
+            queue = queue[1:]
+            line = append(line, node.Val)
+            for _, child := range node.Children {
+                if child != nil {
+                    queue = append(queue, child)
+                }
+            }
+        }
+        res = append(res, line)
+    }
+    return res
+}
+```
+
+
+
 ### `leetcode 435 无重叠区间`
 
 ```java
@@ -3382,6 +5253,31 @@ class Solution {
         }
         return res;
     }
+}
+```
+
+---
+
+### `leetcode 437 路径总和 III `
+
+```go
+func pathSum(root *TreeNode, target int) int {
+    if root == nil {
+        return 0
+    }
+    return pathFromRoot(root, target) + pathSum(root.Left, target) + pathSum(root.Right, target)
+}
+
+func pathFromRoot(root *TreeNode, target int) int {
+    if root == nil {
+        return 0
+    }
+
+    res := 0
+    target -= root.Val
+    if target == 0 { res = 1}
+    res += pathFromRoot(root.Left, target) + pathFromRoot(root.Right, target)
+    return res 
 }
 ```
 
@@ -3461,57 +5357,127 @@ class Solution {
 
 -----
 
+### `leetcode 449 序列化和反序列化二叉搜索树`
+
+```go
+// 以一般二叉树的方式进行处理
+type Codec struct {
+    
+}
+
+func Constructor() Codec {
+    return Codec{}
+}
+
+// Serializes a tree to a single string.
+func (this *Codec) serialize(root *TreeNode) string {
+    if root == nil {
+        return ""
+    }
+
+    queue := []*TreeNode{root}
+    vals := []string{}
+    for len(queue) > 0 {
+        node := queue[0]
+        queue = queue[1:]
+        if node != nil {
+            vals = append(vals, strconv.Itoa(node.Val))
+            queue = append(queue, node.Left, node.Right)
+        } else {
+            vals = append(vals, "null")
+        }
+    }
+    return strings.Join(vals, ",")
+}
+
+// Deserializes your encoded data to tree.
+func (this *Codec) deserialize(data string) *TreeNode {    
+    if len(data) == 0 {
+        return nil
+    }
+
+    vals := strings.Split(data, ",")
+    rootVal,_ := strconv.Atoi(vals[0])
+    root := &TreeNode{Val: rootVal}
+    queue := []*TreeNode{root}
+    index := 1
+    length := len(vals)
+
+    for index < length {
+        node := queue[0]
+        queue = queue[1:]
+        if index < length && vals[index] != "null" {
+            val, _ := strconv.Atoi(vals[index])
+            left := &TreeNode{Val: val}
+            node.Left = left 
+            queue = append(queue, left)
+        }
+        index++
+        
+        if index < length && vals[index] != "null" {
+            val2, _ := strconv.Atoi(vals[index])
+            right := &TreeNode{Val: val2}
+            node.Right = right
+            queue = append(queue, right)
+        }
+        index++
+    }
+    return root
+}
+
+// 
+```
+
+----
+
 ### `leetcode 450 删除二叉搜索树中的节点`
 
-```java
-class Solution {
-    public TreeNode deleteNode(TreeNode root, int key) {
-        if(root == null) {
-            return null;
-        }
+```Go
+func deleteNode(root *TreeNode, key int) *TreeNode {
+    if root == nil {
+        return nil
+    }
 
-        if(key < root.val) {
-            root.left = deleteNode(root.left, key);
-        } else if(key > root.val) {
-            root.right = deleteNode(root.right, key);
+    if root.Val < key {
+        root.Right = deleteNode(root.Right, key)
+    } else if root.Val > key {
+        root.Left = deleteNode(root.Left, key)
+    } else {
+        if root.Left == nil {
+            return root.Right
+        } else if root.Right == nil {
+            return root.Left
         } else {
-            if(root.left == null) {
-                return root.right;
-            } else if(root.right == null) {
-                return root.left;
-            } else {
-                TreeNode node = root;
-                root = min(node.right);
-                root.right = deleteMin(node.right);
-                root.left = node.left;
-                return root;
-            }
+            node := root
+            root = min(node.Right)
+            root.Right = deleteMin(node.Right)
+            root.Left = node.Left
+            return root
         }
-        return root;
+    }
+    return root
+}   
+
+func min(root *TreeNode) *TreeNode {
+    if root == nil {
+        return nil
     }
 
-    private TreeNode min(TreeNode root) {
-        if(root == null) {
-            return null;
-        }
-
-        while(root.left != null) {
-            root = root.left;
-        }
-        return root;
+    for root.Left != nil {
+        root = root.Left
     }
+    return root
+}
 
-    private TreeNode deleteMin(TreeNode root) {
-        if(root == null) {
-            return null;
-        }
-
-        if(root.left == null) {
-            return root.right;
-        }
-        root.left = deleteMin(root.left);
-        return root;
+func deleteMin(root *TreeNode) *TreeNode {
+    if root == nil {
+        return nil
+    } else if root.Left == nil {
+        return root.Right
     }
+    
+    root.Left = deleteMin(root.Left)
+    return root
 }
 ```
 
@@ -3519,35 +5485,102 @@ class Solution {
 
 ### `leetcode 470 用Rand7()实现Rand10()`
 
-```java
-class Solution extends SolBase {
-    public int rand10() {
-         /**
-         * (rand_X() - 1) × Y + rand_Y() ==> 可以等概率的生成[1, X * Y]范围的随机数
-          */
-         while(true) {
-             int a = rand7();
-             int b = rand7();
-             int num = (a - 1) * 7 + b;
-             if(num <= 40) {
-                 return num % 10 + 1;
-             }
+```go
+// (rand_X() - 1) × Y + rand_Y() ==> 可以等概率的生成[1, X * Y]范围的随机数
+func rand10() int {
+    for {
+        a := rand7()
+        b := rand7()
+        num := (a - 1) * 7 + b 
+        if num <= 40 {
+            return num % 10 + 1
+        }
 
-             a = num - 40;
-             b = rand7();
-             num = (a - 1) * 7 + b;
-             if(num <= 60) {
-                 return num % 10 + 1;
-             }
+        a = num - 40
+        b = rand7()
+        num = (a - 1) * 7 + b
+        if num <= 60 {
+            return num % 10 + 1
+        }
 
-             a = num - 60;
-             b = rand7();
-             num = (num - 1) * 7 + b;
-             if(num <= 20) {
-                 return num % 10 + 1;
-             }
-         }
+        a = num - 60
+        b = rand7()
+        num = (a - 1) * 7 + b
+        if num <= 20 {
+            return num % 10 + 1
+        }
     }
+}
+```
+
+----
+
+### `leetcode 503 下一个更大元素 II`
+
+```go
+func nextGreaterElements(nums []int) []int {
+    length := len(nums)
+    res := make([]int, length)
+    monoStack := []int{}
+    for i := 2 * length - 1; i >= 0; i-- {
+        for len(monoStack) > 0 && nums[i%length] >= monoStack[len(monoStack)-1] {
+            monoStack = monoStack[:len(monoStack) - 1]
+        }
+        if len(monoStack) > 0 {
+            res[i%length] = monoStack[len(monoStack)-1]
+        } else {
+            res[i%length] = -1
+        }
+        monoStack = append(monoStack, nums[i%length])
+    }
+    return res
+}
+```
+
+----
+
+### `leetcode 510 二叉搜索树中的中序后继 II`
+
+```go
+func inorderSuccessor(node *Node) *Node {
+    if node == nil {
+        return nil
+    }
+
+    if node.Right != nil {
+        node = node.Right
+        for node.Left != nil {
+            node = node.Left
+        }
+        return node
+    } else {
+        for node.Parent != nil && node != node.Parent.Left {
+            node = node.Parent
+        }
+        return node.Parent
+    }
+}
+```
+
+----
+
+### `leetcode 513 找树左下角的值`
+
+```go
+// 层序遍历，每一层从右至左遍历
+func findBottomLeftValue(root *TreeNode) int {
+    queue := []*TreeNode{root}
+    for len(queue) > 0 {
+        root = queue[0]
+        queue = queue[1:]
+        if root.Right != nil {
+            queue = append(queue, root.Right)
+        }
+        if root.Left != nil {
+            queue = append(queue, root.Left)
+        }
+    }
+    return root.Val
 }
 ```
 
@@ -3555,38 +5588,39 @@ class Solution extends SolBase {
 
 ### `leetcode 515 在每个树行中找最大值`
 
-```java
-/**
-* BFS 
- */
-class Solution {
-    public List<Integer> largestValues(TreeNode root) {
-        List<Integer> res = new LinkedList<>();
-        if(root == null) {
-            return res;
-        }
-
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
-        while(!queue.isEmpty()) {
-            int levelSize = queue.size();
-            int max = Integer.MIN_VALUE;
-            while(levelSize > 0) {
-                TreeNode node = queue.poll();
-                levelSize--;
-                max = Math.max(node.val, max);
-
-                if(node.left != null) {
-                    queue.offer(node.left);
-                }
-                if(node.right != null) {
-                    queue.offer(node.right);
-                }
-            }
-            res.add(max);
-        }
-        return res;
+```go
+func largestValues(root *TreeNode) []int {
+    res := []int{}
+    if root == nil {
+        return res 
     }
+
+    queue := []*TreeNode{root}
+    for len(queue) > 0 {
+        levelSize := len(queue)
+        curMax := math.MinInt32
+        nextLevel := []*TreeNode{}
+        for i := 0; i < levelSize; i++ {
+            node := queue[i]
+            curMax = max(curMax, node.Val)
+            if node.Left != nil {
+                nextLevel = append(nextLevel, node.Left)
+            } 
+            if node.Right != nil {
+                nextLevel = append(nextLevel, node.Right)
+            }
+        }
+        res = append(res, curMax)
+        queue = nextLevel
+    }
+    return res
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b 
+    }
+    return a 
 }
 ```
 
@@ -3594,18 +5628,16 @@ class Solution {
 
 ### `leetcode 518 零钱兑换II`
 
-```java
-class Solution {
-    public int change(int amount, int[] coins) {
-        int[] dp = new int[amount+1];
-        dp[0] = 1;
-        for(int coin : coins) {
-            for(int i = coin; i <= amount; i++) {
-                dp[i] += dp[i-coin];
-            }
+```go
+func change(amount int, coins []int) int {
+    dp := make([]int, amount + 1)
+    dp[0] = 1
+    for _, coin := range coins {
+        for i := coin; i <= amount; i++ {
+            dp[i] += dp[i-coin]
         }
-        return dp[amount];
     }
+    return dp[amount]
 }
 ```
 
@@ -3613,28 +5645,34 @@ class Solution {
 
 ### `leetcode 530 二叉搜索树的最小绝对差`
 
-```java
-class Solution {
-    private int res = Integer.MAX_VALUE;
-    private TreeNode pre = null;
+```go
+func getMinimumDifference(root *TreeNode) int {
+    res := math.MaxInt32
+    var pre *TreeNode
 
-    public int getMinimumDifference(TreeNode root) {
-        inorderTra(root);
-        return res;
-    }
-
-    private void inorderTra(TreeNode root) {
-        if(root == null) {
-            return;
+    var inorderTra func(root *TreeNode) 
+    inorderTra = func(root *TreeNode) {
+        if root == nil {
+            return 
         }
 
-        inorderTra(root.left);
-        if(pre != null) {
-            res = Math.min(res, root.val - pre.val);
+        inorderTra(root.Left)
+        if pre != nil {
+            res = min(res, root.Val - pre.Val)
         }
-        pre = root;
-        inorderTra(root.right);
+        pre = root 
+        inorderTra(root.Right)
     }
+
+    inorderTra(root)
+    return res
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a 
+    }
+    return b 
 }
 ```
 
@@ -3642,25 +5680,24 @@ class Solution {
 
 ### `leetcode 538 把二叉搜索树转换为累加树`
 
-```java
-class Solution {
-    private int pre = 0;
+```go
+func convertBST(root *TreeNode) *TreeNode {
+    pre := 0
 
-    public TreeNode convertBST(TreeNode root) {
-        reverseTra(root);
-        return root;
-    }
-
-    private void reverseTra(TreeNode root) {
-        if(root == null) {
-            return;
+    var reverseTra func(root *TreeNode) 
+    reverseTra = func(root *TreeNode) {
+        if root == nil {
+            return 
         }
 
-        reverseTra(root.right);
-        pre += root.val;
-        root.val = pre;
-        reverseTra(root.left);
+        reverseTra(root.Right)
+        pre += root.Val
+        root.Val = pre 
+        reverseTra(root.Left)
     }
+
+    reverseTra(root)
+    return root 
 }
 ```
 
@@ -3668,75 +5705,70 @@ class Solution {
 
 ### `leetcode 547 省份数量`
 
-```java
-class Solution {
-    public int findCircleNum(int[][] isConnected) {
-        int n = isConnected.length;
-        UnionFind uf = new UnionFind(n);
-        for(int i = 0; i < n; i++) {
-            for(int j = i + 1; j < n; j++) {
-                if(isConnected[i][j] == 1) {
-                    uf.union(i, j);
-                }
+```go
+func findCircleNum(isConnected [][]int) int {
+    n := len(isConnected)
+    uf := initUF(n)
+    for i := 0; i < n; i++ {
+        for j := i + 1; j < n; j++ {
+            if isConnected[i][j] == 1 {
+                uf.union(i, j)
             }
-        }
-        return uf.count();
-    }
-
-    /**
-    * 并查集
-     */
-    private class UnionFind {
-        private int count;
-        private int[] parent;
-        private int[] rank;
-
-        public UnionFind(int n) {
-            this.count = n;
-            this.parent = new int[n];
-            this.rank = new int[n];
-
-            for(int i = 0; i < n; i++) {
-                parent[i] = i;
-                rank[i] = 1;
-            }
-        }
-
-        public int count() {
-            return count;
-        }
-
-        public int find(int a) {
-            while(a != parent[a]) {
-                parent[a] = parent[parent[a]];
-                a = parent[a];
-            }
-            return a;
-        }
-
-        public boolean connected(int a, int b) {
-            return find(a) == find(b);
-        }
-
-        public void union(int a, int b) {
-            int rootA = find(a);
-            int rootB = find(b);
-            if(rootA == rootB) {
-                return;
-            }
-
-            if(rank[rootA] < rank[rootB]) {
-                parent[rootA] = rootB;
-            } else if(rank[rootA] > rank[rootB]) {
-                parent[rootB] = rootA;
-            } else {
-                parent[rootA] = rootB;
-                rank[rootB]++;
-            }
-            this.count--;
-            return;
         }
     }
+    return uf.getCount()
+}
+
+type UnionFind struct {
+    count   int
+    parent  []int 
+    rank    []int 
+}
+
+func initUF(n int) *UnionFind {
+    count := n
+    parent := make([]int, n)
+    rank := make([]int, n)
+    for i := 0; i < n; i++ {
+        parent[i] = i
+        rank[i] = 1
+    }
+    return &UnionFind{
+        count: count,
+        parent: parent,
+        rank: rank,
+    }
+}
+
+func (uf *UnionFind) getCount() int {
+    return uf.count
+}
+
+func (uf *UnionFind) find(x int) int {
+    for x != uf.parent[x] {
+        uf.parent[x] = uf.parent[uf.parent[x]]
+        x = uf.parent[x]
+    }
+    return x 
+}
+
+func (uf *UnionFind) union(x, y int) bool {
+    xRoot := uf.find(x)
+    yRoot := uf.find(y)
+    if xRoot == yRoot {
+        return false
+    }
+
+    if uf.rank[xRoot] < uf.rank[yRoot] {
+        uf.parent[xRoot] = yRoot
+    } else if uf.rank[xRoot] > uf.rank[yRoot] {
+        uf.parent[yRoot] = xRoot
+    } else {
+        uf.parent[xRoot] = yRoot
+        uf.rank[yRoot]++
+    }
+    uf.count--
+    return true
 }
 ```
 
@@ -3807,24 +5839,23 @@ class Solution {
 
 ### `leetcode 572 另一个树的子树`
 
-```java
-class Solution {
-    public boolean isSubtree(TreeNode s, TreeNode t) {
-        if(s == null) {
-            return false;
-        }
-        return checkMatch(s, t) || isSubtree(s.left, t) || isSubtree(s.right, t);
+```go
+func isSubtree(s *TreeNode, t *TreeNode) bool {
+    if s == nil {
+        return false
     }
 
-    private boolean checkMatch(TreeNode a, TreeNode b) {
-        if(a == null && b == null) {
-            return true;
-        } else if(a == null || b == null || a.val != b.val) {
-            return false;
-        }
+    return checkMatch(s, t) || isSubtree(s.Left, t) || isSubtree(s.Right, t)
+}
 
-        return checkMatch(a.left, b.left) && checkMatch(a.right, b.right);
+func checkMatch(s *TreeNode, t *TreeNode) bool {
+    if s == nil && t == nil {
+        return true
+    } else if s == nil || t == nil || s.Val != t.Val {
+        return false 
     }
+
+    return checkMatch(s.Left, t.Left) && checkMatch(s.Right, t.Right)
 }
 ```
 
@@ -3832,63 +5863,92 @@ class Solution {
 
 ### `leetcode 622 设计循环队列`
 
-```java
-class MyCircularQueue {
-    private int capacity;
-    private int[] queue;
-    private int front;
-    private int rear;
+```go
+type MyCircularQueue struct {
+    capacity    int
+    queue       []int
+    front       int 
+    rear        int  
+}   
 
-    public MyCircularQueue(int k) {
-        this.capacity = k + 1;
-        this.queue = new int[capacity];
-        this.front = 0;
-        this.rear = 0;
-    }
-    
-    public boolean enQueue(int value) {
-        if(isFull()) {
-            return false;
-        }
-        queue[rear] = value;
-        rear = (rear + 1) % capacity;
-        return true;
-    }
-    
-    public boolean deQueue() {
-        if(isEmpty()) {
-            return false;
-        }
 
-        front = (front + 1) % capacity;
-        return true;
+func Constructor(k int) MyCircularQueue {
+    capacity := k + 1
+    queue := make([]int, k + 1)
+    return MyCircularQueue{capacity, queue, 0, 0}
+}
+
+
+func (this *MyCircularQueue) EnQueue(value int) bool {
+    if this.IsFull() {
+        return false
     }
-    
-    public int Front() {
-        if(isEmpty()) {
-            return -1;
-        }
-        return queue[front];
+
+    this.queue[this.rear] = value
+    this.rear = (this.rear + 1) % this.capacity
+    return true
+}
+
+
+func (this *MyCircularQueue) DeQueue() bool {
+    if this.IsEmpty() {
+        return false 
     }
-    
-    public int Rear() {
-        if(isEmpty()) {
-            return -1;
-        }
-        return queue[(rear - 1 + capacity) % capacity];
+
+    this.front = (this.front + 1) % this.capacity
+    return true
+}
+
+
+func (this *MyCircularQueue) Front() int {
+    if this.IsEmpty() {
+        return -1
     }
-    
-    public boolean isEmpty() {
-        return front == rear;
+    return this.queue[this.front]
+}
+
+
+func (this *MyCircularQueue) Rear() int {
+    if this.IsEmpty() {
+        return -1
     }
-    
-    public boolean isFull() {
-        return (rear + 1) % capacity == front;
-    }
+    return this.queue[(this.rear - 1 + this.capacity) % this.capacity]
+}
+
+
+func (this *MyCircularQueue) IsEmpty() bool {
+    return this.rear == this.front
+}
+
+
+func (this *MyCircularQueue) IsFull() bool {
+    return (this.rear + 1) % this.capacity == this.front
 }
 ```
 
 ----
+
+### `leetcode 633 平方数之和`
+
+```go
+func judgeSquareSum(c int) bool {
+    low := 0 
+    high := int(math.Sqrt(float64(c)))
+    for low <= high {
+        cur := low * low + high * high 
+        if cur == c {
+            return true
+        } else if cur < c {
+            low++
+        } else {
+            high--
+        }
+    }
+    return false
+}
+```
+
+
 
 ### `leetcode 647 回文子串`
 
@@ -4003,20 +6063,18 @@ class Solution {
 
 ### `leetcode 700 二叉搜索树中的搜索`
 
-```java
-class Solution {
-    public TreeNode searchBST(TreeNode root, int val) {
-        if(root == null) {
-            return null;
-        }
+```go
+func searchBST(root *TreeNode, val int) *TreeNode {
+    if root == nil {
+        return nil
+    }
 
-        if(root.val == val) {
-            return root; 
-        } else if(root.val < val) {
-            return searchBST(root.right, val);
-        } else {
-            return searchBST(root.left, val);
-        }
+    if root.Val == val {
+        return root
+    } else if root.Val < val {
+        return searchBST(root.Right, val)
+    } else {
+        return searchBST(root.Left, val)
     }
 }
 ```
@@ -4025,23 +6083,21 @@ class Solution {
 
 ### `leetcode 704 二分查找`
 
-```java
-class Solution {
-    public int search(int[] nums, int target) {
-        int left = 0;
-        int right = nums.length - 1;
-        while(left <= right) {
-            int mid = left + (right - left) / 2;
-            if(nums[mid] == target) {
-                return mid;
-            } else if(nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
+```go
+func search(nums []int, target int) int {
+    left := 0
+    right := len(nums) - 1
+    for left <= right {
+        mid := left + (right - left) / 2
+        if nums[mid] == target {
+            return mid
+        } else if nums[mid] < target {
+            left = mid + 1
+        } else {
+            right = mid - 1
         }
-        return -1;
     }
+    return -1
 }
 ```
 
@@ -4049,23 +6105,22 @@ class Solution {
 
 ### `leetcode 739 每日温度`
 
-```java
-class Solution {
-    public int[] dailyTemperatures(int[] T) {
-        int len = T.length;
-        int[] res = new int[len];
-        int index = len - 1;
-        Deque<Integer> monoStack = new LinkedList<>();
-        for(int i = len - 1; i >= 0; i--) {
-            while(!monoStack.isEmpty() && T[monoStack.peek()] <= T[i]) {
-                monoStack.pop();
-            }
-            res[index] = monoStack.isEmpty()? 0 : monoStack.peek() - i;
-            index--;
-            monoStack.push(i);
+```go
+func dailyTemperatures(T []int) []int {
+    monoStack := []int{}
+    res := make([]int, len(T))
+    for i := len(T) - 1; i >= 0; i-- {
+        for len(monoStack) > 0 && T[i] >= T[monoStack[len(monoStack) - 1]] {
+            monoStack = monoStack[:len(monoStack) - 1]
         }
-        return res;
+        if len(monoStack) == 0 {
+            res[i] = 0
+        } else {
+            res[i] = monoStack[len(monoStack) - 1] - i 
+        }
+        monoStack = append(monoStack, i)
     }
+    return res
 }
 ```
 
@@ -4073,19 +6128,20 @@ class Solution {
 
 ### `leetcode 867 转置矩阵`
 
-```java
-class Solution {
-    public int[][] transpose(int[][] matrix) {
-        int m = matrix.length;
-        int n = matrix[0].length;
-        int[][] res = new int[n][m];
-        for(int i = 0; i < m; i++) {
-            for(int j = 0; j < n; j++) {
-                res[j][i] = matrix[i][j];
-            }
-        }
-        return res;
+```go
+func transpose(matrix [][]int) [][]int {
+    m := len(matrix)
+    n := len(matrix[0])
+    res := make([][]int, n)
+    for i := 0; i < n; i++ {
+        res[i] = make([]int, m)
     }
+    for i := 0; i < m; i++ {
+        for j := 0; j < n; j++ {
+            res[j][i] = matrix[i][j]
+        }
+    }
+    return res
 }
 ```
 
@@ -4174,6 +6230,61 @@ class Solution {
 
 -----
 
+### `leetcode 897 递增顺序搜索树`
+
+```go
+// 递归
+func increasingBST(root *TreeNode) *TreeNode {
+    if root == nil {
+        return nil 
+    }
+
+    dummy := &TreeNode{}
+    runner := dummy 
+    var inorderTra func(root *TreeNode) 
+    inorderTra = func(root *TreeNode) {
+        if root == nil {
+            return 
+        }
+
+        inorderTra(root.Left)
+        runner.Right = root 
+        root.Left = nil 
+        runner = runner.Right
+        inorderTra(root.Right)
+    }
+
+    inorderTra(root)
+    return dummy.Right
+}
+
+// 迭代
+func increasingBST(root *TreeNode) *TreeNode {
+    if root == nil {
+        return nil 
+    }
+
+    dummy := &TreeNode{}
+    runner := dummy
+    stack := []*TreeNode{}
+    for len(stack) > 0 || root != nil {
+        for root != nil {
+            stack = append(stack, root)
+            root = root.Left
+        }
+        node := stack[len(stack) - 1]
+        stack = stack[:len(stack) - 1]
+        runner.Right = node 
+        runner = runner.Right
+        node.Left = nil
+        root = node.Right
+    }
+    return dummy.Right
+}
+```
+
+
+
 ### `leetcode 922 按奇偶排序数组`
 
 ```java
@@ -4201,6 +6312,32 @@ class Solution {
         nums[i] = nums[j];
         nums[j] = temp;
     }
+}
+```
+
+-----
+
+### `leetcode 938 二叉搜索树的范围和`
+
+```go
+func rangeSumBST(root *TreeNode, low int, high int) int {
+    res := 0
+
+    var inorderTra func(root *TreeNode)
+    inorderTra = func(root *TreeNode) {
+        if root == nil {
+            return 
+        }
+
+        inorderTra(root.Left)
+        if low <= root.Val && root.Val <= high {
+            res += root.Val
+        }
+        inorderTra(root.Right)
+    }
+
+    inorderTra(root)
+    return res
 }
 ```
 
@@ -4267,6 +6404,39 @@ class Solution {
             }
         }
     }
+}
+```
+
+----
+
+### `leetcode 958 二叉树的完全性检验`
+
+```go
+func isCompleteTree(root *TreeNode) bool {
+    if root == nil {
+        return true 
+    }
+
+    queue := []*TreeNode{root}
+    hasPrevNull := false
+    for len(queue) > 0 {
+        levelSize := len(queue) 
+        for i := 0; i < levelSize; i++ {
+            node := queue[0]
+            queue = queue[1:]
+            if node == nil {
+                hasPrevNull = true
+            } else {
+                if hasPrevNull {
+                    return false
+                } else {
+                    queue = append(queue, node.Left)
+                    queue = append(queue, node.Right)
+                }
+            }
+        }
+    }
+    return true
 }
 ```
 
@@ -4406,6 +6576,44 @@ class Solution {
 }
 ```
 
+----
+
+### `leetcode 1011 在D天内送达包裹的能力`
+
+```go
+func shipWithinDays(weights []int, D int) int {
+    left := 0
+    right := math.MaxInt32
+    for left < right {
+        mid := left + (right - left) / 2
+        if usedShips(weights, D, mid) {
+            right = mid 
+        } else {
+            left = mid + 1
+        }
+    }
+    return left
+}
+
+func usedShips(weights []int, D, capacity int) bool {
+    curRemain := capacity
+    for _, weight := range weights {
+        if weight > capacity {
+            return false
+        } else if curRemain < weight {
+            curRemain = capacity
+            D--
+        }
+        curRemain -= weight
+    }
+    return D > 0
+}
+```
+
+[参考答案](https://leetcode-cn.com/problems/capacity-to-ship-packages-within-d-days/solution/zai-dtian-nei-song-da-bao-guo-de-neng-li-by-lenn12/)
+
+------
+
 
 
 ### `leetcode 1013 将数组分成和相等的三个部分`
@@ -4525,23 +6733,29 @@ class Solution {
 
 ### `leetcode 1143 最长公共子序列`
 
-```java
-class Solution {
-    public int longestCommonSubsequence(String text1, String text2) {
-        int len1 = text1.length();
-        int len2 = text2.length();
-        int[][] dp = new int[len1 + 1][len2 + 1];
-        for(int i = 1; i <= len1; i++) {
-            for(int j = 1; j <= len2; j++) {
-                if(text1.charAt(i - 1) == text2.charAt(j - 1)) {
-                    dp[i][j] = dp[i-1][j-1] + 1;
-                } else {
-                    dp[i][j] = Math.max(dp[i][j-1], dp[i-1][j]);
-                }
+```go
+func longestCommonSubsequence(text1 string, text2 string) int {
+    len1 := len(text1)
+    len2 := len(text2)
+    dp := make([][]int, len1+1)
+    for i := 0; i <= len1; i++ {dp[i] = make([]int, len2+1)} 
+    for i := 1; i <= len1; i++ {
+        for j := 1; j <= len2; j++ {
+            if text1[i-1] == text2[j-1] {
+                dp[i][j] = dp[i-1][j-1] + 1
+            } else {
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
             }
         }
-        return dp[len1][len2];
     }
+    return dp[len1][len2]
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b 
+    }
+    return a 
 }
 ```
 
@@ -4693,6 +6907,8 @@ class CQueue {
 
 ----
 
+
+
 ### `l0-II 青蛙跳台阶问题`
 
 ```java
@@ -4714,6 +6930,28 @@ class Solution {
         }
         return nSteps;
     }
+}
+```
+
+-----
+
+### `11 旋转数组的最小数字`
+
+```go
+func minArray(numbers []int) int {
+    left := 0
+    right := len(numbers) - 1
+    for left < right {
+        mid := left + (right - left) / 2
+        if numbers[mid] == numbers[right] {
+            right--
+        } else if numbers[mid] > numbers[right] {
+            left = mid + 1
+        } else {
+            right = mid
+        }
+    }
+    return numbers[left]
 }
 ```
 
@@ -4771,24 +7009,36 @@ class Solution {
 
 ### `21 调整数组顺序使奇数位于偶数前面`
 
-```java
-class Solution {
-    public int[] exchange(int[] nums) {
-        int mark = -1;
-        for(int i = 0; i < nums.length; i++) {
-            if(nums[i] % 2 != 0) {
-                mark++;
-                swap(nums, mark, i);
-            }
+```go
+func exchange(nums []int) []int {
+    mark := -1
+    for i := 0; i < len(nums); i++ {
+        if nums[i] % 2 != 0 {
+            mark++
+            nums[mark], nums[i] = nums[i], nums[mark]
         }
-        return nums;
+    }
+    return nums
+}
+```
+
+----
+
+### `22 链表中倒数第k个节点`
+
+```go
+func getKthFromEnd(head *ListNode, k int) *ListNode {
+    slow := head
+    fast := head
+    for i := 0; i < k; i++ {
+        fast = fast.Next
     }
 
-    private void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
+    for fast != nil {
+        slow = slow.Next
+        fast = fast.Next
     }
+    return slow
 }
 ```
 
@@ -4796,19 +7046,17 @@ class Solution {
 
 ### `24 反转链表`
 
-```java
-class Solution {
-    public ListNode reverseList(ListNode head) {
-        ListNode pre = null;
-        ListNode cur = head;
-        while(cur != null) {
-            ListNode next = cur.next;
-            cur.next = pre;
-            pre = cur;
-            cur = next;
-        }
-        return pre;
+```go
+func reverseList(head *ListNode) *ListNode {
+    var pre *ListNode
+    cur := head
+    for cur != nil {
+        next := cur.Next
+        cur.Next = pre
+        pre = cur
+        cur = next 
     }
+    return pre
 }
 ```
 
@@ -4846,26 +7094,40 @@ class Solution {
 
 ### `26 树的子结构`
 
-```java
-class Solution {
-    public boolean isSubStructure(TreeNode A, TreeNode B) {
-        return (A != null && B != null)
-            && (checkForMatch(A, B) || isSubStructure(A.left, B) || isSubStructure(A.right, B));
+```go
+func isSubStructure(A *TreeNode, B *TreeNode) bool {
+    return  (A != nil && B != nil) && (checkForMatch(A, B) || isSubStructure(A.Left, B) || isSubStructure(A.Right, B))
+}
+
+func checkForMatch(A *TreeNode, B *TreeNode) bool {
+    if  B == nil {
+        return true
+    } else if A == nil || A.Val != B.Val {
+        return false 
     }
 
-    private boolean checkForMatch(TreeNode A, TreeNode B) {
-        if(B == null) {
-            return true;
-        } else if(A == null || A.val != B.val) {
-            return false;
-        }
-
-        return checkForMatch(A.left, B.left) && checkForMatch(A.right, B.right);
-    }
+    return checkForMatch(A.Left, B.Left) && checkForMatch(A.Right, B.Right)
 }
 ```
 
 -----
+
+### `27 二叉树的镜像`
+
+```go
+func mirrorTree(root *TreeNode) *TreeNode {
+    if root == nil {
+        return root 
+    }
+
+    left := root.Left
+    root.Left = mirrorTree(root.Right)
+    root.Right = mirrorTree(left)
+    return root 
+}
+```
+
+
 
 ### `29 顺时针打印矩阵`
 
@@ -5015,30 +7277,33 @@ class Solution {
 
 ### `33 二叉搜索树的后序遍历序列`
 
-```java
-class Solution {
-    public boolean verifyPostorder(int[] postorder) {
-        return recursion(postorder, 0, postorder.length - 1);
+```go
+func verifyPostorder(postorder []int) bool {
+    if len(postorder) < 2 {
+        return true 
     }
-    
-    private boolean recursion(int[] postorder, int left, int right) {
-        if(left >= right) {
-            return true;
+
+    var recursion func(start, end int) bool 
+    recursion = func(start, end int) bool{
+        if start >= end {
+            return true
         }
 
-        int rootVal = postorder[right];
-        int cur = left;
-        while(cur < right && postorder[cur] < rootVal) {
-            cur++;
+        rootVal := postorder[end]
+        split := end - 1
+        for split >= 0 && postorder[split] > rootVal {
+            split--
         }
-        for(int i = cur; i < right; i++) {
-            if(postorder[i] < rootVal) {
-                return false;
+        for i := split; i >= 0; i-- {
+            if postorder[i] >= rootVal {
+                return false
             }
         }
 
-        return recursion(postorder, left, cur - 1) && recursion(postorder, cur, right - 1);
+        return recursion(start, split) && recursion(split + 1, end - 1)
     }
+
+    return recursion(0, len(postorder) - 1)
 }
 ```
 
@@ -5084,6 +7349,48 @@ class Solution {
 ```
 
 -----
+
+### `40 最小的k个数`
+
+```go
+func getLeastNumbers(arr []int, k int) []int {
+    if k <= 0 {
+        return []int{}
+    } else if len(arr) <= k {
+        return arr
+    }
+
+    left := 0
+    right := len(arr) - 1
+    for {
+        index := partition(arr, left, right)
+        if index == k - 1 {
+            break 
+        } else if index < k - 1 {
+            left = index + 1
+        } else {
+            right = index - 1
+        }
+    }
+    return arr[:k]
+}
+
+func partition(arr []int, left int, right int) int {
+    pivot := arr[left]
+    mark := left
+    for i := left + 1; i <= right; i++ {
+        if arr[i] < pivot {
+            mark++
+            arr[mark], arr[i] = arr[i], arr[mark]
+        }
+    }
+    arr[left] = arr[mark]
+    arr[mark] = pivot
+    return mark
+}
+```
+
+
 
 ### `42 连续子数组的最大和`
 
@@ -5164,30 +7471,31 @@ class Solution {
 
 ### `48 最长不含重复字符的子字符串`
 
-```java
-class Solution {
-    public int lengthOfLongestSubstring(String s) {
-        if(s == null || s.length() == 0) {
-            return 0;
-        }
-        
-        Map<Character, Integer> window = new HashMap<>();
-        int left = 0;
-        int right = 0;
-        int maxLen = Integer.MIN_VALUE;
-        while(right < s.length()) {
-            char c1 = s.charAt(right);
-            window.put(c1, window.getOrDefault(c1, 0) + 1);
-            while(window.get(c1) > 1) {
-                char c2 = s.charAt(left);
-                window.put(c2, window.get(c2) - 1);
-                left++;
-            }
-            maxLen = Math.max(maxLen, right - left + 1);
-            right++;
-        }
-        return maxLen;
+```go
+func lengthOfLongestSubstring(s string) int {
+    if len(s) < 2 {
+        return len(s)
     }
+    
+    window := make(map[byte]int)
+    left := 0
+    right := 0
+    maxLen := 1
+
+    for right < len(s) {
+        c1 := s[right]
+        window[c1]++
+        for window[c1] > 1 {
+            c2 := s[left]
+            window[c2]--
+            left++
+        }
+        if right - left + 1 > maxLen {
+            maxLen = right - left + 1
+        }
+        right++
+    }
+    return maxLen
 }
 ```
 
@@ -5286,6 +7594,50 @@ class Solution {
 
 ----
 
+### `55-II 平衡二叉树`
+
+```go
+func isBalanced(root *TreeNode) bool {
+    return checkBalance(root) != -1
+}
+
+func checkBalance(root *TreeNode) int {
+    if root == nil {
+        return 0
+    }
+
+    left := checkBalance(root.Left)
+    if left == -1 {
+        return -1
+    }
+    right := checkBalance(root.Right)
+    if right == -1 {
+        return -1
+    }
+
+    if abs(left - right) > 1 {
+        return -1
+    }
+    return max(left, right) + 1
+}
+
+func abs(a int) int {
+    if a < 0 {
+        return -a 
+    }
+    return a 
+}
+
+func max(a, b int) int {
+    if a < b {
+        return b
+    }
+    return a 
+}
+```
+
+
+
 ### `64 求1 + 2 + ... + n`
 
 ```java
@@ -5356,9 +7708,84 @@ class Solution {
 }
 ```
 
+----
+
+### `68 - II 二叉树的最近公共祖先`
+
+```go
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+    if root == nil || root == p || root == q {
+        return root 
+    }
+    left := lowestCommonAncestor(root.Left, p, q)
+    right := lowestCommonAncestor(root.Right, p, q)
+    if left == nil {
+        return right 
+    } else if right == nil {
+        return left 
+    }
+    return root
+}
+```
+
 
 
 ## 程序员面试金典
+
+### `面试题 02.05 链表求和`
+
+```go
+func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+    dummy := &ListNode{}
+    runner := dummy
+    carry := 0
+    for l1 != nil || l2 != nil || carry > 0 {
+        temp := carry
+        if l1 != nil {
+            temp += l1.Val
+            l1 = l1.Next
+        }
+        if l2 != nil {
+            temp += l2.Val
+            l2 = l2.Next
+        }
+        runner.Next = &ListNode{Val: temp % 10}
+        runner = runner.Next
+        carry = temp / 10
+    }
+    return dummy.Next
+}
+```
+
+----
+
+### `面试题 04.12`
+
+```go
+func pathSum(root *TreeNode, sum int) int {
+    if root == nil {
+        return 0
+    }
+
+    return pathSumFromRoot(root, sum) + pathSum(root.Left, sum) + pathSum(root.Right, sum)
+}
+
+func pathSumFromRoot(root *TreeNode, sum int) int {
+    if root == nil {
+        return 0
+    }
+
+    sum -= root.Val
+    res := 0
+    if sum == 0 { 
+        res = 1
+    }
+    res += pathSumFromRoot(root.Left, sum) + pathSumFromRoot(root.Right, sum)
+    return res
+}
+```
+
+
 
 ### `面试题 08.12 八皇后`
 
@@ -5449,3 +7876,31 @@ class Solution {
 }
 ```
 
+----
+
+### `面试题 17.12 BiNode`
+
+```go
+func convertBiNode(root *TreeNode) *TreeNode {
+    dummy := &TreeNode{}
+    runner := dummy
+
+    var inorderTra func(root *TreeNode) 
+    inorderTra = func(root *TreeNode) {
+        if root == nil {
+            return 
+        }
+
+        inorderTra(root.Left)
+        runner.Right = root
+        runner = runner.Right
+        runner.Left = nil
+        inorderTra(root.Right)
+    }
+
+    inorderTra(root)
+    return dummy.Right
+}
+```
+
+​	

@@ -1893,38 +1893,39 @@ func numDecodings(s string) int {
 ```go
 // 递归
 func inorderTraversal(root *TreeNode) []int {
-    res := []int{}
-    var recursion func(root *TreeNode) 
-    
-    recursion = func(root *TreeNode) {
+    var inorderTra func(root *TreeNode) 
+    res := make([]int, 0)
+
+    inorderTra = func(root *TreeNode) {
         if root == nil {
             return 
         }
 
-        recursion(root.Left)
+        inorderTra(root.Left)
         res = append(res, root.Val)
-        recursion(root.Right)
+        inorderTra(root.Right)
     }
-
-    recursion(root)
+    inorderTra(root)
+    
     return res
 }
 
 // 迭代
 func inorderTraversal(root *TreeNode) []int {
-    res := []int{}
-    stack := []*TreeNode{}
-    for len(stack) > 0 || root != nil {
-        for root != nil {
-            stack = append(stack, root)
-            root = root.Left
+    var inorderTra func(root *TreeNode) 
+    res := make([]int, 0)
+
+    inorderTra = func(root *TreeNode) {
+        if root == nil {
+            return 
         }
 
-        node := stack[len(stack) - 1]
-        stack = stack[:len(stack) - 1]
-        res = append(res, node.Val)
-        root = node.Right
+        inorderTra(root.Left)
+        res = append(res, root.Val)
+        inorderTra(root.Right)
     }
+    inorderTra(root)
+    
     return res
 }
 ```
@@ -1987,19 +1988,18 @@ func numTrees(n int) int {
 
 ```go
 func isValidBST(root *TreeNode) bool {
-    return checkForValidity(root, nil, nil)
+    return checkBST(root, nil, nil)
 }
 
-func checkForValidity(root, min, max *TreeNode) bool {
+func checkBST(root, min, max *TreeNode) bool{
     if root == nil {
         return true 
     } else if min != nil && root.Val <= min.Val {
-        return false 
+        return false
     } else if max != nil && root.Val >= max.Val {
         return false 
     }
-
-    return checkForValidity(root.Left, min, root) && checkForValidity(root.Right, root, max)
+    return checkBST(root.Left, min, root) && checkBST(root.Right, root, max)
 }
 ```
 
@@ -2080,19 +2080,20 @@ func checkSymmetry(t1, t2 *TreeNode) bool {
 
 ```go
 func levelOrder(root *TreeNode) [][]int {
-    res := [][]int{}
+    res := make([][]int, 0)
     if root == nil {
-        return res
+        return res 
     }
-    
-    queue := []*TreeNode{root}
+
+    queue := make([]*TreeNode, 0)
+    queue = append(queue, root) 
     for len(queue) > 0 {
         levelSize := len(queue)
-        nextLevel := []*TreeNode{}
-        line := []int{}
+        level := make([]int, 0)
+        nextLevel := make([]*TreeNode, 0)
         for i := 0; i < levelSize; i++ {
             node := queue[i]
-            line = append(line, node.Val)
+            level = append(level, node.Val)
             if node.Left != nil {
                 nextLevel = append(nextLevel, node.Left)
             }
@@ -2100,10 +2101,10 @@ func levelOrder(root *TreeNode) [][]int {
                 nextLevel = append(nextLevel, node.Right)
             }
         }
-        res = append(res, line)
+        res = append(res, level)
         queue = nextLevel
     }
-    return res
+    return res 
 }
 ```
 
@@ -2113,20 +2114,26 @@ func levelOrder(root *TreeNode) [][]int {
 
 ```go 
 func zigzagLevelOrder(root *TreeNode) [][]int {
-    res := [][]int{}
+    res := make([][]int, 0)
     if root == nil {
         return res 
     }
 
-    queue := []*TreeNode{root}
+    queue := make([]*TreeNode, 0)
+    queue = append(queue, root)
     toggle := false 
     for len(queue) > 0 {
         levelSize := len(queue)
-        line := []int{}
-        nextLevel := []*TreeNode{}
+        level := make([]int, 0)
+        nextLevel := make([]*TreeNode, 0)
         for i := 0; i < levelSize; i++ {
             node := queue[i]
-            line = append(line, node.Val)
+            if toggle {
+                level = append([]int{node.Val}, level...)
+            } else {
+                level = append(level, node.Val)
+            }
+
             if node.Left != nil {
                 nextLevel = append(nextLevel, node.Left)
             }
@@ -2134,21 +2141,11 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
                 nextLevel = append(nextLevel, node.Right)
             }
         }
-
-        if toggle {
-            reverse(line)
-        }
-        toggle = !toggle
-        res = append(res, line)
+        res = append(res, level)
         queue = nextLevel
+        toggle = !toggle
     }
-    return res
-}
-
-func reverse(nums []int) {
-    for i, j := 0, len(nums) - 1; i < j; i, j = i+1, j-1 {
-        nums[i], nums[j] = nums[j], nums[i]
-    }
+    return res 
 }
 ```
 
@@ -2249,19 +2246,20 @@ func buildTree(inorder []int, postorder []int) *TreeNode {
 
 ```go
 func levelOrderBottom(root *TreeNode) [][]int {
-    res := [][]int{}
+    res := make([][]int, 0)
     if root == nil {
         return res 
     }
 
-    queue := []*TreeNode{root}
+    queue := make([]*TreeNode, 0)
+    queue = append(queue, root)
     for len(queue) > 0 {
         levelSize := len(queue)
-        line := []int{}
-        nextLevel := []*TreeNode{}
+        level := make([]int, 0)
+        nextLevel := make([]*TreeNode, 0)
         for i := 0; i < levelSize; i++ {
             node := queue[i]
-            line = append(line, node.Val)
+            level = append(level, node.Val)
             if node.Left != nil {
                 nextLevel = append(nextLevel, node.Left)
             }
@@ -2269,17 +2267,10 @@ func levelOrderBottom(root *TreeNode) [][]int {
                 nextLevel = append(nextLevel, node.Right)
             }
         }
-        res = append(res, line)
+        res = append([][]int{level}, res...)
         queue = nextLevel
-    }
-    reverseLines(res)
-    return res
-}
-
-func reverseLines(nums [][]int) {
-    for i, j := 0, len(nums) - 1; i < j; i, j = i+1, j-1 {
-        nums[i], nums[j] = nums[j], nums[i]
-    }
+    }    
+    return res 
 }
 ```
 
@@ -2289,24 +2280,53 @@ func reverseLines(nums [][]int) {
 
 ```go
 func sortedArrayToBST(nums []int) *TreeNode {
-    length := len(nums)
-    if length <= 0 {
-        return nil 
-    }
-
-    var buildBST func(start, end int) *TreeNode 
-    buildBST = func(start, end int) *TreeNode {
-        if start > end {
+    var reconstruct func(left, right int) *TreeNode 
+    reconstruct = func(left, right int) *TreeNode {
+        if left > right {
             return nil 
         }
 
-        mid := start + (end - start) / 2
+        mid := left + (right - left) / 2
         root := &TreeNode{Val: nums[mid]}
-        root.Left = buildBST(start, mid - 1)
-        root.Right = buildBST(mid + 1, end)
+        root.Left = reconstruct(left, mid - 1)
+        root.Right = reconstruct(mid + 1, right)
         return root 
     }
-    return buildBST(0, length - 1)
+    return reconstruct(0, len(nums) - 1)
+}
+```
+
+-----
+
+### `leetcode 109 有序链表转换二叉搜索树`
+
+```go
+func sortedListToBST(head *ListNode) *TreeNode {
+    if head == nil {
+        return nil 
+    } else if head.Next == nil {
+        return &TreeNode{Val: head.Val}
+    }
+
+    preMid := getPreMid(head)
+    mid := preMid.Next
+    preMid.Next = nil 
+    root := &TreeNode{Val: mid.Val}
+    root.Left = sortedListToBST(head)
+    root.Right = sortedListToBST(mid.Next)
+    return root 
+}
+
+func getPreMid(head *ListNode) *ListNode {
+    prev := head 
+    slow := head
+    fast := head
+    for fast != nil && fast.Next != nil {
+        prev = slow
+        slow = slow.Next
+        fast = fast.Next.Next
+    }
+    return prev
 }
 ```
 
@@ -2404,28 +2424,29 @@ func hasPathSum(root *TreeNode, targetSum int) bool {
 
 ```go
 func pathSum(root *TreeNode, targetSum int) [][]int {
-    res := [][]int{}
+    res := make([][]int, 0)
     if root == nil {
         return res 
     }
 
-    var backTracking func(root *TreeNode, targetSum int, runner []int) 
-    backTracking = func(root *TreeNode,  targetSum int, runner []int) {
+    var backTracking func(root *TreeNode, targetSum int, track []int) 
+    backTracking = func(root *TreeNode, targetSum int, track []int) {
         if root == nil {
             return 
         }
-
-        targetSum -= root.Val
-        runner = append(runner, root.Val)
-        if targetSum == 0 && root.Left == nil && root.Right == nil {
-            res = append(res, append([]int{}, runner...))
-        }
-        backTracking(root.Left, targetSum, runner)
-        backTracking(root.Right, targetSum, runner)
-    }
     
+        targetSum -= root.Val
+        track = append(track, root.Val)
+        if targetSum == 0 && root.Left == nil && root.Right == nil {
+            res = append(res, append([]int{}, track...))
+        }
+        backTracking(root.Left, targetSum, track)
+        backTracking(root.Right, targetSum, track)
+        track = track[:len(track) - 1]
+    }
     backTracking(root, targetSum, []int{})
-    return res
+    
+    return res 
 }
 ```
 

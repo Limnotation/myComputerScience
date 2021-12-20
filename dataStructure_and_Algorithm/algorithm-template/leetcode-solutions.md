@@ -1893,9 +1893,12 @@ func numDecodings(s string) int {
 ```go
 // 递归
 func inorderTraversal(root *TreeNode) []int {
-    var inorderTra func(root *TreeNode) 
     res := make([]int, 0)
+    if root == nil {
+        return res 
+    }
 
+    var inorderTra func(root *TreeNode)
     inorderTra = func(root *TreeNode) {
         if root == nil {
             return 
@@ -1906,27 +1909,30 @@ func inorderTraversal(root *TreeNode) []int {
         inorderTra(root.Right)
     }
     inorderTra(root)
-    
-    return res
+
+    return res 
 }
 
 // 迭代
 func inorderTraversal(root *TreeNode) []int {
-    var inorderTra func(root *TreeNode) 
     res := make([]int, 0)
+    if root == nil {
+        return res 
+    }
 
-    inorderTra = func(root *TreeNode) {
-        if root == nil {
-            return 
+    stack := make([]*TreeNode, 0)
+    for len(stack) != 0 || root != nil {
+        for root != nil {
+            stack = append(stack, root)
+            root = root.Left
         }
 
-        inorderTra(root.Left)
-        res = append(res, root.Val)
-        inorderTra(root.Right)
+        node := stack[len(stack) - 1]
+        stack = stack[:len(stack) - 1]
+        res = append(res, node.Val)
+        root = node.Right 
     }
-    inorderTra(root)
-    
-    return res
+    return res 
 }
 ```
 
